@@ -9,7 +9,9 @@ $(PKG)_CHECKSUM := a0d047b2da5782c8332c59ae203984b64e4d5dc5f4ba9c0884fdbe753d0af
 $(PKG)_SUBDIR   := $(PKG)-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/5.11/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc dbus fontconfig freetds freetype harfbuzz jpeg libmysqlclient libpng openssl pcre2 postgresql sqlite zlib
+$(PKG)_DEPS     := cc dbus fontconfig freetds freetype harfbuzz jpeg libmysqlclient libpng openssl pcre2 sqlite zlib
+
+# postgresql - Disabled postgresql because of crash in docker.
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- https://download.qt.io/official_releases/qt/5.11/ | \
@@ -50,7 +52,6 @@ define $(PKG)_BUILD
             -mysql_config $(PREFIX)/$(TARGET)/bin/mysql_config \
             -plugin-sql-sqlite \
             -plugin-sql-odbc \
-            -plugin-sql-psql \
             -plugin-sql-tds -D Q_USE_SYBASE \
             -system-zlib \
             -system-libpng \
@@ -65,6 +66,8 @@ define $(PKG)_BUILD
             -no-pch \
             -v \
             $($(PKG)_CONFIGURE_OPTS)
+            
+            #            -plugin-sql-psql
 
     $(MAKE) -C '$(1)' -j '$(JOBS)'
     rm -rf '$(PREFIX)/$(TARGET)/qt5'
