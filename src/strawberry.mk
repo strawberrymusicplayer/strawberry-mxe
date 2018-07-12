@@ -2,8 +2,8 @@
 
 PKG             := strawberry
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := e22b47a
-$(PKG)_CHECKSUM := 3c581328c85563cca0af5ee2d3ce585ced2be6e1b5d5a83f47d4d643b9f82c1b
+$(PKG)_VERSION  := 2368fff
+$(PKG)_CHECKSUM := 33920808d5f23d211d5d73adfcac8963733894f934f333328003321ac2c11a66
 $(PKG)_GH_CONF  := jonaski/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawbs.org/
 $(PKG)_OWNER    := https://github.com/jonaski
@@ -13,7 +13,7 @@ define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
         -DCMAKE_INSTALL_PREFIX=$(PREFIX)/$(TARGET)/apps/$(PKG) \
         -DENABLE_WIN32_CONSOLE=OFF \
-        -DFORCE_GIT_REVISION="0.2.1-21-g$($(PKG)_VERSION)"
+        -DFORCE_GIT_REVISION="0.2.1-23-g$($(PKG)_VERSION)"
     $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS)
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 
