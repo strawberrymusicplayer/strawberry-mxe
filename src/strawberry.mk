@@ -11,7 +11,9 @@ $(PKG)_DEPS     := cc boost protobuf qtbase chromaprint liblastfm gst-plugins-go
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
-        -DCMAKE_INSTALL_PREFIX=$(PREFIX)/$(TARGET)/apps/$(PKG) -DENABLE_WIN32_CONSOLE=OFF
+        -DCMAKE_INSTALL_PREFIX=$(PREFIX)/$(TARGET)/apps/$(PKG) \
+        -DENABLE_WIN32_CONSOLE=OFF \
+        -DFORCE_GIT_REVISION="0.2.1-21-g$($(PKG)_VERSION)"
     $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS)
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 
