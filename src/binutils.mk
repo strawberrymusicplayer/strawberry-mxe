@@ -3,12 +3,10 @@
 PKG             := binutils
 $(PKG)_WEBSITE  := https://www.gnu.org/software/binutils/
 $(PKG)_DESCR    := GNU Binutils
-$(PKG)_VERSION  := 2.28
-$(PKG)_CHECKSUM := 6297433ee120b11b4b0a1c8f3512d7d73501753142ab9e2daa13c5a3edd32a72
-#$(PKG)_VERSION  := 2.30
-#$(PKG)_CHECKSUM := efeade848067e9a03f1918b1da0d37aaffa0b0127a06b5e9236229851d9d0c09
+$(PKG)_VERSION  := 2.29.1
+$(PKG)_CHECKSUM := e7010a46969f9d3e53b650a518663f98a5dde3c3ae21b7d71e5e6803bc36b577
 $(PKG)_SUBDIR   := binutils-$($(PKG)_VERSION)
-$(PKG)_FILE     := binutils-$($(PKG)_VERSION).tar.bz2
+$(PKG)_FILE     := binutils-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://ftp.gnu.org/gnu/binutils/$($(PKG)_FILE)
 $(PKG)_URL_2    := https://ftpmirror.gnu.org/binutils/$($(PKG)_FILE)
 $(PKG)_DEPS     :=
@@ -18,8 +16,7 @@ define $(PKG)_UPDATE
     echo $($(PKG)_VERSION)
 endef
 
-# Updating binutils caused problems loading qwindows.dll
-
+# Updating binutils caused problems loading qwindows.dll in version 2.30
 #define $(PKG)_UPDATE
 #    $(WGET) -q -O- 'https://ftp.gnu.org/gnu/binutils/?C=M;O=D' | \
 #    $(SED) -n 's,.*<a href="binutils-\([0-9][^"]*\)\.tar.*,\1,p' | \
