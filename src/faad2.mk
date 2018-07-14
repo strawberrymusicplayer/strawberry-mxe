@@ -3,11 +3,11 @@
 PKG             := faad2
 $(PKG)_WEBSITE  := http://www.audiocoding.com/
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.8.0
-$(PKG)_CHECKSUM := 15825bf857a4171e05ee818183cb3f4096baa8226e06a3869ef776e016f62442
+$(PKG)_VERSION  := 2.8.8
+$(PKG)_CHECKSUM := 985c3fadb9789d2815e50f4ff714511c79c2710ac27a4aaaf5c0c2662141426d
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
-$(PKG)_URL      := https://$(SOURCEFORGE_MIRROR)/project/faac/$(PKG)-src/$(PKG)-$($(PKG)_VERSION)/$($(PKG)_FILE)
+$(PKG)_URL      := https://$(SOURCEFORGE_MIRROR)/project/faac/$(PKG)-src/$(PKG)-2.8.0/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc
 
 define $(PKG)_UPDATE
