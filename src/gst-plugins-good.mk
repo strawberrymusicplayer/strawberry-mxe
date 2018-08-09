@@ -3,12 +3,12 @@
 PKG             := gst-plugins-good
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/modules/gst-plugins-good.html
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.14.1
-$(PKG)_CHECKSUM := 34ec062ddb766a32377532e039781f4a16fbc3e8b449e642605bacab26a99172
+$(PKG)_VERSION  := 1.14.2
+$(PKG)_CHECKSUM := c0575e2811860bfff59b865b8d125153859a01f0615fa41e279b64d88d25caad
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc glib flac liboil speex taglib wavpack lame twolame dlfcn-win32 gstreamer gst-plugins-base
+$(PKG)_DEPS     := cc glib flac liboil libsoup speex taglib wavpack lame twolame dlfcn-win32 gstreamer gst-plugins-base
 
 $(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-good/refs,$(gstreamer_UPDATE))
 
@@ -45,7 +45,6 @@ define $(PKG)_BUILD
         --disable-rtsp \
         --disable-shapewipe \
         --disable-smpte \
-        --disable-udp \
         --disable-videobox \
         --disable-videocrop \
         --disable-videofilter \
@@ -72,7 +71,6 @@ define $(PKG)_BUILD
         --disable-pulse \
         --disable-dv1394 \
         --disable-shout2 \
-        --disable-soup \
         --disable-vpx \
         --disable-zlib \
         --disable-bz2 \
@@ -96,7 +94,9 @@ define $(PKG)_BUILD
         --enable-taglib \
         --enable-twolame \
         --enable-wavpack \
-        --enable-isomp4
+        --enable-isomp4 \
+        --enable-udp \
+        --enable-soup
 
         $(if $(BUILD_SHARED), --disable-shout2) \
         --disable-x

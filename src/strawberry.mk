@@ -2,8 +2,8 @@
 
 PKG             := strawberry
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := dc91f19
-$(PKG)_CHECKSUM := 80570f7245e38244d4964bcd81a4ffb22bbf744df0a330038b2de551ba02e9fb
+$(PKG)_VERSION  := 1a55b7f
+$(PKG)_CHECKSUM := 942376e67c2fcc160f0b654220b96eedae47b7fbe6abd357c0d9b454012d562d
 $(PKG)_GH_CONF  := jonaski/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawbs.org/
 $(PKG)_OWNER    := https://github.com/jonaski
@@ -13,7 +13,7 @@ define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
         -DCMAKE_INSTALL_PREFIX=$(PREFIX)/$(TARGET)/apps/$(PKG) \
         -DENABLE_WIN32_CONSOLE=OFF \
-        -DFORCE_GIT_REVISION="0.2.1-25-g$($(PKG)_VERSION)" \
+        -DFORCE_GIT_REVISION="0.2.1-39-g$($(PKG)_VERSION)" \
         -DENABLE_DBUS=OFF \
         -DENABLE_LIBGPOD=OFF \
         -DENABLE_IMOBILEDEVICE=OFF \
@@ -71,6 +71,9 @@ define $(PKG)_BUILD
         $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstwavpack.dll'           '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
         $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstwavparse.dll'          '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
         $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstcdio.dll'              '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgsttcp.dll'               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstudp.dll'               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstsoup.dll'              '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
 
         $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
         $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_ao_out_directx2.dll'    '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
