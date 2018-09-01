@@ -14,11 +14,16 @@ $(PKG)_TARGETS  := $(BUILD)
 $(PKG)_DEPS     :=
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://www.cmake.org/cmake/resources/software.html' | \
-    $(SED) -n 's,.*cmake-\([0-9.]*\)\.tar.*,\1,p' | \
-    $(SORT) -V | \
-    tail -1
+    echo 'Updates for package $(PKG) is disabled.' >&2;
+    echo $($(PKG)_VERSION)
 endef
+
+#define $(PKG)_UPDATE
+#    $(WGET) -q -O- 'https://www.cmake.org/cmake/resources/software.html' | \
+#    $(SED) -n 's,.*cmake-\([0-9.]*\)\.tar.*,\1,p' | \
+#    $(SORT) -V | \
+#    tail -1
+#endef
 
 define $(PKG)_BUILD_$(BUILD)
     mkdir '$(1).build'
