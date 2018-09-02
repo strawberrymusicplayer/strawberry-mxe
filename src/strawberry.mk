@@ -2,8 +2,8 @@
 
 PKG             := strawberry
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := cd0ee28
-$(PKG)_CHECKSUM := 9298b443aab3a76b83a73fc356299dafc323e7b4decb2af0da1fed6a976db121
+$(PKG)_VERSION  := 1541361
+$(PKG)_CHECKSUM := 781a807db606c417e672caa698179a46ee637e5f2f8283dfd95e5fb8dd29b692
 $(PKG)_GH_CONF  := jonaski/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawbs.org/
 $(PKG)_OWNER    := https://github.com/jonaski
@@ -13,7 +13,7 @@ define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
         -DCMAKE_INSTALL_PREFIX=$(PREFIX)/$(TARGET)/apps/$(PKG) \
         -DENABLE_WIN32_CONSOLE=OFF \
-        -DFORCE_GIT_REVISION="0.2.1-46-g$($(PKG)_VERSION)" \
+        -DFORCE_GIT_REVISION="0.2.1-56-g$($(PKG)_VERSION)" \
         -DENABLE_DBUS=OFF \
         -DENABLE_LIBGPOD=OFF \
         -DENABLE_IMOBILEDEVICE=OFF \
@@ -24,6 +24,7 @@ define $(PKG)_BUILD
     $(if $(BUILD_SHARED),
 
         cp '$(SOURCE_DIR)/dist/windows/strawberry.nsi'                            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
+        cp '$(SOURCE_DIR)/dist/windows/strawberry-debug.nsi'                      '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
         cp '$(SOURCE_DIR)/dist/windows/Capabilities.nsh'                          '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
         cp '$(SOURCE_DIR)/dist/windows/FileAssociation.nsh'                       '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
         cp '$(SOURCE_DIR)/dist/windows/strawberry.ico'                            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
@@ -115,7 +116,7 @@ define $(PKG)_BUILD
                                           -X '$(PREFIX)/$(TARGET)/apps' \
                                           -R '$(PREFIX)/$(TARGET)';
 
-        makensis '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry.nsi'
+        makensis '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-debug.nsi'
 
     )
 endef
