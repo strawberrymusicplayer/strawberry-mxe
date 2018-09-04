@@ -1,24 +1,23 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
-PKG             := strawberry
+PKG             := strawberry-debug
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := b9788ef
 $(PKG)_CHECKSUM := 8becd9862c6934a96302d15843bd9b4fbae4616d6c2bcffa15e8b91904d8055e
 $(PKG)_GH_CONF  := jonaski/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawbs.org/
 $(PKG)_OWNER    := https://github.com/jonaski
-$(PKG)_DEPS     := cc boost protobuf qtbase chromaprint liblastfm gst-plugins-good gst-plugins-bad gst-plugins-ugly taglib libcdio
+$(PKG)_DEPS     := cc boost protobuf qtbase chromaprint liblastfm gst-plugins-good gst-plugins-bad gst-plugins-ugly xine-lib taglib libcdio
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
         -DCMAKE_INSTALL_PREFIX=$(PREFIX)/$(TARGET)/apps/$(PKG) \
-        -DENABLE_WIN32_CONSOLE=OFF \
+        -DENABLE_WIN32_CONSOLE=ON \
         -DFORCE_GIT_REVISION="0.2.1-58-g$($(PKG)_VERSION)" \
         -DENABLE_DBUS=OFF \
         -DENABLE_LIBGPOD=OFF \
         -DENABLE_IMOBILEDEVICE=OFF \
-        -DENABLE_LIBMTP=OFF \
-	-DENABLE_XINE=OFF
+        -DENABLE_LIBMTP=OFF
     $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS)
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 
@@ -78,6 +77,34 @@ define $(PKG)_BUILD
         $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstsoup.dll'              '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
         $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstlibav.dll'             '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
 
+        $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_ao_out_directx2.dll'    '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_ao_out_directx.dll'     '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_dts.dll'         '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_dvaudio.dll'     '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_faad.dll'        '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_gsm610.dll'      '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_lpcm.dll'        '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_mad.dll'         '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_mpc.dll'         '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_mpeg2.dll'       '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_dmx_asf.dll'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_dmx_audio.dll'          '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_dmx_playlist.dll'       '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_dmx_slave.dll'          '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_flac.dll'               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_wavpack.dll'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_xiph.dll'               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_inp_cdda.dll'           '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_audio_filters.dll' '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_goom.dll' '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_mosaico.dll' '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_planar.dll' '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_switch.dll' '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_tvtime.dll' '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_visualizations.dll' '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+
     '$(TOP_DIR)/tools/copydlldeps.sh' -c \
                                           -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin' \
                                           -F '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin' \
@@ -85,10 +112,11 @@ define $(PKG)_BUILD
                                           -F '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/sqldrivers' \
                                           -F '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/imageformats' \
                                           -F '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins' \
+                                          -F '$(PREFIX)/$(TARGET)/apps/$(PKG)/lib/xine/plugins/2.7' \
                                           -X '$(PREFIX)/$(TARGET)/apps' \
                                           -R '$(PREFIX)/$(TARGET)';
 
-        makensis '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry.nsi'
+        makensis '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-debug.nsi'
 
     )
 endef
