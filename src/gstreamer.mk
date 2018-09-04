@@ -3,22 +3,23 @@
 PKG             := gstreamer
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/modules/gstreamer.html
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.14.2
-$(PKG)_CHECKSUM := 4bd6127299f3f29379046bbd58a526e6353b569e0e72f7b4df2ae70df6882e09
-$(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
-$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
-$(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
+$(PKG)_VERSION  := 30a3fe5
+$(PKG)_CHECKSUM := 76a8ed302fb3b87634de68254a425cce3be17abacd691297b07b1f5a6a069b78
+$(PKG)_GH_CONF  := GStreamer/gstreamer/branches/master
+#$(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
+#$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
+#$(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc glib libxml2 pthreads
 
-define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://cgit.freedesktop.org/gstreamer/gstreamer/refs/tags' | \
-    $(SED) -n "s,.*<a href='[^']*/tag/?h=[^0-9]*\\([0-9]\..[02468]\.[0-9][^']*\\)'.*,\\1,p" | \
-    $(SORT) -Vr | \
-    head -1
-endef
+#define $(PKG)_UPDATE
+#    $(WGET) -q -O- 'https://cgit.freedesktop.org/gstreamer/gstreamer/refs/tags' | \
+#    $(SED) -n "s,.*<a href='[^']*/tag/?h=[^0-9]*\\([0-9]\..[02468]\.[0-9][^']*\\)'.*,\\1,p" | \
+#    $(SORT) -Vr | \
+#    head -1
+#endef
 
 define $(PKG)_BUILD
-    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
+    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/autogen.sh' && '$(SOURCE_DIR)/configure' \
         $(MXE_CONFIGURE_OPTS) \
         --disable-debug \
         --disable-check \

@@ -3,21 +3,21 @@
 PKG             := gst-plugins-bad
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/modules/gst-plugins-bad.html
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.14.2
-$(PKG)_CHECKSUM := 34fab7da70994465a64468330b2168a4a0ed90a7de7e4c499b6d127c6c1b1eaf
-$(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
-$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
-$(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
+$(PKG)_VERSION  := ae7ecfc
+$(PKG)_CHECKSUM := 64b8351778e6e7bf43b9db49c0fab3912aa2b457eced72a1487cd23a8834e8a5
+$(PKG)_GH_CONF  := GStreamer/gst-plugins-bad/branches/master
+#$(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
+#$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
+#$(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc opus faad2 gstreamer gst-plugins-base
 
-$(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-bad/refs,$(gstreamer_UPDATE))
+#$(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-bad/refs,$(gstreamer_UPDATE))
 
 define $(PKG)_BUILD
-    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
+    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/autogen.sh' && '$(SOURCE_DIR)/configure' \
         $(MXE_CONFIGURE_OPTS) \
         --disable-debug \
         --disable-examples \
-        --disable-opengl \
         --disable-adpcmdec \
         --disable-adpcmenc \
         --disable-videoframe_audiolevel \
@@ -92,8 +92,6 @@ define $(PKG)_BUILD
         --disable-opensles \
         --disable-uvch264 \
         --disable-cuda \
-        --disable-nvdec \
-        --disable-nvenc \
         --disable-tinyalsa \
         --disable-msdk \
         --disable-assrender \
@@ -165,7 +163,7 @@ define $(PKG)_BUILD
         --enable-faac \
         --enable-faad \
         --enable-aiff \
-        --enable-asfmux
+        --enable-asfmux \
         --enable-opus \
         --enable-musepack
 
