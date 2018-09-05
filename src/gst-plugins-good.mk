@@ -3,21 +3,20 @@
 PKG             := gst-plugins-good
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/modules/gst-plugins-good.html
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := c0ff8a0
-$(PKG)_CHECKSUM := 347e8197dfba59ea41f295140bfe7569639ee883c77cdc7625cc91b90539cff4
-$(PKG)_GH_CONF  := GStreamer/gst-plugins-good/branches/master
-#$(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
-#$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
-#$(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
+$(PKG)_VERSION  := 1.14.2
+$(PKG)_CHECKSUM := c0575e2811860bfff59b865b8d125153859a01f0615fa41e279b64d88d25caad
+$(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
+$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
+$(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc glib flac liboil libsoup speex taglib wavpack lame twolame dlfcn-win32 gstreamer gst-plugins-base
 
-#$(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-good/refs,$(gstreamer_UPDATE))
+$(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-good/refs,$(gstreamer_UPDATE))
 
 define $(PKG)_BUILD
     # The value for WAVE_FORMAT_DOLBY_AC3_SPDIF comes from vlc and mplayer:
     #   https://www.videolan.org/developers/vlc/doc/doxygen/html/vlc__codecs_8h-source.html
     #   https://lists.mplayerhq.hu/pipermail/mplayer-cvslog/2004-August/019283.html
-    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/autogen.sh' && '$(SOURCE_DIR)/configure' \
+    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
         $(MXE_CONFIGURE_OPTS) \
         --disable-debug \
         --disable-examples \

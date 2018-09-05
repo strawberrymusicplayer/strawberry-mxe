@@ -3,18 +3,18 @@
 PKG             := gst-plugins-base
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/modules/gst-plugins-base.html
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 14031f1
-$(PKG)_CHECKSUM := c2af67561456ac575aff5ffd5141b94165c7895ff41d2c4a8bd296da8f45bfdf
+$(PKG)_VERSION  := 1.14.2
+$(PKG)_CHECKSUM := a4b7e80ba869f599307449b17c9e00b5d1e94d3ba1d8a1a386b8770b2ef01c7c
 $(PKG)_GH_CONF  := GStreamer/gst-plugins-base/branches/master
-#$(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
-#$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
-#$(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
+$(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
+$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
+$(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc glib gstreamer liboil libxml2 ogg pango theora vorbis dlfcn-win32
 
-#$(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-base/refs,$(gstreamer_UPDATE))
+$(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-base/refs,$(gstreamer_UPDATE))
 
 define $(PKG)_BUILD
-    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/autogen.sh' && '$(SOURCE_DIR)/configure' \
+    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
         $(MXE_CONFIGURE_OPTS) \
         --disable-debug \
         --disable-examples \
