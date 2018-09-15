@@ -2,18 +2,18 @@
 
 PKG             := strawberry-debug
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := bf997a6
-$(PKG)_CHECKSUM := 8735cb5a83cbea30541daecf7e66734e5905198df2a099637c434b7121c94485
+$(PKG)_VERSION  := 6563bec
+$(PKG)_CHECKSUM := 10f1e952e9cda403efb97ea6c0d3beb675f94adf6ca99b4dce4fa22983cfe121
 $(PKG)_GH_CONF  := jonaski/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawbs.org/
 $(PKG)_OWNER    := https://github.com/jonaski
-$(PKG)_DEPS     := cc boost protobuf qtbase chromaprint liblastfm gst-plugins-good gst-plugins-bad gst-plugins-ugly xine-lib taglib libcdio
+$(PKG)_DEPS     := cc boost protobuf qtbase qtwinextras chromaprint liblastfm gst-plugins-good gst-plugins-bad gst-plugins-ugly xine-lib taglib libcdio
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
         -DCMAKE_INSTALL_PREFIX=$(PREFIX)/$(TARGET)/apps/$(PKG) \
         -DENABLE_WIN32_CONSOLE=ON \
-        -DFORCE_GIT_REVISION="0.2.1-63-g$($(PKG)_VERSION)" \
+        -DFORCE_GIT_REVISION="0.3.0-0-g$($(PKG)_VERSION)" \
         -DENABLE_DBUS=OFF \
         -DENABLE_LIBGPOD=OFF \
         -DENABLE_IMOBILEDEVICE=OFF \
@@ -23,20 +23,20 @@ define $(PKG)_BUILD
 
     $(if $(BUILD_SHARED),
 
-        cp '$(SOURCE_DIR)/dist/windows/strawberry.nsi'                            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
-        cp '$(SOURCE_DIR)/dist/windows/strawberry-debug.nsi'                      '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
-        cp '$(SOURCE_DIR)/dist/windows/Capabilities.nsh'                          '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
-        cp '$(SOURCE_DIR)/dist/windows/FileAssociation.nsh'                       '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
-        cp '$(SOURCE_DIR)/dist/windows/strawberry.ico'                            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
+        cp '$(SOURCE_DIR)/dist/windows/strawberry.nsi'                                 '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
+        cp '$(SOURCE_DIR)/dist/windows/strawberry-debug.nsi'                           '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
+        cp '$(SOURCE_DIR)/dist/windows/Capabilities.nsh'                               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
+        cp '$(SOURCE_DIR)/dist/windows/FileAssociation.nsh'                            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
+        cp '$(SOURCE_DIR)/dist/windows/strawberry.ico'                                 '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
 
         $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/platforms'
-        $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/platforms/qwindows.dll'             '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/platforms'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/platforms/qwindows.dll'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/platforms'
         $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/sqldrivers'
-        $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/sqldrivers/qsqlite.dll'             '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/sqldrivers'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/sqldrivers/qsqlite.dll'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/sqldrivers'
         $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/imageformats'
-        $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/imageformats/qgif.dll'              '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/imageformats'
-        $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/imageformats/qjpeg.dll'             '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/imageformats'
-        $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/imageformats/qico.dll'              '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/imageformats'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/imageformats/qgif.dll'             '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/imageformats'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/imageformats/qjpeg.dll'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/imageformats'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/imageformats/qico.dll'             '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/imageformats'
 
         $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
         $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstapetag.dll'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
@@ -98,11 +98,11 @@ define $(PKG)_BUILD
         $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_inp_cdda.dll'           '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
 
         $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_audio_filters.dll' '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_goom.dll' '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_mosaico.dll' '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_planar.dll' '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_switch.dll' '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_tvtime.dll' '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_goom.dll'     '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_mosaico.dll'  '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_planar.dll'   '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_switch.dll'   '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+        $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_tvtime.dll'   '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
         $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_visualizations.dll' '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
 
     '$(TOP_DIR)/tools/copydlldeps.sh' -c \
