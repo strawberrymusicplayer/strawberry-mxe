@@ -3,7 +3,7 @@
 
 # This variable controls the number of compilation processes
 # within one package ("intra-package parallelism").
-JOBS := 8
+#JOBS := 8
 
 # This variable controls where intermediate files are created
 # this is necessary when compiling inside a virtualbox shared
