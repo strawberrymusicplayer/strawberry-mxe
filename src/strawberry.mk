@@ -2,8 +2,8 @@
 
 PKG             := strawberry
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := ab5d9b6
-$(PKG)_CHECKSUM := d02187507840d4f5ebc7a99b7647dfdace4be6dfdaaf81a23465077daa136490
+$(PKG)_VERSION  := 9b337b6
+$(PKG)_CHECKSUM := 5171fd5a31dcf6258460bd0a474542f0ac5f9b31f96d30d0807fdd95ce566f8b
 $(PKG)_GH_CONF  := jonaski/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawbs.org/
 $(PKG)_OWNER    := https://github.com/jonaski
@@ -25,10 +25,12 @@ define $(PKG)_BUILD
     $(if $(BUILD_SHARED),
 
         cp '$(SOURCE_DIR)/dist/windows/strawberry.nsi'                                 '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
-        cp '$(SOURCE_DIR)/dist/windows/strawberry-debug.nsi'                           '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
+        cp '$(SOURCE_DIR)/dist/windows/strawberry-64.nsi'                              '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
         cp '$(SOURCE_DIR)/dist/windows/Capabilities.nsh'                               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
         cp '$(SOURCE_DIR)/dist/windows/FileAssociation.nsh'                            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
         cp '$(SOURCE_DIR)/dist/windows/strawberry.ico'                                 '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
+        ln -s '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry.nsi'                     '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-i686-w64-mingw32.shared.nsi'
+        ln -s '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-64.nsi'                  '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-x86_64-w64-mingw32.shared.nsi'
 
         $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/platforms'
         $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/platforms/qwindows.dll'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/platforms'
@@ -88,9 +90,10 @@ define $(PKG)_BUILD
                                           -X '$(PREFIX)/$(TARGET)/apps' \
                                           -R '$(PREFIX)/$(TARGET)';
 
-        makensis '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry.nsi'
+        makensis '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-$(TARGET).nsi'
 
     )
+
 endef
 
 $(PKG)_BUILD_STATIC =
