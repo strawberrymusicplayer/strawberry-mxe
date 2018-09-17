@@ -29,8 +29,8 @@ define $(PKG)_BUILD
         cp '$(SOURCE_DIR)/dist/windows/FileAssociation.nsh'                            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
         cp '$(SOURCE_DIR)/dist/windows/strawberry.ico'                                 '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
 
-        ln -s '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-debug.nsi'               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-debug-i686-w64-mingw32.shared.nsi'
-        ln -s '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-debug-64.nsi'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-debug-x86_64-w64-mingw32.shared.nsi'
+        ln -s -f '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-debug.nsi'               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-debug-i686-w64-mingw32.shared.nsi'
+        ln -s -f '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-debug-64.nsi'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-debug-x86_64-w64-mingw32.shared.nsi'
 
         $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/platforms'
         $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/platforms/qwindows.dll'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/platforms'
