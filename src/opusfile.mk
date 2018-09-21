@@ -3,8 +3,8 @@
 PKG             := opusfile
 $(PKG)_WEBSITE  := https://opus-codec.org/
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 0.10
-$(PKG)_CHECKSUM := 48e03526ba87ef9cf5f1c47b5ebe3aa195bd89b912a57060c36184a6cd19412f
+$(PKG)_VERSION  := 0.11
+$(PKG)_CHECKSUM := 74ce9b6cf4da103133e7b5c95df810ceb7195471e1162ed57af415fabf5603bf
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://archive.mozilla.org/pub/opus/$($(PKG)_FILE)
