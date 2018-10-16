@@ -12,11 +12,10 @@ $(PKG)_URL      := https://build-repo.deezer.com/native_sdk/$($(PKG)_FILE)
 
 define $(PKG)_BUILD
 
-    cp '$(SOURCE_DIR)/deezer-native-sdk-v$($(PKG)_VERSION)/SDK/Bins/Platforms/Windows/DLLs/libdeezer.x86.dll' '$(SOURCE_DIR)/deezer-native-sdk-v$($(PKG)_VERSION)/SDK/Bins/Platforms/Windows/DLLs/libdeezer-i686-w64-mingw32.shared.dll'
-    cp '$(SOURCE_DIR)/deezer-native-sdk-v$($(PKG)_VERSION)/SDK/Bins/Platforms/Windows/DLLs/libdeezer.x64.dll' '$(SOURCE_DIR)/deezer-native-sdk-v$($(PKG)_VERSION)/SDK/Bins/Platforms/Windows/DLLs/libdeezer-x86_64-w64-mingw32.shared.dll'
-
-    $(INSTALL) '$(SOURCE_DIR)/deezer-native-sdk-v$($(PKG)_VERSION)/SDK/Bins/Platforms/Windows/DLLs/libdeezer-$(TARGET).dll' '$(PREFIX)/$(TARGET)/bin/libdeezer.dll'
-    $(INSTALL) '$(SOURCE_DIR)/deezer-native-sdk-v$($(PKG)_VERSION)/SDK/Bins/Platforms/Windows/DLLs/libdeezer-$(TARGET).dll' '$(PREFIX)/$(TARGET)/lib/libdeezer.dll'
+    $(INSTALL) '$(SOURCE_DIR)/deezer-native-sdk-v$($(PKG)_VERSION)/SDK/Bins/Platforms/Windows/DLLs/libdeezer.x86.dll' '$(PREFIX)/$(TARGET)/bin'
+    $(INSTALL) '$(SOURCE_DIR)/deezer-native-sdk-v$($(PKG)_VERSION)/SDK/Bins/Platforms/Windows/DLLs/libdeezer.x86.dll' '$(PREFIX)/$(TARGET)/lib'
+    $(INSTALL) '$(SOURCE_DIR)/deezer-native-sdk-v$($(PKG)_VERSION)/SDK/Bins/Platforms/Windows/DLLs/libdeezer.x64.dll' '$(PREFIX)/$(TARGET)/bin'
+    $(INSTALL) '$(SOURCE_DIR)/deezer-native-sdk-v$($(PKG)_VERSION)/SDK/Bins/Platforms/Windows/DLLs/libdeezer.x64.dll' '$(PREFIX)/$(TARGET)/lib'
 
     $(INSTALL) -d '$(PREFIX)/$(TARGET)/include/deezer'
     $(INSTALL) '$(SOURCE_DIR)/deezer-native-sdk-v$($(PKG)_VERSION)/SDK/Include/deezer-api.h' '$(PREFIX)/$(TARGET)/include/deezer'
