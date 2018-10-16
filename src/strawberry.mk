@@ -2,12 +2,12 @@
 
 PKG             := strawberry
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := ca3ba6f
-$(PKG)_CHECKSUM := 02c0dd56ee8e4e1f4907e5d530b174e5913574ec90800db33434fed070f68668
+$(PKG)_VERSION  := 2384a42
+$(PKG)_CHECKSUM := ef5a7595d624b519f3183a6d16270429dece6356464eaf4992a8f6954daf016b
 $(PKG)_GH_CONF  := jonaski/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawbs.org/
 $(PKG)_OWNER    := https://github.com/jonaski
-$(PKG)_DEPS     := cc boost protobuf qtbase qtwinextras chromaprint liblastfm gst-plugins-good gst-plugins-bad gst-plugins-ugly taglib libcdio
+$(PKG)_DEPS     := cc boost protobuf qtbase qtwinextras chromaprint liblastfm gst-plugins-good gst-plugins-bad gst-plugins-ugly taglib libcdio libdeezer
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
@@ -15,10 +15,14 @@ define $(PKG)_BUILD
         -DENABLE_WIN32_CONSOLE=OFF \
         -DFORCE_GIT_REVISION="0.3.3-0-g$($(PKG)_VERSION)" \
         -DENABLE_DBUS=OFF \
+        -DENABLE_LIBPULSE=OFF \
         -DENABLE_LIBGPOD=OFF \
         -DENABLE_IMOBILEDEVICE=OFF \
         -DENABLE_LIBMTP=OFF \
-        -DENABLE_XINE=OFF
+        -DENABLE_GSTREAMER=ON \
+        -DENABLE_XINE=OFF \
+        -DENABLE_VLC=OFF \
+        -DENABLE_DEEZER=ON
     $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS)
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 
