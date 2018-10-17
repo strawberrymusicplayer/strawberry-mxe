@@ -4,8 +4,8 @@ PKG             := taglib
 $(PKG)_WEBSITE  := http://taglib.org/
 $(PKG)_DESCR    := TagLib
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := e3ea819
-$(PKG)_CHECKSUM := 6167055fff1c9e12ca44a231371ea4150f0a1d9426a68a645ea7cc5f9ab18c24
+$(PKG)_VERSION  := 0e797ca
+$(PKG)_CHECKSUM := 525e5ad3a1f3d6a4ba71ef0b6d2cb9565fcba3031d2710d11e12ef924fb028e3
 $(PKG)_GH_CONF  := jonaski/taglib/branches/master
 $(PKG)_DEPS     := cc zlib
 
