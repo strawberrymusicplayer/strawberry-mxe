@@ -2,12 +2,12 @@
 
 PKG             := strawberry-debug
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2384a42
-$(PKG)_CHECKSUM := ef5a7595d624b519f3183a6d16270429dece6356464eaf4992a8f6954daf016b
+$(PKG)_VERSION  := 9349ad9
+$(PKG)_CHECKSUM := 19d5ea8d915ee6085a4e341db3c58dd902deeee5f2052d6808160cc78cd3d0e7
 $(PKG)_GH_CONF  := jonaski/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawbs.org/
 $(PKG)_OWNER    := https://github.com/jonaski
-$(PKG)_DEPS     := cc boost protobuf qtbase qtwinextras chromaprint liblastfm gst-plugins-good gst-plugins-bad gst-plugins-ugly xine-lib taglib libcdio
+$(PKG)_DEPS     := cc boost protobuf qtbase qtwinextras chromaprint liblastfm gst-plugins-good gst-plugins-bad gst-plugins-ugly xine-lib taglib libcdio libdeezer
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
