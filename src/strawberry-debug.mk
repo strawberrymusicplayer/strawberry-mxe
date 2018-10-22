@@ -22,7 +22,8 @@ define $(PKG)_BUILD
         -DENABLE_GSTREAMER=ON \
         -DENABLE_XINE=ON \
         -DENABLE_VLC=OFF \
-        -DENABLE_DEEZER=ON
+        -DENABLE_DEEZER=ON \
+        -DENABLE_PHONON=OFF
     $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS)
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 
