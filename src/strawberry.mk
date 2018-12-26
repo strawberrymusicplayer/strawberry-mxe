@@ -29,8 +29,8 @@ define $(PKG)_BUILD
 
     $(if $(BUILD_SHARED),
 
-        cp '$(SOURCE_DIR)/dist/windows/strawberry.nsi'                                 '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-i686-w64-mingw32.shared.nsi'
-        cp '$(SOURCE_DIR)/dist/windows/strawberry-64.nsi'                              '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-x86_64-w64-mingw32.shared.nsi'
+        cp '$(SOURCE_DIR)/dist/windows/strawberry-x86.nsi'                             '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-i686-w64-mingw32.shared.nsi'
+        cp '$(SOURCE_DIR)/dist/windows/strawberry-x64.nsi'                             '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-x86_64-w64-mingw32.shared.nsi'
         cp '$(SOURCE_DIR)/dist/windows/Capabilities.nsh'                               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
         cp '$(SOURCE_DIR)/dist/windows/FileAssociation.nsh'                            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
         cp '$(SOURCE_DIR)/dist/windows/strawberry.ico'                                 '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
