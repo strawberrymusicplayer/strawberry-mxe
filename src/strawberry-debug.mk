@@ -38,8 +38,6 @@ define $(PKG)_BUILD
         ln -s -f '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-debug-x86.nsi'        '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-debug-i686-w64-mingw32.shared.nsi'
         ln -s -f '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-debug-x64.nsi'        '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-debug-x86_64-w64-mingw32.shared.nsi'
 
-        $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/bin/Qt5Xml.dll'                            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
-
         $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/platforms'
         $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/platforms/qwindows.dll'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/platforms'
         $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/sqldrivers'
