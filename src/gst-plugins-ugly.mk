@@ -3,8 +3,8 @@
 PKG             := gst-plugins-ugly
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/modules/gst-plugins-ugly.html
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.14.4
-$(PKG)_CHECKSUM := ac02d837f166c35ff6ce0738e281680d0b90052cfb1f0255dcf6aaca5f0f6d23
+$(PKG)_VERSION  := 1.15.1
+$(PKG)_CHECKSUM := 178fa922cf54a1eb1c563e1a1b272c9b5dbf50fb331830170ddf2aeec1e8e99e
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
@@ -13,15 +13,15 @@ $(PKG)_DEPS     := cc gstreamer gst-plugins-base lame libcdio
 $(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-ugly/refs,$(gstreamer_UPDATE))
 
 define $(PKG)_BUILD
-    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
-        $(MXE_CONFIGURE_OPTS) \
+    cd '$(BUILD_DIR)' && \
+        CFLAGS="${CFLAGS} -DGST_USE_UNSTABLE_API=1" '$(SOURCE_DIR)/configure' $(MXE_CONFIGURE_OPTS) \
         --disable-debug \
         --disable-examples \
         --disable-opengl \
         --disable-dvdlpcmdec \
         --disable-dvdsub \
         --disable-xingmux \
-        --disable-realmediav
+        --disable-realmediav \
         --disable-a52dec \
         --disable-amrnb \
         --disable-amrwb \

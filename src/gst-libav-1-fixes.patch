@@ -1,0 +1,66 @@
+diff -ruN gst-libav-1.15.1.orig/gst-libs/ext/libav/configure gst-libav-1.15.1/gst-libs/ext/libav/configure
+--- gst-libav-1.15.1.orig/gst-libs/ext/libav/configure	2019-01-17 03:21:56.000000000 +0100
++++ gst-libav-1.15.1/gst-libs/ext/libav/configure	2019-01-25 21:25:00.907130908 +0100
+@@ -2180,10 +2180,10 @@
+ "
+ 
+ SYSTEM_LIBRARIES="
+-    bcrypt
+     vaapi_drm
+     vaapi_x11
+     vdpau_x11
++    wincrypt
+ "
+ 
+ TOOLCHAIN_FEATURES="
+@@ -5930,6 +5930,7 @@
+     check_cpp_condition bcrypt bcrypt.h "defined BCRYPT_RNG_ALGORITHM"
+ check_lib ole32    "windows.h"            CoTaskMemFree        -lole32
+ check_lib shell32  "windows.h shellapi.h" CommandLineToArgvW   -lshell32
++check_lib wincrypt "windows.h wincrypt.h" CryptGenRandom       -ladvapi32
+ check_lib psapi    "windows.h psapi.h"    GetProcessMemoryInfo -lpsapi
+ 
+ check_lib android android/native_window.h ANativeWindow_acquire -landroid
+diff -ruN gst-libav-1.15.1.orig/gst-libs/ext/libav/libavutil/random_seed.c gst-libav-1.15.1/gst-libs/ext/libav/libavutil/random_seed.c
+--- gst-libav-1.15.1.orig/gst-libs/ext/libav/libavutil/random_seed.c	2019-01-17 03:21:57.000000000 +0100
++++ gst-libav-1.15.1/gst-libs/ext/libav/libavutil/random_seed.c	2019-01-25 21:30:51.337006273 +0100
+@@ -26,9 +26,9 @@
+ #if HAVE_IO_H
+ #include <io.h>
+ #endif
+-#if HAVE_BCRYPT
++#if HAVE_WINCRYPT
+ #include <windows.h>
+-#include <bcrypt.h>
++#include <wincrypt.h>
+ #endif
+ #include <fcntl.h>
+ #include <math.h>
+@@ -121,17 +121,16 @@
+ {
+     uint32_t seed;
+ 
+-#if HAVE_BCRYPT
+-    BCRYPT_ALG_HANDLE algo_handle;
+-    NTSTATUS ret = BCryptOpenAlgorithmProvider(&algo_handle, BCRYPT_RNG_ALGORITHM,
+-                                               MS_PRIMITIVE_PROVIDER, 0);
+-    if (BCRYPT_SUCCESS(ret)) {
+-        NTSTATUS ret = BCryptGenRandom(algo_handle, (UCHAR*)&seed, sizeof(seed), 0);
+-        BCryptCloseAlgorithmProvider(algo_handle, 0);
+-        if (BCRYPT_SUCCESS(ret))
+-            return seed;
+-    }
+-#endif
++#if HAVE_WINCRYPT
++    HCRYPTPROV provider;
++    if (CryptAcquireContext(&provider, NULL, NULL, PROV_RSA_FULL,
++                            CRYPT_VERIFYCONTEXT | CRYPT_SILENT)) {
++        BOOL ret = CryptGenRandom(provider, sizeof(seed), (PBYTE) &seed);
++        CryptReleaseContext(provider, 0);
++        if (ret)
++             return seed;
++     }
++ #endif
+ 
+ #if HAVE_ARC4RANDOM
+     return arc4random();

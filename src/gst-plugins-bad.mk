@@ -3,8 +3,8 @@
 PKG             := gst-plugins-bad
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/modules/gst-plugins-bad.html
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.14.4
-$(PKG)_CHECKSUM := 910b4e0e2e897e8b6d06767af1779d70057c309f67292f485ff988d087aa0de5
+$(PKG)_VERSION  := 1.15.1
+$(PKG)_CHECKSUM := 20f86247d9d72e2e67879b479a643113b71f7d895c41940b9b9caf0b14f2f336
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
@@ -166,7 +166,7 @@ define $(PKG)_BUILD
         --enable-opus \
         --enable-musepack
 
-    $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS)
+    $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS) $(if $(BUILD_SHARED),LDFLAGS=-no-undefined)
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 
     # some .dlls are installed to lib - no obvious way to change
