@@ -6,7 +6,7 @@ $(PKG)_DESCR    := Deezer Native SDK
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.2.10
 $(PKG)_CHECKSUM := 6198ae56778f9ef39c1d7e2e6d23d779a245c19742e58cf85dd2ad0662e45cae
-$(PKG)_DEPS     := cc curl
+$(PKG)_DEPS     := cc
 $(PKG)_FILE     := deezer-native-sdk-v$($(PKG)_VERSION).zip
 $(PKG)_URL      := https://build-repo.deezer.com/native_sdk/$($(PKG)_FILE)
 
@@ -33,7 +33,7 @@ define $(PKG)_BUILD
     ( \
      echo 'prefix=$(PREFIX)/$(TARGET)'; \
      echo 'exec_prefix=$${prefix}'; \
-     echo 'libdir=$${exec_prefix}/bin'; \
+     echo 'libdir=$${exec_prefix}/lib'; \
      echo 'includedir=$${prefix}/include'; \
      echo 'Name: $(PKG)'; \
      echo 'Version: $($(PKG)_VERSION)'; \
