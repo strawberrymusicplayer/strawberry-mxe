@@ -2,8 +2,8 @@
 
 PKG             := strawberry-debug
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := f90de75
-$(PKG)_CHECKSUM := 2366ff3b13a307be143137d3fffc02827cb751152ab3a4658abdc925a41ed642
+$(PKG)_VERSION  := 76e684e
+$(PKG)_CHECKSUM := b17d415448e98b2a95791f8ab5a29deceef83877e08e88ba6c316b4d5d8019e4
 $(PKG)_GH_CONF  := jonaski/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawbs.org/
 $(PKG)_OWNER    := https://github.com/jonaski
@@ -13,7 +13,7 @@ define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
         -DCMAKE_INSTALL_PREFIX=$(PREFIX)/$(TARGET)/apps/$(PKG) \
         -DENABLE_WIN32_CONSOLE=ON \
-        -DFORCE_GIT_REVISION="0.4.2-0-g$($(PKG)_VERSION)" \
+        -DFORCE_GIT_REVISION="0.5.2-0-g$($(PKG)_VERSION)" \
         -DENABLE_DBUS=OFF \
         -DENABLE_LIBPULSE=OFF \
         -DENABLE_LIBGPOD=OFF \
@@ -23,7 +23,8 @@ define $(PKG)_BUILD
         -DENABLE_XINE=ON \
         -DENABLE_VLC=OFF \
         -DENABLE_DEEZER=ON \
-        -DENABLE_PHONON=OFF
+        -DENABLE_PHONON=OFF \
+        -DENABLE_TRANSLATIONS=ON
     $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS)
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 
