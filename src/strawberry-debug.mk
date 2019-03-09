@@ -2,12 +2,12 @@
 
 PKG             := strawberry-debug
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 76e684e
-$(PKG)_CHECKSUM := b17d415448e98b2a95791f8ab5a29deceef83877e08e88ba6c316b4d5d8019e4
+$(PKG)_VERSION  := e10a50f
+$(PKG)_CHECKSUM := 68df85d1ec0aa68f008b6cd7d9ed9982d26cf22c44f23144eb5aab068ba3c811
 $(PKG)_GH_CONF  := jonaski/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawbs.org/
 $(PKG)_OWNER    := https://github.com/jonaski
-$(PKG)_DEPS     := cc boost protobuf qtbase qtwinextras chromaprint gst-plugins-good gst-plugins-bad gst-plugins-ugly xine-lib taglib libcdio libdeezer
+$(PKG)_DEPS     := cc boost protobuf qtbase qtwinextras chromaprint gst-plugins-good gst-plugins-bad gst-plugins-ugly xine-lib taglib libcdio
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
@@ -22,7 +22,6 @@ define $(PKG)_BUILD
         -DENABLE_GSTREAMER=ON \
         -DENABLE_XINE=ON \
         -DENABLE_VLC=OFF \
-        -DENABLE_DEEZER=ON \
         -DENABLE_PHONON=OFF \
         -DENABLE_TRANSLATIONS=ON
     $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS)
