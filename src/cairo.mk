@@ -3,23 +3,18 @@
 PKG             := cairo
 $(PKG)_WEBSITE  := https://cairographics.org/
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.15.14
-$(PKG)_CHECKSUM := 16566b6c015a761bb0b7595cf879b77f8de85f90b443119083c4c2769b93298d
+$(PKG)_VERSION  := 1.16.0
+$(PKG)_CHECKSUM := 5e7b29b3f113ef870d1e3ecf8adf21f923396401604bda16d44be45e66052331
 $(PKG)_SUBDIR   := cairo-$($(PKG)_VERSION)
 $(PKG)_FILE     := cairo-$($(PKG)_VERSION).tar.xz
-$(PKG)_URL      := https://cairographics.org/snapshots/$($(PKG)_FILE)
+$(PKG)_URL      := https://cairographics.org/releases/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc fontconfig freetype-bootstrap glib libpng lzo pixman zlib
 
 define $(PKG)_UPDATE
-    echo 'TODO: Updates for package $(PKG) need to be written.' >&2;
-    echo $($(PKG)_VERSION)
+    $(WGET) -q -O- 'https://cairographics.org/releases/?C=M;O=D' | \
+    $(SED) -n 's,.*"cairo-\([0-9][^"]*\)\.tar.*,\1,p' | \
+    head -1
 endef
-
-#define $(PKG)_UPDATE
-#    $(WGET) -q -O- 'https://cairographics.org/releases/?C=M;O=D' | \
-#    $(SED) -n 's,.*"cairo-\([0-9][^"]*\)\.tar.*,\1,p' | \
-#    head -1
-#endef
 
 define $(PKG)_BUILD
     $(SED) -i 's,libpng12,libpng,g'                          '$(1)/configure'
