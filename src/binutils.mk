@@ -11,13 +11,12 @@ $(PKG)_URL      := https://ftp.gnu.org/gnu/binutils/$($(PKG)_FILE)
 $(PKG)_URL_2    := https://ftpmirror.gnu.org/binutils/$($(PKG)_FILE)
 $(PKG)_DEPS     :=
 
-# Updating binutils caused problems loading qwindows.dll in version 2.30
-#define $(PKG)_UPDATE
-#    $(WGET) -q -O- 'https://ftp.gnu.org/gnu/binutils/?C=M;O=D' | \
-#    $(SED) -n 's,.*<a href="binutils-\([0-9][^"]*\)\.tar.*,\1,p' | \
-#    $(SORT) -V | \
-#    tail -1
-#endef
+define $(PKG)_UPDATE
+    $(WGET) -q -O- 'https://ftp.gnu.org/gnu/binutils/?C=M;O=D' | \
+    $(SED) -n 's,.*<a href="binutils-\([0-9][^"]*\)\.tar.*,\1,p' | \
+    $(SORT) -V | \
+    tail -1
+endef
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
