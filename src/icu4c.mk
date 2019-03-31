@@ -1,7 +1,7 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := icu4c
-$(PKG)_WEBSITE  := http://site.icu-project.org/
+$(PKG)_WEBSITE  := https://ssl.icu-project.org/
 $(PKG)_DESCR    := ICU4C
 $(PKG)_IGNORE   :=
 #$(PKG)_VERSION  := 58.1
