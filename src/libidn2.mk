@@ -4,24 +4,18 @@ PKG             := libidn2
 $(PKG)_WEBSITE  := https://www.gnu.org/software/libidn/\#libidn2
 $(PKG)_DESCR    := implementation of IDNA2008/TR46 internationalized domain names
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.0.5
-$(PKG)_CHECKSUM := 53f69170886f1fa6fa5b332439c7a77a7d22626a82ef17e2c1224858bb4ca2b8
+$(PKG)_VERSION  := 2.1.1
+$(PKG)_CHECKSUM := 95416080329298a13269e13175041b530cec3d98b54cafae9424b8dfd22078b1
 $(PKG)_SUBDIR   := libidn2-$($(PKG)_VERSION)
 $(PKG)_FILE     := libidn2-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://ftp.gnu.org/gnu/libidn/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc libiconv libunistring
 
 define $(PKG)_UPDATE
-    echo 'TODO: Updates for package $(PKG) need to be written.' >&2;
-    echo $($(PKG)_VERSION)
+    $(WGET) -q -O- https://gitlab.com/libidn/libidn2/tags | \
+    $(SED) -n 's,.*libidn2-\([0-9][^t]*\).tar.gz.*,\1,p' | \
+    head -1
 endef
-
-#define $(PKG)_UPDATE
-    #$(WGET) -q -O- https://alpha.gnu.org/gnu/libidn/ |
-    #$(WGET) -q -O- https://ftp.gnu.org/gnu/libidn/ | \
-    #$(SED) -n 's,.*libidn2-\([0-9][^t]*\).tar.gz.*,\1,p' | \
-    #head -1
-#endef
 
 define $(PKG)_BUILD
     # build and install the library
