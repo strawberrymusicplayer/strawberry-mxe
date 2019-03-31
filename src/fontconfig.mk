@@ -11,15 +11,10 @@ $(PKG)_URL      := https://fontconfig.org/release/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc expat freetype-bootstrap
 
 define $(PKG)_UPDATE
-    echo 'Updates for package $(PKG) is disabled.' >&2;
-    echo $($(PKG)_VERSION)
+    $(WGET) -q -O- 'https://fontconfig.org/release/' | \
+    $(SED) -n 's,.*fontconfig-\([0-9][^>]*\)\.tar.*,\1,p' | \
+    tail -1
 endef
-
-#define $(PKG)_UPDATE
-#    $(WGET) -q -O- 'https://fontconfig.org/release/' | \
-#    $(SED) -n 's,.*fontconfig-\([0-9][^>]*\)\.tar.*,\1,p' | \
-#    tail -1
-#endef
 
 define $(PKG)_BUILD
     cd '$(1)' && autoreconf -fi
