@@ -15,11 +15,16 @@ $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS_$(BUILD) := autotools gettext libffi libiconv zlib
 
 define $(PKG)_UPDATE
-    $(call MXE_GET_GH_TAGS,GNOME/glib) | \
-    $(SED) -n 's,^\([0-9]*\.[0-9]*[02468]\..*\),\1,p' | \
-    $(SORT) -Vr | \
-    head -1
+    echo 'Updates for package $(PKG) is disabled.' >&2;
+    echo $($(PKG)_VERSION)
 endef
+
+#define $(PKG)_UPDATE
+#    $(call MXE_GET_GH_TAGS,GNOME/glib) | \
+#    $(SED) -n 's,^\([0-9]*\.[0-9]*[02468]\..*\),\1,p' | \
+#    $(SORT) -Vr | \
+#    head -1
+#endef
 
 define $(PKG)_BUILD_DARWIN
     # native build for glib-tools
