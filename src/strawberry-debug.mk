@@ -13,7 +13,7 @@ define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
         -DCMAKE_INSTALL_PREFIX=$(PREFIX)/$(TARGET)/apps/$(PKG) \
         -DENABLE_WIN32_CONSOLE=ON \
-        -DFORCE_GIT_REVISION="0.5.2-0-g$($(PKG)_VERSION)" \
+        -DFORCE_GIT_REVISION="0.5.3-0-g$($(PKG)_VERSION)" \
         -DENABLE_DBUS=OFF \
         -DENABLE_LIBPULSE=OFF \
         -DENABLE_LIBGPOD=OFF \
