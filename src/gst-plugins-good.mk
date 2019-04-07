@@ -3,8 +3,8 @@
 PKG             := gst-plugins-good
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/modules/gst-plugins-good.html
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.15.1
-$(PKG)_CHECKSUM := 2b9fb4c5514981e4f75aa1af20a34bac72a447885763d03da3d23c7e329dc695
+$(PKG)_VERSION  := 1.15.2
+$(PKG)_CHECKSUM := b805962a2d777ff6145f6ca2ca8458499c9e23236cbcc41787c69ac51b02c818
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
@@ -98,8 +98,6 @@ define $(PKG)_BUILD
         --enable-udp \
         --enable-soup
 
-        $(if $(BUILD_SHARED), --disable-shout2) \
-        --disable-x
     $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS) CFLAGS='-DWAVE_FORMAT_DOLBY_AC3_SPDIF=0x0092'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install CFLAGS='-DWAVE_FORMAT_DOLBY_AC3_SPDIF=0x0092'
 
