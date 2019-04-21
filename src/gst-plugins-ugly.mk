@@ -3,8 +3,8 @@
 PKG             := gst-plugins-ugly
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/modules/gst-plugins-ugly.html
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.15.2
-$(PKG)_CHECKSUM := 6e802c63680ac24b6970a35b3001e5c96e57f1b19814cd3916d52a32d33123b2
+$(PKG)_VERSION  := 1.16.0
+$(PKG)_CHECKSUM := e30964c5f031c32289e0b25e176c3c95a5737f2052dfc81d0f7427ef0233a4c2
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
