@@ -2,18 +2,18 @@
 
 PKG             := strawberry-debug
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 560000f
-$(PKG)_CHECKSUM := 477c84c1194c7114eb95c2be471c9af1050bd24de457a5e158d94bbdb6340edd
+$(PKG)_VERSION  := 42de7de
+$(PKG)_CHECKSUM := d00042d6e60559e4c5fc0d4a11029f414506b3b4e76210083a3ec62c265cd1e2
 $(PKG)_GH_CONF  := jonaski/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawbs.org/
 $(PKG)_OWNER    := https://github.com/jonaski
-$(PKG)_DEPS     := cc boost protobuf qtbase qtwinextras chromaprint gst-plugins-good gst-plugins-bad gst-plugins-ugly xine-lib taglib libcdio gnutls
+$(PKG)_DEPS     := cc boost protobuf qtbase qtwinextras qttranslations chromaprint gst-plugins-good gst-plugins-bad gst-plugins-ugly xine-lib taglib libcdio gnutls
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
         -DCMAKE_INSTALL_PREFIX=$(PREFIX)/$(TARGET)/apps/$(PKG) \
         -DENABLE_WIN32_CONSOLE=ON \
-        -DFORCE_GIT_REVISION="0.5.3-0-g$($(PKG)_VERSION)" \
+        -DFORCE_GIT_REVISION="0.5.4-0-g$($(PKG)_VERSION)" \
         -DENABLE_DBUS=OFF \
         -DENABLE_LIBPULSE=OFF \
         -DENABLE_LIBGPOD=OFF \
@@ -22,8 +22,7 @@ define $(PKG)_BUILD
         -DENABLE_GSTREAMER=ON \
         -DENABLE_XINE=ON \
         -DENABLE_VLC=OFF \
-        -DENABLE_PHONON=OFF \
-        -DENABLE_TRANSLATIONS=ON
+        -DENABLE_PHONON=OFF
     $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS)
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 
