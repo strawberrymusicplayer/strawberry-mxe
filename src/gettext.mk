@@ -15,12 +15,17 @@ $(PKG)_TARGETS       := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS_$(BUILD) := libiconv
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://ftp.gnu.org/gnu/gettext/' | \
-    grep 'gettext-' | \
-    $(SED) -n 's,.*gettext-\([0-9][^>]*\)\.tar.*,\1,p' | \
-    $(SORT) -Vr | \
-    head -1
+    echo 'Updates for package $(PKG) is disabled.' >&2;
+    echo $($(PKG)_VERSION)
 endef
+
+#define $(PKG)_UPDATE
+#    $(WGET) -q -O- 'https://ftp.gnu.org/gnu/gettext/' | \
+#    grep 'gettext-' | \
+#    $(SED) -n 's,.*gettext-\([0-9][^>]*\)\.tar.*,\1,p' | \
+#    $(SORT) -Vr | \
+#    head -1
+#endef
 
 define $(PKG)_BUILD
     cd '$(1)/gettext-runtime' && ./configure \
