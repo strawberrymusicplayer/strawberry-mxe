@@ -4,7 +4,7 @@
 This file is part of MXE. See LICENSE.md for licensing information.
 
 build-pkg, Build binary packages from MXE packages
-Instructions: http://pkg.mxe.cc
+Instructions: https://pkg.mxe.cc/
 
 Requirements (see bootstrapped build below for non-debian systems):
     MXE (https://mxe.cc/#requirements-debian)
@@ -28,6 +28,9 @@ To override the codename detection of `lsb_release -sc`, set
 MXE_BUILD_PKG_CODENAME. This sets the output directory and name
 mangling for the pool directory in the apt repo. Could be used to
 create lowest-common-glibc based versions.
+
+Set MXE_BUILD_PKG_VERSION_ID to add a git tag to each pkg version
+string - defaults to YYYYMMDD build datestamp.
 
 To switch off the second pass, set
 MXE_BUILD_PKG_NO_SECOND_PASS to 1.
@@ -83,7 +86,7 @@ local no_fakeroot = os.getenv('MXE_BUILD_PKG_NO_FAKEROOT')
 local no_second_pass = os.getenv('MXE_BUILD_PKG_NO_SECOND_PASS')
 local build_targets = os.getenv('MXE_BUILD_PKG_TARGETS')
 
-local TODAY = os.date("%Y%m%d")
+local VERSION_ID = os.getenv('MXE_BUILD_PKG_VERSION_ID') or os.date("%Y%m%d")
 
 local MAX_TRIES = 10
 
@@ -801,7 +804,7 @@ local function debianControl(options)
             '\n' .. 'Recommends: ' ..
             table.concat(options.recommends, ', ')
     end
-    local version = options.version .. '-' .. TODAY
+    local version = options.version .. '-' .. VERSION_ID
     return CONTROL:format(
         options.package,
         version,
