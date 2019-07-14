@@ -8,7 +8,7 @@ $(PKG)_CHECKSUM := 1d3be708604eae0e42d578ba93b390c2a145f17743a744d8f3f8c2ad5855a
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://ftp.gnu.org/gnu/$(PKG)/$($(PKG)_FILE)
-$(PKG)_URL_2    := http://www.mpfr.org/mpfr-$($(PKG)_VERSION)/$($(PKG)_FILE)
+$(PKG)_URL_2    := https://www.mpfr.org/mpfr-$($(PKG)_VERSION)/$($(PKG)_FILE)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS     := cc gmp
 
