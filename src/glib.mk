@@ -4,8 +4,8 @@ PKG             := glib
 $(PKG)_WEBSITE  := https://gtk.org/
 $(PKG)_DESCR    := GLib
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.56.4
-$(PKG)_CHECKSUM := 27f703d125efb07f8a743666b580df0b4095c59fc8750e8890132c91d437504c
+$(PKG)_VERSION  := 2.58.3
+$(PKG)_CHECKSUM := 8f43c31767e88a25da72b52a40f3301fefc49a665b56dc10ee7cc9565cbe7481
 $(PKG)_SUBDIR   := glib-$($(PKG)_VERSION)
 $(PKG)_FILE     := glib-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/glib/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
@@ -60,10 +60,7 @@ define $(PKG)_BUILD_NATIVE
     cd '$(SOURCE_DIR)' && NOCONFIGURE=true ./autogen.sh
     cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
         $(MXE_CONFIGURE_OPTS) \
-        --enable-regex \
-        --disable-threads \
         --disable-selinux \
-        --disable-inotify \
         --disable-fam \
         --disable-xattr \
         --disable-dtrace \
@@ -79,6 +76,7 @@ define $(PKG)_BUILD_NATIVE
     $(MAKE) -C '$(BUILD_DIR)/gmodule' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)/gobject' -j '$(JOBS)' lib_LTLIBRARIES= install-exec
     $(MAKE) -C '$(BUILD_DIR)/gio/xdgmime'     -j '$(JOBS)'
+    $(MAKE) -C '$(BUILD_DIR)/gio'     -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)/gio'     -j '$(JOBS)' glib-compile-schemas
     $(MAKE) -C '$(BUILD_DIR)/gio'     -j '$(JOBS)' glib-compile-resources
     $(INSTALL) -m755 '$(BUILD_DIR)/gio/glib-compile-schemas' '$(PREFIX)/$(TARGET)/bin/'
