@@ -4,20 +4,20 @@ PKG             := icu4c
 $(PKG)_WEBSITE  := https://ssl.icu-project.org/
 $(PKG)_DESCR    := ICU4C
 $(PKG)_IGNORE   :=
-#$(PKG)_VERSION  := 58.1
 $(PKG)_VERSION  := 56.1
 $(PKG)_MAJOR    := $(word 1,$(subst ., ,$($(PKG)_VERSION)))
-#$(PKG)_CHECKSUM := 0eb46ba3746a9c2092c8ad347a29b1a1b4941144772d13a88667a7b11ea30309
 $(PKG)_CHECKSUM := 3a64e9105c734dcf631c0b3ed60404531bce6c0f5a64bfe1a6402a4cc2314816
 $(PKG)_SUBDIR   := icu
 $(PKG)_FILE     := $(PKG)-$(subst .,_,$($(PKG)_VERSION))-src.tgz
-$(PKG)_URL      := http://download.icu-project.org/files/$(PKG)/$($(PKG)_VERSION)/$($(PKG)_FILE)
+$(PKG)_URL      := https://ssl.icu-project.org/files/$(PKG)/$($(PKG)_VERSION)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc
 
 define $(PKG)_UPDATE
     echo 'Updates for package $(PKG) is disabled.' >&2;
     echo $($(PKG)_VERSION)
 endef
+
+#/home/jonas/Projects/strawberry/strawberry-mxe/tmp-icu4c-x86_64-w64-mingw32.shared/icu/source/i18n/digitlst.cpp:67:13: fatal error: xlocale.h: No such file or directory
 
 #define $(PKG)_UPDATE
 #    $(WGET) -q -O- 'http://bugs.icu-project.org/trac/browser/icu/tags' | \
