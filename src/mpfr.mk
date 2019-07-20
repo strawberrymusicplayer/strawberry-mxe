@@ -14,17 +14,17 @@ $(PKG)_DEPS     := cc gmp
 
 $(PKG)_DEPS_$(BUILD) := gmp
 
-define $(PKG)_UPDATE
-    echo 'Updates for package $(PKG) is disabled.' >&2;
-    echo $($(PKG)_VERSION)
-endef
-
 #define $(PKG)_UPDATE
-#    $(WGET) -q -O- 'http://www.mpfr.org/mpfr-current/#download' | \
-#    grep 'mpfr-' | \
-#    $(SED) -n 's,.*mpfr-\([0-9][^>]*\)\.tar.*,\1,p' | \
-#    head -1
+#    echo 'Updates for package $(PKG) is disabled.' >&2;
+#    echo $($(PKG)_VERSION)
 #endef
+
+define $(PKG)_UPDATE
+    $(WGET) -q -O- 'http://www.mpfr.org/mpfr-current/#download' | \
+    grep 'mpfr-' | \
+    $(SED) -n 's,.*mpfr-\([0-9][^>]*\)\.tar.*,\1,p' | \
+    head -1
+endef
 
 define $(PKG)_BUILD
     cd '$(1)' && ./configure \
