@@ -11,11 +11,6 @@ $(PKG)_FILE     := mingw-libgnurx-$($(PKG)_VERSION)-src.tar.gz
 $(PKG)_URL      := https://github.com/TimothyGu/libgnurx/releases/download/libgnurx-$($(PKG)_VERSION)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc
 
-define $(PKG)_UPDATE
-    echo 'Updates for package $(PKG) is disabled.' >&2;
-    echo $($(PKG)_VERSION)
-endef
-
 define $(PKG)_BUILD
     # custom makefile so build in source
     cd '$(SOURCE_DIR)' && ./configure \
