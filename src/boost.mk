@@ -15,16 +15,11 @@ $(PKG)_DEPS     := cc bzip2 expat zlib
 $(PKG)_DEPS_$(BUILD) := zlib
 
 define $(PKG)_UPDATE
-    echo 'Updates for package $(PKG) is disabled.' >&2;
-    echo $($(PKG)_VERSION)
+    $(WGET) -q -O- 'https://www.boost.org/users/download/' | \
+    $(SED) -n 's,.*/release/\([0-9][^"/]*\)/.*,\1,p' | \
+    grep -v beta | \
+    head -1
 endef
-
-#define $(PKG)_UPDATE
-#    $(WGET) -q -O- 'https://www.boost.org/users/download/' | \
-#    $(SED) -n 's,.*/boost/\([0-9][^"/]*\)/".*,\1,p' | \
-#    grep -v beta | \
-#    head -1
-#endef
 
 define $(PKG)_BUILD
     # old version appears to interfere
