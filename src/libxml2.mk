@@ -3,25 +3,19 @@
 PKG             := libxml2
 $(PKG)_WEBSITE  := http://www.xmlsoft.org/
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.9.7
-$(PKG)_CHECKSUM := f63c5e7d30362ed28b38bfa1ac6313f9a80230720b7fb6c80575eeab3ff5900c
+$(PKG)_VERSION  := 2.9.9
+$(PKG)_CHECKSUM := 94fb70890143e3c6549f265cee93ec064c80a84c42ad0f23e85ee1fd6540a871
 $(PKG)_SUBDIR   := libxml2-$($(PKG)_VERSION)
 $(PKG)_FILE     := libxml2-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := http://xmlsoft.org/sources/$($(PKG)_FILE)
-$(PKG)_URL_2    := ftp://xmlsoft.org/libxml2/$($(PKG)_FILE)
+$(PKG)_URL_2    := https://ftp.osuosl.org/pub/blfs/conglomeration/libxml2/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc xz zlib
 
 define $(PKG)_UPDATE
-    echo 'TODO: Updates for package $(PKG) need to be written.' >&2;
-    echo $($(PKG)_VERSION)
+    $(WGET) -q -O- 'https://gitlab.gnome.org/GNOME/libxml2/tags' | \
+    $(SED) -n "s,.*<a [^>]\+>v\([0-9,\.]\+\)<.*,\\1,p" | \
+    head -1
 endef
-
-#define $(PKG)_UPDATE
-#    $(WGET) -q -O- 'https://gitlab.gnome.org/GNOME/libxml2/tags' | \
-#    $(SED) -n "s,.*<a href='[^']*/tag/?h=v\\([0-9][^']*\\)'.*,\\1,p" | \
-#    $(SORT) -Vr | \
-#    head -1    
-#endef
 
 define $(PKG)_BUILD
     $(SED) -i 's,`uname`,MinGW,g' '$(1)/xml2-config.in'
