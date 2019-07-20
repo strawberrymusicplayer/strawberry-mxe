@@ -8,7 +8,7 @@ $(PKG)_CHECKSUM := d5fb8bd563305fd1074dda90bd053fb2d29fc4bce048d182f96eaa466dfad
 $(PKG)_SUBDIR   := libssh2-$($(PKG)_VERSION)
 $(PKG)_FILE     := libssh2-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://libssh2.org/download/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc libgcrypt zlib openssl
+$(PKG)_DEPS     := cc libgcrypt zlib
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://libssh2.org/download/?C=M;O=D' | \
@@ -22,8 +22,7 @@ define $(PKG)_BUILD
     cd '$(1)' && ./configure \
         $(MXE_CONFIGURE_OPTS) \
         --disable-examples-build \
-        --without-openssl \
-        --with-libgcrypt \
+        --with-crypto=libgcrypt \
         LIBS="`$(PREFIX)/$(TARGET)/bin/libgcrypt-config --libs`" \
         PKG_CONFIG='$(TARGET)-pkg-config'
     $(MAKE) -C '$(1)' -j '$(JOBS)' install $(MXE_DISABLE_CRUFT)
