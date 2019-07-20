@@ -8,8 +8,8 @@ $(PKG)_VERSION  := 5.13.0
 $(PKG)_CHECKSUM := ff6964b3b528cd3b1d21bcf3470006e8e5cbe69591923f982871d886ea0488fe
 $(PKG)_SUBDIR   := $(PKG)-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-everywhere-src-$($(PKG)_VERSION).tar.xz
-$(PKG)_URL      := https://download.qt.io/official_releases/qt/5.12/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc dbus fontconfig freetype harfbuzz jpeg libpng openssl pcre2 sqlite zlib
+$(PKG)_URL      := https://download.qt.io/official_releases/qt/5.13/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
+$(PKG)_DEPS     := cc dbus fontconfig freetype harfbuzz jpeg libpng openssl pcre2 sqlite zlib zstd
 $(PKG)_DEPS_$(BUILD) :=
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
