@@ -13,15 +13,10 @@ $(PKG)_URL_2    := https://$(SOURCEFORGE_MIRROR)/project/pcre/pcre2/$($(PKG)_VER
 $(PKG)_DEPS     := cc
 
 define $(PKG)_UPDATE
-    echo 'TODO: Updates for package $(PKG) need to be written.' >&2;
-    echo $($(PKG)_VERSION)
+    $(WGET) -q -O- 'https://ftp.pcre.org/pub/pcre/' | \
+    $(SED) -n 's,.*pcre2-\([0-9]\+\)\(\.[0-9]\+\)*\.zip.*,\1\2,p' | \
+    tail -1
 endef
-
-#define $(PKG)_UPDATE
-#    $(WGET) -q -O- 'https://ftp.pcre.org/pub/pcre/' | \
-#    $(SED) -n 's,.*/\([0-9][^"]*\)/".*,\1,p' | \
-#    head -1
-#endef
 
 define $(PKG)_BUILD_SHARED
     cd '$(1)' && ./configure \
