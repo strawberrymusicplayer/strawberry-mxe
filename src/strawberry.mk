@@ -2,8 +2,8 @@
 
 PKG             := strawberry
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := cf33df1
-$(PKG)_CHECKSUM := 3bd8ad1aea0e4e840a6e0474d58556e0f4fcf4b5b01b01a76921ef74204df887
+$(PKG)_VERSION  := 0a71347
+$(PKG)_CHECKSUM := 0b5c5b58518051467391bb6cec4eeccef2a260b89c1d9db89a660e389f062343
 $(PKG)_GH_CONF  := jonaski/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawbs.org/
 $(PKG)_OWNER    := https://github.com/jonaski
@@ -12,6 +12,8 @@ $(PKG)_DEPS     := cc boost protobuf qtbase qtwinextras qttranslations chromapri
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
         -DCMAKE_INSTALL_PREFIX=$(PREFIX)/$(TARGET)/apps/$(PKG) \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DARCH=$(TARGET) \
         -DENABLE_WIN32_CONSOLE=OFF \
         -DFORCE_GIT_REVISION="0.5.5-0-g$($(PKG)_VERSION)" \
         -DENABLE_DBUS=OFF \
@@ -28,11 +30,10 @@ define $(PKG)_BUILD
 
     $(if $(BUILD_SHARED),
 
-        cp '$(SOURCE_DIR)/dist/windows/strawberry-x86.nsi'                             '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-i686-w64-mingw32.shared.nsi'
-        cp '$(SOURCE_DIR)/dist/windows/strawberry-x64.nsi'                             '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-x86_64-w64-mingw32.shared.nsi'
-        cp '$(SOURCE_DIR)/dist/windows/Capabilities.nsh'                               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
-        cp '$(SOURCE_DIR)/dist/windows/FileAssociation.nsh'                            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
-        cp '$(SOURCE_DIR)/dist/windows/strawberry.ico'                                 '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
+        $(INSTALL) '$(SOURCE_DIR)/dist/windows/strawberry.nsi'                         '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin'
+        $(INSTALL) '$(SOURCE_DIR)/dist/windows/Capabilities.nsh'                       '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin'
+        $(INSTALL) '$(SOURCE_DIR)/dist/windows/FileAssociation.nsh'                    '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin'
+        $(INSTALL) '$(SOURCE_DIR)/dist/windows/strawberry.ico'                         '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin'
 
         $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/platforms'
         $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/platforms/qwindows.dll'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/platforms'
@@ -97,7 +98,7 @@ define $(PKG)_BUILD
                                           -X '$(PREFIX)/$(TARGET)/apps' \
                                           -R '$(PREFIX)/$(TARGET)';
 
-        makensis '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry-$(TARGET).nsi'
+        makensis '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry.nsi'
 
     )
 
