@@ -2,8 +2,8 @@
 
 PKG             := strawberry-debug
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 5a490a8
-$(PKG)_CHECKSUM := aa4ac750099b59d549c210cc5362fe99f0c94821d8528158106f61cb4b251376
+$(PKG)_VERSION  := 2a61b12
+$(PKG)_CHECKSUM := fab8072ed777b28a20b8088103a6d8c10446056cd66bc145b03adb89f8414524
 $(PKG)_GH_CONF  := jonaski/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawbs.org/
 $(PKG)_OWNER    := https://github.com/jonaski
@@ -15,7 +15,7 @@ define $(PKG)_BUILD
 	-DCMAKE_BUILD_TYPE=Debug \
 	-DARCH=$(TARGET) \
         -DENABLE_WIN32_CONSOLE=ON \
-        -DFORCE_GIT_REVISION="0.5.5-0-g$($(PKG)_VERSION)" \
+        -DFORCE_GIT_REVISION="0.6.3-0-g$($(PKG)_VERSION)" \
         -DENABLE_DBUS=OFF \
         -DENABLE_LIBPULSE=OFF \
         -DENABLE_LIBGPOD=OFF \
