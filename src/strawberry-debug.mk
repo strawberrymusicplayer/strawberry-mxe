@@ -2,12 +2,12 @@
 
 PKG             := strawberry-debug
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2a61b12
-$(PKG)_CHECKSUM := fab8072ed777b28a20b8088103a6d8c10446056cd66bc145b03adb89f8414524
+$(PKG)_VERSION  := bf04358
+$(PKG)_CHECKSUM := 0adee50eff802636ed9e11233ab5243b2bb205f13108eba857921fabcb66c46a
 $(PKG)_GH_CONF  := jonaski/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawbs.org/
 $(PKG)_OWNER    := https://github.com/jonaski
-$(PKG)_DEPS     := cc boost protobuf qtbase qtwinextras qttranslations chromaprint gst-plugins-good gst-plugins-bad gst-plugins-ugly xine-lib taglib libcdio gnutls
+$(PKG)_DEPS     := cc boost protobuf qtbase qtwinextras qttranslations chromaprint gst-plugins-good gst-plugins-bad gst-plugins-ugly xine-lib taglib libcdio gnutls glib-networking
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
