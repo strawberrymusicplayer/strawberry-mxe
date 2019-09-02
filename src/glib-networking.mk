@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := a3acbe8953ba80e408bdc4a3e8c240fd9447181c7e800a175c3105604c38b
 $(PKG)_SUBDIR   := glib-networking-$($(PKG)_VERSION)
 $(PKG)_FILE     := glib-networking-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/$(PKG)/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc gnutls
+$(PKG)_DEPS     := cc meson ninja gnutls
 
 define $(PKG)_UPDATE
    $(WGET) -q -O- 'https://git.gnome.org/browse/glib-networking/refs/tags' | \
