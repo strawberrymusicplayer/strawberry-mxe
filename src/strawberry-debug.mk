@@ -2,8 +2,8 @@
 
 PKG             := strawberry-debug
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := bf04358
-$(PKG)_CHECKSUM := 0adee50eff802636ed9e11233ab5243b2bb205f13108eba857921fabcb66c46a
+$(PKG)_VERSION  := 6fc7bae
+$(PKG)_CHECKSUM := 2a4e6829fd3e2100c80b300f1e2122b0832fee024939a843cb6a44db6d143bf6
 $(PKG)_GH_CONF  := jonaski/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawbs.org/
 $(PKG)_OWNER    := https://github.com/jonaski
@@ -127,7 +127,7 @@ define $(PKG)_BUILD
                                           -X '$(PREFIX)/$(TARGET)/apps' \
                                           -R '$(PREFIX)/$(TARGET)';
 
-        makensis '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry.nsi'
+        #makensis '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/strawberry.nsi'
 
     )
 endef
