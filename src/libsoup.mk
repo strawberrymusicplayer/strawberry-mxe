@@ -4,33 +4,44 @@ PKG             := libsoup
 $(PKG)_WEBSITE  := https://github.com/GNOME/libsoup
 $(PKG)_DESCR    := HTTP client/server library for GNOME
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.57.1
-$(PKG)_APIVER   := 2.4
-$(PKG)_CHECKSUM := 675c3bc11c2a6347625ca5215720d41c84fd8e9498dd664cda8a635fd5105a26
-$(PKG)_GH_CONF  := GNOME/libsoup/tags,,,pre\|SOUP\|base
-$(PKG)_DEPS     := cc glib libxml2 sqlite
+$(PKG)_VERSION  := 2.67.1
+$(PKG)_CHECKSUM := d155cd3f2dab8d5dbae2ac928369c9930d289211dcd92a447f6dac29b4f0475f
+$(PKG)_SUBDIR   := libsoup-$($(PKG)_VERSION)
+$(PKG)_FILE     := libsoup-$($(PKG)_VERSION).tar.xz
+$(PKG)_DEPS     := cc meson ninja glib libxml2 sqlite libbrotli
 
 define $(PKG)_UPDATE
-    echo 'Updates for package $(PKG) is disabled.' >&2;
-    echo $($(PKG)_VERSION)
+    $(WGET) -q -O- 'https://gitlab.gnome.org/GNOME/libsoup/tags' | \
+    $(SED) -n "s,.*libsoup-\([0-9]\+\.[0-9]*[02468]\.[^']*\)\.tar.*,\1,p" | \
+    $(SORT) -Vr | \
+    head -1
+endef
+
+define $(PKG)_BUILD_NATIVE
+    cd '$(SOURCE_DIR)' && $(PREFIX)/x86_64-pc-linux-gnu/bin/meson \
+                                --prefix='$(PREFIX)/$(TARGET)' \
+                                --buildtype=release \
+                                --pkg-config-path='$(PREFIX)/$(TARGET)/bin/pkgconf' \
+                                 -Dgssapi=false \
+                                 -Dvapi=false \
+                                 -Dintrospection=true \
+                                 -Dtests=false \
+                                '$(BUILD_DIR)'
+    cd '$(BUILD_DIR)' && ninja
+    cd '$(BUILD_DIR)' && ninja install
 endef
 
 define $(PKG)_BUILD
-    cd '$(SOURCE_DIR)' && \
-        NOCONFIGURE=1 \
-        ACLOCAL_FLAGS=-I'$(PREFIX)/$(TARGET)/share/aclocal' \
-        ./autogen.sh
-    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)'/configure \
-        $(MXE_CONFIGURE_OPTS) \
-        --disable-vala \
-        --without-apache-httpd \
-        --without-gssapi \
-        $(shell [ `uname -s` == Darwin ] && echo "INTLTOOL_PERL=/usr/bin/perl")
-    $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS)
-    $(MAKE) -C '$(BUILD_DIR)' -j 1 install
-
-    $(TARGET)-gcc \
-        -W -Wall -Werror -ansi \
-        '$(TEST_FILE)' -o '$(PREFIX)/$(TARGET)/bin/test-$(PKG).exe' \
-        `$(TARGET)-pkg-config $(PKG)-$($(PKG)_APIVER) --cflags --libs`
+    cd '$(SOURCE_DIR)' && $(PREFIX)/x86_64-pc-linux-gnu/bin/meson \
+                                --cross-file '$(PREFIX)/$(TARGET)/share/meson/mxe-crossfile.meson' \
+                                --prefix='$(PREFIX)/$(TARGET)' \
+                                --buildtype=release \
+                                --pkg-config-path='$(PREFIX)/$(TARGET)/bin/pkgconf' \
+                                 -Dgssapi=false \
+                                 -Dvapi=false \
+                                 -Dintrospection=true \
+                                 -Dtests=false \
+                                '$(BUILD_DIR)'
+    cd '$(BUILD_DIR)' && ninja
+    cd '$(BUILD_DIR)' && ninja install
 endef
