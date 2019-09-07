@@ -13,18 +13,18 @@ $(PKG)_DEPS     := cc dbus fontconfig freetype harfbuzz jpeg libpng openssl pcre
 $(PKG)_DEPS_$(BUILD) :=
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
-define $(PKG)_UPDATE
-    echo 'Updates for package $(PKG) is disabled.' >&2;
-    echo $($(PKG)_VERSION)
-endef
-
 #define $(PKG)_UPDATE
-#    $(WGET) -q -O- https://download.qt.io/official_releases/qt/5.12/ | \
-#    $(SED) -n 's,.*href="\(5\.12\.[^/]*\)/".*,\1,p' | \
-#    grep -iv -- '-rc' | \
-#    sort |
-#    tail -1
+#    echo 'Updates for package $(PKG) is disabled.' >&2;
+#    echo $($(PKG)_VERSION)
 #endef
+
+define $(PKG)_UPDATE
+    $(WGET) -q -O- https://download.qt.io/official_releases/qt/5.13/ | \
+    $(SED) -n 's,.*href="\(5\.13\.[^/]*\)/".*,\1,p' | \
+    grep -iv -- '-rc' | \
+    sort |
+    tail -1
+endef
 
 define $(PKG)_BUILD
     # ICU is buggy. See #653. TODO: reenable it some time in the future.
