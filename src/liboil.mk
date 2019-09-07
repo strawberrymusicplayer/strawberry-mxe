@@ -7,7 +7,7 @@ $(PKG)_VERSION  := 0.3.17
 $(PKG)_CHECKSUM := 105f02079b0b50034c759db34b473ecb5704ffa20a5486b60a8b7698128bfc69
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
-$(PKG)_URL      := http://$(PKG).freedesktop.org/download/$($(PKG)_FILE)
+$(PKG)_URL      := https://$(PKG).freedesktop.org/download/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc
 
 define $(PKG)_UPDATE
