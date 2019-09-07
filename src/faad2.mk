@@ -11,8 +11,8 @@ $(PKG)_URL      := https://$(SOURCEFORGE_MIRROR)/project/faac/$(PKG)-src/$(PKG)-
 $(PKG)_DEPS     := cc
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://sourceforge.net/projects/faac/files/faad2-src/' | \
-    $(SED) -n 's,.*faad2-\([0-9][^"]*\)/".*,\1,p' | \
+    $(WGET) -q -O- 'https://sourceforge.net/projects/faac/files/faad2-src/faad2-2.8.0/' | \
+    $(SED) -n 's,.*faad2-\([0-9][^"]*\).tar.gz".*,\1,p' | \
     head -1
 endef
 
