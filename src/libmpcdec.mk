@@ -11,12 +11,8 @@ $(PKG)_URL      := https://files.musepack.net/source/$(PKG)-$($(PKG)_VERSION).ta
 $(PKG)_DEPS     := cc
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://files.musepack.net/source/$(PKG)-$($(PKG)_VERSION)' | \
-    $(SED) -n 's,.*$(PKG)-\([0-9][^>]*\)\.tar.*,\1,p' | \
-    grep -v 'alpha' | \
-    grep -v 'beta' | \
-    $(SORT) -Vr | \
-    head -1
+    echo 'TODO: Updates for package $(PKG) need to be written.' >&2;
+    echo $($(PKG)_VERSION)
 endef
 
 define $(PKG)_BUILD
