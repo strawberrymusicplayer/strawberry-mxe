@@ -4,18 +4,17 @@ PKG             := glib-networking
 $(PKG)_WEBSITE  := https://www.gnome.org
 $(PKG)_DESCR    := Network-related GIO modules for glib
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.61.1
-$(PKG)_CHECKSUM := a3acbe8953ba80e408bdc4a3e8c240fd9447181c7e800a175c3105604c38bad5
+$(PKG)_VERSION  := 2.61.92
+$(PKG)_CHECKSUM := 857ef10207d1fea53d27338a6061b655c006255e363947eb4d68b937f01c778b
 $(PKG)_SUBDIR   := glib-networking-$($(PKG)_VERSION)
 $(PKG)_FILE     := glib-networking-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/$(PKG)/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc meson ninja glib gnutls
 
 define $(PKG)_UPDATE
-   $(WGET) -q -O- 'https://git.gnome.org/browse/glib-networking/refs/tags' | \
-    grep '<a href=' | \
-    $(SED) -n 's,.*<a[^>]*>\([0-9]*\.[0-9]*[02468]\.[^<]*\)<.*,\1,p' | \
-    sort -Vr | \
+    $(WGET) -q -O- 'https://gitlab.gnome.org/GNOME/glib-networking/-/tags' | \
+    $(SED) -n "s,.*glib-networking-\([0-9]\+\.[0-9]*[0-9]*\.[^']*\)\.tar.*,\1,p" | \
+    $(SORT) -Vr | \
     head -1
 endef
 
