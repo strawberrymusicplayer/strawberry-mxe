@@ -5,16 +5,13 @@ $(PKG)_WEBSITE  := https://github.com/google/protobuf
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 3.9.1
 $(PKG)_CHECKSUM := 98e615d592d237f94db8bf033fba78cd404d979b0b70351a9e5aaff725398357
-$(PKG)_GH_CONF  := google/protobuf/tags,v
+$(PKG)_GH_CONF  := google/protobuf/tags, v
 $(PKG)_DEPS     := cc googletest zlib $(BUILD)~$(PKG)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS_$(BUILD) := googletest libtool
 
 define $(PKG)_BUILD
-    $(call PREPARE_PKG_SOURCE,googlemock,$(SOURCE_DIR))
-    cd '$(SOURCE_DIR)' && mv '$(googlemock_SUBDIR)' gmock
     $(call PREPARE_PKG_SOURCE,googletest,$(SOURCE_DIR))
-    cd '$(SOURCE_DIR)' && mv '$(googletest_SUBDIR)' gmock/gtest
     cd '$(SOURCE_DIR)' && ./autogen.sh
 
     cd '$(BUILD_DIR)' && '$(SOURCE_DIR)'/configure \
