@@ -12,11 +12,18 @@ $(PKG)_URL_2    := https://deb.debian.org/debian/pool/main/p/$(PKG)/$(PKG)_$($(P
 $(PKG)_DEPS     := cc gettext libiconv
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'http://rpm5.org/files/popt/' | \
-    grep 'popt-' | \
-    $(SED) -n 's,.*popt-\([0-9][^>]*\)\.tar.*,\1,p' | \
-    tail -1
+    echo 'TODO: Updates for package $(PKG) need to be written.' >&2;
+    echo $($(PKG)_VERSION)
 endef
+
+# rpm5.org is download
+
+#define $(PKG)_UPDATE
+#    $(WGET) -q -O- 'http://rpm5.org/files/popt/' | \
+#    grep 'popt-' | \
+#    $(SED) -n 's,.*popt-\([0-9][^>]*\)\.tar.*,\1,p' | \
+#    tail -1
+#endef
 
 define $(PKG)_BUILD
     cd '$(1)' && ./configure \
