@@ -3,8 +3,8 @@
 PKG             := openssl
 $(PKG)_WEBSITE  := https://www.openssl.org/
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 464ac47
-$(PKG)_CHECKSUM := c6191217246227824419aa6fc14ae4bca059894ad03eddc92977022c10a84966
+$(PKG)_VERSION  := e97bab6
+$(PKG)_CHECKSUM := 52d9e0d41695cc1a3f5ad7d82776495d6ec884bc70f08aa87749c169efc76163
 $(PKG)_GH_CONF  := openssl/openssl/branches/master
 $(PKG)_DEPS     := cc zlib
 
