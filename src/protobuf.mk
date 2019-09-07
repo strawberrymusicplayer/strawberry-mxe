@@ -6,9 +6,9 @@ $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 3.9.1
 $(PKG)_CHECKSUM := 98e615d592d237f94db8bf033fba78cd404d979b0b70351a9e5aaff725398357
 $(PKG)_GH_CONF  := google/protobuf/tags,v
-$(PKG)_DEPS     := cc googlemock googletest zlib $(BUILD)~$(PKG)
+$(PKG)_DEPS     := cc googletest zlib $(BUILD)~$(PKG)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
-$(PKG)_DEPS_$(BUILD) := googlemock googletest libtool
+$(PKG)_DEPS_$(BUILD) := googletest libtool
 
 define $(PKG)_BUILD
     $(call PREPARE_PKG_SOURCE,googlemock,$(SOURCE_DIR))
