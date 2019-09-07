@@ -3,16 +3,12 @@
 PKG             := pkgconf
 $(PKG)_WEBSITE  := https://github.com/pkgconf/pkgconf
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := c862e03
-$(PKG)_CHECKSUM := 4374442e2edfb6eaed4d1e2f88b8f11fc6d0ad32f2ab971171e6d5eb0c98efe9
-$(PKG)_GH_CONF  := pkgconf/pkgconf/branches/master
+$(PKG)_VERSION  := 1.6.3
+$(PKG)_CHECKSUM := 743bac2b1fae7985cc6ff91deece9af2b64d6fe7dae7cebd6c42f8a04fcc4c2d
+$(PKG)_GH_CONF  := pkgconf/pkgconf/tags, pkgconf-
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS     := $(BUILD)~$(PKG)
 $(PKG)_DEPS_$(BUILD) := libtool
-
-#define $(PKG)_UPDATE
-#    echo $($(PKG)_VERSION)
-#endef
 
 define $(PKG)_BUILD
     # create pkg-config script
