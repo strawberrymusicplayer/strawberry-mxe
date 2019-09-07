@@ -8,7 +8,7 @@ $(PKG)_VERSION  := 1.70.0
 $(PKG)_CHECKSUM := 430ae8354789de4fd19ee52f3b1f739e1fba576f0aded0897c3c2bc00fb38778
 $(PKG)_SUBDIR   := boost_$(subst .,_,$($(PKG)_VERSION))
 $(PKG)_FILE     := boost_$(subst .,_,$($(PKG)_VERSION)).tar.bz2
-$(PKG)_URL      := https://$(SOURCEFORGE_MIRROR)/project/boost/boost/$($(PKG)_VERSION)/$($(PKG)_FILE)
+$(PKG)_URL      := https://dl.bintray.com/boostorg/release/$($(PKG)_VERSION)/source/$($(PKG)_FILE)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS     := cc bzip2 expat zlib
 
