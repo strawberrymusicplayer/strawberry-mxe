@@ -11,16 +11,10 @@ $(PKG)_URL      := https://cairographics.org/releases/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc fontconfig freetype-bootstrap glib libpng lzo pixman zlib
 
 define $(PKG)_UPDATE
-    echo 'TODO: Updates for package $(PKG) need to be written.' >&2;
-    echo $($(PKG)_VERSION)
+    $(WGET) -q -O- 'https://cairographics.org/releases/?C=M;O=D' | \
+    $(SED) -n 's,.*"cairo-\([0-9][^"]*\)\.tar.*,\1,p' | grep '^[0-9]\.[0-9]' | \
+    head -1
 endef
-
-# BROKEN
-#define $(PKG)_UPDATE
-#    $(WGET) -q -O- 'https://cairographics.org/releases/?C=M;O=D' | \
-#    $(SED) -n 's,.*"cairo-\([0-9][^"]*\)\.tar.*,\1,p' | \
-#    head -1
-#endef
 
 define $(PKG)_BUILD
     $(SED) -i 's,libpng12,libpng,g'                          '$(1)/configure'
