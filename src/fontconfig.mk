@@ -3,8 +3,8 @@
 PKG             := fontconfig
 $(PKG)_WEBSITE  := https://fontconfig.org/
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.13.91
-$(PKG)_CHECKSUM := 0130cff91dabe4909b0ea246accf8fa69af8de2771772f1c9ec11a5834e1e501
+$(PKG)_VERSION  := 2.13.92
+$(PKG)_CHECKSUM := 506e61283878c1726550bc94f2af26168f1e9f2106eac77eaaf0b2cdfad66e4e
 $(PKG)_SUBDIR   := fontconfig-$($(PKG)_VERSION)
 $(PKG)_FILE     := fontconfig-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://fontconfig.org/release/$($(PKG)_FILE)
@@ -13,7 +13,6 @@ $(PKG)_DEPS     := cc expat freetype-bootstrap gettext
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://fontconfig.org/release/' | \
     $(SED) -n 's,.*fontconfig-\([0-9][^>]*\)\.tar.*,\1,p' | \
-    grep -v '\([0-9]\+\.\)\{2\}9[0-9]' | \
     tail -1
 endef
 
