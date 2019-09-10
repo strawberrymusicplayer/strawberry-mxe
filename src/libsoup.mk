@@ -4,45 +4,42 @@ PKG             := libsoup
 $(PKG)_WEBSITE  := https://github.com/GNOME/libsoup
 $(PKG)_DESCR    := HTTP client/server library for GNOME
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.67.1
-$(PKG)_CHECKSUM := d155cd3f2dab8d5dbae2ac928369c9930d289211dcd92a447f6dac29b4f0475f
+$(PKG)_VERSION  := 2.62.3
+$(PKG)_CHECKSUM := d312ade547495c2093ff8bda61f9b9727a98cfdae339f3263277dd39c0451172
 $(PKG)_SUBDIR   := libsoup-$($(PKG)_VERSION)
 $(PKG)_FILE     := libsoup-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/libsoup/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc meson ninja glib libxml2 sqlite libbrotli libpsl
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://gitlab.gnome.org/GNOME/libsoup/-/tags' | \
-    $(SED) -n "s,.*libsoup-\([0-9]\+\.[0-9]*[0-9]*\.[^']*\)\.tar.*,\1,p" | \
-    $(SORT) -Vr | \
-    head -1
+    echo 'Updates for package $(PKG) is disabled.' >&2;
+    echo $($(PKG)_VERSION)
 endef
 
-define $(PKG)_BUILD_NATIVE
-    cd '$(SOURCE_DIR)' && $(PREFIX)/x86_64-pc-linux-gnu/bin/meson \
-                                --prefix='$(PREFIX)/$(TARGET)' \
-                                --buildtype=release \
-                                --pkg-config-path='$(PREFIX)/$(TARGET)/bin/pkgconf' \
-                                 -Dgssapi=false \
-                                 -Dvapi=false \
-                                 -Dintrospection=true \
-                                 -Dtests=false \
-                                '$(BUILD_DIR)'
-    cd '$(BUILD_DIR)' && ninja
-    cd '$(BUILD_DIR)' && ninja install
-endef
+#define $(PKG)_UPDATE
+#    $(WGET) -q -O- 'https://gitlab.gnome.org/GNOME/libsoup/-/tags' | \
+#    $(SED) -n "s,.*libsoup-\([0-9]\+\.[0-9]*[0-9]*\.[^']*\)\.tar.*,\1,p" | \
+#    $(SORT) -Vr | \
+#    head -1
+#endef
+
+# Compiles but has error - no uri handler implemented
+# 2.63.2, 2.64.2 and 2.66.2
+
+# Does not compile
+# 2.65.2
 
 define $(PKG)_BUILD
-    cd '$(SOURCE_DIR)' && $(PREFIX)/x86_64-pc-linux-gnu/bin/meson \
-                                --cross-file '$(PREFIX)/$(TARGET)/share/meson/mxe-crossfile.meson' \
-                                --prefix='$(PREFIX)/$(TARGET)' \
-                                --buildtype=release \
-                                --pkg-config-path='$(PREFIX)/$(TARGET)/bin/pkgconf' \
-                                 -Dgssapi=false \
-                                 -Dvapi=false \
-                                 -Dintrospection=true \
-                                 -Dtests=false \
-                                '$(BUILD_DIR)'
-    cd '$(BUILD_DIR)' && ninja
-    cd '$(BUILD_DIR)' && ninja install
+    cd '$(SOURCE_DIR)' && \
+        NOCONFIGURE=1 \
+        ACLOCAL_FLAGS=-I'$(PREFIX)/$(TARGET)/share/aclocal' \
+    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)'/configure \
+        $(MXE_CONFIGURE_OPTS) \
+        --disable-vala \
+        --without-apache-httpd \
+        --without-gssapi \
+        $(shell [ `uname -s` == Darwin ] && echo "INTLTOOL_PERL=/usr/bin/perl")
+    $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS)
+    $(MAKE) -C '$(BUILD_DIR)' -j 1 install
+
 endef
