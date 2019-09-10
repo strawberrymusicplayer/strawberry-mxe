@@ -40,9 +40,7 @@ define $(PKG)_BUILD
         --disable-monoscope \
         --disable-multifile \
         --disable-multipart \
-        --disable-rtp \
         --disable-rtpmanager \
-        --disable-rtsp \
         --disable-shapewipe \
         --disable-smpte \
         --disable-videobox \
@@ -96,7 +94,9 @@ define $(PKG)_BUILD
         --enable-wavpack \
         --enable-isomp4 \
         --enable-udp \
-        --enable-soup
+        --enable-soup \
+        --enable-rtp \
+        --enable-rtsp
 
     $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS) CFLAGS='-DWAVE_FORMAT_DOLBY_AC3_SPDIF=0x0092'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install CFLAGS='-DWAVE_FORMAT_DOLBY_AC3_SPDIF=0x0092'
