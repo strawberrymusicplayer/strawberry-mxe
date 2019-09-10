@@ -4,6 +4,8 @@ PKG            := python3-conf
 $(PKG)_VERSION := 1
 $(PKG)_UPDATE  := echo 1
 $(PKG)_TARGETS := $(BUILD) $(MXE_TARGETS)
+$(PKG)_DEPS    := cc
+$(PKG)_IGNORE  :=
 SYS_PYTHON3    := $(shell PATH="$(ORIG_PATH)" which python3)
 PY3_XY_VER     := $(shell $(SYS_PYTHON3) -c "import sys; print('{0[0]}.{0[1]}'.format(sys.version_info))")
 
