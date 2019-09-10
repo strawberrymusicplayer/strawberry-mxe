@@ -4,12 +4,12 @@ PKG             := libsoup
 $(PKG)_WEBSITE  := https://github.com/GNOME/libsoup
 $(PKG)_DESCR    := HTTP client/server library for GNOME
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.62.3
-$(PKG)_CHECKSUM := d312ade547495c2093ff8bda61f9b9727a98cfdae339f3263277dd39c0451172
+$(PKG)_VERSION  := 2.64.2
+$(PKG)_CHECKSUM := 75ddc194a5b1d6f25033bb9d355f04bfe5c03e0e1c71ed0774104457b3a786c6
 $(PKG)_SUBDIR   := libsoup-$($(PKG)_VERSION)
 $(PKG)_FILE     := libsoup-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/libsoup/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc meson ninja glib libxml2 sqlite libbrotli libpsl
+$(PKG)_DEPS     := cc glib libxml2 sqlite libbrotli libpsl
 
 define $(PKG)_UPDATE
     echo 'Updates for package $(PKG) is disabled.' >&2;
@@ -23,13 +23,9 @@ endef
 #    head -1
 #endef
 
-# Compiles but has error - no uri handler implemented
-# 2.63.2, 2.64.2 and 2.66.2
-
-# Does not compile
-# 2.65.2
-
 define $(PKG)_BUILD
+    cd '$(SOURCE_DIR)' && chmod u+x libsoup/tld-parser.py
+    cd '$(SOURCE_DIR)' && autoreconf -fi
     cd '$(SOURCE_DIR)' && \
         NOCONFIGURE=1 \
         ACLOCAL_FLAGS=-I'$(PREFIX)/$(TARGET)/share/aclocal' \
@@ -41,5 +37,4 @@ define $(PKG)_BUILD
         $(shell [ `uname -s` == Darwin ] && echo "INTLTOOL_PERL=/usr/bin/perl")
     $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS)
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
-
 endef
