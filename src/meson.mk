@@ -11,7 +11,7 @@ $(PKG)_SUBDIR    := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE      := $($(PKG)_SUBDIR).tar.gz
 $(PKG)_URL       := https://github.com/mesonbuild/meson/archive/$($(PKG)_VERSION).tar.gz
 $(PKG)_FILE_DEPS := $(wildcard $(PWD)/src/meson/conf/*)
-$(PKG)_DEPS      := python3-conf ninja cmake-conf
+$(PKG)_DEPS      := cmake-conf ninja python3-conf
 $(PKG)_TARGETS   := $(BUILD) $(MXE_TARGETS)
 
 define $(PKG)_BUILD
