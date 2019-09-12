@@ -9,6 +9,11 @@ $(PKG)_CHECKSUM := 9a9d4d69f939862cdd007e61076d2929a82bef1e5dae1f68a067c31a73790
 $(PKG)_GH_CONF  := taglib/taglib/branches/master
 $(PKG)_DEPS     := cc zlib
 
+define $(PKG)_UPDATE
+    echo 'Updates for package $(PKG) is disabled.' >&2;
+    echo $($(PKG)_VERSION)
+endef
+
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)'
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
