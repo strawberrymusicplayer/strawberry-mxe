@@ -13,7 +13,7 @@ $(PKG)_DEPS     := cc meson ninja glib fontconfig freetype cairo harfbuzz fribid
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://gitlab.gnome.org/GNOME/pango/tags' | \
-    $(SED) -n "s,.*pango-\([0-9]\+\.[0-9]*[02468]\.[^']*\)\.tar.*,\1,p" | \
+    $(SED) -n "s,.*<a [^>]\+>v\?\([0-9]\+\.[0-9.]\+\)<.*,\1,p" | \
     $(SORT) -Vr | \
     head -1
 endef
