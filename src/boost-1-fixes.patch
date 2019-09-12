@@ -1,0 +1,24 @@
+This file is part of MXE. See LICENSE.md for licensing information.
+
+Contains ad hoc patches for cross building.
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Thu, 12 Sep 2019 23:45:42 +0200
+Subject: [PATCH 1/1] Fix lzma compile
+
+
+diff --git a/libs/iostreams/src/lzma.cpp b/libs/iostreams/src/lzma.cpp
+index 1111111..2222222 100644
+--- a/libs/iostreams/src/lzma.cpp
++++ b/libs/iostreams/src/lzma.cpp
+@@ -20,9 +20,7 @@
+ 
+ 
+ #ifndef BOOST_IOSTREAMS_LZMA_NO_MULTITHREADED
+-    #if LZMA_VERSION < 50020002
+         #define BOOST_IOSTREAMS_LZMA_NO_MULTITHREADED
+-    #endif
+ #endif
+ 
+ namespace boost { namespace iostreams {
