@@ -4,8 +4,8 @@ PKG             := pango
 $(PKG)_WEBSITE  := https://www.pango.org/
 $(PKG)_DESCR    := Pango
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.37.4
-$(PKG)_CHECKSUM := ae2446f1c23c81d78e935054a37530336818c214f54bed2351bdd4ad0acebcbe
+$(PKG)_VERSION  := 1.40.14
+$(PKG)_CHECKSUM := 90af1beaa7bf9e4c52db29ec251ec4fd0a8f2cc185d521ad1f88d01b3a6a17e3
 $(PKG)_SUBDIR   := pango-$($(PKG)_VERSION)
 $(PKG)_FILE     := pango-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/pango/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
@@ -24,13 +24,13 @@ endef
 #endef
 
 define $(PKG)_BUILD
-    rm '$(1)'/docs/Makefile.am
     cd '$(1)' && NOCONFIGURE=1 ./autogen.sh
     cd '$(1)' && ./configure \
         $(MXE_CONFIGURE_OPTS) \
         --enable-explicit-deps \
         --with-included-modules \
         --without-dynamic-modules \
+        --disable-doc-cross-references \
         CXX='$(TARGET)-g++'
     $(MAKE) -C '$(1)' -j '$(JOBS)' install bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
 endef
