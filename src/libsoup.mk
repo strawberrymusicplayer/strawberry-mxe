@@ -32,7 +32,6 @@ define $(PKG)_BUILD
                                 -Dtests=false \
                                 -Dvapi=false \
                                 -Dgssapi=false \
-                                -Dintrospection=true \
                                 '$(BUILD_DIR)'
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install
