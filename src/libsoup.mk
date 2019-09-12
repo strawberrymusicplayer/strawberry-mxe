@@ -4,8 +4,8 @@ PKG             := libsoup
 $(PKG)_WEBSITE  := https://github.com/GNOME/libsoup
 $(PKG)_DESCR    := HTTP client/server library for GNOME
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.64.2
-$(PKG)_CHECKSUM := 75ddc194a5b1d6f25033bb9d355f04bfe5c03e0e1c71ed0774104457b3a786c6
+$(PKG)_VERSION  := 2.67.1
+$(PKG)_CHECKSUM := d155cd3f2dab8d5dbae2ac928369c9930d289211dcd92a447f6dac29b4f0475f
 $(PKG)_SUBDIR   := libsoup-$($(PKG)_VERSION)
 $(PKG)_FILE     := libsoup-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/libsoup/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
@@ -18,23 +18,22 @@ endef
 
 #define $(PKG)_UPDATE
 #    $(WGET) -q -O- 'https://gitlab.gnome.org/GNOME/libsoup/-/tags' | \
-#    $(SED) -n "s,.*libsoup-\([0-9]\+\.[0-9]*[0-9]*\.[^']*\)\.tar.*,\1,p" | \
+#    $(SED) -n "s,.*libsoup-\([0-9]\+\.[0-9]*[02468]*\.[^']*\)\.tar.*,\1,p" | \
 #    $(SORT) -Vr | \
 #    head -1
 #endef
 
 define $(PKG)_BUILD
-    cd '$(SOURCE_DIR)' && chmod u+x libsoup/tld-parser.py
-    cd '$(SOURCE_DIR)' && autoreconf -fi
-    cd '$(SOURCE_DIR)' && \
-        NOCONFIGURE=1 \
-        ACLOCAL_FLAGS=-I'$(PREFIX)/$(TARGET)/share/aclocal' \
-    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)'/configure \
-        $(MXE_CONFIGURE_OPTS) \
-        --disable-vala \
-        --without-apache-httpd \
-        --without-gssapi \
-        $(shell [ `uname -s` == Darwin ] && echo "INTLTOOL_PERL=/usr/bin/perl")
-    $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS)
-    $(MAKE) -C '$(BUILD_DIR)' -j 1 install
+    cd '$(SOURCE_DIR)' && $(PREFIX)/x86_64-pc-linux-gnu/bin/meson \
+                                --cross-file '$(PREFIX)/$(TARGET)/share/meson/mxe-crossfile.meson' \
+                                --prefix='$(PREFIX)/$(TARGET)' \
+                                --buildtype=release \
+                                --pkg-config-path='$(PREFIX)/$(TARGET)/bin/pkgconf' \
+                                -Dtests=false \
+                                -Dvapi=false \
+                                -Dgssapi=false \
+                                -Dintrospection=true \
+                                '$(BUILD_DIR)'
+    cd '$(BUILD_DIR)' && ninja
+    cd '$(BUILD_DIR)' && ninja install
 endef
