@@ -4,12 +4,12 @@ PKG             := pango
 $(PKG)_WEBSITE  := https://www.pango.org/
 $(PKG)_DESCR    := Pango
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.40.14
-$(PKG)_CHECKSUM := 90af1beaa7bf9e4c52db29ec251ec4fd0a8f2cc185d521ad1f88d01b3a6a17e3
+$(PKG)_VERSION  := 1.42.4
+$(PKG)_CHECKSUM := 1d2b74cd63e8bd41961f2f8d952355aa0f9be6002b52c8aa7699d9f5da597c9d
 $(PKG)_SUBDIR   := pango-$($(PKG)_VERSION)
 $(PKG)_FILE     := pango-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/pango/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc cairo fontconfig freetype glib harfbuzz
+$(PKG)_DEPS     := cc cairo fontconfig freetype glib harfbuzz fribidi
 
 define $(PKG)_UPDATE
     echo 'Updates for package $(PKG) is disabled.' >&2;
