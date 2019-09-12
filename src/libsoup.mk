@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := d155cd3f2dab8d5dbae2ac928369c9930d289211dcd92a447f6dac29b4f04
 $(PKG)_SUBDIR   := libsoup-$($(PKG)_VERSION)
 $(PKG)_FILE     := libsoup-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/libsoup/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc glib libxml2 sqlite libbrotli libpsl
+$(PKG)_DEPS     := cc meson ninja glib libxml2 sqlite libbrotli libpsl
 
 define $(PKG)_UPDATE
     echo 'Updates for package $(PKG) is disabled.' >&2;
