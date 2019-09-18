@@ -11,8 +11,10 @@ $(PKG)_URL      := https://files.musepack.net/source/$(PKG)-$($(PKG)_VERSION).ta
 $(PKG)_DEPS     := cc
 
 define $(PKG)_UPDATE
-    echo 'TODO: Updates for package $(PKG) need to be written.' >&2;
-    echo $($(PKG)_VERSION)
+    $(WGET) -q -O- 'http://svn.musepack.net/libmpcdec/tags/' | \
+    $(SED) -n "s,.*>release-\([0-9]\+\.[0-9]\+\.[0-9]\+\).*,\1,p" | \
+    $(SORT) -Vr | \
+    head -1
 endef
 
 define $(PKG)_BUILD
