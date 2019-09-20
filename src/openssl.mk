@@ -3,10 +3,20 @@
 PKG             := openssl
 $(PKG)_WEBSITE  := https://www.openssl.org/
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 51ba9eb
-$(PKG)_CHECKSUM := c2960eca7856d75f8334767ac6df653922a9493f4bc60f40b91ab24acbed55bb
-$(PKG)_GH_CONF  := openssl/openssl/branches/master
+$(PKG)_VERSION  := 1.1.1d
+$(PKG)_CHECKSUM := 1e3a91bc1f9dfce01af26026f856e064eab4c8ee0a8f457b5ae30b40b8b711f2
+$(PKG)_SUBDIR   := openssl-$($(PKG)_VERSION)
+$(PKG)_FILE     := openssl-$($(PKG)_VERSION).tar.gz
+$(PKG)_URL      := https://www.openssl.org/source/$($(PKG)_FILE)
+$(PKG)_URL_2    := https://www.openssl.org/source/old/$(call tr,$([a-z]),,$($(PKG)_VERSION))/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc zlib
+
+define $(PKG)_UPDATE
+    $(WGET) -q -O- 'https://www.openssl.org/source/' | \
+    $(SED) -n 's,.*openssl-\([0-9][0-9a-z.]*\)\.tar.*,\1,p' | \
+    $(SORT) -V | \
+    tail -1
+endef
 
 define $(PKG)_BUILD
     # remove previous install
