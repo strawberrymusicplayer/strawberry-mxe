@@ -2,8 +2,8 @@
 
 PKG             := strawberry
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := b273da0
-$(PKG)_CHECKSUM := 965f9f53884890cad86a99e9d4edcaa096bb1ab3c14c6a3d541711342382784c
+$(PKG)_VERSION  := 780e4d3
+$(PKG)_CHECKSUM := 0b5cfee005e22a78d537a84b36ba90f665b55c3fc7f2ad11aae793eddc063629
 $(PKG)_GH_CONF  := jonaski/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawbs.org/
 $(PKG)_OWNER    := https://github.com/jonaski
