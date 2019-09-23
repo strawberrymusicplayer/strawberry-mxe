@@ -1,0 +1,27 @@
+This file is part of MXE. See LICENSE.md for licensing information.
+
+Contains ad hoc patches for cross building.
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Mon, 23 Sep 2019 22:49:52 +0200
+Subject: [PATCH 1/1] Fix GIO has real TLS support check
+
+
+diff --git a/meson.build b/meson.build
+index 1111111..2222222 100644
+--- a/meson.build
++++ b/meson.build
+@@ -157,8 +157,10 @@ if enable_tls_check
+     }
+     '''
+ 
+-    rres = cc.run(check_gio_tls_src, name : 'GIO has real TLS support', dependencies : glib_deps)
+-    assert(rres.compiled() and rres.returncode() == 0, 'libsoup requires glib-networking for TLS support')
++    #rres = cc.run(check_gio_tls_src, name : 'GIO has real TLS support', dependencies : glib_deps)
++    #assert(rres.compiled() and rres.returncode() == 0, 'libsoup requires glib-networking for TLS support')
++    assert(cc.compiles(check_gio_tls_src, name : 'GIO has real TLS support', dependencies : glib_deps),
++          'libsoup requires glib-networking or glib-openssl for TLS support')
+   endif
+ endif
+ 
