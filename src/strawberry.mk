@@ -2,10 +2,10 @@
 
 PKG             := strawberry
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := e3aebf1
-$(PKG)_CHECKSUM := 0769dabd58687f60f5df475c507ea6bacb85cb61ac3753a56aef4e774ef5b5a5
+$(PKG)_VERSION  := ab72207
+$(PKG)_CHECKSUM := 0d765cbadaecf9c3488a419a5b7627d6d345d9e995ef90b6861a561646795006
 $(PKG)_GH_CONF  := jonaski/strawberry/branches/master
-$(PKG)_WEBSITE  := https://www.strawbs.org/
+$(PKG)_WEBSITE  := https://www.strawberrymusicplayer.org/
 $(PKG)_OWNER    := https://github.com/jonaski
 $(PKG)_DEPS     := cc boost protobuf qtbase qtwinextras qttranslations chromaprint gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav taglib libcdio gnutls glib-networking
 
