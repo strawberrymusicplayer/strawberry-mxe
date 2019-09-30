@@ -3,64 +3,18 @@ This file is part of MXE. See LICENSE.md for licensing information.
 Contains ad hoc patches for cross building.
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Mark Brand <mabrand@mabrand.nl>
-Date: Mon, 4 Feb 2013 16:11:12 +0100
-Subject: [PATCH 1/5] add missing private lib to pc file
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Mon, 30 Sep 2019 22:25:39 +0200
+Subject: [PATCH 1/3] Fixes to configure.ac
 
-
-diff --git a/lib/gnutls.pc.in b/lib/gnutls.pc.in
-index 1111111..2222222 100644
---- a/lib/gnutls.pc.in
-+++ b/lib/gnutls.pc.in
-@@ -19,6 +19,6 @@ Description: Transport Security Layer implementation for the GNU system
- URL: https://www.gnutls.org/
- Version: @VERSION@
- Libs: -L${libdir} -lgnutls
--Libs.private: @LIBINTL@ @LIBSOCKET@ @INET_PTON_LIB@ @LIBPTHREAD@ @LIB_SELECT@ @TSS_LIBS@ @GMP_LIBS@ @LIBUNISTRING@ @LIBIDN2_LIBS@ @LIBATOMIC_LIBS@
-+Libs.private: @LIBINTL@ @LIBSOCKET@ @INET_PTON_LIB@ @LIBPTHREAD@ @LIB_SELECT@ @TSS_LIBS@ @GMP_LIBS@ @LIBUNISTRING@ @LIBIDN2_LIBS@ @LIBATOMIC_LIBS@ -lcrypt32
- @GNUTLS_REQUIRES_PRIVATE@
- Cflags: -I${includedir}
-
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Mark Brand <mabrand@mabrand.nl>
-Date: Mon, 24 Nov 2014 08:56:48 +0100
-Subject: [PATCH 2/5] windows build fix: ws2tcpip.h supplies inet_ntop
-
-Follow-up to 492c2b937ab66134d0b37499a6f3a747e19bc31a
-
-Signed-off-by: Mark Brand <mabrand@mabrand.nl>
-
-taken from: https://lists.gnupg.org/pipermail/gnutls-devel/2014-November/007250.html
-
-diff --git a/lib/x509/ip.c b/lib/x509/ip.c
-index 1111111..2222222 100644
---- a/lib/x509/ip.c
-+++ b/lib/x509/ip.c
-@@ -24,7 +24,11 @@
- #include "gnutls_int.h"
- #include "ip.h"
- #include <gnutls/x509.h>
--#include <arpa/inet.h>
-+#ifdef _WIN32
-+# include <ws2tcpip.h>
-+#else
-+# include <arpa/inet.h>
-+#endif
- 
- /*-
-  * _gnutls_mask_to_prefix:
-
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Mark Brand <mabrand@mabrand.nl>
-Date: Sun, 7 May 2017 20:17:13 +0200
-Subject: [PATCH 3/5] let gnutls configure detect libidn2
-
+- Let gnutls configure detect libidn2
+- Remove docs from configure.ac: avoid GTK_DOC dependencies
 
 diff --git a/configure.ac b/configure.ac
 index 1111111..2222222 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -511,26 +511,19 @@ idna_support=no
+@@ -532,26 +532,19 @@ idna_support=no
  with_libidn2=no
  
  if test "$try_libidn2" = yes;then
@@ -100,30 +54,7 @@ index 1111111..2222222 100644
  fi
  
  AM_CONDITIONAL(HAVE_LIBIDN2, test "$with_libidn2" != "no")
-diff --git a/lib/gnutls.pc.in b/lib/gnutls.pc.in
-index 1111111..2222222 100644
---- a/lib/gnutls.pc.in
-+++ b/lib/gnutls.pc.in
-@@ -19,6 +19,6 @@ Description: Transport Security Layer implementation for the GNU system
- URL: https://www.gnutls.org/
- Version: @VERSION@
- Libs: -L${libdir} -lgnutls
--Libs.private: @LIBINTL@ @LIBSOCKET@ @INET_PTON_LIB@ @LIBPTHREAD@ @LIB_SELECT@ @TSS_LIBS@ @GMP_LIBS@ @LIBUNISTRING@ @LIBIDN2_LIBS@ @LIBATOMIC_LIBS@ -lcrypt32
-+Libs.private: @LIBINTL@ @LIBSOCKET@ @INET_PTON_LIB@ @LIBPTHREAD@ @LIB_SELECT@ @TSS_LIBS@ @GMP_LIBS@ @LIBUNISTRING@ @LIBATOMIC_LIBS@ -lcrypt32
- @GNUTLS_REQUIRES_PRIVATE@
- Cflags: -I${includedir}
-
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Mark Brand <mabrand@mabrand.nl>
-Date: Thu, 6 Dec 2018 10:36:30 +0100
-Subject: [PATCH 4/5] remove docs from configure.ac: avoid GTK_DOC dependencies
-
-
-diff --git a/configure.ac b/configure.ac
-index 1111111..2222222 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -976,17 +976,6 @@ AC_DEFINE_UNQUOTED([INI_START_COMMENT_PREFIXES], [";#"], [The comment prefixes])
+@@ -1004,17 +997,6 @@ AC_DEFINE_UNQUOTED([INI_START_COMMENT_PREFIXES], [";#"], [The comment prefixes])
  AC_CONFIG_FILES([guile/pre-inst-guile], [chmod +x guile/pre-inst-guile])
  AC_CONFIG_FILES([
    Makefile
@@ -143,78 +74,44 @@ index 1111111..2222222 100644
    libdane/Makefile
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Nikos Mavrogiannopoulos <nmav@gnutls.org>
-Date: Fri, 2 Aug 2019 21:57:40 +0200
-Subject: [PATCH 5/5] read_cpuid_vals: use __get_cpuid_count() only when
- available
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Mon, 30 Sep 2019 22:26:33 +0200
+Subject: [PATCH 2/3] Add missing private lib to pc file
 
-This makes the functionality available on gcc 4.8.
 
-Resolves: #812
-
-Signed-off-by: Nikos Mavrogiannopoulos <nmav@gnutls.org>
-
-diff --git a/configure.ac b/configure.ac
+diff --git a/lib/gnutls.pc.in b/lib/gnutls.pc.in
 index 1111111..2222222 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -182,6 +182,17 @@ case $host_cpu in
-   ;;
- esac
- 
-+# check for gcc's __get_cpuid_count functionality
-+AC_MSG_CHECKING([for __get_cpuid_count])
-+AC_LINK_IFELSE(
-+   [AC_LANG_SOURCE([
-+    #include <cpuid.h>
-+    int main(void) { unsigned t1; return __get_cpuid_count(7, 0, &t1, &t1, &t1, &t1); }
-+   ])],
-+   [AC_DEFINE([HAVE_GET_CPUID_COUNT], [1], [use __get_cpuid_count]) AC_MSG_RESULT([yes])],
-+   [AC_MSG_RESULT([no])]
-+)
-+
- fi
- 
- AC_ARG_ENABLE(tls13-interop,
-diff --git a/lib/accelerated/x86/x86-common.c b/lib/accelerated/x86/x86-common.c
+--- a/lib/gnutls.pc.in
++++ b/lib/gnutls.pc.in
+@@ -19,6 +19,6 @@ Description: Transport Security Layer implementation for the GNU system
+ URL: https://www.gnutls.org/
+ Version: @VERSION@
+ Libs: -L${libdir} -lgnutls
+-Libs.private: @LIBINTL@ @LIBSOCKET@ @INET_PTON_LIB@ @LIBPTHREAD@ @LIB_SELECT@ @TSS_LIBS@ @GMP_LIBS@ @LIBUNISTRING@ @LIBIDN2_LIBS@ @LIBATOMIC_LIBS@
++Libs.private: @LIBINTL@ @LIBSOCKET@ @INET_PTON_LIB@ @LIBPTHREAD@ @LIB_SELECT@ @TSS_LIBS@ @GMP_LIBS@ @LIBUNISTRING@ @LIBATOMIC_LIBS@ -lcrypt32
+ @GNUTLS_REQUIRES_PRIVATE@
+ Cflags: -I${includedir}
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Mon, 30 Sep 2019 22:27:00 +0200
+Subject: [PATCH 3/3] windows build fix: ws2tcpip.h supplies inet_ntop
+
+
+diff --git a/lib/x509/ip.c b/lib/x509/ip.c
 index 1111111..2222222 100644
---- a/lib/accelerated/x86/x86-common.c
-+++ b/lib/accelerated/x86/x86-common.c
-@@ -106,17 +106,33 @@ unsigned int _gnutls_x86_cpuid_s[4];
- #define VIA_PADLOCK_PHE (1<<21)
- #define VIA_PADLOCK_PHE_SHA512 (1<<22)
- 
-+#ifndef HAVE_GET_CPUID_COUNT
-+static inline void
-+get_cpuid_level7(unsigned int *eax, unsigned int *ebx,
-+		 unsigned int *ecx, unsigned int *edx)
-+{
-+	/* we avoid using __get_cpuid_count, because it is not available with gcc 4.8 */
-+	if (__get_cpuid_max(7, 0) < 7)
-+		return;
-+
-+	__cpuid_count(7, 0, *eax, *ebx, *ecx, *edx);
-+	return;
-+}
+--- a/lib/x509/ip.c
++++ b/lib/x509/ip.c
+@@ -24,7 +24,11 @@
+ #include "gnutls_int.h"
+ #include "ip.h"
+ #include <gnutls/x509.h>
+-#include <arpa/inet.h>
++#ifdef _WIN32
++# include <ws2tcpip.h>
 +#else
-+# define get_cpuid_level7(a,b,c,d) __get_cpuid_count(7, 0, a, b, c, d)
++# include <arpa/inet.h>
 +#endif
-+
- static unsigned read_cpuid_vals(unsigned int vals[4])
- {
- 	unsigned t1, t2, t3;
--	if (!__get_cpuid(1, &t1, &vals[0],
--			 &vals[1], &t2))
-+	vals[0] = vals[1] = vals[2] = vals[3] = 0;
-+
-+	if (!__get_cpuid(1, &t1, &vals[0], &vals[1], &t2))
- 		return 0;
- 	/* suppress AVX512; it works conditionally on certain CPUs on the original code */
- 	vals[1] &= 0xfffff7ff;
  
--	if (!__get_cpuid_count(7, 0, &t1, &vals[2], &t2, &t3))
--		return 0;
-+	get_cpuid_level7(&t1, &vals[2], &t2, &t3);
- 
- 	return 1;
- }
+ /*-
+  * _gnutls_mask_to_prefix:
