@@ -4,8 +4,8 @@ PKG             := fribidi
 $(PKG)_WEBSITE  := https://fribidi.org/
 $(PKG)_DESCR    := FriBidi
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.0.5
-$(PKG)_CHECKSUM := 6a64f2a687f5c4f203a46fa659f43dd43d1f8b845df8d723107e8a7e6158e4ce
+$(PKG)_VERSION  := 1.0.7
+$(PKG)_CHECKSUM := 5ab5f21e9f2fc57b4b40f8ea8f14dba78a5cc46d9cf94bc5e00a58e6886a935d
 $(PKG)_GH_CONF  := fribidi/fribidi/releases, v, , , , .tar.bz2
 $(PKG)_DEPS     := cc
 
