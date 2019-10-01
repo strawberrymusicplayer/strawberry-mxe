@@ -8,7 +8,7 @@ $(PKG)_CHECKSUM := 9fbabe69018fcec707df0b71150168776040cde6c1a26bb5a82a136755fa8
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc glib flac liboil libsoup speex taglib wavpack lame twolame dlfcn-win32 gstreamer gst-plugins-base
+$(PKG)_DEPS     := cc glib flac liboil libsoup speex taglib wavpack lame dlfcn-win32 gstreamer gst-plugins-base
 
 $(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-good/refs,$(gstreamer_UPDATE))
 
@@ -90,7 +90,6 @@ define $(PKG)_BUILD
         --enable-qt \
         --enable-speex \
         --enable-taglib \
-        --enable-twolame \
         --enable-wavpack \
         --enable-isomp4 \
         --enable-udp \
