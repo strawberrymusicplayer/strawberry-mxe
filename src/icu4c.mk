@@ -1,7 +1,7 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := icu4c
-$(PKG)_WEBSITE  := https://ssl.icu-project.org/
+$(PKG)_WEBSITE  := http://site.icu-project.org/
 $(PKG)_DESCR    := ICU4C
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 64.2
@@ -9,18 +9,23 @@ $(PKG)_MAJOR    := $(word 1,$(subst ., ,$($(PKG)_VERSION)))
 $(PKG)_CHECKSUM := 627d5d8478e6d96fc8c90fed4851239079a561a6a8b9e48b0892f24e82d31d6c
 $(PKG)_SUBDIR   := icu
 $(PKG)_FILE     := $(PKG)-$(subst .,_,$($(PKG)_VERSION))-src.tgz
-$(PKG)_URL      := https://ssl.icu-project.org/files/$(PKG)/$($(PKG)_VERSION)/$($(PKG)_FILE)
+$(PKG)_URL      := https://sourceforge.net/projects/icu/files/ICU4C/$($(PKG)_VERSION)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc
 
 define $(PKG)_UPDATE
-        $(WGET) --user-agent='Wget/1.19.5' -q -O- 'https://ssl.icu-project.org/files/icu4c/' | \
-        grep -o 'href="[0-9.]*/' | \
-        grep -o '[0-9.]*' | \
-        $(SORT) --version-sort | \
-        tail -1
+        $(WGET) -q -O- 'https://sourceforge.net/projects/icu/files/ICU4C/' | \
+        $(SED) -n 's,.*/projects/.*/.*/.*/\([0-9]\+[^"]*\)/".*,\1,p' | \
+        $(SORT) -Vr | \
+        head -1
 endef
 
 define $(PKG)_BUILD_COMMON
+
+    # Ugly hack to get rid of python3 created by python3-conf
+    if [ -f usr/*/bin/python3 ]; then \
+      rename python3 python3.bak usr/*/bin/python3; \
+    fi
+
     cd '$(1)/source' && autoreconf -fi
     mkdir '$(1).native' && cd '$(1).native' && '$(1)/source/configure' \
         CC=$(BUILD_CC) CXX=$(BUILD_CXX)
@@ -38,6 +43,11 @@ define $(PKG)_BUILD_COMMON
     ln -sf '$(PREFIX)/$(TARGET)/bin/icu-config' '$(PREFIX)/bin/$(TARGET)-icu-config'
     rm -fv '$(PREFIX)/$(TARGET)/lib/icudt.dll' && rm -fv '$(PREFIX)/$(TARGET)/lib/icudt.dll.a'
     rm -fv '$(PREFIX)/$(TARGET)/lib/icudt$($(PKG)_MAJOR).dll'
+
+    # Ugly hack to get back python3 created by python3-conf
+    if [ -f usr/*/bin/python3.bak ]; then \
+      rename python3.bak python3 usr/*/bin/python3.bak; \
+    fi
 endef
 
 define $(PKG)_BUILD_SHARED
