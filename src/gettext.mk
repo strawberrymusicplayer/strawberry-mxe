@@ -28,7 +28,7 @@ define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && autoreconf -fi
     cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/gettext-runtime/configure' \
         $(MXE_CONFIGURE_OPTS) \
-        --enable-threads=win32 \
+        --enable-threads=$(MXE_GCC_THREADS) \
         --without-libexpat-prefix \
         --without-libxml2-prefix \
         CONFIG_SHELL=$(SHELL)

@@ -3,22 +3,197 @@ This file is part of MXE. See LICENSE.md for licensing information.
 Contains ad hoc patches for cross building.
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Jonas Kvinge <jonas@jkvinge.net>
-Date: Thu, 12 Sep 2019 23:45:42 +0200
-Subject: [PATCH 1/1] Fix lzma compile
+From: jzmaddock <john@johnmaddock.co.uk>
+Date: Fri, 24 Jul 2015 18:50:28 +0100
+Subject: [PATCH 3/3] Remove depricated type_traits usage.
 
+curl -L 'https://patch-diff.githubusercontent.com/raw/boostorg/iostreams/pull/15.patch' | sed 's,include/,,g' | git am
 
-diff --git a/libs/iostreams/src/lzma.cpp b/libs/iostreams/src/lzma.cpp
+diff --git a/boost/iostreams/detail/is_dereferenceable.hpp b/boost/iostreams/detail/is_dereferenceable.hpp
 index 1111111..2222222 100644
---- a/libs/iostreams/src/lzma.cpp
-+++ b/libs/iostreams/src/lzma.cpp
-@@ -20,9 +20,7 @@
+--- a/boost/iostreams/detail/is_dereferenceable.hpp
++++ b/boost/iostreams/detail/is_dereferenceable.hpp
+@@ -9,7 +9,8 @@
+ #ifndef BOOST_IOSTREAMS_DETAIL_IS_DEREFERENCEABLE_HPP_INCLUDED
+ #define BOOST_IOSTREAMS_DETAIL_IS_DEREFERENCEABLE_HPP_INCLUDED
  
+ # include <boost/type_traits/remove_cv.hpp>
++# include <boost/type_traits/integral_constant.hpp>
+ # include <boost/mpl/aux_/lambda_support.hpp>
+ # include <boost/mpl/bool.hpp>
+ # include <boost/detail/workaround.hpp>
+
+diff --git a/boost/thread/pthread/thread_data.hpp b/boost/thread/pthread/thread_data.hpp
+index 11111111..22222222 100644
+--- a/boost/thread/pthread/thread_data.hpp
++++ b/boost/thread/pthread/thread_data.hpp
+@@ -50,20 +50,7 @@ namespace boost
+           BOOST_VERIFY(!res && "pthread_attr_destroy failed");
+         }
+         // stack
+-        void set_stack_size(std::size_t size) BOOST_NOEXCEPT {
+-          if (size==0) return;
+-#ifdef BOOST_THREAD_USES_GETPAGESIZE
+-          std::size_t page_size = getpagesize();
+-#else
+-          std::size_t page_size = ::sysconf( _SC_PAGESIZE);
+-#endif
+-#if PTHREAD_STACK_MIN > 0
+-          if (size<PTHREAD_STACK_MIN) size=PTHREAD_STACK_MIN;
+-#endif
+-          size = ((size+page_size-1)/page_size)*page_size;
+-          int res = pthread_attr_setstacksize(&val_, size);
+-          BOOST_VERIFY(!res && "pthread_attr_setstacksize failed");
+-        }
++        void set_stack_size(std::size_t size) BOOST_NOEXCEPT;
  
- #ifndef BOOST_IOSTREAMS_LZMA_NO_MULTITHREADED
--    #if LZMA_VERSION < 50020002
-         #define BOOST_IOSTREAMS_LZMA_NO_MULTITHREADED
--    #endif
+         std::size_t get_stack_size() const BOOST_NOEXCEPT {
+             std::size_t size;
+
+diff --git a/libs/thread/src/pthread/thread.cpp b/libs/thread/src/pthread/thread.cpp
+index 11111111..22222222 100644
+--- a/libs/thread/src/pthread/thread.cpp
++++ b/libs/thread/src/pthread/thread.cpp
+@@ -43,8 +43,55 @@
+ #include <vector>
+ #include <string.h> // memcmp.
+ 
++#   if (defined(_WIN32) || defined (_WIN64) || defined(__MINGW32__) || defined(__MINGW64__))
++namespace {
++
++void system_info_( SYSTEM_INFO * si)
++{ ::GetSystemInfo( si); }
++
++SYSTEM_INFO system_info()
++{
++    static SYSTEM_INFO si;
++    static boost::once_flag flag;
++    boost::call_once( flag, static_cast< void(*)( SYSTEM_INFO *) >( system_info_), & si);
++    return si;
++}
++
++std::size_t pagesize()
++{ return static_cast< std::size_t >( system_info().dwPageSize); }
++
++std::size_t page_count( std::size_t stacksize)
++{
++    return static_cast< std::size_t >(
++        std::floor(
++            static_cast< float >( stacksize) / pagesize() ) );
++}
++
++}
++#endif
++
+ namespace boost
+ {
++
++    void thread_attributes::set_stack_size(std::size_t size) BOOST_NOEXCEPT {
++          if (size==0) return;
++#   if (defined(_WIN32) || defined (_WIN64) || defined(__MINGW32__) || defined(__MINGW64__))
++          std::size_t page_size = pagesize();
++#   else
++#	ifdef BOOST_THREAD_USES_GETPAGESIZE
++          std::size_t page_size = getpagesize();
++#	else
++          std::size_t page_size = ::sysconf( _SC_PAGESIZE);
++#	endif
++#   endif
++#   if PTHREAD_STACK_MIN > 0
++          if (size<PTHREAD_STACK_MIN) size=PTHREAD_STACK_MIN;
++#   endif
++          size = ((size+page_size-1)/page_size)*page_size;
++          int res = pthread_attr_setstacksize(&val_, size);
++          BOOST_VERIFY(!res && "pthread_attr_setstacksize failed");
++    }
++
+     namespace detail
+     {
+         thread_data_base::~thread_data_base()
+
+diff --git a/libs/thread/build/Jamfile.v2 b/libs/thread/build/Jamfile.v2
+index 11111111..22222222 100644
+--- a/libs/thread/build/Jamfile.v2
++++ b/libs/thread/build/Jamfile.v2
+@@ -165,6 +165,7 @@ rule win32_pthread_paths ( properties * )
+     local result ;
+     local PTW32_INCLUDE ;
+     local PTW32_LIB ;
++    local libname ;
+     PTW32_INCLUDE  = [ modules.peek             : PTW32_INCLUDE ] ;
+     PTW32_LIB      = [ modules.peek             : PTW32_LIB     ] ;
+     PTW32_INCLUDE ?= [ modules.peek user-config : PTW32_INCLUDE ] ;
+@@ -192,14 +193,22 @@ rule win32_pthread_paths ( properties * )
+     {
+         local include_path = [ path.make $(PTW32_INCLUDE) ] ;
+         local lib_path = [ path.make $(PTW32_LIB) ] ;
+-        local libname = pthread ;
++        if <link>shared in $(properties)
++        {
++            libname = pthread.dll ;
++        }
++        else
++        {
++            libname = pthread ;
++        }
++        
+         if <toolset>msvc in $(properties)
+         {
+             libname = $(libname)VC2.lib ;
+         }
+         if <toolset>gcc in $(properties)
+         {
+-            libname = lib$(libname)GC2.a ;
++            libname = lib$(libname).a ;
+         }
+         lib_path = [ path.glob $(lib_path) : $(libname) ] ;
+         if ! $(lib_path)
+@@ -216,8 +225,15 @@ rule win32_pthread_paths ( properties * )
+         }
+         else
+         {
++            if ! $(.notified)
++            {
++                echo "**************************************************************************"  ;
++                echo "Boost.Thread: Linking pthreads library found at:" "'$(lib_path)'"            ;
++                echo "**************************************************************************"  ;
++                .notified = true ;
++            }
+             result += <include>$(include_path) ;
+-            result += <library>$(lib_path) ;
++            result += <linkflags>"-lpthread -L$(lib_path)" ;
+         }
+     }
+     return $(result) ;
+
+diff --git a/libs/log/src/event.cpp b/libs/log/src/event.cpp
+index 11111111..22222222 100644
+--- a/libs/log/src/event.cpp
++++ b/libs/log/src/event.cpp
+@@ -20,6 +20,10 @@
+ #include <boost/assert.hpp>
+ #include <boost/cstdint.hpp>
+ #include <boost/throw_exception.hpp>
++#if defined(__MINGW64_VERSION_MAJOR)
++#include <windows.h>
++#include <pthread.h>
++#endif
+ #include <boost/log/detail/event.hpp>
+ #include <boost/log/exceptions.hpp>
+ 
+@@ -51,7 +55,6 @@
  #endif
  
- namespace boost { namespace iostreams {
+ #elif defined(BOOST_LOG_EVENT_USE_POSIX_SEMAPHORE)
+-
+ #include <errno.h>
+ #include <semaphore.h>
+ #include <boost/memory_order.hpp>
+@@ -131,7 +134,6 @@ BOOST_LOG_API void futex_based_event::set_signalled()
+ }
+ 
+ #elif defined(BOOST_LOG_EVENT_USE_POSIX_SEMAPHORE)
+-
+ //! Default constructor
+ BOOST_LOG_API sem_based_event::sem_based_event() : m_state()
+ {

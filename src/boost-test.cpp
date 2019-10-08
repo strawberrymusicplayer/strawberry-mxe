@@ -1,65 +1,87 @@
 /*
  * This file is part of MXE. See LICENSE.md for licensing information.
  */
+ 
 
+// Boost.Context Example
+//          Copyright Oliver Kowalke 2016.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
+
+#include <cstdlib>
 #include <iostream>
-#include <tuple>
-
 #include <boost/archive/xml_oarchive.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/thread/tss.hpp>
 
 boost::thread_specific_ptr<int> ptr;
 
-// https://www.boost.org/doc/libs/1_60_0/libs/context/doc/html/context/context.html
-#include <boost/context/all.hpp>
+#include <boost/context/fiber.hpp>
 
+namespace ctx = boost::context;
+
+class moveable {
+public:
+    int     value;
+
+    moveable() :
+        value( -1) {
+        }
+
+    moveable( int v) :
+        value( v) {
+        }
+
+    moveable( moveable && other) {
+        std::swap( value, other.value);
+        }
+
+    moveable & operator=( moveable && other) {
+        if ( this == & other) return * this;
+        value = other.value;
+        other.value = -1;
+        return * this;
+    }
+
+    moveable( moveable const& other) = delete;
+    moveable & operator=( moveable const& other) = delete;
+};
 void test_thread()
 {
-	if (ptr.get() == 0) {
-		ptr.reset(new int(0));
-	}
-	std::cout << "Hello, World! from thread" << std::endl;
+    if (ptr.get() == 0) {
+        ptr.reset(new int(0));
+    }
+    std::cout << "Hello, World! from thread" << std::endl;
 }
 
-int main(int, char * [])
+int main(int argc, char *argv[])
 {
-	{
-		boost::archive::xml_oarchive oa(std::cout);
-		std::string s = "\n\n    Hello, World!\n\n";
-		oa << BOOST_SERIALIZATION_NVP(s);
-	}
+    (void)argc;
+    (void)argv;
 
-	{
-		boost::thread thrd(test_thread);
-		thrd.join();
-	}
+    boost::archive::xml_oarchive oa(std::cout);
+    std::string s = "\n\n    Hello, World!\n\n";
+    oa << BOOST_SERIALIZATION_NVP(s);
 
-	{
-		namespace ctx = boost::context;
-		int data = 0;
-		ctx::continuation c = ctx::callcc([&data](ctx::continuation && c) {
-			std::cout << "f1: entered first time: " << data << std::endl;
-			data += 1;
-			c = c.resume();
-			std::cout << "f1: entered second time: " << data << std::endl;
-			data += 1;
-			c = c.resume();
-			std::cout << "f1: entered third time: " << data << std::endl;
-			return std::move(c);
-		});
-		std::cout << "f1: returned first time: " << data << std::endl;
-		data += 1;
-		c = c.resume();
-		std::cout << "f1: returned second time: " << data << std::endl;
-		data += 1;
-		c = c.resume_with([&data](ctx::continuation && c) {
-			std::cout << "f2: entered: " << data << std::endl;
-			data = -1;
-			return std::move(c);
-		});
-		std::cout << "f1: returned third time" << std::endl;
-	}
+    boost::thread thrd(test_thread);
+    thrd.join();
 
-	return 0;
+    moveable data{ 1 };
+    ctx::fiber f{ std::allocator_arg, ctx::fixedsize_stack{},
+                     [&data](ctx::fiber && f){
+                        std::cout << "entered first time: " << data.value << std::endl;
+                        data = std::move( moveable{ 3 });
+                        f = std::move( f).resume();
+                        std::cout << "entered second time: " << data.value << std::endl;
+                        data = std::move( moveable{});
+                        return std::move( f);
+                     }};
+    f = std::move( f).resume();
+    std::cout << "returned first time: " << data.value << std::endl;
+    data.value = 5;
+    f = std::move( f).resume();
+    std::cout << "returned second time: " << data.value << std::endl;
+    std::cout << "main: done" << std::endl;
+    return EXIT_SUCCESS;
 }
