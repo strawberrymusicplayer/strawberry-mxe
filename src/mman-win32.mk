@@ -4,8 +4,8 @@ PKG             := mman-win32
 $(PKG)_WEBSITE  := https://code.google.com/p/mman-win32/
 $(PKG)_DESCR    := MMA-Win32
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 9f115ad
-$(PKG)_CHECKSUM := 8ef745c80ab2b0ea52eba4830c45b20926fd9dcbc16c3da31f66607316dd7751
+$(PKG)_VERSION  := 2d1c576
+$(PKG)_CHECKSUM := 3b112c8084a29102759e53971ebf1d4d9df48f01c452d0742e1b1569f660f14e
 $(PKG)_GH_CONF  := witwall/mman-win32/branches/master
 $(PKG)_DEPS     := cc
 
