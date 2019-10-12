@@ -12,7 +12,7 @@ $(PKG)_TARGETS  := $(BUILD)
 $(PKG)_DEPS     :=
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- -t 2 --timeout=6 'https://www.cmake.org/cmake/resources/software.html' | \
+    $(WGET) -q -O- 'https://www.cmake.org/cmake/resources/software.html' | \
     $(SED) -n 's,.*cmake-\([0-9.]*\)\.tar.*,\1,p' | \
     $(SORT) -V | \
     tail -1

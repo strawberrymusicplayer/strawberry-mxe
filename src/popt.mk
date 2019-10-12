@@ -11,7 +11,7 @@ $(PKG)_URL      := http://anduin.linuxfromscratch.org/BLFS/popt/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc gettext libiconv
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- -t 2 --timeout=6 'http://anduin.linuxfromscratch.org/BLFS/popt/' | \
+    $(WGET) -q -O- 'http://anduin.linuxfromscratch.org/BLFS/popt/' | \
     grep 'popt-' | \
     $(SED) -n 's,.*popt-\([0-9][^>]*\)\.tar.*,\1,p' | \
     tail -1

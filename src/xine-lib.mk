@@ -11,7 +11,7 @@ $(PKG)_URL      := http://$(SOURCEFORGE_MIRROR)/project/xine/$(PKG)/$($(PKG)_VER
 $(PKG)_DEPS     := gcc pthreads mman-win32 zlib flac faad2 libmad speex theora vorbis wavpack libcdio libmpcdec
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- -t 2 --timeout=6 'http://www.xine-project.org/releases' | \
+    $(WGET) -q -O- 'http://www.xine-project.org/releases' | \
     $(SED) -e 's,<a,\n<a,g' | \
     $(SED) -n 's,.*xine-lib-\([0-9][^"]*\)\.tar.*,\1,p' | \
     $(SORT) -V | \
