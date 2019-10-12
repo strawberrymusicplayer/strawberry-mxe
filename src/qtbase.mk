@@ -19,7 +19,7 @@ $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 #endef
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- https://download.qt.io/official_releases/qt/5.13/ | \
+    $(WGET) -q -O- -t 2 --timeout=6 https://download.qt.io/official_releases/qt/5.13/ | \
     $(SED) -n 's,.*href="\(5\.13\.[^/]*\)/".*,\1,p' | \
     grep -iv -- '-rc' | \
     sort |

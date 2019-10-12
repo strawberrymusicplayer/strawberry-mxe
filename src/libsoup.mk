@@ -12,7 +12,7 @@ $(PKG)_URL      := https://download.gnome.org/sources/libsoup/$(call SHORT_PKG_V
 $(PKG)_DEPS     := cc meson ninja glib glib-networking libxml2 sqlite brotli libpsl
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://gitlab.gnome.org/GNOME/libsoup/-/tags' | \
+    $(WGET) -q -O- -t 2 --timeout=6 'https://gitlab.gnome.org/GNOME/libsoup/-/tags' | \
     $(SED) -n "s,.*libsoup-\([0-9]\+\.[0-9]*[02468]*\.[^']*\)\.tar.*,\1,p" | \
     $(SORT) -Vr | \
     head -1
