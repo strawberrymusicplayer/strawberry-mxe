@@ -3,28 +3,74 @@ This file is part of MXE. See LICENSE.md for licensing information.
 Contains ad hoc patches for cross building.
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: jzmaddock <john@johnmaddock.co.uk>
-Date: Fri, 24 Jul 2015 18:50:28 +0100
-Subject: [PATCH 3/3] Remove depricated type_traits usage.
+From: Gregorio Litenstein <g.litenstein@gmail.com>
+Date: Sun, 6 Oct 2019 17:34:23 -0300
+Subject: [PATCH 1/4] Fix libwinpthread library name.
 
-curl -L 'https://patch-diff.githubusercontent.com/raw/boostorg/iostreams/pull/15.patch' | sed 's,include/,,g' | git am
 
-diff --git a/boost/iostreams/detail/is_dereferenceable.hpp b/boost/iostreams/detail/is_dereferenceable.hpp
+diff --git a/libs/thread/build/Jamfile.v2 b/libs/thread/build/Jamfile.v2
 index 1111111..2222222 100644
---- a/boost/iostreams/detail/is_dereferenceable.hpp
-+++ b/boost/iostreams/detail/is_dereferenceable.hpp
-@@ -9,7 +9,8 @@
- #ifndef BOOST_IOSTREAMS_DETAIL_IS_DEREFERENCEABLE_HPP_INCLUDED
- #define BOOST_IOSTREAMS_DETAIL_IS_DEREFERENCEABLE_HPP_INCLUDED
- 
- # include <boost/type_traits/remove_cv.hpp>
-+# include <boost/type_traits/integral_constant.hpp>
- # include <boost/mpl/aux_/lambda_support.hpp>
- # include <boost/mpl/bool.hpp>
- # include <boost/detail/workaround.hpp>
+--- a/libs/thread/build/Jamfile.v2
++++ b/libs/thread/build/Jamfile.v2
+@@ -165,6 +165,7 @@ rule win32_pthread_paths ( properties * )
+     local result ;
+     local PTW32_INCLUDE ;
+     local PTW32_LIB ;
++    local libname ;
+     PTW32_INCLUDE  = [ modules.peek             : PTW32_INCLUDE ] ;
+     PTW32_LIB      = [ modules.peek             : PTW32_LIB     ] ;
+     PTW32_INCLUDE ?= [ modules.peek user-config : PTW32_INCLUDE ] ;
+@@ -192,14 +193,22 @@ rule win32_pthread_paths ( properties * )
+     {
+         local include_path = [ path.make $(PTW32_INCLUDE) ] ;
+         local lib_path = [ path.make $(PTW32_LIB) ] ;
+-        local libname = pthread ;
++        if <link>shared in $(properties)
++        {
++            libname = pthread.dll ;
++        }
++        else
++        {
++            libname = pthread ;
++        }
++        
+         if <toolset>msvc in $(properties)
+         {
+             libname = $(libname)VC2.lib ;
+         }
+         if <toolset>gcc in $(properties)
+         {
+-            libname = lib$(libname)GC2.a ;
++            libname = lib$(libname).a ;
+         }
+         lib_path = [ path.glob $(lib_path) : $(libname) ] ;
+         if ! $(lib_path)
+@@ -216,8 +225,15 @@ rule win32_pthread_paths ( properties * )
+         }
+         else
+         {
++            if ! $(.notified)
++            {
++                echo "**************************************************************************"  ;
++                echo "Boost.Thread: Linking pthreads library found at:" "'$(lib_path)'"            ;
++                echo "**************************************************************************"  ;
++                .notified = true ;
++            }
+             result += <include>$(include_path) ;
+-            result += <library>$(lib_path) ;
++            result += <linkflags>"-lpthread -L$(lib_path)" ;
+         }
+     }
+     return $(result) ;
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Gregorio Litenstein <g.litenstein@gmail.com>
+Date: Sun, 6 Oct 2019 17:46:31 -0300
+Subject: [PATCH 2/4] Remove set_stack_size() implementation from header
+
 
 diff --git a/boost/thread/pthread/thread_data.hpp b/boost/thread/pthread/thread_data.hpp
-index 11111111..22222222 100644
+index 1111111..2222222 100644
 --- a/boost/thread/pthread/thread_data.hpp
 +++ b/boost/thread/pthread/thread_data.hpp
 @@ -50,20 +50,7 @@ namespace boost
@@ -49,9 +95,8 @@ index 11111111..22222222 100644
  
          std::size_t get_stack_size() const BOOST_NOEXCEPT {
              std::size_t size;
-
 diff --git a/libs/thread/src/pthread/thread.cpp b/libs/thread/src/pthread/thread.cpp
-index 11111111..22222222 100644
+index 1111111..2222222 100644
 --- a/libs/thread/src/pthread/thread.cpp
 +++ b/libs/thread/src/pthread/thread.cpp
 @@ -43,8 +43,55 @@
@@ -111,89 +156,80 @@ index 11111111..22222222 100644
      {
          thread_data_base::~thread_data_base()
 
-diff --git a/libs/thread/build/Jamfile.v2 b/libs/thread/build/Jamfile.v2
-index 11111111..22222222 100644
---- a/libs/thread/build/Jamfile.v2
-+++ b/libs/thread/build/Jamfile.v2
-@@ -165,6 +165,7 @@ rule win32_pthread_paths ( properties * )
-     local result ;
-     local PTW32_INCLUDE ;
-     local PTW32_LIB ;
-+    local libname ;
-     PTW32_INCLUDE  = [ modules.peek             : PTW32_INCLUDE ] ;
-     PTW32_LIB      = [ modules.peek             : PTW32_LIB     ] ;
-     PTW32_INCLUDE ?= [ modules.peek user-config : PTW32_INCLUDE ] ;
-@@ -192,14 +193,22 @@ rule win32_pthread_paths ( properties * )
-     {
-         local include_path = [ path.make $(PTW32_INCLUDE) ] ;
-         local lib_path = [ path.make $(PTW32_LIB) ] ;
--        local libname = pthread ;
-+        if <link>shared in $(properties)
-+        {
-+            libname = pthread.dll ;
-+        }
-+        else
-+        {
-+            libname = pthread ;
-+        }
-+        
-         if <toolset>msvc in $(properties)
-         {
-             libname = $(libname)VC2.lib ;
-         }
-         if <toolset>gcc in $(properties)
-         {
--            libname = lib$(libname)GC2.a ;
-+            libname = lib$(libname).a ;
-         }
-         lib_path = [ path.glob $(lib_path) : $(libname) ] ;
-         if ! $(lib_path)
-@@ -216,8 +225,15 @@ rule win32_pthread_paths ( properties * )
-         }
-         else
-         {
-+            if ! $(.notified)
-+            {
-+                echo "**************************************************************************"  ;
-+                echo "Boost.Thread: Linking pthreads library found at:" "'$(lib_path)'"            ;
-+                echo "**************************************************************************"  ;
-+                .notified = true ;
-+            }
-             result += <include>$(include_path) ;
--            result += <library>$(lib_path) ;
-+            result += <linkflags>"-lpthread -L$(lib_path)" ;
-         }
-     }
-     return $(result) ;
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Gregorio Litenstein <g.litenstein@gmail.com>
+Date: Sun, 6 Oct 2019 17:46:46 -0300
+Subject: [PATCH 3/4] Fix missing include
 
+
+diff --git a/boost/iostreams/detail/is_dereferenceable.hpp b/boost/iostreams/detail/is_dereferenceable.hpp
+index 1111111..2222222 100644
+--- a/boost/iostreams/detail/is_dereferenceable.hpp
++++ b/boost/iostreams/detail/is_dereferenceable.hpp
+@@ -10,6 +10,7 @@
+ #define BOOST_IOSTREAMS_DETAIL_IS_DEREFERENCEABLE_HPP_INCLUDED
+ 
+ # include <boost/type_traits/remove_cv.hpp>
++# include <boost/type_traits/integral_constant.hpp>
+ # include <boost/mpl/aux_/lambda_support.hpp>
+ # include <boost/mpl/bool.hpp>
+ # include <boost/detail/workaround.hpp>
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Gregorio Litenstein <g.litenstein@gmail.com>
+Date: Sun, 6 Oct 2019 17:48:38 -0300
+Subject: [PATCH 4/4] Prefer pthreads; use posix semaphores also
+
+
+diff --git a/boost/config/platform/win32.hpp b/boost/config/platform/win32.hpp
+index 1111111..2222222 100644
+--- a/boost/config/platform/win32.hpp
++++ b/boost/config/platform/win32.hpp
+@@ -57,6 +57,16 @@
+ // all translation units (needed for shared_ptr etc).
+ //
+ 
++// pthread_unistd.h should always be present in mingw-w64; but if winpthread is not available, it's just a stub header.
++#if (defined(__MINGW32__)  || defined(__MINGW64__))
++#  if (__MINGW64_VERSION_MAJOR > 3)
++#    include <pthread_unistd.h>
++#    if (defined(_POSIX_THREADS) && !defined(BOOST_HAS_PTHREADS))
++#      define BOOST_HAS_PTHREADS
++#    endif
++#  endif
++#endif
++
+ #ifndef BOOST_HAS_PTHREADS
+ #  define BOOST_HAS_WINTHREADS
+ #endif
+diff --git a/boost/thread/detail/platform.hpp b/boost/thread/detail/platform.hpp
+index 1111111..2222222 100644
+--- a/boost/thread/detail/platform.hpp
++++ b/boost/thread/detail/platform.hpp
+@@ -31,7 +31,7 @@
+ #elif defined(__CYGWIN__)
+ #  define BOOST_THREAD_CYGWIN
+ #elif (defined(_WIN32) || defined(__WIN32__) || defined(WIN32)) && !defined(BOOST_DISABLE_WIN32)
+-#if ! defined BOOST_THREAD_WIN32
++#if (!defined(BOOST_THREAD_WIN32) && !defined(BOOST_HAS_PTHREADS)) 
+ #  define BOOST_THREAD_WIN32
+ #endif
+ #elif defined(__BEOS__)
 diff --git a/libs/log/src/event.cpp b/libs/log/src/event.cpp
-index 11111111..22222222 100644
+index 1111111..2222222 100644
 --- a/libs/log/src/event.cpp
 +++ b/libs/log/src/event.cpp
-@@ -20,6 +20,10 @@
+@@ -20,6 +20,13 @@
  #include <boost/assert.hpp>
  #include <boost/cstdint.hpp>
  #include <boost/throw_exception.hpp>
 +#if defined(__MINGW64_VERSION_MAJOR)
-+#include <windows.h>
-+#include <pthread.h>
++#  include <windows.h>
++#  if defined(BOOST_THREAD_PLATFORM_PTHREAD)
++//   Including <pthread.h> also defines _POSIX_SEMAPHORES
++#    include <pthread_unistd.h>
++#  endif
 +#endif
  #include <boost/log/detail/event.hpp>
  #include <boost/log/exceptions.hpp>
  
-@@ -51,7 +55,6 @@
- #endif
- 
- #elif defined(BOOST_LOG_EVENT_USE_POSIX_SEMAPHORE)
--
- #include <errno.h>
- #include <semaphore.h>
- #include <boost/memory_order.hpp>
-@@ -131,7 +134,6 @@ BOOST_LOG_API void futex_based_event::set_signalled()
- }
- 
- #elif defined(BOOST_LOG_EVENT_USE_POSIX_SEMAPHORE)
--
- //! Default constructor
- BOOST_LOG_API sem_based_event::sem_based_event() : m_state()
- {

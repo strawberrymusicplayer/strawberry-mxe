@@ -11,6 +11,7 @@ $(PKG)_FILE     := boost_$(subst .,_,$($(PKG)_VERSION)).tar.bz2
 $(PKG)_URL      := https://dl.bintray.com/boostorg/release/$($(PKG)_VERSION)/source/$($(PKG)_FILE)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS     := cc bzip2 expat zlib xz
+AWK             = $(shell which $(shell gawk --help >/dev/null 2>&1 && echo g)awk)
 
 $(PKG)_DEPS_$(BUILD) := zlib
 
@@ -30,8 +31,13 @@ $(shell echo $(gcc_VERSION) | cut -f2 -d.)
 endef
 
 define $(PKG)_CXX_STD
-$(shell [ $(1) -gt 6 -o \( $(1) -eq 6 -a $(2) -ge 1 \) ] && echo 14 || echo 11)
+$(shell [ $(1) -gt 6 -o \( $(1) -eq 6 -a $(2) -ge 1 \) ] && echo 14 || echo 11)
 endef
+
+$(PKG)_VERSION_MAJOR := $(shell echo $($(PKG)_VERSION) | cut -f1 -d.)
+$(PKG)_VERSION_MINOR := $(shell echo $($(PKG)_VERSION) | cut -f2 -d.)
+
+$(PKG)_ENABLE_CMAKE_SUPPORT := $(shell [ \( $($(PKG)_VERSION_MAJOR) -eq 1 -a $($(PKG)_VERSION_MINOR) -ge 72 \) -o $($(PKG)_VERSION_MAJOR) -ge 2 ] && echo true)
 
 define $(PKG)_BUILD
     # old version appears to interfere
@@ -50,7 +56,7 @@ define $(PKG)_BUILD
         -a \
         -q \
         -j '$(JOBS)' \
-        -d2 \
+        -d1 \
         --ignore-site-config \
         --user-config=user-config.jam \
         abi=ms \
@@ -65,7 +71,7 @@ define $(PKG)_BUILD
         variant=release \
         toolset=gcc-mxe \
         cxxflags="-std=c++$(call $(PKG)_CXX_STD,$(GCC_VERSION_MAJOR),$(GCC_VERSION_MINOR))" \
-        --layout=system \
+        --layout=tagged \
         --disable-icu \
         --without-mpi \
         --without-python \
@@ -77,26 +83,29 @@ define $(PKG)_BUILD
         -sEXPAT_LIBPATH='$(PREFIX)/$(TARGET)/lib' \
         -sPTW32_INCLUDE='$(PREFIX)/$(TARGET)/include' \
         -sPTW32_LIB='$(PREFIX)/$(TARGET)/lib' \
-        define="BOOST_THREAD_VERSION=3" \
+        define="BOOST_THREAD_VERSION=4" \
+        define="BOOST_THREAD_DONT_USE_CHRONO" \
+        define="BOOST_THREAD_USES_DATETIME" \
+        define="BOOST_THREAD_DONT_PROVIDE_GENERIC_SHARED_MUTEX_ON_WIN" \
+        define="BOOST_THREAD_PROVIDES_NESTED_LOCKS" \
         define="BOOST_THREAD_DONT_PROVIDE_ONCE_CXX11" \
-        define="BOOST_THREAD_PROVIDES_BASIC_THREAD_ID" \
-        define="BOOST_THREAD_PROVIDES_GENERIC_SHARED_MUTEX_ON_WIN" \
         install
-    ln -sf "$(PREFIX)/$(TARGET)/lib"/libboost_thread_pthread$(if $(BUILD_SHARED),.dll).a \
-    "$(PREFIX)/$(TARGET)/lib"/libboost_thread$(if $(BUILD_SHARED),.dll).a
-    for lib in `ls "$(PREFIX)/$(TARGET)/lib"/libboost_*$(if $(BUILD_SHARED),.dll).a | tr "\n" " "`; \
+    for lib in `ls "$(PREFIX)/$(TARGET)/lib"/libboost_*.a | tr "\n" " "`; \
     do \
-    echo ln -sf "$${lib}" \
-    "$(PREFIX)/$(TARGET)/lib/`basename $${lib} $(if $(BUILD_SHARED),.dll).a`-mt$(if $(BUILD_SHARED),.dll).a"; \
-    ln -sf "$${lib}" \
-    "$(PREFIX)/$(TARGET)/lib/`basename $${lib} $(if $(BUILD_SHARED),.dll).a`-mt$(if $(BUILD_SHARED),.dll).a"; \
+    newlib=`echo \`basename $${lib}\` | $(AWK) '{gsub(/-mt-x[0-9]{2}/,"-mt"); gsub(/_pthread/,"")}1'`; \
+    echo ln -sf "$${lib}" "$(PREFIX)/$(TARGET)/lib/$${newlib}"; \
+    ln -sf "$${lib}" "$(PREFIX)/$(TARGET)/lib/$${newlib}"; \
     done
     $(if $(BUILD_SHARED), \
         mv -fv '$(PREFIX)/$(TARGET)/lib/'libboost_*.dll '$(PREFIX)/$(TARGET)/bin/')
 
     # setup cmake toolchain
+    mkdir -p '$(CMAKE_TOOLCHAIN_DIR)'
     printf "set(Boost_THREADAPI "$(if $(findstring posix,$(MXE_GCC_THREADS)),pthread,win32)")\\n\
-    set (Boost_USE_STATIC_LIBS $(if $(BUILD_SHARED),OFF,ON))" > '$(CMAKE_TOOLCHAIN_DIR)/$(PKG).cmake'
+    set (Boost_USE_STATIC_LIBS $(if $(BUILD_SHARED),OFF,ON))\\n\
+    set (Boost_USE_MULTITHREADED ON)\\n\
+    set (Boost_NO_BOOST_CMAKE $(if $($(PKG)_ENABLE_CMAKE_SUPPORT),OFF,ON))\\n\
+    set (Boost_USE_STATIC_RUNTIME $(if $(BUILD_SHARED),OFF,ON))\\n" > '$(CMAKE_TOOLCHAIN_DIR)/$(PKG).cmake'
 
     '$(TARGET)-g++' \
         -W -Wall -Werror -ansi -U__STRICT_ANSI__ -pedantic \
@@ -154,4 +163,10 @@ define $(PKG)_BUILD_$(BUILD)
             --libdir='$(PREFIX)/$(TARGET)/lib' \
             --includedir='$(PREFIX)/$(TARGET)/include' \
             install
+# setup cmake toolchain
+    mkdir -p '$(CMAKE_TOOLCHAIN_DIR)'
+    printf "set (Boost_USE_STATIC_LIBS ON)\\n\
+    set (Boost_USE_MULTITHREADED ON)\\n\
+    set (Boost_NO_BOOST_CMAKE $(if $($(PKG)_ENABLE_CMAKE_SUPPORT),OFF,ON))\\n\
+    set (Boost_USE_STATIC_RUNTIME ON)\\n" > '$(CMAKE_TOOLCHAIN_DIR)/$(PKG).cmake'
 endef
