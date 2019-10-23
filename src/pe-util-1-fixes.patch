@@ -1,0 +1,32 @@
+This file is part of MXE. See LICENSE.md for licensing information.
+
+Contains ad hoc patches for cross building.
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Thu, 24 Oct 2019 00:23:55 +0200
+Subject: [PATCH 1/1] Build fixes
+
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 1111111..2222222 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,11 +1,16 @@
+ cmake_minimum_required(VERSION 2.8.8)
+ project(mingw_util CXX)
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
++set(Boost_USE_STATIC_LIBS ON)
++set(Boost_USE_STATIC_RUNTIME ON)
+ 
+ find_package(Boost 1.54
+   COMPONENTS
+     system # needed by filesystem, log
+-    filesystem)
++    filesystem REQUIRED)
++
++include_directories(${Boost_INCLUDE_DIR})
++link_directories(${Boost_LIBRARY_DIR})
+ 
+ add_executable(peldd
+   peldd.cc
