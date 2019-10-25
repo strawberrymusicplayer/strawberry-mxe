@@ -14,6 +14,11 @@ $(PKG)_DEPS     := cc
 $(PKG)_DEPS_$(BUILD)  :=
 $(PKG)_BUILD_$(BUILD) :=
 
+define $(PKG)_UPDATE
+    echo 'Updates for package $(PKG) is disabled.' >&2;
+    echo $($(PKG)_VERSION)
+endef
+
 define $(PKG)_BUILD
     # build and install the cross-library
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
