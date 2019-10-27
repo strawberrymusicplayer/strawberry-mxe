@@ -24,7 +24,6 @@ define $(PKG)_BUILD
         --disable-audiofxbad \
         --disable-audiolatency \
         --disable-audiomixmatrix \
-        --disable-compositor \
         --disable-audiovisualizers \
         --disable-autoconvert \
         --disable-bayer \
@@ -76,8 +75,6 @@ define $(PKG)_BUILD
         --disable-vmnc \
         --disable-y4m \
         --disable-yadif \
-        --disable-directsound \
-        --disable-wasapi \
         --disable-direct3d \
         --disable-winscreencap \
         --disable-winks \
@@ -99,7 +96,6 @@ define $(PKG)_BUILD
         --disable-voaacenc \
         --disable-bs2b \
         --disable-bz2 \
-        --disable-chromaprint \
         --disable-curl \
         --disable-dash \
         --disable-dc1394 \
@@ -107,7 +103,6 @@ define $(PKG)_BUILD
         --disable-directfb \
         --disable-wayland \
         --disable-webp \
-        --disable-daala \
         --disable-dts \
         --disable-resindvd \
         --disable-fbdev \
@@ -146,10 +141,8 @@ define $(PKG)_BUILD
         --disable-smoothstreaming \
         --disable-sndfile \
         --disable-soundtouch \
-        --disable-spc \
         --disable-gme \
         --disable-dvb \
-        --disable-acm \
         --disable-vdpau \
         --disable-sbc \
         --disable-zbar \
@@ -159,6 +152,9 @@ define $(PKG)_BUILD
         --disable-x265 \
         --disable-webrtcdsp \
         --disable-webrtc \
+        --enable-directsound \
+        --enable-wasapi \
+        --enable-chromaprint \
         --enable-faac \
         --enable-faad \
         --enable-aiff \
