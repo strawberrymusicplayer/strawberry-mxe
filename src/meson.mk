@@ -12,41 +12,10 @@ $(PKG)_FILE      := $($(PKG)_SUBDIR).tar.gz
 $(PKG)_URL       := https://github.com/mesonbuild/meson/archive/$($(PKG)_VERSION).tar.gz
 $(PKG)_FILE_DEPS := $(wildcard $(PWD)/src/meson/conf/*)
 $(PKG)_DEPS      := cmake-conf ninja python3-conf
-$(PKG)_TARGETS   := $(BUILD) $(MXE_TARGETS)
-
-define $(PKG)_BUILD
-    # create the Meson cross file
-    mkdir -p '$(PREFIX)/$(TARGET)/share/meson'
-    cmake-configure-file \
-        -DLIBTYPE=$(if $(BUILD_SHARED),shared,static) \
-        -DPREFIX=$(PREFIX) \
-        -DTARGET=$(TARGET) \
-        -DBUILD=$(BUILD) \
-        -DCPU_FAMILY=$(strip \
-             $(if $(findstring x86_64,$(TARGET)),x86_64,\
-             $(if $(findstring i686,$(TARGET)),x86))) \
-        -DCPU=$(strip \
-             $(if $(findstring x86_64,$(TARGET)),x86_64,\
-             $(if $(findstring i686,$(TARGET)),i686))) \
-        -DINPUT='$(PWD)/src/meson/conf/mxe-crossfile.meson.in' \
-        -DOUTPUT='$(PREFIX)/$(TARGET)/share/meson/mxe-crossfile.meson'
-
-    # create the prefixed Meson wrapper script
-    cmake-configure-file \
-        -DPATH='$(PREFIX)/$(BUILD)/bin:$(PREFIX)/bin' \
-        -DLIBTYPE=$(if $(BUILD_SHARED),shared,static) \
-        -DPREFIX=$(PREFIX) \
-        -DTARGET=$(TARGET) \
-        -DBUILD=$(BUILD) \
-        -DMESON_CROSS_FILE='$(PREFIX)/$(TARGET)/share/meson/mxe-crossfile.meson' \
-        -DINPUT='$(PWD)/src/meson/conf/target-meson.in' \
-        -DOUTPUT='$(PREFIX)/bin/$(TARGET)-meson'
-    chmod 0755 '$(PREFIX)/bin/$(TARGET)-meson'
-endef
+$(PKG)_TARGETS  := $(BUILD)
 
 define $(PKG)_BUILD_$(BUILD)
-    cd '$(SOURCE_DIR)' && python3 setup.py install \
-        --prefix='$(PREFIX)/$(TARGET)'
+    cd '$(SOURCE_DIR)' && python3 setup.py install --prefix='$(PREFIX)/$(TARGET)'
 
     # Awful hacks: we must hijack the python entry points here to install our
     # site-packages path. This is because Meson is going to put the path to the

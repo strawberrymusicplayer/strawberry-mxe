@@ -21,20 +21,14 @@ define $(PKG)_UPDATE
     head -1
 endef
 
-define $(PKG)_BUILD_NATIVE
-    cd '$(SOURCE_DIR)' && $(PREFIX)/x86_64-pc-linux-gnu/bin/meson \
+define $(PKG)_BUILD_$(BUILD)
+    cd '$(SOURCE_DIR)' && meson \
                                 --prefix='$(PREFIX)/$(TARGET)' \
                                 --buildtype=release \
                                 --pkg-config-path='$(PREFIX)/$(TARGET)/bin/pkgconf' \
                                 '$(BUILD_DIR)'
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install
-endef
-
-define $(PKG)_BUILD_$(BUILD)
-    $(if $(findstring darwin, $(BUILD)), \
-        $($(PKG)_BUILD_DARWIN), \
-        $($(PKG)_BUILD_NATIVE))
 endef
 
 define $(PKG)_BUILD
@@ -43,15 +37,7 @@ define $(PKG)_BUILD
     ln -sf '$(PREFIX)/$(BUILD)/bin/glib-genmarshal'        '$(PREFIX)/$(TARGET)/bin/'
     ln -sf '$(PREFIX)/$(BUILD)/bin/glib-compile-schemas'   '$(PREFIX)/$(TARGET)/bin/'
     ln -sf '$(PREFIX)/$(BUILD)/bin/glib-compile-resources' '$(PREFIX)/$(TARGET)/bin/'
-
-    cd '$(SOURCE_DIR)' && $(PREFIX)/x86_64-pc-linux-gnu/bin/meson \
-                                --cross-file '$(PREFIX)/$(TARGET)/share/meson/mxe-crossfile.meson' \
-                                --prefix='$(PREFIX)/$(TARGET)' \
-                                --buildtype=release \
-                                --pkg-config-path='$(PREFIX)/$(TARGET)/bin/pkgconf' \
-                                '$(BUILD_DIR)'
+    cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)'
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install
-
-
 endef

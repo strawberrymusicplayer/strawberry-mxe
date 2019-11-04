@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := 148c9549a6608084db5b2d3645cc5236dc1630c4ad37c8650ce25dd413b57
 $(PKG)_SUBDIR   := glib-networking-$($(PKG)_VERSION)
 $(PKG)_FILE     := glib-networking-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/$(PKG)/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc meson ninja glib gnutls
+$(PKG)_DEPS     := cc meson-conf ninja glib gnutls
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://gitlab.gnome.org/GNOME/glib-networking/-/tags' | \
@@ -18,24 +18,18 @@ define $(PKG)_UPDATE
     head -1
 endef
 
-define $(PKG)_BUILD_NATIVE
-    cd '$(SOURCE_DIR)' && $(PREFIX)/x86_64-pc-linux-gnu/bin/meson \
+define $(PKG)_BUILD_$(BUILD)
+    cd '$(SOURCE_DIR)' && meson \
                                 --prefix='$(PREFIX)/$(TARGET)' \
                                 --buildtype=release \
                                 --pkg-config-path='$(PREFIX)/$(TARGET)/bin/pkgconf' \
                                 '$(BUILD_DIR)'
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install
-
 endef
 
 define $(PKG)_BUILD
-    cd '$(SOURCE_DIR)' && $(PREFIX)/x86_64-pc-linux-gnu/bin/meson \
-                                --cross-file='$(PREFIX)/$(TARGET)/share/meson/mxe-crossfile.meson' \
-                                --prefix='$(PREFIX)/$(TARGET)' \
-                                --buildtype=release \
-                                --pkg-config-path='$(PREFIX)/$(TARGET)/bin/pkgconf' \
-                                '$(BUILD_DIR)'
+    cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)'
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install
 endef
