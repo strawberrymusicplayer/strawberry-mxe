@@ -8,6 +8,11 @@ $(PKG)_CHECKSUM := 187eb8a7aca2d5abcdfd81c42ac12e67ebe49c434299df1881a942e64b7c7
 $(PKG)_GH_CONF  := libimobiledevice/libplist/tags
 $(PKG)_DEPS     := cc libxml2
 
+define $(PKG)_UPDATE
+    echo 'Updates for package $(PKG) is disabled.' >&2;
+    echo $($(PKG)_VERSION)
+endef
+
 define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && NOCONFIGURE=true $(SHELL) ./autogen.sh
     cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
