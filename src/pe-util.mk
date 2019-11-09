@@ -31,6 +31,10 @@ define $(PKG)_BUILD
          echo 'exec "$(PREFIX)/$(BUILD)/bin/peldd" \
                     --clear-path \
                     --path "$(PREFIX)/$(TARGET)/bin" \
+                    --path "$(PREFIX)/$(TARGET)/qt5/bin" \
+                    --wlist uxtheme.dll \
+                    --wlist opengl32.dll \
+                    --wlist userenv.dll \
                     "$$@"') \
                  > '$(PREFIX)/bin/$(TARGET)-peldd'
         chmod 0755 '$(PREFIX)/bin/$(TARGET)-peldd'
