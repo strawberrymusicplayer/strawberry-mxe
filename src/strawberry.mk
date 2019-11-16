@@ -2,8 +2,8 @@
 
 PKG             := strawberry
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 45e9dd9
-$(PKG)_CHECKSUM := dd766891953b2e2334a31a87039306e46cea92e07b8273b65b9e141b3c2483e8
+$(PKG)_VERSION  := a718e19
+$(PKG)_CHECKSUM := b62bcad7a103b2a4b96b799eedccca7d54c4543336d88b7e96bc10fd28f4017d
 $(PKG)_GH_CONF  := jonaski/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawberrymusicplayer.org/
 $(PKG)_OWNER    := https://github.com/jonaski
@@ -33,7 +33,7 @@ define $(PKG)_BUILD_SHARED
     $(INSTALL) '$(SOURCE_DIR)/dist/windows/Capabilities.nsh'                       '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin'
     $(INSTALL) '$(SOURCE_DIR)/dist/windows/FileAssociation.nsh'                    '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin'
     $(INSTALL) '$(SOURCE_DIR)/dist/windows/strawberry.ico'                         '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin'
-        
+
     $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gio-modules'
     $(INSTALL) '$(PREFIX)/$(TARGET)/lib/gio/modules/libgiognutls.dll'              '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gio-modules'
 
