@@ -4,8 +4,8 @@ PKG             := pe-parse
 $(PKG)_WEBSITE  := https://github.com/trailofbits/pe-parse
 $(PKG)_DESCR    := Principled, lightweight C/C++ PE parser
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 78869e5
-$(PKG)_CHECKSUM := 466e267716a4675ec1b679a9980bd68a74d77c4d3fc21cc42a307bdf66b6bae1
+$(PKG)_VERSION  := bd68ba4
+$(PKG)_CHECKSUM := 7f4a99d852045b5ea0ddd595aca7a5e47b4d1a9754c4c4d2b7cbcf96fd7780e2
 $(PKG)_GH_CONF  := trailofbits/pe-parse/branches/master
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS     := cc
@@ -14,16 +14,10 @@ $(PKG)_DEPS     := cc
 $(PKG)_DEPS_$(BUILD)  :=
 $(PKG)_BUILD_$(BUILD) :=
 
-define $(PKG)_UPDATE
-    echo 'Updates for package $(PKG) is disabled.' >&2;
-    echo $($(PKG)_VERSION)
-endef
-
 define $(PKG)_BUILD
     # build and install the cross-library
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
-        -DBUILD_COMMAND_LINE_TOOLS=OFF \
-        -DCMAKE_CXX_FLAGS='-Wno-error=redundant-decls -Wno-error=ignored-qualifiers'
+        -DBUILD_COMMAND_LINE_TOOLS=OFF
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 
