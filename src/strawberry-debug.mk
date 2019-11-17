@@ -2,8 +2,8 @@
 
 PKG             := strawberry-debug
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 93ade82
-$(PKG)_CHECKSUM := a3bc900b3ca4eab8088328f24486032dc47b1f6421af7c3cbc6952b425a189a2
+$(PKG)_VERSION  := bac5b76
+$(PKG)_CHECKSUM := 62eadf2fc288185fdb342fad8a62b05e58c7364c8a63f1740485d680a954b434
 $(PKG)_GH_CONF  := jonaski/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawberrymusicplayer.org/
 $(PKG)_OWNER    := https://github.com/jonaski
@@ -15,7 +15,7 @@ define $(PKG)_BUILD_SHARED
         -DCMAKE_BUILD_TYPE=Debug \
         -DARCH=$(TARGET) \
         -DENABLE_WIN32_CONSOLE=ON \
-        -DFORCE_GIT_REVISION="0.6.5-0-g$($(PKG)_VERSION)" \
+        -DFORCE_GIT_REVISION="0.6.6-0-g$($(PKG)_VERSION)" \
         -DUSE_SYSTEM_SINGLEAPPLICATION=OFF \
         -DENABLE_DBUS=OFF \
         -DENABLE_LIBPULSE=OFF \
