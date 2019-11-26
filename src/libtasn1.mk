@@ -12,7 +12,7 @@ $(PKG)_DEPS     := cc
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- https://ftp.gnu.org/gnu/libtasn1/ | \
-    $(SED) -n 's,.*libtasn1-\([1-9]\+\.[0-9]\+\)\..*,\1,p' | \
+    $(SED) -n 's,.*libtasn1-\([0-9]\+\.[0-9]\+\.*[0-9]*\)\..*,\1,p' | \
     $(SORT) -V | \
     tail -1
 endef
