@@ -1,4 +1,4 @@
-# :floppy_disk: MXE (M cross environment) for strawberry [![License][license-badge]][license-page]
+# :floppy_disk: MXE (M cross environment) [![License][license-badge]][license-page]
 
 [license-page]: LICENSE.md
 [license-badge]: https://img.shields.io/badge/License-MIT-brightgreen.svg
@@ -6,7 +6,32 @@
 MXE (M cross environment) is a Makefile that compiles a cross compiler and many free libraries.
 
 This is a modified and minimal version of MXE specifically to build [Strawberry](https://github.com/jonaski/strawberry).
+Feel free to make use of it if you need something.
 
-Please see [MXE](https://github.com/mxe/mxe) for the official and full version.
+See [MXE](https://github.com/mxe/mxe) for the official and full version.
 
-Please see [mxe.cc](http://mxe.cc/) for further information and package support matrix.
+Some of the libraries here are:
+
+  * pthreads
+  * Boost
+  * CMake
+  * Protobuf
+  * GLib
+  * GSTreamer
+  * GnuTLS
+  * OpenSSL
+  * SQLite
+  * FFTW
+  * Qt 5
+  * TagLib
+  * Chromaprint
+  * Google Test
+
++ All their dependecies.
+
+Differences from the official repositories:
+
+  * Most of the packages here are on the latest version
+  * Up-to-date core packages, GLib, libsoup and pango.
+  * Qt 5 has only SQL support for sqlite.
+  * GStreamer has only audio specific plugins
