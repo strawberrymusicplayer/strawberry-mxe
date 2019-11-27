@@ -22,8 +22,7 @@ define $(PKG)_BUILD_$(BUILD)
     cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
         --prefix='$(PREFIX)/$(TARGET)' \
         --parallel='$(JOBS)' \
-        $(PKG_CONFIGURE_OPTS) \
-	CFLAGS="-DCMAKE_USE_OPENSSL=OFF"
+        $(PKG_CONFIGURE_OPTS)
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 endef
