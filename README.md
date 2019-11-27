@@ -17,7 +17,7 @@ Some of the libraries here are:
   * CMake
   * Protobuf
   * GLib
-  * GSTreamer
+  * GStreamer
   * GnuTLS
   * OpenSSL
   * SQLite
