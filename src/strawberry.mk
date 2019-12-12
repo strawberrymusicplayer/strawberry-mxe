@@ -2,8 +2,8 @@
 
 PKG             := strawberry
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 09ed2b9
-$(PKG)_CHECKSUM := 47f3145014d49afae896dbef98623cfbee14e38cf8259a0988b27e1c885ba054
+$(PKG)_VERSION  := f2005c3
+$(PKG)_CHECKSUM := 3b07580dbb4482d3de05bd74f183f1bb9724ae312bec12968b98e5a9967e914d
 $(PKG)_GH_CONF  := jonaski/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawberrymusicplayer.org/
 $(PKG)_OWNER    := https://github.com/jonaski
