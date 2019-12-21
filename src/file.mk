@@ -3,8 +3,8 @@
 PKG             := file
 $(PKG)_WEBSITE  := https://www.darwinsys.com/file/
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 5.37
-$(PKG)_CHECKSUM := e9c13967f7dd339a3c241b7710ba093560b9a33013491318e88e6b8b57bae07f
+$(PKG)_VERSION  := 5.38
+$(PKG)_CHECKSUM := 593c2ffc2ab349c5aea0f55fedfe4d681737b6b62376a9b3ad1e77b2cc19fa34
 $(PKG)_SUBDIR   := file-$($(PKG)_VERSION)
 $(PKG)_FILE     := file-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://astron.com/pub/file/$($(PKG)_FILE)
@@ -19,15 +19,14 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && autoreconf -fi
 
     # "file" needs a runnable version of the "file" utility
     # itself. This must match the source code regarding its
     # version. Therefore we build a native one ourselves first.
 
     cp -Rp '$(1)' '$(1).native'
-    cd '$(1).native' && ./configure --disable-shared
-    $(MAKE) -C '$(1).native/src' -j '$(JOBS)' file
+    cd '$(1).native' && ./configure
+    cd '$(1).native' && $(MAKE) -j '$(JOBS)'
 
     cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) CFLAGS=-DHAVE_PREAD
     $(MAKE) -C '$(1)' -j '$(JOBS)' bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS= man_MANS= FILE_COMPILE='$(1).native/src/file'
