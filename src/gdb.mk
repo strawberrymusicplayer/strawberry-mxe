@@ -25,7 +25,7 @@ define $(PKG)_BUILD
         --disable-tui \
         host_configargs="LIBS=\"`$(TARGET)-pkg-config --libs dlfcn` -lmman\"" \
         CONFIG_SHELL=$(SHELL)
-    $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
+    $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' LDFLAGS='-fstack-protector'
 
     # executables are always static and we don't want the rest
      $(INSTALL) -m755 '$(BUILD_DIR)/gdb/gdb.exe'                 '$(PREFIX)/$(TARGET)/bin/'
