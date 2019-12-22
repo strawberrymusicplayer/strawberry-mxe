@@ -13,11 +13,16 @@ $(PKG)_TYPE     := script
 $(PKG)_DEPS     :=
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://sourceforge.net/projects/mingw-w64/files/mingw-w64/mingw-w64-release/' | \
-    $(SED) -n 's,.*mingw-w64-v\([0-9.]*\)\.tar.*,\1,p' | \
-    $(SORT) -V | \
-    tail -1
+    echo 'Updates for package $(PKG) is disabled.' >&2;
+    echo $($(PKG)_VERSION)
 endef
+
+#define $(PKG)_UPDATE
+#    $(WGET) -q -O- 'https://sourceforge.net/projects/mingw-w64/files/mingw-w64/mingw-w64-release/' | \
+#    $(SED) -n 's,.*mingw-w64-v\([0-9.]*\)\.tar.*,\1,p' | \
+#    $(SORT) -V | \
+#    tail -1
+#endef
 
 # can't install headers here since dummy pthreads headers are installed
 # and then clobbered by inline winpthreads build in gcc (see #958)
