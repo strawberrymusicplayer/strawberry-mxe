@@ -1,20 +1,20 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
-PKG             := strawberry-debug
+PKG             := strawberry
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 66e5ccb
-$(PKG)_CHECKSUM := 0377e9afc3ce82220cd1c0f3691173dabc6785254a0231302ecacb1cf965d6b6
+$(PKG)_VERSION  := bfb93ac
+$(PKG)_CHECKSUM := aab03c9223db9fc8b28cffadc2dbf5cd76acc2ade95078675b22a601cab57487
 $(PKG)_GH_CONF  := jonaski/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawberrymusicplayer.org/
 $(PKG)_OWNER    := https://github.com/jonaski
-$(PKG)_DEPS     := cc boost protobuf qtbase qtwinextras qttranslations chromaprint gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav xine-lib taglib libcdio gnutls glib-networking portaudio killproc
+$(PKG)_DEPS     := cc boost protobuf qtbase qtwinextras qttranslations chromaprint gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav taglib libcdio gnutls glib-networking portaudio killproc
 
 define $(PKG)_BUILD_SHARED
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
         -DCMAKE_INSTALL_PREFIX=$(PREFIX)/$(TARGET)/apps/$(PKG) \
-        -DCMAKE_BUILD_TYPE=Debug \
+        -DCMAKE_BUILD_TYPE=Release \
         -DARCH=$(TARGET) \
-        -DENABLE_WIN32_CONSOLE=ON \
+        -DENABLE_WIN32_CONSOLE=OFF \
         -DFORCE_GIT_REVISION="0.6.6-0-g$($(PKG)_VERSION)" \
         -DUSE_SYSTEM_SINGLEAPPLICATION=OFF \
         -DENABLE_DBUS=OFF \
@@ -23,7 +23,7 @@ define $(PKG)_BUILD_SHARED
         -DENABLE_IMOBILEDEVICE=OFF \
         -DENABLE_LIBMTP=OFF \
         -DENABLE_GSTREAMER=ON \
-        -DENABLE_XINE=ON \
+        -DENABLE_XINE=OFF \
         -DENABLE_VLC=OFF \
         -DENABLE_PHONON=OFF
     $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS)
@@ -78,6 +78,9 @@ define $(PKG)_BUILD_SHARED
     $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstudp.dll'               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
     $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstsoup.dll'              '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
     $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstcdio.dll'              '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
+    $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstpbtypes.dll'           '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
+    $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstrtp.dll'               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
+    $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstrtsp.dll'              '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
 
     $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstflac.dll'              '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
     $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstwavparse.dll'          '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
@@ -94,37 +97,6 @@ define $(PKG)_BUILD_SHARED
     $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstasf.dll'               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
     $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstasfmux.dll'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
     $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstlibav.dll'             '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstpbtypes.dll'           '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstrtp.dll'               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstrtsp.dll'              '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
-
-    $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_ao_out_directx2.dll'    '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_ao_out_directx.dll'     '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_dts.dll'         '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_dvaudio.dll'     '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_faad.dll'        '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_gsm610.dll'      '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_lpcm.dll'        '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_mad.dll'         '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_mpc.dll'         '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_mpeg2.dll'       '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_dmx_asf.dll'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_dmx_audio.dll'          '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_dmx_playlist.dll'       '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_dmx_slave.dll'          '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_flac.dll'               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_wavpack.dll'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_xiph.dll'               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_inp_cdda.dll'           '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_audio_filters.dll' '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_goom.dll'     '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_mosaico.dll'  '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_planar.dll'   '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_switch.dll'   '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_tvtime.dll'   '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_visualizations.dll' '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
 
     '$(TOP_DIR)/tools/copydlldeps.sh' -c \
                                           -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin' \
@@ -133,9 +105,9 @@ define $(PKG)_BUILD_SHARED
                                           -F '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/sqldrivers' \
                                           -F '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/imageformats' \
                                           -F '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins' \
-                                          -F '$(PREFIX)/$(TARGET)/apps/$(PKG)/lib/xine/plugins/2.7' \
                                           -X '$(PREFIX)/$(TARGET)/apps' \
                                           -R '$(PREFIX)/$(TARGET)';
+
 endef
 
 $(PKG)_BUILD_STATIC =
