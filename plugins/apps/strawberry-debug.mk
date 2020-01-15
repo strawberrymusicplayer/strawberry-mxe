@@ -2,8 +2,8 @@
 
 PKG             := strawberry-debug
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := bfb93ac
-$(PKG)_CHECKSUM := aab03c9223db9fc8b28cffadc2dbf5cd76acc2ade95078675b22a601cab57487
+$(PKG)_VERSION  := 032ddab
+$(PKG)_CHECKSUM := 20b8f225c1f410ad24127aea5db6d59ec20357c95528eb656f108924d220a1f5
 $(PKG)_GH_CONF  := jonaski/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawberrymusicplayer.org/
 $(PKG)_OWNER    := https://github.com/jonaski
@@ -49,6 +49,9 @@ define $(PKG)_BUILD_SHARED
     $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/imageformats/qgif.dll'             '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/imageformats'
     $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/imageformats/qjpeg.dll'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/imageformats'
     $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/imageformats/qico.dll'             '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/imageformats'
+
+    $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/styles'
+    $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/styles/qwindowsvistastyle.dll'     '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/styles'
 
     $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
     $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstapp.dll'               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
