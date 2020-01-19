@@ -7,13 +7,14 @@ $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 0.8.1
 $(PKG)_CHECKSUM := 4fda4d4248e08015b5090d0369ef9e68bdc4475aa12494f7c0f6d79e43270d14
 $(PKG)_GH_CONF  := stachenov/quazip/tags, v
-$(PKG)_DEPS     := cc qtbase
+$(PKG)_DEPS     := cc qtbase zlib
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && '$(PREFIX)/$(TARGET)/qt5/bin/qmake' '$(SOURCE_DIR)' \
         'static:CONFIG += staticlib' \
         PREFIX=$(PREFIX)/$(TARGET) \
         -after \
+        'SUBDIRS = quazip' \
         'win32:LIBS_PRIVATE += -lz' \
         'CONFIG -= dll' \
         'CONFIG += create_prl no_install_prl create_pc' \
