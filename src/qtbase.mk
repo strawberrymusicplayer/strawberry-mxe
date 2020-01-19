@@ -9,14 +9,9 @@ $(PKG)_CHECKSUM := 4ef921c0f208a1624439801da8b3f4344a3793b660ce1095f2b7f5c4246b9
 $(PKG)_SUBDIR   := $(PKG)-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/5.14/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc dbus fontconfig freetype harfbuzz jpeg libpng openssl pcre2 sqlite zlib zstd
+$(PKG)_DEPS     := cc dbus fontconfig freetype harfbuzz jpeg libpng openssl pcre2 zlib zstd sqlite freetds
 $(PKG)_DEPS_$(BUILD) :=
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
-
-#define $(PKG)_UPDATE
-#    echo 'Updates for package $(PKG) is disabled.' >&2;
-#    echo $($(PKG)_VERSION)
-#endef
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- https://download.qt.io/official_releases/qt/5.14/ | \
@@ -55,6 +50,8 @@ define $(PKG)_BUILD
             -nomake examples \
             -nomake tests \
             -plugin-sql-sqlite \
+            -plugin-sql-odbc \
+            -plugin-sql-tds -D Q_USE_SYBASE \
             -system-zlib \
             -system-libpng \
             -system-libjpeg \
@@ -96,8 +93,9 @@ define $(PKG)_BUILD
         -I'$(1)/test-$(PKG)-pkgconfig' \
         `'$(TARGET)-pkg-config' Qt5Widgets$(BUILD_TYPE_SUFFIX) --cflags --libs`
 
-    # setup cmake toolchain
+    # setup cmake toolchain and test
     echo 'set(CMAKE_SYSTEM_PREFIX_PATH "$(PREFIX)/$(TARGET)/qt5" ${CMAKE_SYSTEM_PREFIX_PATH})' > '$(CMAKE_TOOLCHAIN_DIR)/$(PKG).cmake'
+    $(CMAKE_TEST)
 
     # batch file to run test programs
     (printf 'set PATH=..\\lib;..\\qt5\\bin;..\\qt5\\lib;%%PATH%%\r\n'; \
@@ -105,14 +103,6 @@ define $(PKG)_BUILD
      printf 'test-qt5.exe\r\n'; \
      printf 'test-qtbase-pkgconfig.exe\r\n';) \
      > '$(PREFIX)/$(TARGET)/bin/test-qt5.bat'
-
-    # add libs to CMake config of Qt5Core to fix static linking
-    $(if $(BUILD_STATIC), \
-        $(SED) -i 's^set(_Qt5Core_LIB_DEPENDENCIES \"\")^set(_Qt5Core_LIB_DEPENDENCIES \"ole32;uuid;ws2_32;advapi32;shell32;user32;kernel32;mpr;version;winmm;z;pcre2-16;netapi32;userenv;zstd\")^g' '$(PREFIX)/$(TARGET)/qt5/lib/cmake/Qt5Core/Qt5CoreConfig.cmake' && \
-        $(SED) -i 's^set(_Qt5Gui_LIB_DEPENDENCIES \"Qt5::Core\")^set(_Qt5Gui_LIB_DEPENDENCIES \"Qt5::Core;dwmapi;winspool;wtsapi32;jasper;mng;tiff;webpdemux;webpmux;d3d11;dxgi;dxguid;harfbuzz;cairo;gobject-2.0;fontconfig;freetype;usp10;msimg32;pixman-1;ffi;expat;bz2;png16;harfbuzz_too;freetype_too;glib-2.0;shlwapi;pcre;intl;iconv;gdi32;comdlg32;oleaut32;imm32;opengl32;mpr;userenv;version;pcre2-16;netapi32;ws2_32;advapi32;kernel32;ole32;shell32;uuid;user32;winmm;lcms2;pthread;webp;zstd;lzma;jpeg;z;m\")^g' '$(PREFIX)/$(TARGET)/qt5/lib/cmake/Qt5Gui/Qt5GuiConfig.cmake' && \
-        $(SED) -i 's^set(_Qt5Network_LIB_DEPENDENCIES \"Qt5::Core\")^set(_Qt5Network_LIB_DEPENDENCIES \"Qt5::Core;ssl;crypto;ws2_32;gdi32;crypt32;iphlpapi\")^g' '$(PREFIX)/$(TARGET)/qt5/lib/cmake/Qt5Network/Qt5NetworkConfig.cmake' && \
-        $(SED) -i 's^set(_Qt5Widgets_LIB_DEPENDENCIES \"Qt5::Gui;Qt5::Core\")^set(_Qt5Widgets_LIB_DEPENDENCIES \"Qt5::Gui;Qt5::Core;gdi32;comdlg32;oleaut32;imm32;opengl32;png16;harfbuzz;ole32;uuid;ws2_32;advapi32;shell32;user32;kernel32;mpr;version;winmm;z;pcre2-16;shell32;uxtheme;dwmapi\")^g' '$(PREFIX)/$(TARGET)/qt5/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake',
-    )
 endef
 
 define $(PKG)_BUILD_$(BUILD)
