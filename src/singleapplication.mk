@@ -4,14 +4,10 @@ PKG             := singleapplication
 $(PKG)_WEBSITE  := https://github.com/itay-grudev/SingleApplication
 $(PKG)_DESCR    := SingleApplication
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 3.0.17
-$(PKG)_CHECKSUM := 48a0176230186839d11ddb8aefd1db34a78af448a45eb00352d328c314257c53
-$(PKG)_GH_CONF  := itay-grudev/SingleApplication/tags
+$(PKG)_VERSION  := 3.0.19
+$(PKG)_CHECKSUM := 9405fd259288b2a862e91e5135bccee936f0438e1b32c13603277132309d15e0
+$(PKG)_GH_CONF  := itay-grudev/SingleApplication/tags, v
 $(PKG)_DEPS     := cc qtbase
-
-define $(PKG)_UPDATE
-    echo $(singleapplication_VERSION)
-endef
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' -DQAPPLICATION_CLASS="QApplication"
