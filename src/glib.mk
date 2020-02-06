@@ -4,8 +4,8 @@ PKG             := glib
 $(PKG)_WEBSITE  := https://gtk.org/
 $(PKG)_DESCR    := GLib
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.62.2
-$(PKG)_CHECKSUM := 698824a413f76df039739c2a78f45b10939d526ae7495bab4e694e6730deb3f1
+$(PKG)_VERSION  := 2.63.5
+$(PKG)_CHECKSUM := 851a4725a2ae401c1a4e49cf2138920cf87e028f033a2af33f5a16d159a3b78c
 $(PKG)_SUBDIR   := glib-$($(PKG)_VERSION)
 $(PKG)_FILE     := glib-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/glib/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
@@ -16,7 +16,7 @@ $(PKG)_DEPS_$(BUILD) := meson ninja gettext libffi libiconv zlib
 
 define $(PKG)_UPDATE
     $(call MXE_GET_GH_TAGS,GNOME/glib) | \
-    $(SED) -n 's,^\([0-9]*\.[0-9]*[02468]\..*\),\1,p' | \
+    grep -v '\([0-9]\+\.\)\{2\}9[0-9]' | \
     $(SORT) -Vr | \
     head -1
 endef
