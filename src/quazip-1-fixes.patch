@@ -1,24 +1,43 @@
-diff -ruN stachenov-quazip-be4ca51.orig/quazip/CMakeLists.txt stachenov-quazip-be4ca51/quazip/CMakeLists.txt
---- stachenov-quazip-be4ca51.orig/quazip/CMakeLists.txt	2020-01-23 17:35:01.000000000 +0100
-+++ stachenov-quazip-be4ca51/quazip/CMakeLists.txt	2020-01-23 23:51:44.495982897 +0100
-@@ -15,9 +15,9 @@
+This file is part of MXE. See LICENSE.md for licensing information.
+
+Contains ad hoc patches for cross building.
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Wed, 5 Feb 2020 21:50:15 +0100
+Subject: [PATCH 1/1] Build fixes
+
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 1111111..2222222 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -53,10 +53,8 @@ set(QUAZIP_LIB_TARGET_NAME quazip${QUAZIP_LIB_VERSION_SUFFIX} CACHE
+ 
+ add_subdirectory(quazip)
+ 
+-if(UNIX AND NOT APPLE)
+-	configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/quazip.pc.cmakein
+-			${CMAKE_CURRENT_BINARY_DIR}/quazip.pc @ONLY)
+-	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/quazip.pc DESTINATION "${INSTALL_PKGCONFIG_DIR}")
+-endif()
++configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/quazip.pc.cmakein
++		${CMAKE_CURRENT_BINARY_DIR}/quazip.pc @ONLY)
++install(FILES ${CMAKE_CURRENT_BINARY_DIR}/quazip.pc DESTINATION "${INSTALL_PKGCONFIG_DIR}")
+ 
+ install(FILES QuaZipConfig.cmake DESTINATION ${LIB_DESTINATION}/cmake/QuaZip${QUAZIP_LIB_VERSION_SUFFIX} RENAME QuaZip${QUAZIP_LIB_VERSION_SUFFIX}Config.cmake)
+diff --git a/quazip/CMakeLists.txt b/quazip/CMakeLists.txt
+index 1111111..2222222 100644
+--- a/quazip/CMakeLists.txt
++++ b/quazip/CMakeLists.txt
+@@ -15,9 +15,7 @@ add_library(quazip_static STATIC ${SRCS})
   
  # Windows uses .lib extension for both static and shared library
  # *nix systems use different extensions for SHARED and STATIC library and by convention both libraries have the same name
 -if (NOT WIN32)
-+#if (NOT WIN32)
- 	set_target_properties(quazip_static PROPERTIES OUTPUT_NAME quazip${QUAZIP_LIB_VERSION_SUFFIX})
+-	set_target_properties(quazip_static PROPERTIES OUTPUT_NAME quazip${QUAZIP_LIB_VERSION_SUFFIX})
 -endif ()
-+#endif ()
++set_target_properties(quazip_static PROPERTIES OUTPUT_NAME quazip${QUAZIP_LIB_VERSION_SUFFIX})
  
  target_include_directories(${QUAZIP_LIB_TARGET_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${ZLIB_INCLUDE_DIRS})
  target_include_directories(quazip_static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${ZLIB_INCLUDE_DIRS})
-@@ -27,7 +27,7 @@
- target_link_libraries(${QUAZIP_LIB_TARGET_NAME} ${QT_QTMAIN_LIBRARY} ${QTCORE_LIBRARIES} ${ZLIB_LIBRARIES})
- target_link_libraries(quazip_static ${QT_QTMAIN_LIBRARY} ${QTCORE_LIBRARIES} ${ZLIB_LIBRARIES})
- 
--if(UNIX AND NOT APPLE)
-+if(UNIX OR WIN32 AND NOT APPLE)
- 	configure_file( ${CMAKE_SOURCE_DIR}/quazip.pc.cmakein
- 			${CMAKE_BINARY_DIR}/quazip.pc @ONLY)
- 	install(FILES ${CMAKE_BINARY_DIR}/quazip.pc DESTINATION "${INSTALL_PKGCONFIG_DIR}")
