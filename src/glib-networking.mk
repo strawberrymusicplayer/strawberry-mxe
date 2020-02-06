@@ -12,8 +12,8 @@ $(PKG)_URL      := https://download.gnome.org/sources/$(PKG)/$(call SHORT_PKG_VE
 $(PKG)_DEPS     := cc meson-conf ninja glib gnutls
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://gitlab.gnome.org/GNOME/glib-networking/-/tags' | \
-    $(SED) -n "s,.*glib-networking-\([0-9]\+\.[0-9]*[0-9]*\.[^']*\)\.tar.*,\1,p" | \
+    $(call MXE_GET_GH_TAGS,GNOME/glib-networking) | \
+    grep -v '\([0-9]\+\.\)\{2\}9[0-9]' | \
     $(SORT) -Vr | \
     head -1
 endef
