@@ -12,8 +12,8 @@ $(PKG)_URL      := https://download.gnome.org/sources/pango/$(call SHORT_PKG_VER
 $(PKG)_DEPS     := cc ninja glib fontconfig freetype cairo harfbuzz fribidi
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://gitlab.gnome.org/GNOME/pango/tags' | \
-    $(SED) -n "s,.*<a [^>]\+>v\?\([0-9]\+\.[0-9.]\+\)<.*,\1,p" | \
+    $(call MXE_GET_GH_TAGS,GNOME/pango) | \
+    grep -v '\([0-9]\+\.\)\{2\}9[0-9]' | \
     $(SORT) -Vr | \
     head -1
 endef
