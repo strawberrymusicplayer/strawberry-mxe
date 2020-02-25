@@ -2,11 +2,11 @@
 
 PKG             := strawberry-debug
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 032ddab
-$(PKG)_CHECKSUM := 20b8f225c1f410ad24127aea5db6d59ec20357c95528eb656f108924d220a1f5
-$(PKG)_GH_CONF  := jonaski/strawberry/branches/master
+$(PKG)_VERSION  := 7312e3f
+$(PKG)_CHECKSUM := 31b8009176f4d9735ed8a1471025c939bb25802d133e67a68379e8f884ef519a
+$(PKG)_GH_CONF  := strawberrymusicplayer/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawberrymusicplayer.org/
-$(PKG)_OWNER    := https://github.com/jonaski
+$(PKG)_OWNER    := https://github.com/strawberrymusicplayer
 $(PKG)_DEPS     := cc boost protobuf qtbase qtwinextras qttranslations chromaprint gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav xine-lib taglib libcdio gnutls glib-networking portaudio killproc
 
 define $(PKG)_BUILD_SHARED
@@ -15,7 +15,7 @@ define $(PKG)_BUILD_SHARED
         -DCMAKE_BUILD_TYPE=Debug \
         -DARCH=$(TARGET) \
         -DENABLE_WIN32_CONSOLE=ON \
-        -DFORCE_GIT_REVISION="0.6.6-0-g$($(PKG)_VERSION)" \
+        -DFORCE_GIT_REVISION="0.6.8-0-g$($(PKG)_VERSION)" \
         -DUSE_SYSTEM_SINGLEAPPLICATION=OFF \
         -DENABLE_DBUS=OFF \
         -DENABLE_LIBPULSE=OFF \
