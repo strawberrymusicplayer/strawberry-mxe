@@ -21,7 +21,7 @@ define $(PKG)_BUILD
             --disable-static --enable-shared )
     $(MAKE) -C '$(SOURCE_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(SOURCE_DIR)' -j 1 install
-    $(MAKE) -C '$(SOURCE_DIR)' -j '$(JOBS)' test.exe testdll.dll
+    #$(MAKE) -C '$(SOURCE_DIR)' -j '$(JOBS)' test.exe testdll.dll
 
     # create pkg-config file - mostly for psapi dependency
     mkdir -p '$(PREFIX)/$(TARGET)/lib/pkgconfig'
