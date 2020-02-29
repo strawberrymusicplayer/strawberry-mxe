@@ -1,0 +1,66 @@
+This file is part of MXE. See LICENSE.md for licensing information.
+
+Contains ad hoc patches for cross building.
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Sat, 29 Feb 2020 16:01:36 +0100
+Subject: [PATCH 1/1] Add iconv to linker
+
+
+diff --git a/examples/meson.build b/examples/meson.build
+index 1111111..2222222 100644
+--- a/examples/meson.build
++++ b/examples/meson.build
+@@ -24,6 +24,7 @@ endif
+ foreach e: examples
+   executable(e, '@0@.c'.format(e),
+              dependencies: examples_deps + pango_deps,
++             link_args: ['-liconv'],
+              include_directories: root_inc,
+              install: false)
+ endforeach
+diff --git a/tests/meson.build b/tests/meson.build
+index 1111111..2222222 100644
+--- a/tests/meson.build
++++ b/tests/meson.build
+@@ -167,6 +167,7 @@ foreach t: tests
+                    include_directories: root_inc,
+                    c_args: common_cflags + pango_debug_cflags + test_cflags,
+                    cpp_args: common_cppflags + pango_debug_cflags + test_cflags,
++                   link_args: ['-liconv'],
+                    install: get_option('install-tests'),
+                    install_dir: installed_test_bindir)
+ 
+diff --git a/tools/meson.build b/tools/meson.build
+index 1111111..2222222 100644
+--- a/tools/meson.build
++++ b/tools/meson.build
+@@ -1,6 +1,7 @@
+ if fontconfig_dep.found()
+   executable('gen-script-for-lang', 'gen-script-for-lang.c',
+              dependencies: pango_deps + [ libpango_dep ],
++             link_args: ['-liconv'],
+              c_args: common_cflags + pango_debug_cflags + [ '-DPANGO_DISABLE_DEPRECATED' ],
+              include_directories: root_inc,
+              install: false)
+diff --git a/utils/meson.build b/utils/meson.build
+index 1111111..2222222 100644
+--- a/utils/meson.build
++++ b/utils/meson.build
+@@ -32,6 +32,7 @@ endif
+ 
+ pango_view = executable('pango-view', pango_view_sources,
+                         dependencies: pango_view_deps,
++                        link_args: ['-liconv'],
+                         include_directories: [ root_inc ],
+                         install: true,
+                         c_args: [
+@@ -72,6 +73,7 @@ if cairo_dep.found()
+ 
+   pango_list = executable('pango-list', pango_list_sources,
+                           dependencies: pango_list_deps,
++                          link_args: ['-liconv'],
+                           include_directories: [ root_inc ],
+                           install: true,
+                           c_args: [
