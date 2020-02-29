@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := 6581056f351f8a311cbe40d6e77d0dd1d7f2385b910da63ec87a06074ec24
 $(PKG)_SUBDIR   := glib-networking-$($(PKG)_VERSION)
 $(PKG)_FILE     := glib-networking-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/$(PKG)/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc meson-conf ninja glib gnutls
+$(PKG)_DEPS     := cc meson-conf ninja glib gnutls openssl
 
 define $(PKG)_UPDATE
     $(call MXE_GET_GH_TAGS,GNOME/glib-networking) | \
@@ -18,18 +18,8 @@ define $(PKG)_UPDATE
     head -1
 endef
 
-define $(PKG)_BUILD_$(BUILD)
-    cd '$(SOURCE_DIR)' && meson \
-                                --prefix='$(PREFIX)/$(TARGET)' \
-                                --buildtype=release \
-                                --pkg-config-path='$(PREFIX)/$(TARGET)/bin/pkgconf' \
-                                '$(BUILD_DIR)'
-    cd '$(BUILD_DIR)' && ninja
-    cd '$(BUILD_DIR)' && ninja install
-endef
-
 define $(PKG)_BUILD
-    cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)'
+    cd '$(SOURCE_DIR)' && $(TARGET)-meson -Dgnutls=enabled -Dopenssl=enabled '$(BUILD_DIR)'
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install
 endef
