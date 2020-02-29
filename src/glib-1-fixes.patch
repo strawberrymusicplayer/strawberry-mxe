@@ -1,0 +1,522 @@
+This file is part of MXE. See LICENSE.md for licensing information.
+
+Contains ad hoc patches for cross building.
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Sat, 29 Feb 2020 05:41:28 +0100
+Subject: [PATCH 1/1] Fixes to glib
+
+
+diff --git a/fuzzing/meson.build b/fuzzing/meson.build
+index 1111111..2222222 100644
+--- a/fuzzing/meson.build
++++ b/fuzzing/meson.build
+@@ -20,9 +20,19 @@ else
+   extra_sources += 'driver.c'
+ endif
+ 
+-foreach target_name : fuzz_targets
+-  exe = executable(target_name, [extra_sources, target_name + '.c'],
+-    c_args : extra_c_args,
+-    dependencies : deps,
+-  )
+-endforeach
++if host_system == 'windows'
++  foreach target_name : fuzz_targets
++    exe = executable(target_name, [extra_sources, target_name + '.c'],
++      c_args : extra_c_args,
++      dependencies : deps,
++      link_args : [ '-liconv' ],
++    )
++  endforeach
++else
++  foreach target_name : fuzz_targets
++    exe = executable(target_name, [extra_sources, target_name + '.c'],
++      c_args : extra_c_args,
++      dependencies : deps,
++    )
++  endforeach
++endif
+diff --git a/gio/giomodule.c b/gio/giomodule.c
+index 1111111..2222222 100644
+--- a/gio/giomodule.c
++++ b/gio/giomodule.c
+@@ -1051,14 +1051,12 @@ extern GType _g_win32_network_monitor_get_type (void);
+ 
+ static HMODULE gio_dll = NULL;
+ 
+-#ifdef DLL_EXPORT
+-
+-BOOL WINAPI DllMain (HINSTANCE hinstDLL,
++BOOL WINAPI gio_DllMain (HINSTANCE hinstDLL,
+                      DWORD     fdwReason,
+                      LPVOID    lpvReserved);
+ 
+ BOOL WINAPI
+-DllMain (HINSTANCE hinstDLL,
++gio_DllMain (HINSTANCE hinstDLL,
+ 	 DWORD     fdwReason,
+ 	 LPVOID    lpvReserved)
+ {
+@@ -1068,8 +1066,6 @@ DllMain (HINSTANCE hinstDLL,
+   return TRUE;
+ }
+ 
+-#endif
+-
+ void *
+ _g_io_win32_get_module (void)
+ {
+diff --git a/gio/meson.build b/gio/meson.build
+index 1111111..2222222 100644
+--- a/gio/meson.build
++++ b/gio/meson.build
+@@ -6,6 +6,10 @@ gio_c_args = [
+ 
+ gio_c_args += glib_hidden_visibility_args
+ 
++if host_system == 'windows'
++  noseh_link_args += '-liconv'
++endif
++
+ # FIXME: Install empty glib_giomodulesdir
+ 
+ gnetworking_h_conf = configuration_data()
+diff --git a/glib/glib-init.c b/glib/glib-init.c
+index 1111111..2222222 100644
+--- a/glib/glib-init.c
++++ b/glib/glib-init.c
+@@ -271,14 +271,14 @@ glib_init (void)
+ 
+ #if defined (G_OS_WIN32)
+ 
+-BOOL WINAPI DllMain (HINSTANCE hinstDLL,
++BOOL WINAPI glib_DllMain (HINSTANCE hinstDLL,
+                      DWORD     fdwReason,
+                      LPVOID    lpvReserved);
+ 
+ HMODULE glib_dll;
+ 
+ BOOL WINAPI
+-DllMain (HINSTANCE hinstDLL,
++glib_DllMain (HINSTANCE hinstDLL,
+          DWORD     fdwReason,
+          LPVOID    lpvReserved)
+ {
+diff --git a/glib/gmain.c b/glib/gmain.c
+index 1111111..2222222 100644
+--- a/glib/gmain.c
++++ b/glib/gmain.c
+@@ -2850,12 +2850,15 @@ g_get_real_time (void)
+  * So for now we calculate (usec_per_sec / ticks_per_sec) and use floating point
+  */
+ static gdouble g_monotonic_usec_per_tick = 0;
++static gboolean g_win32_clock_is_initialized = FALSE;
+ 
+ void
+ g_clock_win32_init (void)
+ {
+   LARGE_INTEGER freq;
+ 
++  g_win32_clock_is_initialized = TRUE;
++
+   if (!QueryPerformanceFrequency (&freq) || freq.QuadPart == 0)
+     {
+       /* The documentation says that this should never happen */
+@@ -2869,6 +2872,10 @@ g_clock_win32_init (void)
+ gint64
+ g_get_monotonic_time (void)
+ {
++
++  if (!g_win32_clock_is_initialized)
++    g_clock_win32_init ();
++
+   if (G_LIKELY (g_monotonic_usec_per_tick != 0))
+     {
+       LARGE_INTEGER ticks;
+diff --git a/glib/gthread-win32.c b/glib/gthread-win32.c
+index 1111111..2222222 100644
+--- a/glib/gthread-win32.c
++++ b/glib/gthread-win32.c
+@@ -61,6 +61,10 @@ g_thread_abort (gint         status,
+   g_abort ();
+ }
+ 
++/* Needed for static builds where DllMain initializer doesn't get called */
++static gboolean g_threads_is_initialized = FALSE;
++G_GNUC_INTERNAL void g_thread_win32_init (void);
++
+ /* Starting with Vista and Windows 2008, we have access to the
+  * CONDITION_VARIABLE and SRWLock primatives on Windows, which are
+  * pretty reasonable approximations of the primatives specified in
+@@ -79,29 +83,39 @@ g_thread_abort (gint         status,
+ void
+ g_mutex_init (GMutex *mutex)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
+   InitializeSRWLock ((gpointer) mutex);
+ }
+ 
+ void
+ g_mutex_clear (GMutex *mutex)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
+ }
+ 
+ void
+ g_mutex_lock (GMutex *mutex)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
+   AcquireSRWLockExclusive ((gpointer) mutex);
+ }
+ 
+ gboolean
+ g_mutex_trylock (GMutex *mutex)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
+   return TryAcquireSRWLockExclusive ((gpointer) mutex);
+ }
+ 
+ void
+ g_mutex_unlock (GMutex *mutex)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
+   ReleaseSRWLockExclusive ((gpointer) mutex);
+ }
+ 
+@@ -112,6 +126,9 @@ g_rec_mutex_impl_new (void)
+ {
+   CRITICAL_SECTION *cs;
+ 
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
++
+   cs = g_slice_new (CRITICAL_SECTION);
+   InitializeCriticalSection (cs);
+ 
+@@ -122,6 +139,10 @@ static void
+ g_rec_mutex_impl_free (CRITICAL_SECTION *cs)
+ {
+   DeleteCriticalSection (cs);
++
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
++
+   g_slice_free (CRITICAL_SECTION, cs);
+ }
+ 
+@@ -130,6 +151,9 @@ g_rec_mutex_get_impl (GRecMutex *mutex)
+ {
+   CRITICAL_SECTION *impl = mutex->p;
+ 
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
++
+   if G_UNLIKELY (mutex->p == NULL)
+     {
+       impl = g_rec_mutex_impl_new ();
+@@ -144,30 +168,45 @@ g_rec_mutex_get_impl (GRecMutex *mutex)
+ void
+ g_rec_mutex_init (GRecMutex *mutex)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
++
+   mutex->p = g_rec_mutex_impl_new ();
+ }
+ 
+ void
+ g_rec_mutex_clear (GRecMutex *mutex)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
++
+   g_rec_mutex_impl_free (mutex->p);
+ }
+ 
+ void
+ g_rec_mutex_lock (GRecMutex *mutex)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
++
+   EnterCriticalSection (g_rec_mutex_get_impl (mutex));
+ }
+ 
+ void
+ g_rec_mutex_unlock (GRecMutex *mutex)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
++
+   LeaveCriticalSection (mutex->p);
+ }
+ 
+ gboolean
+ g_rec_mutex_trylock (GRecMutex *mutex)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
++
+   return TryEnterCriticalSection (g_rec_mutex_get_impl (mutex));
+ }
+ 
+@@ -176,47 +215,64 @@ g_rec_mutex_trylock (GRecMutex *mutex)
+ void
+ g_rw_lock_init (GRWLock *lock)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
+   InitializeSRWLock ((gpointer) lock);
+ }
+ 
+ void
+ g_rw_lock_clear (GRWLock *lock)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
+ }
+ 
+ void
+ g_rw_lock_writer_lock (GRWLock *lock)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
++
+   AcquireSRWLockExclusive ((gpointer) lock);
+ }
+ 
+ gboolean
+ g_rw_lock_writer_trylock (GRWLock *lock)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
+   return TryAcquireSRWLockExclusive ((gpointer) lock);
+ }
+ 
+ void
+ g_rw_lock_writer_unlock (GRWLock *lock)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
+   ReleaseSRWLockExclusive ((gpointer) lock);
+ }
+ 
+ void
+ g_rw_lock_reader_lock (GRWLock *lock)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
+   AcquireSRWLockShared ((gpointer) lock);
+ }
+ 
+ gboolean
+ g_rw_lock_reader_trylock (GRWLock *lock)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
+   return TryAcquireSRWLockShared ((gpointer) lock);
+ }
+ 
+ void
+ g_rw_lock_reader_unlock (GRWLock *lock)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
+   ReleaseSRWLockShared ((gpointer) lock);
+ }
+ 
+@@ -224,23 +280,31 @@ g_rw_lock_reader_unlock (GRWLock *lock)
+ void
+ g_cond_init (GCond *cond)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
+   InitializeConditionVariable ((gpointer) cond);
+ }
+ 
+ void
+ g_cond_clear (GCond *cond)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
+ }
+ 
+ void
+ g_cond_signal (GCond *cond)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
+   WakeConditionVariable ((gpointer) cond);
+ }
+ 
+ void
+ g_cond_broadcast (GCond *cond)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
+   WakeAllConditionVariable ((gpointer) cond);
+ }
+ 
+@@ -248,6 +312,8 @@ void
+ g_cond_wait (GCond  *cond,
+              GMutex *entered_mutex)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
+   SleepConditionVariableSRW ((gpointer) cond, (gpointer) entered_mutex, INFINITE, 0);
+ }
+ 
+@@ -260,6 +326,9 @@ g_cond_wait_until (GCond  *cond,
+   DWORD span_millis;
+   gboolean signalled;
+ 
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
++
+   start_time = g_get_monotonic_time ();
+   do
+     {
+@@ -311,6 +380,10 @@ g_private_get_impl (GPrivate *key)
+ 
+   if G_UNLIKELY (impl == 0)
+     {
++
++      if (!g_threads_is_initialized)
++        g_thread_win32_init ();
++
+       EnterCriticalSection (&g_private_lock);
+       impl = (DWORD) key->p;
+       if (impl == 0)
+@@ -404,6 +477,9 @@ g_system_thread_free (GRealThread *thread)
+ {
+   GThreadWin32 *wt = (GThreadWin32 *) thread;
+ 
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
++
+   win32_check_for_error (CloseHandle (wt->handle));
+   g_slice_free (GThreadWin32, wt);
+ }
+@@ -411,6 +487,9 @@ g_system_thread_free (GRealThread *thread)
+ void
+ g_system_thread_exit (void)
+ {
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
++
+   _endthreadex (0);
+ }
+ 
+@@ -419,6 +498,9 @@ g_thread_win32_proxy (gpointer data)
+ {
+   GThreadWin32 *self = data;
+ 
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
++
+   self->proxy (self);
+ 
+   g_system_thread_exit ();
+@@ -452,6 +534,9 @@ g_system_thread_new (GThreadFunc proxy,
+   const gchar *message = NULL;
+   int thread_prio;
+ 
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
++
+   thread = g_slice_new0 (GThreadWin32);
+   thread->proxy = proxy;
+   thread->handle = (HANDLE) NULL;
+@@ -535,6 +620,9 @@ g_system_thread_wait (GRealThread *thread)
+ {
+   GThreadWin32 *wt = (GThreadWin32 *) thread;
+ 
++  if (!g_threads_is_initialized)
++    g_thread_win32_init ();
++
+   win32_check_for_error (WAIT_FAILED != WaitForSingleObject (wt->handle, INFINITE));
+ }
+ 
+@@ -608,6 +696,8 @@ g_thread_win32_init (void)
+ {
+   InitializeCriticalSection (&g_private_lock);
+ 
++  g_threads_is_initialized = TRUE;
++
+ #ifndef _MSC_VER
+   SetThreadName_VEH_handle = AddVectoredExceptionHandler (1, &SetThreadName_VEH);
+   if (SetThreadName_VEH_handle == NULL)
+diff --git a/glib/meson.build b/glib/meson.build
+index 1111111..2222222 100644
+--- a/glib/meson.build
++++ b/glib/meson.build
+@@ -402,11 +402,13 @@ if host_system == 'windows'
+     executable('gspawn-win64-helper', 'gspawn-win32-helper.c',
+       install : true,
+       gui_app : true,
++      link_args : [ '-liconv' ],
+       include_directories : configinc,
+       dependencies : [libglib_dep])
+     executable('gspawn-win64-helper-console', 'gspawn-win32-helper.c',
+       install : true,
+       c_args : ['-DHELPER_CONSOLE'],
++      link_args : [ '-liconv' ],
+       include_directories : configinc,
+       dependencies : [libglib_dep])
+   endif
+diff --git a/gobject/gtype.c b/gobject/gtype.c
+index 1111111..2222222 100644
+--- a/gobject/gtype.c
++++ b/gobject/gtype.c
+@@ -4456,7 +4456,7 @@ gobject_init (void)
+   _g_signal_init ();
+ }
+ 
+-#if defined (G_OS_WIN32)
++#if 0
+ 
+ BOOL WINAPI DllMain (HINSTANCE hinstDLL,
+                      DWORD     fdwReason,
+diff --git a/gobject/meson.build b/gobject/meson.build
+index 1111111..2222222 100644
+--- a/gobject/meson.build
++++ b/gobject/meson.build
+@@ -143,9 +143,16 @@ libgobject_dep = declare_dependency(link_with : libgobject,
+   include_directories : [gobjectinc],
+   dependencies : [libglib_dep, glib_enumtypes_dep])
+ 
++if host_system == 'windows'
++executable('gobject-query', 'gobject-query.c',
++  install : true,
++  link_args : [ '-liconv' ],
++  dependencies : [libglib_dep, libgobject_dep])
++else
+ executable('gobject-query', 'gobject-query.c',
+   install : true,
+   dependencies : [libglib_dep, libgobject_dep])
++endif
+ 
+ install_data('gobject_gdb.py', install_dir : join_paths(glib_pkgdatadir, 'gdb'))
+ gdb_conf = configuration_data()
+diff --git a/m4macros/glib-gettext.m4 b/m4macros/glib-gettext.m4
+index 1111111..2222222 100644
+--- a/m4macros/glib-gettext.m4
++++ b/m4macros/glib-gettext.m4
+@@ -39,8 +39,8 @@ dnl We go to great lengths to make sure that aclocal won't
+ dnl try to pull in the installed version of these macros
+ dnl when running aclocal in the glib directory.
+ dnl
+-m4_copy([AC_DEFUN],[glib_DEFUN])
+-m4_copy([AC_REQUIRE],[glib_REQUIRE])
++m4_copy_force([AC_DEFUN],[glib_DEFUN])
++m4_copy_force([AC_REQUIRE],[glib_REQUIRE])
+ dnl
+ dnl At the end, if we're not within glib, we'll define the public
+ dnl definitions in terms of our private definitions.
