@@ -3,8 +3,8 @@
 PKG             := cmake
 $(PKG)_WEBSITE  := https://www.cmake.org/
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 3.16.4
-$(PKG)_CHECKSUM := 9bcc8c114d9da603af9512083ed7d4a39911d16105466beba165ba8fe939ac2c
+$(PKG)_VERSION  := 3.16.5
+$(PKG)_CHECKSUM := 5f760b50b8ecc9c0c37135fae5fbf00a2fef617059aa9d61c1bb91653e5a8bfc
 $(PKG)_SUBDIR   := cmake-$($(PKG)_VERSION)
 $(PKG)_FILE     := cmake-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://www.cmake.org/files/v$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
