@@ -4,8 +4,8 @@ PKG             := singleapplication
 $(PKG)_WEBSITE  := https://github.com/itay-grudev/SingleApplication
 $(PKG)_DESCR    := SingleApplication
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 3.0.19
-$(PKG)_CHECKSUM := 9405fd259288b2a862e91e5135bccee936f0438e1b32c13603277132309d15e0
+$(PKG)_VERSION  := 3.1.0a
+$(PKG)_CHECKSUM := 620908325070fda4ef1245054ce1bb6c8a813bd3ffb5cf9c6251dfb9dee266b4
 $(PKG)_GH_CONF  := itay-grudev/SingleApplication/tags, v
 $(PKG)_DEPS     := cc qtbase
 
