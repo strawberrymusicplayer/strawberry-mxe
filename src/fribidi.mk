@@ -9,7 +9,13 @@ $(PKG)_CHECKSUM := 94c7b68d86ad2a9613b4dcffe7bbeb03523d63b5b37918bdf2e4ef34195c1
 $(PKG)_GH_CONF  := fribidi/fribidi/releases, v, , , , .tar.bz2
 $(PKG)_DEPS     := cc
 
+define $(PKG)_UPDATE
+    echo 'Updates for package $(PKG) is disabled.' >&2;
+    echo $($(PKG)_VERSION)
+endef
+
 define $(PKG)_BUILD
+    cd '$(1)' && ./autogen.sh
     cd '$(1)' && ./configure \
         $(MXE_CONFIGURE_OPTS) \
         --disable-debug \
