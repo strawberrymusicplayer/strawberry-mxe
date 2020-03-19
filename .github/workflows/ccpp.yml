@@ -1,0 +1,22 @@
+name: C/C++ CI
+on: [push, pull_request]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Update Packages
+      run: sudo apt-get update -y
+    - name: Install Packages
+      run:
+        sudo apt-get install -y bash git sed patch wget curl g++ g++-multilib libtool-bin make pkg-config autoconf automake texinfo autopoint intltool flex gettext gperf libc6-dev-i386 libgdk-pixbuf2.0-dev libltdl-dev libssl-dev libxml-parser-perl openssl perl python bison ruby bzip2 xz-utils p7zip-full lzip unzip python3-setuptools
+    - name: Set targets
+      shell: bash
+      run: sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := x86_64-w64-mingw32.shared/g' settings.mk
+    - name: Build icu4c
+      shell: bash
+      run: make -j4 icu4c
+    - name: Build all
+      shell: bash
+      run: make -j4
