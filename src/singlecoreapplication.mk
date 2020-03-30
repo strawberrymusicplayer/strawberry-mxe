@@ -9,6 +9,11 @@ $(PKG)_CHECKSUM := 620908325070fda4ef1245054ce1bb6c8a813bd3ffb5cf9c6251dfb9dee26
 $(PKG)_GH_CONF  := itay-grudev/SingleApplication/tags, v
 $(PKG)_DEPS     := cc qtbase
 
+define $(PKG)_UPDATE
+    echo 'Updates for package $(PKG) is disabled.' >&2;
+    echo $($(PKG)_VERSION)
+endef
+
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' -DQAPPLICATION_CLASS="QCoreApplication"
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
