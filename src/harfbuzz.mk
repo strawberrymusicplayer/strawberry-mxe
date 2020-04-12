@@ -16,5 +16,6 @@ define $(PKG)_BUILD
         ac_cv_header_sys_mman_h=no \
         CXXFLAGS='-std=c++11' \
         LIBS='-lstdc++'
-    $(MAKE) -C '$(1)' -j '$(JOBS)' install
+    $(MAKE) -C '$(1)'
+    $(MAKE) -C '$(1)' install
 endef
