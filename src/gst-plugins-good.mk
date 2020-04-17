@@ -12,97 +12,100 @@ $(PKG)_DEPS     := cc glib flac liboil libsoup speex taglib wavpack lame dlfcn-w
 
 $(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-good/refs,$(gstreamer_UPDATE))
 
-define $(PKG)_BUILD
-    # The value for WAVE_FORMAT_DOLBY_AC3_SPDIF comes from vlc and mplayer:
-    #   https://www.videolan.org/developers/vlc/doc/doxygen/html/vlc__codecs_8h-source.html
-    #   https://lists.mplayerhq.hu/pipermail/mplayer-cvslog/2004-August/019283.html
-    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
-        $(MXE_CONFIGURE_OPTS) \
-        --disable-debug \
-        --disable-examples \
-        --disable-alpha \
-        --disable-auparse \
-        --disable-avi \
-        --disable-cutter \
-        --disable-debugutils \
-        --disable-deinterlace \
-        --disable-dtmf \
-        --disable-effectv \
-        --disable-flv \
-        --disable-flx \
-        --disable-goom \
-        --disable-goom2k1 \
-        --disable-imagefreeze \
-        --disable-interleave \
-        --disable-law \
-        --disable-level \
-        --disable-matroska \
-        --disable-monoscope \
-        --disable-multifile \
-        --disable-multipart \
-        --disable-rtpmanager \
-        --disable-shapewipe \
-        --disable-smpte \
-        --disable-videobox \
-        --disable-videocrop \
-        --disable-videofilter \
-        --disable-videomixer \
-        --disable-y4m \
-        --disable-oss \
-        --disable-oss4 \
-        --disable-osx_audio \
-        --disable-osx_video \
-        --disable-gst_v4l2 \
-        --disable-v4l2-probe \
-        --disable-x \
-        --disable-aalib \
-        --disable-aalibtest \
-        --disable-cairo \
-        --disable-gdk_pixbuf \
-        --disable-gtk3 \
-        --disable-jack \
-        --disable-jpeg \
-        --disable-libcaca \
-        --disable-libdv \
-        --disable-libpng \
-        --disable-mpg123 \
-        --disable-pulse \
-        --disable-dv1394 \
-        --disable-shout2 \
-        --disable-vpx \
-        --disable-zlib \
-        --disable-bz2 \
-        --enable-apetag \
-        --enable-audiofx \
-        --enable-audioparsers
-        --enable-autodetect \
-        --enable-equalizer \
-        --enable-icydemux \
-        --enable-id3demux \
-        --enable-replaygain \
-        --enable-spectrum \
-        --enable-wavenc \
-        --enable-wavparse \
-        --enable-directsound \
-        --enable-waveform \
-        --enable-flac \
-        --enable-lame \
-        --enable-qt \
-        --enable-speex \
-        --enable-taglib \
-        --enable-wavpack \
-        --enable-isomp4 \
-        --enable-udp \
-        --enable-soup \
-        --enable-rtp \
-        --enable-rtsp
 
-    $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS) CFLAGS='-DWAVE_FORMAT_DOLBY_AC3_SPDIF=0x0092'
-    $(MAKE) -C '$(BUILD_DIR)' -j 1 install CFLAGS='-DWAVE_FORMAT_DOLBY_AC3_SPDIF=0x0092'
+define $(PKG)_BUILD
+    cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)' \
+        -Dexamples=disabled \
+        -Dtests=disabled \
+        -Dgtk_doc=disabled \
+
+        -Dalpha=disabled \
+        -Dapetag=enabled \
+        -Daudiofx=enabled \
+        -Daudioparsers=enabled \
+        -Dauparse=disabled \
+        -Dautodetect=enabled \
+        -Davi=disabled \
+        -Dcutter=disabled \
+        -Ddebugutils=disabled \
+        -Ddeinterlace=disabled \
+        -Ddtmf=disabled \
+        -Deffectv=disabled \
+        -Dequalizer=enabled \
+        -Dflv=disabled \
+        -Dflx=disabled \
+        -Dgoom=disabled \
+        -Dgoom2k1=disabled \
+        -Dicydemux=enabled \
+        -Did3demux=enabled \
+        -Dimagefreeze=disabled \
+        -Dinterleave=disabled \
+        -Disomp4=enabled \
+        -Dlaw=disabled \
+        -Dlevel=disabled \
+        -Dmatroska=disabled \
+        -Dmonoscope=disabled \
+        -Dmultifile=disabled \
+        -Dmultipart=disabled \
+        -Dreplaygain=enabled \
+        -Drtp=enabled \
+        -Drtpmanager=disabled \
+        -Drtsp=enabled \
+        -Dshapewipe=disabled \
+        -Dsmpte=disabled \
+	-Dspectrum=enabled \
+        -Dudp=enabled \
+        -Dvideobox=disabled \
+        -Dvideocrop=disabled \
+        -Dvideofilter=disabled \
+        -Dvideomixer=disabled \
+        -Dwavenc=enabled \
+        -Dwavparse=enabled \
+        -Dy4m=disabled \
+
+        -Daalib=disabled \
+        -Dbz2=disabled \
+        -Dcairo=disabled \
+        -Ddirectsound=enabled \
+        -Ddv=disabled \
+        -Ddv1394=disabled \
+        -Dflac=enabled \
+        -Dgdk_pixbuf=disabled \
+        -Dgtk3=disabled \
+        -Djack=disabled \
+        -Djpeg=disabled \
+        -Dlame=enabled \
+        -Dlibcaca=disabled \
+        -Dmpg123=disabled \
+        -Doss=disabled \
+        -Doss4=disabled \
+        -Dosxaudio=disabled \
+        -Dosxvideo=disabled \
+        -Dpng=disabled \
+        -Dpulse=disabled \
+        -Dqt5=enabled \
+        -Dshout2=disabled \
+        -Dsoup=enabled \
+        -Dspeex=enabled \
+        -Dtaglib=enabled \
+        -Dtwolame=disabled \
+        -Dvpx=disabled \
+        -Dwaveform=enabled \
+        -Dwavpack=enabled \
+
+        -Dximagesrc=disabled \
+        -Dv4l2=disabled \
+        -Dv4l2-probe=disabled \
+        -Dv4l2-libv4l2=disabled \
+        -Dv4l2-gudev=disabled
+
+    cd '$(BUILD_DIR)' && ninja
+    cd '$(BUILD_DIR)' && ninja install
 
     # some .dlls are installed to lib - no obvious way to change
     $(if $(BUILD_SHARED),
         $(INSTALL) -d '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0'
         mv -vf '$(PREFIX)/$(TARGET)/lib/gstreamer-1.0/'*.dll '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/'
     )
+
 endef

@@ -13,48 +13,56 @@ $(PKG)_DEPS     := cc glib gstreamer liboil libxml2 ogg opus pango theora vorbis
 $(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-base/refs,$(gstreamer_UPDATE))
 
 define $(PKG)_BUILD
-    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
-        $(MXE_CONFIGURE_OPTS) \
-        --disable-debug \
-        --disable-examples \
-        --disable-opengl \
-        --disable-gles2 \
-        --disable-egl \
-        --disable-wgl \
-        --disable-glx \
-        --disable-cocoa \
-        --disable-x11 \
-        --disable-wayland \
-        --disable-dispmanx \
-        --disable-encoding \
-        --disable-videoconvert \
-        --disable-videotestsrc \
-        --disable-videorate \
-        --disable-videoscale \
-        --disable-x \
-        --disable-xvideo \
-        --disable-xshm \
-        --disable-alsa \
-        --disable-cdparanoia \
-        --disable-gl \
-        --disable-libvisual \
-        --disable-theora \
-        --enable-app \
-        --enable-audioconvert \
-        --enable-gio \
-        --enable-playback \
-        --enable-audioresample \
-        --enable-volume \
-        --enable-ogg \
-        --enable-opus \
-        --enable-vorbis
+    cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)' \
+        -Dexamples=disabled \
+        -Dtests=disabled \
+        -Dtools=disabled \
+        -Dgtk_doc=disabled \
 
-    $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS)
-    $(MAKE) -C '$(BUILD_DIR)' -j 1 install
+        -Dadder=enabled \
+        -Dapp=enabled \
+        -Daudioconvert=enabled \
+        -Daudiomixer=enabled \
+        -Daudiorate=enabled \
+        -Daudioresample=enabled \
+        -Daudiotestsrc=enabled \
+        -Dcompositor=enabled \
+        -Dencoding=enabled \
+        -Dgio=enabled \
+        -Doverlaycomposition=enabled \
+        -Dpbtypes=enabled \
+        -Dplayback=enabled \
+        -Drawparse=enabled \
+        -Dsubparse=enabled \
+        -Dtcp=enabled \
+        -Dtypefind=enabled \
+        -Dvideoconvert=disabled \
+        -Dvideorate=disabled \
+        -Dvideoscale=disabled \
+        -Dvideotestsrc=disabled \
+        -Dvolume=enabled \
+
+        -Dalsa=disabled \
+        -Dcdparanoia=disabled \
+        -Dlibvisual=disabled \
+        -Dogg=enabled \
+        -Dopus=enabled \
+        -Dpango=enabled \
+        -Dtheora=disabled \
+        -Dtremor=disabled \
+        -Dvorbis=enabled \
+        -Dx11=disabled \
+        -Dxshm=disabled \
+        -Dxvideo=disabled
+
+    cd '$(BUILD_DIR)' && ninja
+    cd '$(BUILD_DIR)' && ninja install
 
     # some .dlls are installed to lib - no obvious way to change
     $(if $(BUILD_SHARED),
         $(INSTALL) -d '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0'
         mv -vf '$(PREFIX)/$(TARGET)/lib/gstreamer-1.0/'*.dll '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/'
     )
+
 endef
+
