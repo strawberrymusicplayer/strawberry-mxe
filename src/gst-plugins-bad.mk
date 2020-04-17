@@ -173,7 +173,7 @@ define $(PKG)_BUILD
         -Dwpe=disabled \
 
         -Dhls=disabled \
-        -Dhls-crypto=disabled \
+        -Dhls-crypto=disabled
 
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install
