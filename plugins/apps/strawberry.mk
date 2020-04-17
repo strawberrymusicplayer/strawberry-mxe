@@ -2,8 +2,8 @@
 
 PKG             := strawberry
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 5f4c2ba
-$(PKG)_CHECKSUM := 699a30e6773b3b7cbd78d7473adb9ce1e47fd7c2c5c1d7f1333dfe2ed0decc33
+$(PKG)_VERSION  := 94ba861
+$(PKG)_CHECKSUM := 4c7d4b4bab1730f79000afb8381db0dd699e532ed1ad99cf2ff290f98301af1c
 $(PKG)_GH_CONF  := strawberrymusicplayer/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawberrymusicplayer.org/
 $(PKG)_OWNER    := https://github.com/www.strawberrymusicplayer.org
