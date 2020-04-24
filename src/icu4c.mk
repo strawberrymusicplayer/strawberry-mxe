@@ -15,6 +15,11 @@ $(PKG)_DEPS     := cc $(BUILD)~$(PKG) pe-util
 $(PKG)_TARGETS       := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS_$(BUILD) :=
 
+define $(PKG)_UPDATE
+    echo 'Updates for package $(PKG) is disabled.' >&2;
+    echo $($(PKG)_VERSION)
+endef
+
 define $(PKG)_BUILD_$(BUILD)
 
     # Ugly hack to get rid of python3 created by python3-conf
