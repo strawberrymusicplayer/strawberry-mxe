@@ -4,7 +4,7 @@ Contains ad hoc patches for cross building.
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Jonas Kvinge <jonas@jkvinge.net>
-Date: Sun, 17 Nov 2019 02:47:44 +0100
+Date: Fri, 1 May 2020 12:45:59 +0200
 Subject: [PATCH 1/1] Fix compile
 
 
@@ -12,12 +12,32 @@ diff --git a/cmake/compilation_flags.cmake b/cmake/compilation_flags.cmake
 index 1111111..2222222 100644
 --- a/cmake/compilation_flags.cmake
 +++ b/cmake/compilation_flags.cmake
-@@ -22,7 +22,7 @@ else ()
+@@ -22,9 +22,9 @@ else ()
  
      -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization
      -Wformat=2 -Winit-self -Wlong-long -Wmissing-declarations -Wmissing-include-dirs -Wcomment
 -    -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion
-+    -Wold-style-cast -Woverloaded-virtual -Wno-redundant-decls -Wshadow -Wno-sign-conversion
++    -Wold-style-cast -Woverloaded-virtual -Wno-redundant-decls -Wshadow -Wsign-conversion
      -Wsign-promo -Wstrict-overflow=5 -Wswitch-default -Wundef -Werror -Wunused -Wuninitialized
-     -Wno-missing-declarations -Wno-strict-overflow
+-    -Wno-missing-declarations -Wno-strict-overflow
++    -Wno-missing-declarations -Wno-strict-overflow -fpermissive
    )
+ 
+   if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+diff --git a/examples/peaddrconv/CMakeLists.txt b/examples/peaddrconv/CMakeLists.txt
+index 1111111..2222222 100644
+--- a/examples/peaddrconv/CMakeLists.txt
++++ b/examples/peaddrconv/CMakeLists.txt
+@@ -37,8 +37,8 @@ endif ()
+ 
+ find_package(pe-parse REQUIRED)
+ 
+-add_executable(${PROJECT_NAME} main.cpp)
+-target_link_libraries(${PROJECT_NAME} pe-parse::pe-parser-library)
+-target_compile_options(${PROJECT_NAME} PRIVATE ${PEADDRCONV_CXXFLAGS})
++#add_executable(${PROJECT_NAME} main.cpp)
++#target_link_libraries(${PROJECT_NAME} pe-parse::pe-parser-library)
++#target_compile_options(${PROJECT_NAME} PRIVATE ${PEADDRCONV_CXXFLAGS})
+ 
+-install(TARGETS ${PROJECT_NAME} DESTINATION "bin")
++#install(TARGETS ${PROJECT_NAME} DESTINATION "bin")
