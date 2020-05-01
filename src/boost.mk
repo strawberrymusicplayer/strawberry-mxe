@@ -15,12 +15,21 @@ AWK             = $(shell which $(shell gawk --help >/dev/null 2>&1 && echo g)aw
 
 $(PKG)_DEPS_$(BUILD) := zlib
 
+
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://www.boost.org/users/download/' | \
-    $(SED) -n 's,.*/release/\([0-9][^"/]*\)/.*,\1,p' | \
-    grep -v beta | \
-    head -1
+    echo 'Updates for package $(PKG) is disabled.' >&2;
+    echo $($(PKG)_VERSION)
 endef
+
+# 1.73.0 does not compile, see:
+#https://github.com/boostorg/context/issues/136
+
+#define $(PKG)_UPDATE
+#    $(WGET) -q -O- 'https://www.boost.org/users/download/' | \
+#    $(SED) -n 's,.*/release/\([0-9][^"/]*\)/.*,\1,p' | \
+#    grep -v beta | \
+#    head -1
+#endef
 
 define GCC_VERSION_MAJOR
 $(shell echo $(gcc_VERSION) | cut -f1 -d.)
