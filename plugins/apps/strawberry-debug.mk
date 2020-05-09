@@ -2,8 +2,8 @@
 
 PKG             := strawberry-debug
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 94ba861
-$(PKG)_CHECKSUM := 4c7d4b4bab1730f79000afb8381db0dd699e532ed1ad99cf2ff290f98301af1c
+$(PKG)_VERSION  := d4860a3
+$(PKG)_CHECKSUM := b89a2375f127e7c932f1884b0c3086f04811cc57a2eddd15f13b88fb9b19afe7
 $(PKG)_GH_CONF  := strawberrymusicplayer/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawberrymusicplayer.org/
 $(PKG)_OWNER    := https://github.com/strawberrymusicplayer
@@ -15,7 +15,7 @@ define $(PKG)_BUILD_SHARED
         -DCMAKE_BUILD_TYPE=Debug \
         -DARCH=$(TARGET) \
         -DENABLE_WIN32_CONSOLE=ON \
-        -DFORCE_GIT_REVISION="0.6.8-0-g$($(PKG)_VERSION)" \
+        -DFORCE_GIT_REVISION="0.6.10-0-g$($(PKG)_VERSION)" \
         -DUSE_SYSTEM_SINGLEAPPLICATION=OFF \
         -DENABLE_DBUS=OFF \
         -DENABLE_LIBPULSE=OFF \
@@ -24,8 +24,7 @@ define $(PKG)_BUILD_SHARED
         -DENABLE_LIBMTP=OFF \
         -DENABLE_GSTREAMER=ON \
         -DENABLE_XINE=ON \
-        -DENABLE_VLC=OFF \
-        -DENABLE_PHONON=OFF
+        -DENABLE_VLC=OFF
     $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS)
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 
