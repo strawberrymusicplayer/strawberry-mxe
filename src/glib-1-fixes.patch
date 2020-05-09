@@ -4,8 +4,8 @@ Contains ad hoc patches for cross building.
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Jonas Kvinge <jonas@jkvinge.net>
-Date: Sat, 29 Feb 2020 05:41:28 +0100
-Subject: [PATCH 1/1] Fixes to glib
+Date: Sat, 9 May 2020 15:04:25 +0200
+Subject: [PATCH 1/1] Build fixes
 
 
 diff --git a/fuzzing/meson.build b/fuzzing/meson.build
@@ -453,6 +453,18 @@ index 1111111..2222222 100644
  #ifndef _MSC_VER
    SetThreadName_VEH_handle = AddVectoredExceptionHandler (1, &SetThreadName_VEH);
    if (SetThreadName_VEH_handle == NULL)
+diff --git a/glib/gvariant-core.c b/glib/gvariant-core.c
+index 1111111..2222222 100644
+--- a/glib/gvariant-core.c
++++ b/glib/gvariant-core.c
+@@ -29,6 +29,7 @@
+ #include <glib/gslice.h>
+ #include <glib/gmem.h>
+ #include <glib/grefcount.h>
++#include <stdlib.h>
+ #include <string.h>
+ 
+ 
 diff --git a/glib/meson.build b/glib/meson.build
 index 1111111..2222222 100644
 --- a/glib/meson.build
@@ -520,3 +532,15 @@ index 1111111..2222222 100644
  dnl
  dnl At the end, if we're not within glib, we'll define the public
  dnl definitions in terms of our private definitions.
+diff --git a/meson.build b/meson.build
+index 1111111..2222222 100644
+--- a/meson.build
++++ b/meson.build
+@@ -376,7 +376,6 @@ if cc.get_id() == 'gcc' or cc.get_id() == 'clang'
+     '-Wno-pedantic',
+     '-Werror=declaration-after-statement',
+     '-Werror=format=2',
+-    '-Werror=implicit-function-declaration',
+     '-Werror=init-self',
+     '-Werror=missing-include-dirs',
+     '-Werror=missing-prototypes',
