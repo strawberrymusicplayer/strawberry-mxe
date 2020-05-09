@@ -1,0 +1,54 @@
+This file is part of MXE. See LICENSE.md for licensing information.
+
+Contains ad hoc patches for cross building.
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Sat, 9 May 2020 15:50:07 +0200
+Subject: [PATCH 1/2] Remove Werror-implicit-function-declaration
+
+
+diff --git a/libbacktrace/configure b/libbacktrace/configure
+index 1111111..2222222 100755
+--- a/libbacktrace/configure
++++ b/libbacktrace/configure
+@@ -12324,7 +12324,6 @@ $as_echo "#define HAVE_GETIPINFO 1" >>confdefs.h
+ 
+ else
+   ac_save_CFFLAGS="$CFLAGS"
+-  CFLAGS="$CFLAGS -Werror-implicit-function-declaration"
+   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for _Unwind_GetIPInfo" >&5
+ $as_echo_n "checking for _Unwind_GetIPInfo... " >&6; }
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+diff --git a/libbacktrace/configure.ac b/libbacktrace/configure.ac
+index 1111111..2222222 100644
+--- a/libbacktrace/configure.ac
++++ b/libbacktrace/configure.ac
+@@ -155,7 +155,6 @@ if test -n "${with_target_subdir}"; then
+   GCC_CHECK_UNWIND_GETIPINFO
+ else
+   ac_save_CFFLAGS="$CFLAGS"
+-  CFLAGS="$CFLAGS -Werror-implicit-function-declaration"
+   AC_MSG_CHECKING([for _Unwind_GetIPInfo])
+   AC_LINK_IFELSE(
+     [AC_LANG_PROGRAM(
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Sat, 9 May 2020 16:47:51 +0200
+Subject: [PATCH 2/2] Replace getpagesize by sysconf
+
+
+diff --git a/libbacktrace/mmapio.c b/libbacktrace/mmapio.c
+index 1111111..2222222 100644
+--- a/libbacktrace/mmapio.c
++++ b/libbacktrace/mmapio.c
+@@ -66,7 +66,7 @@ backtrace_get_view (struct backtrace_state *state ATTRIBUTE_UNUSED,
+       return 0;
+     }
+ 
+-  pagesize = getpagesize ();
++  pagesize = sysconf(_SC_PAGESIZE);
+   inpage = offset % pagesize;
+   pageoff = offset - inpage;
+ 
