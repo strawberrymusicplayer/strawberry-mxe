@@ -10,6 +10,11 @@ $(PKG)_DEPS     := cc googletest zlib $(BUILD)~$(PKG)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS_$(BUILD) := googletest libtool
 
+define $(PKG)_UPDATE
+    echo 'Updates for package $(PKG) is disabled.' >&2;
+    echo $($(PKG)_VERSION)
+endef
+
 define $(PKG)_BUILD
     $(call PREPARE_PKG_SOURCE,googletest,$(SOURCE_DIR))
     cd '$(SOURCE_DIR)' && ./autogen.sh
