@@ -4,23 +4,13 @@ PKG             := fribidi
 $(PKG)_WEBSITE  := https://fribidi.org/
 $(PKG)_DESCR    := FriBidi
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.0.8
-$(PKG)_CHECKSUM := 94c7b68d86ad2a9613b4dcffe7bbeb03523d63b5b37918bdf2e4ef34195c1e6c
-$(PKG)_GH_CONF  := fribidi/fribidi/releases, v, , , , .tar.bz2
+$(PKG)_VERSION  := 1.0.9
+$(PKG)_CHECKSUM := ef6f940d04213a0fb91a0177b2b57df2031bf3a7e2cd0ee2c6877a160fc206df
+$(PKG)_GH_CONF  := fribidi/fribidi/releases, v
 $(PKG)_DEPS     := cc
 
-define $(PKG)_UPDATE
-    echo 'Updates for package $(PKG) is disabled.' >&2;
-    echo $($(PKG)_VERSION)
-endef
-
 define $(PKG)_BUILD
-    cd '$(1)' && ./autogen.sh
-    cd '$(1)' && ./configure \
-        $(MXE_CONFIGURE_OPTS) \
-        --disable-debug \
-        --disable-deprecated \
-        $(if $(BUILD_STATIC), \
-            --enable-static )
-    $(MAKE) -C '$(1)' -j '$(JOBS)' install bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS= dist_man_MANS=
+    cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)' -Ddocs=false -Ddeprecated=false
+    cd '$(BUILD_DIR)' && ninja
+    cd '$(BUILD_DIR)' && ninja install
 endef
