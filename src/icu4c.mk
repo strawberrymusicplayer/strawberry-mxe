@@ -4,9 +4,9 @@ PKG             := icu4c
 $(PKG)_WEBSITE  := https://github.com/unicode-org/icu
 $(PKG)_DESCR    := ICU4C
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 66.1
+$(PKG)_VERSION  := 67.1
 $(PKG)_MAJOR    := $(word 1,$(subst ., ,$($(PKG)_VERSION)))
-$(PKG)_CHECKSUM := 52a3f2209ab95559c1cf0a14f24338001f389615bf00e2585ef3dbc43ecf0a2e
+$(PKG)_CHECKSUM := 94a80cd6f251a53bd2a997f6f1b5ac6653fe791dfab66e1eb0227740fb86d5dc
 $(PKG)_GH_CONF  := unicode-org/icu/releases/latest,release-,,,-
 $(PKG)_SUBDIR   := icu
 $(PKG)_URL      := $($(PKG)_WEBSITE)/releases/download/release-$(subst .,-,$($(PKG)_VERSION))/icu4c-$(subst .,_,$($(PKG)_VERSION))-src.tgz
@@ -14,11 +14,6 @@ $(PKG)_DEPS     := cc $(BUILD)~$(PKG) pe-util
 
 $(PKG)_TARGETS       := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS_$(BUILD) :=
-
-define $(PKG)_UPDATE
-    echo 'Updates for package $(PKG) is disabled.' >&2;
-    echo $($(PKG)_VERSION)
-endef
 
 define $(PKG)_BUILD_$(BUILD)
 
@@ -81,7 +76,7 @@ endef
 define $(PKG)_BUILD_SHARED
     $($(PKG)_BUILD_COMMON)
     # icu4c installs its DLLs to lib/. Move them to bin/.
-    mv -fv $(PREFIX)/$(TARGET)/lib/icu*.dll '$(PREFIX)/$(TARGET)/bin/'
+    #mv -fv $(PREFIX)/$(TARGET)/lib/icu*.dll '$(PREFIX)/$(TARGET)/bin/'
 
     # stub data is icudt.dll, actual data is libicudt.dll - prefer actual
     test ! -e '$(PREFIX)/$(TARGET)/lib/libicudt$($(PKG)_MAJOR).dll' \
