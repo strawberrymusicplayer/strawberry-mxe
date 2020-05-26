@@ -3,17 +3,16 @@ This file is part of MXE. See LICENSE.md for licensing information.
 Contains ad hoc patches for cross building.
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Tony Theodore <tonyt@logyst.com>
-Date: Mon, 2 Jul 2018 08:03:47 +1000
-Subject: [PATCH 1/1] install .pc file on mingw
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Tue, 26 May 2020 13:26:55 +0200
+Subject: [PATCH 1/1] Build fixes
 
-see: https://github.com/facebook/zstd/pull/1203
 
 diff --git a/build/cmake/lib/CMakeLists.txt b/build/cmake/lib/CMakeLists.txt
 index 1111111..2222222 100644
 --- a/build/cmake/lib/CMakeLists.txt
 +++ b/build/cmake/lib/CMakeLists.txt
-@@ -130,7 +130,7 @@ if (ZSTD_BUILD_STATIC)
+@@ -134,7 +134,7 @@ if (ZSTD_BUILD_STATIC)
              OUTPUT_NAME ${STATIC_LIBRARY_BASE_NAME})
  endif ()
  
@@ -21,4 +20,20 @@ index 1111111..2222222 100644
 +if (UNIX OR MINGW)
      # pkg-config
      set(PREFIX "${CMAKE_INSTALL_PREFIX}")
-     set(LIBDIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
+     set(LIBDIR "${CMAKE_INSTALL_LIBDIR}")
+@@ -165,6 +165,15 @@ install(TARGETS ${library_targets}
+     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+     )
+ 
++if (ZSTD_BUILD_SHARED)
++    install(TARGETS libzstd_shared RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
++                                   LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
++                                   ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}")
++endif()
++if (ZSTD_BUILD_STATIC)
++    install(TARGETS libzstd_static ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}")
++endif ()
++
+ # uninstall target
+ if (NOT TARGET uninstall)
+     configure_file(
