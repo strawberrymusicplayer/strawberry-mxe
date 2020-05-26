@@ -2,8 +2,8 @@
 
 PKG             := strawberry-debug
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := d4860a3
-$(PKG)_CHECKSUM := b89a2375f127e7c932f1884b0c3086f04811cc57a2eddd15f13b88fb9b19afe7
+$(PKG)_VERSION  := 2521954
+$(PKG)_CHECKSUM := 04203a40f889f066dcbc4d2984364cb97f3f5272ef95c55848aa5fbc8169e5c1
 $(PKG)_GH_CONF  := strawberrymusicplayer/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawberrymusicplayer.org/
 $(PKG)_OWNER    := https://github.com/strawberrymusicplayer
@@ -15,7 +15,7 @@ define $(PKG)_BUILD_SHARED
         -DCMAKE_BUILD_TYPE=Debug \
         -DARCH=$(TARGET) \
         -DENABLE_WIN32_CONSOLE=ON \
-        -DFORCE_GIT_REVISION="0.6.10-0-g$($(PKG)_VERSION)" \
+        -DFORCE_GIT_REVISION="0.6.11-0-g$($(PKG)_VERSION)" \
         -DUSE_SYSTEM_SINGLEAPPLICATION=OFF \
         -DENABLE_DBUS=OFF \
         -DENABLE_LIBPULSE=OFF \
