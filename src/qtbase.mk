@@ -4,18 +4,18 @@ PKG             := qtbase
 $(PKG)_WEBSITE  := https://www.qt.io/
 $(PKG)_DESCR    := Qt
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 5.14.2
-$(PKG)_CHECKSUM := 48b9e79220941665a9dd827548c6428f7aa3052ccba8f4f7e039a94aa1d2b28a
+$(PKG)_VERSION  := 5.15.0
+$(PKG)_CHECKSUM := 9e7af10aece15fa9500369efde69cb220eee8ec3a6818afe01ce1e7d484824c5
 $(PKG)_SUBDIR   := $(PKG)-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-everywhere-src-$($(PKG)_VERSION).tar.xz
-$(PKG)_URL      := https://download.qt.io/official_releases/qt/5.14/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
+$(PKG)_URL      := https://download.qt.io/official_releases/qt/5.15/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc dbus fontconfig freetype harfbuzz jpeg libpng openssl pcre2 zlib zstd sqlite freetds
 $(PKG)_DEPS_$(BUILD) :=
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- https://download.qt.io/official_releases/qt/5.14/ | \
-    $(SED) -n 's,.*href="\(5\.14\.[^/]*\)/".*,\1,p' | \
+    $(WGET) -q -O- https://download.qt.io/official_releases/qt/5.15/ | \
+    $(SED) -n 's,.*href="\(5\.15\.[^/]*\)/".*,\1,p' | \
     grep -iv -- '-rc' | \
     sort |
     tail -1
@@ -74,7 +74,7 @@ define $(PKG)_BUILD
     mkdir            '$(1)/test-qt'
     cd               '$(1)/test-qt' && '$(PREFIX)/$(TARGET)/qt5/bin/qmake' '$(PWD)/src/qt-test.pro'
     $(MAKE)       -C '$(1)/test-qt' -j '$(JOBS)'
-    $(INSTALL) -m755 '$(1)/test-qt/release/test-qt5.exe' '$(PREFIX)/$(TARGET)/bin/'
+    $(INSTALL) -m755 '$(1)/test-qt/$(BUILD_TYPE)/test-qt5.exe' '$(PREFIX)/$(TARGET)/bin/'
 
     # build test the manual way
     mkdir '$(1)/test-$(PKG)-pkgconfig'
