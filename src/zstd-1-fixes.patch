@@ -4,8 +4,8 @@ Contains ad hoc patches for cross building.
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Jonas Kvinge <jonas@jkvinge.net>
-Date: Tue, 26 May 2020 13:26:55 +0200
-Subject: [PATCH 1/1] Build fixes
+Date: Wed, 27 May 2020 00:02:10 +0200
+Subject: [PATCH 1/1] Fix build
 
 
 diff --git a/build/cmake/lib/CMakeLists.txt b/build/cmake/lib/CMakeLists.txt
@@ -21,19 +21,11 @@ index 1111111..2222222 100644
      # pkg-config
      set(PREFIX "${CMAKE_INSTALL_PREFIX}")
      set(LIBDIR "${CMAKE_INSTALL_LIBDIR}")
-@@ -165,6 +165,15 @@ install(TARGETS ${library_targets}
-     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-     )
+@@ -160,6 +160,7 @@ install(FILES
  
-+if (ZSTD_BUILD_SHARED)
-+    install(TARGETS libzstd_shared RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
-+                                   LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-+                                   ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}")
-+endif()
-+if (ZSTD_BUILD_STATIC)
-+    install(TARGETS libzstd_static ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}")
-+endif ()
-+
- # uninstall target
- if (NOT TARGET uninstall)
-     configure_file(
+ install(TARGETS ${library_targets}
+     EXPORT zstdExports
++    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+     INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+     ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
