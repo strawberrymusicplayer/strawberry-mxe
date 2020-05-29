@@ -4,19 +4,55 @@ on: [push, pull_request]
 jobs:
   build-linux:
     runs-on: ubuntu-latest
+    container:
+      image: opensuse/leap:15.1
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v1.2.0
+
     - name: Update Packages
-      run: sudo apt-get update -y
+      run: zypper --non-interactive --gpg-auto-import-keys ref
+
+    - name: Upgrade Packages
+      run: zypper --non-interactive --gpg-auto-import-keys up
+
     - name: Install Packages
-      run:
-        sudo apt-get install -y bash git sed patch wget curl g++ g++-multilib libtool-bin make pkg-config autoconf automake texinfo autopoint intltool flex gettext gperf libc6-dev-i386 libgdk-pixbuf2.0-dev libltdl-dev libssl-dev libxml-parser-perl openssl perl python bison ruby bzip2 xz-utils p7zip-full lzip unzip python3-setuptools
+      run: >
+        zypper --non-interactive --gpg-auto-import-keys install
+        glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc-c++
+        git make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool
+        which patch wget curl gperf tar gzip bzip2 xz p7zip lzip zip unzip
+        gettext-tools gtk-doc ruby scons bison flex
+        linux-glibc-devel glibc-devel file-devel libopenssl-devel gdk-pixbuf-devel
+
     - name: Set targets
       shell: bash
       run: sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := x86_64-w64-mingw32.shared/g' settings.mk
+
     - name: Build icu4c
       shell: bash
       run: make -j4 icu4c
     - name: Build all
       shell: bash
       run: make -j4
+
+    - name: Create archive
+      shell: bash
+      working-directory: ${{runner.workspace}}
+      run: |
+        tar -cJf strawberry-mxe.tar.xz --dereference --exclude-vcs --exclude=".directory" --exclude=".git" --exclude="*_" --exclude="*.bak" strawberry-mxe
+
+    - name: Upload archive
+      shell: bash
+      working-directory: ${{runner.workspace}}
+      env:
+        ssh_host: ${{ secrets.SSH_HOST }}
+        ssh_port: ${{ secrets.SSH_PORT }}
+        ssh_user: ${{ secrets.SSH_USER }}
+        ssh_key: ${{ secrets.SSH_KEY }}
+      run: |
+        mkdir -p ~/.ssh /root/.ssh
+        touch ~/.ssh/gh_actions_key
+        ln -s /github/home/.ssh/gh_actions_key /root/.ssh/gh_actions_key
+        echo "${ssh_key}" > ~/.ssh/gh_actions_key
+        chmod 600 ~/.ssh/gh_actions_key
+        rsync -avz -e "ssh -p ${ssh_port} -i ~/.ssh/gh_actions_key -o StrictHostKeyChecking=no" strawberry-mxe.tar.xz ${ssh_user}@${ssh_host}:/home/travis/builds/
