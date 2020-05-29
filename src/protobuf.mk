@@ -3,17 +3,12 @@
 PKG             := protobuf
 $(PKG)_WEBSITE  := https://github.com/google/protobuf
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 3.11.4
-$(PKG)_CHECKSUM := a79d19dcdf9139fa4b81206e318e33d245c4c9da1ffed21c87288ed4380426f9
+$(PKG)_VERSION  := 3.12.2
+$(PKG)_CHECKSUM := bb8ce9ba11eb7bccf080599fe7cad9cc461751c8dd1ba61701c0070d58cde973
 $(PKG)_GH_CONF  := google/protobuf/tags, v
 $(PKG)_DEPS     := cc googletest zlib $(BUILD)~$(PKG)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS_$(BUILD) := googletest libtool
-
-define $(PKG)_UPDATE
-    echo 'Updates for package $(PKG) is disabled.' >&2;
-    echo $($(PKG)_VERSION)
-endef
 
 define $(PKG)_BUILD
     $(call PREPARE_PKG_SOURCE,googletest,$(SOURCE_DIR))
