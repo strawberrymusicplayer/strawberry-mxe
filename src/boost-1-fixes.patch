@@ -3,9 +3,9 @@ This file is part of MXE. See LICENSE.md for licensing information.
 Contains ad hoc patches for cross building.
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Gregorio Litenstein <g.litenstein@gmail.com>
-Date: Sun, 6 Oct 2019 17:34:23 -0300
-Subject: [PATCH 1/4] Fix libwinpthread library name.
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Wed, 27 May 2020 18:52:54 +0200
+Subject: [PATCH 1/6] Fix libwinpthread library name
 
 
 diff --git a/libs/thread/build/Jamfile.v2 b/libs/thread/build/Jamfile.v2
@@ -64,9 +64,9 @@ index 1111111..2222222 100644
      return $(result) ;
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Gregorio Litenstein <g.litenstein@gmail.com>
-Date: Sun, 6 Oct 2019 17:46:31 -0300
-Subject: [PATCH 2/4] Remove set_stack_size() implementation from header
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Wed, 27 May 2020 18:53:24 +0200
+Subject: [PATCH 2/6] Remove set_stack_size() implementation from header
 
 
 diff --git a/boost/thread/pthread/thread_data.hpp b/boost/thread/pthread/thread_data.hpp
@@ -84,7 +84,7 @@ index 1111111..2222222 100644
 -#else
 -          std::size_t page_size = ::sysconf( _SC_PAGESIZE);
 -#endif
--#if PTHREAD_STACK_MIN > 0
+-#ifdef PTHREAD_STACK_MIN
 -          if (size<PTHREAD_STACK_MIN) size=PTHREAD_STACK_MIN;
 -#endif
 -          size = ((size+page_size-1)/page_size)*page_size;
@@ -157,9 +157,9 @@ index 1111111..2222222 100644
          thread_data_base::~thread_data_base()
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Gregorio Litenstein <g.litenstein@gmail.com>
-Date: Sun, 6 Oct 2019 17:46:46 -0300
-Subject: [PATCH 3/4] Fix missing include
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Wed, 27 May 2020 18:53:49 +0200
+Subject: [PATCH 3/6] Fix missing include
 
 
 diff --git a/boost/iostreams/detail/is_dereferenceable.hpp b/boost/iostreams/detail/is_dereferenceable.hpp
@@ -176,9 +176,9 @@ index 1111111..2222222 100644
  # include <boost/detail/workaround.hpp>
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Gregorio Litenstein <g.litenstein@gmail.com>
-Date: Sun, 6 Oct 2019 17:48:38 -0300
-Subject: [PATCH 4/4] Prefer pthreads; use posix semaphores also
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Wed, 27 May 2020 18:54:38 +0200
+Subject: [PATCH 4/6] Prefer pthreads; use posix semaphores also
 
 
 diff --git a/boost/config/platform/win32.hpp b/boost/config/platform/win32.hpp
@@ -233,3 +233,65 @@ index 1111111..2222222 100644
  #include <boost/log/detail/event.hpp>
  #include <boost/log/exceptions.hpp>
  
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Wed, 27 May 2020 18:55:41 +0200
+Subject: [PATCH 5/6] Fix context symbols
+
+
+diff --git a/libs/context/src/asm/jump_i386_ms_pe_gas.asm b/libs/context/src/asm/jump_i386_ms_pe_gas.asm
+index 1111111..2222222 100644
+--- a/libs/context/src/asm/jump_i386_ms_pe_gas.asm
++++ b/libs/context/src/asm/jump_i386_ms_pe_gas.asm
+@@ -120,4 +120,4 @@ _jump_fcontext:
+     jmp *%ecx
+ 
+ .section .drectve
+-.ascii " -export:\"_jump_fcontext\""
++.ascii " -export:\"jump_fcontext\""
+diff --git a/libs/context/src/asm/make_i386_ms_pe_gas.asm b/libs/context/src/asm/make_i386_ms_pe_gas.asm
+index 1111111..2222222 100644
+--- a/libs/context/src/asm/make_i386_ms_pe_gas.asm
++++ b/libs/context/src/asm/make_i386_ms_pe_gas.asm
+@@ -150,4 +150,4 @@ finish:
+ .def	__exit;	.scl	2;	.type	32;	.endef  /* standard C library function */
+ 
+ .section .drectve
+-.ascii " -export:\"_make_fcontext\""
++.ascii " -export:\"make_fcontext\""
+diff --git a/libs/context/src/asm/ontop_i386_ms_pe_gas.asm b/libs/context/src/asm/ontop_i386_ms_pe_gas.asm
+index 1111111..2222222 100644
+--- a/libs/context/src/asm/ontop_i386_ms_pe_gas.asm
++++ b/libs/context/src/asm/ontop_i386_ms_pe_gas.asm
+@@ -128,4 +128,4 @@ _ontop_fcontext:
+     jmp  *%ecx
+ 
+ .section .drectve
+-.ascii " -export:\"_ontop_fcontext\""
++.ascii " -export:\"ontop_fcontext\""
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Wed, 27 May 2020 18:56:50 +0200
+Subject: [PATCH 6/6] Fix build.sh
+
+
+diff --git a/tools/build/src/engine/build.sh b/tools/build/src/engine/build.sh
+index 1111111..2222222 100755
+--- a/tools/build/src/engine/build.sh
++++ b/tools/build/src/engine/build.sh
+@@ -68,6 +68,13 @@ test_uname ()
+     fi
+ }
+ 
++test_msystem ()
++{
++    if [ -n $MSYSTEM ]; then
++      test "$MSYSTEM" = "$*"
++    fi
++}
++
+ # Check that the given command runs.
+ test_exec ()
+ {

@@ -4,8 +4,8 @@ PKG             := boost
 $(PKG)_WEBSITE  := https://www.boost.org/
 $(PKG)_DESCR    := Boost C++ Library
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.72.0
-$(PKG)_CHECKSUM := 59c9b274bc451cf91a9ba1dd2c7fdcaf5d60b1b3aa83f2c9fa143417cc660722
+$(PKG)_VERSION  := 1.73.0
+$(PKG)_CHECKSUM := 4eb3b8d442b426dc35346235c8733b5ae35ba431690e38c6a8263dce9fcbb402
 $(PKG)_SUBDIR   := boost_$(subst .,_,$($(PKG)_VERSION))
 $(PKG)_FILE     := boost_$(subst .,_,$($(PKG)_VERSION)).tar.bz2
 $(PKG)_URL      := https://dl.bintray.com/boostorg/release/$($(PKG)_VERSION)/source/$($(PKG)_FILE)
@@ -15,21 +15,12 @@ AWK             = $(shell which $(shell gawk --help >/dev/null 2>&1 && echo g)aw
 
 $(PKG)_DEPS_$(BUILD) := zlib
 
-
 define $(PKG)_UPDATE
-    echo 'Updates for package $(PKG) is disabled.' >&2;
-    echo $($(PKG)_VERSION)
+    $(WGET) -q -O- 'https://www.boost.org/users/download/' | \
+    $(SED) -n 's,.*/release/\([0-9][^"/]*\)/.*,\1,p' | \
+    grep -v beta | \
+    head -1
 endef
-
-# 1.73.0 does not compile, see:
-#https://github.com/boostorg/context/issues/136
-
-#define $(PKG)_UPDATE
-#    $(WGET) -q -O- 'https://www.boost.org/users/download/' | \
-#    $(SED) -n 's,.*/release/\([0-9][^"/]*\)/.*,\1,p' | \
-#    grep -v beta | \
-#    head -1
-#endef
 
 define GCC_VERSION_MAJOR
 $(shell echo $(gcc_VERSION) | cut -f1 -d.)
