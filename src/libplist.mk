@@ -9,8 +9,8 @@ $(PKG)_GH_CONF  := libimobiledevice/libplist/tags
 $(PKG)_DEPS     := cc libxml2
 
 define $(PKG)_BUILD
-    cd '$(1)' && NOCONFIGURE=true $(SHELL) ./autogen.sh
-    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --without-cython
-    $(MAKE) -C '$(1)' -j '$(JOBS)'
-    $(MAKE) -C '$(1)' -j 1 install
+    cd '$(SOURCE_DIR)' && NOCONFIGURE=true $(SHELL) ./autogen.sh
+    cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure $(MXE_CONFIGURE_OPTS) --without-cython
+    $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
+    $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 endef
