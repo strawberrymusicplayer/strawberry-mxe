@@ -23,7 +23,7 @@ jobs:
         which patch wget curl gperf tar gzip bzip2 xz p7zip lzip zip unzip
         gettext-tools gtk-doc ruby scons bison flex
         linux-glibc-devel glibc-devel file-devel libopenssl-devel gdk-pixbuf-devel
-        python-base python3-base
+        python-base python3-base python3-setuptools
 
     - name: Set targets
       shell: bash
