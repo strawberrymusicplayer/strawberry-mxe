@@ -4,7 +4,7 @@ Contains ad hoc patches for cross building.
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Jonas Kvinge <jonas@jkvinge.net>
-Date: Sat, 9 May 2020 15:04:25 +0200
+Date: Sat, 30 May 2020 14:30:03 +0200
 Subject: [PATCH 1/1] Build fixes
 
 
@@ -536,8 +536,8 @@ diff --git a/meson.build b/meson.build
 index 1111111..2222222 100644
 --- a/meson.build
 +++ b/meson.build
-@@ -376,7 +376,6 @@ if cc.get_id() == 'gcc' or cc.get_id() == 'clang'
-     '-Wno-pedantic',
+@@ -378,7 +378,6 @@ if cc.get_id() == 'gcc' or cc.get_id() == 'clang'
+     '-Wno-format-zero-length',
      '-Werror=declaration-after-statement',
      '-Werror=format=2',
 -    '-Werror=implicit-function-declaration',
