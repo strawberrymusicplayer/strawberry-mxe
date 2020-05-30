@@ -5,7 +5,7 @@ jobs:
   build-linux:
     runs-on: ubuntu-latest
     container:
-      image: opensuse/leap:15.1
+      image: opensuse/leap:15.2
     steps:
     - uses: actions/checkout@v1.2.0
 
@@ -19,10 +19,10 @@ jobs:
       run: >
         zypper --non-interactive --gpg-auto-import-keys install
         glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc-c++
-        git make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool
-        which patch wget curl gperf tar gzip bzip2 xz p7zip lzip zip unzip
-        gettext-tools gtk-doc ruby scons bison flex
-        linux-glibc-devel glibc-devel file-devel libopenssl-devel gdk-pixbuf-devel
+        which patch gperf wget curl git ruby
+        make cmake libtool pkg-config autoconf automake meson ninja intltool makeinfo scons bison flex gettext-tools
+        tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip
+        linux-glibc-devel glibc-devel file-devel libopenssl-devel gdk-pixbuf-devel gtk-doc
         python-base python3-base python3-setuptools
 
     - name: Set targets
