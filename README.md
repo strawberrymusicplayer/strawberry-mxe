@@ -27,7 +27,7 @@ Some of the libraries here are:
   * Chromaprint
   * Google Test
 
-+ All their dependecies.
++ All their dependencies.
 
 Differences from the official repositories:
 
