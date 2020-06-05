@@ -4,56 +4,11 @@ on: [push, pull_request]
 jobs:
   build-linux:
     runs-on: ubuntu-latest
-    container:
-      image: opensuse/leap:15.1
     steps:
     - uses: actions/checkout@v1.2.0
-
-    - name: Update Packages
-      run: zypper --non-interactive --gpg-auto-import-keys ref
-
-    - name: Upgrade Packages
-      run: zypper --non-interactive --gpg-auto-import-keys up
-
-    - name: Install Packages
-      run: >
-        zypper --non-interactive --gpg-auto-import-keys install
-        glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc-c++
-        which patch gperf wget curl git ruby
-        make cmake libtool pkg-config autoconf automake meson ninja intltool makeinfo scons bison flex gettext-tools
-        tar gzip bzip2 xz p7zip lzip zip unzip
-        linux-glibc-devel glibc-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel gtk-doc
-        python-base python3-base python3-setuptools
-
-    - name: Set targets
-      shell: bash
-      run: sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := x86_64-w64-mingw32.shared/g' settings.mk
-
-    - name: Build icu4c
-      shell: bash
-      run: make -j4 icu4c
-    - name: Build all
-      shell: bash
-      run: make -j4
-
-    - name: Create archive
-      shell: bash
-      working-directory: ${{runner.workspace}}
-      run: |
-        tar -cJf strawberry-mxe.tar.xz --dereference --exclude-vcs --exclude=".directory" --exclude=".git" --exclude="*_" --exclude="*.bak" strawberry-mxe
-
-    - name: Upload archive
-      shell: bash
-      working-directory: ${{runner.workspace}}
-      env:
-        ssh_host: ${{ secrets.SSH_HOST }}
-        ssh_port: ${{ secrets.SSH_PORT }}
-        ssh_user: ${{ secrets.SSH_USER }}
-        ssh_key: ${{ secrets.SSH_KEY }}
-      run: |
-        mkdir -p ~/.ssh /root/.ssh
-        touch ~/.ssh/gh_actions_key
-        ln -s /github/home/.ssh/gh_actions_key /root/.ssh/gh_actions_key
-        echo "${ssh_key}" > ~/.ssh/gh_actions_key
-        chmod 600 ~/.ssh/gh_actions_key
-        rsync -avz -e "ssh -p ${ssh_port} -i ~/.ssh/gh_actions_key -o StrictHostKeyChecking=no" strawberry-mxe.tar.xz ${ssh_user}@${ssh_host}:/home/travis/builds/
+    - uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: jonaski/strawberry-mxe
+        tags: latest
