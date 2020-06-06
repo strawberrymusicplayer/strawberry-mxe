@@ -18,7 +18,6 @@ define $(PKG)_BUILD
         -Dexamples=disabled \
         -Dtests=disabled \
         -Dgtk_doc=disabled \
-
         -Dalpha=disabled \
         -Dapetag=enabled \
         -Daudiofx=enabled \
@@ -62,7 +61,6 @@ define $(PKG)_BUILD
         -Dwavenc=enabled \
         -Dwavparse=enabled \
         -Dy4m=disabled \
-
         -Daalib=disabled \
         -Dbz2=disabled \
         -Dcairo=disabled \
@@ -83,7 +81,7 @@ define $(PKG)_BUILD
         -Dosxvideo=disabled \
         -Dpng=disabled \
         -Dpulse=disabled \
-        -Dqt5=enabled \
+        -Dqt5=disabled \
         -Dshout2=disabled \
         -Dsoup=enabled \
         -Dspeex=enabled \
@@ -92,10 +90,8 @@ define $(PKG)_BUILD
         -Dvpx=disabled \
         -Dwaveform=enabled \
         -Dwavpack=enabled \
-
         -Dximagesrc=disabled \
         -Dv4l2=disabled \
-        -Dv4l2-probe=disabled \
         -Dv4l2-libv4l2=disabled \
         -Dv4l2-gudev=disabled
 

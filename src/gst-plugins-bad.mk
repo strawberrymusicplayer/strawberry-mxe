@@ -8,7 +8,7 @@ $(PKG)_CHECKSUM := f1cb7aa2389569a5343661aae473f0a940a90b872001824bc47fa8072a041
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc gstreamer gst-plugins-base gst-plugins-good opus faad2 faac
+$(PKG)_DEPS     := cc gstreamer gst-plugins-base gst-plugins-good libgcrypt opus faad2 faac libmpcdec chromaprint
 
 $(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-bad/refs,$(gstreamer_UPDATE))
 
@@ -18,13 +18,11 @@ define $(PKG)_BUILD
         -Dtests=disabled \
         -Dgtk_doc=disabled \
         -Dexamples=disabled \
-
         -Daccurip=disabled \
         -Dadpcmdec=disabled \
         -Dadpcmenc=disabled \
         -Daiff=enabled \
         -Dasfmux=enabled \
-
         -Daudiobuffersplit=disabled \
         -Daudiofxbad=disabled \
         -Daudiolatency=disabled \
@@ -80,12 +78,9 @@ define $(PKG)_BUILD
         -Dvmnc=disabled \
         -Dy4m=disabled \
         -Dyadif=disabled \
-
         -Dopencv=disabled \
-
         -Dwayland=disabled \
         -Dx11=disabled \
-
         -Daom=disabled \
         -Dandroid_media=disabled \
         -Dapple_media=disabled \
@@ -128,7 +123,7 @@ define $(PKG)_BUILD
         -Dmpeg2enc=disabled \
         -Dmplex=disabled \
         -Dmsdk=disabled \
-        -Dmusepack=enabled \
+        -Dmusepack=auto \
         -Dneon=disabled \
         -Dnvdec=disabled \
         -Dnvenc=disabled \
@@ -145,7 +140,7 @@ define $(PKG)_BUILD
         -Drsvg=disabled \
         -Drtmp=disabled \
         -Dsbc=disabled \
-        -Dsctp=enabled \
+        -Dsctp=disabled \
         -Dshm=disabled \
         -Dsmoothstreaming=disabled \
         -Dsndfile=disabled \
@@ -171,9 +166,8 @@ define $(PKG)_BUILD
         -Dx265=disabled \
         -Dzbar=disabled \
         -Dwpe=disabled \
-
         -Dhls=disabled \
-        -Dhls-crypto=disabled
+        -Dhls-crypto=libgcrypt
 
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install

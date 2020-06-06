@@ -18,7 +18,6 @@ define $(PKG)_BUILD
         -Dtests=disabled \
         -Dtools=disabled \
         -Dgtk_doc=disabled \
-
         -Dadder=enabled \
         -Dapp=enabled \
         -Daudioconvert=enabled \
@@ -41,7 +40,6 @@ define $(PKG)_BUILD
         -Dvideoscale=disabled \
         -Dvideotestsrc=disabled \
         -Dvolume=enabled \
-
         -Dalsa=disabled \
         -Dcdparanoia=disabled \
         -Dlibvisual=disabled \
