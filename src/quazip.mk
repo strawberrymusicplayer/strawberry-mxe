@@ -13,13 +13,10 @@ define $(PKG)_BUILD_STATIC
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)'
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
-    rm -f $(PREFIX)/$(TARGET)/lib/libQt5Quazip*.dll
 endef
 
 define $(PKG)_BUILD_SHARED
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)'
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
-    #mv $(PREFIX)/$(TARGET)/lib/libQt5Quazip*.dll $(PREFIX)/$(TARGET)/bin/
-    rm -f $(PREFIX)/$(TARGET)/lib/libQt5Quazip*.a
 endef
