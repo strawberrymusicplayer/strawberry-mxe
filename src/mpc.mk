@@ -19,10 +19,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD_$(BUILD)
-    cd '$(1)' && ./configure \
-        $(MXE_CONFIGURE_OPTS) \
-        --with-gmp='$(PREFIX)/$(TARGET)/' \
-        --with-mpfr='$(PREFIX)/$(TARGET)/'
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --with-gmp='$(PREFIX)/$(TARGET)/' --with-mpfr='$(PREFIX)/$(TARGET)/'
     $(MAKE) -C '$(1)' -j '$(JOBS)'
     $(MAKE) -C '$(1)' -j '$(JOBS)' install
 endef
