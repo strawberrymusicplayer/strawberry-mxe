@@ -13,8 +13,7 @@ $(PKG)_DEPS     := cc gstreamer gst-plugins-base gst-plugins-good gst-plugins-ba
 $(PKG)_UPDATE = $(subst gstreamer/refs,gst-libav/refs,$(gstreamer_UPDATE))
 
 define $(PKG)_BUILD
-    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
-        $(MXE_CONFIGURE_OPTS)
+    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' $(MXE_CONFIGURE_OPTS)
     $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS) LIBS=-lbcrypt
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 
