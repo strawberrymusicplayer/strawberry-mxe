@@ -17,6 +17,7 @@ endef
 
 define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && aclocal
+    cd '$(SOURCE_DIR)' && autoconf
     cd '$(SOURCE_DIR)' && automake
     cd '$(BUILD_DIR)' && '$(SOURCE_DIR)'/configure $(MXE_CONFIGURE_OPTS)
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
