@@ -2,12 +2,12 @@
 
 PKG             := strawberry-debug
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2521954
-$(PKG)_CHECKSUM := 04203a40f889f066dcbc4d2984364cb97f3f5272ef95c55848aa5fbc8169e5c1
+$(PKG)_VERSION  := c05fc5b
+$(PKG)_CHECKSUM := 44e8fa4a2d1b82b1caa4ae8abedc4ac924466fe9c5f257930f375077e82d7055
 $(PKG)_GH_CONF  := strawberrymusicplayer/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawberrymusicplayer.org/
 $(PKG)_OWNER    := https://github.com/strawberrymusicplayer
-$(PKG)_DEPS     := cc boost protobuf qtbase qtwinextras qttranslations chromaprint gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav xine-lib taglib libcdio gnutls glib-networking portaudio killproc
+$(PKG)_DEPS     := cc boost protobuf qtbase qtwinextras qttranslations chromaprint gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav taglib libcdio gnutls glib-networking portaudio killproc
 
 define $(PKG)_BUILD_SHARED
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
@@ -15,7 +15,7 @@ define $(PKG)_BUILD_SHARED
         -DCMAKE_BUILD_TYPE=Debug \
         -DARCH=$(TARGET) \
         -DENABLE_WIN32_CONSOLE=ON \
-        -DFORCE_GIT_REVISION="0.6.11-0-g$($(PKG)_VERSION)" \
+        -DFORCE_GIT_REVISION="0.6.12-0-g$($(PKG)_VERSION)" \
         -DUSE_SYSTEM_SINGLEAPPLICATION=OFF \
         -DENABLE_DBUS=OFF \
         -DENABLE_LIBPULSE=OFF \
@@ -23,7 +23,7 @@ define $(PKG)_BUILD_SHARED
         -DENABLE_IMOBILEDEVICE=OFF \
         -DENABLE_LIBMTP=OFF \
         -DENABLE_GSTREAMER=ON \
-        -DENABLE_XINE=ON \
+        -DENABLE_XINE=OFF \
         -DENABLE_VLC=OFF
     $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS)
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
@@ -33,7 +33,7 @@ define $(PKG)_BUILD_SHARED
     $(INSTALL) '$(SOURCE_DIR)/dist/windows/FileAssociation.nsh'                    '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin'
     $(INSTALL) '$(SOURCE_DIR)/dist/windows/strawberry.ico'                         '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin'
 
-    $(INSTALL) '$(PREFIX)/$(TARGET)/bin/killproc.exe'                              '$(PREFIX)/$(TARGET)/apps/strawberry/bin'
+    $(INSTALL) '$(PREFIX)/$(TARGET)/bin/killproc.exe'                              '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin'
 
     $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gio-modules'
     $(INSTALL) '$(PREFIX)/$(TARGET)/lib/gio/modules/libgiognutls.dll'              '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gio-modules'
@@ -99,34 +99,7 @@ define $(PKG)_BUILD_SHARED
     $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstpbtypes.dll'           '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
     $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstrtp.dll'               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
     $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstrtsp.dll'              '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
-
-    $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_ao_out_directx2.dll'    '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_ao_out_directx.dll'     '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_dts.dll'         '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_dvaudio.dll'     '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_faad.dll'        '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_gsm610.dll'      '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_lpcm.dll'        '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_mad.dll'         '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_mpc.dll'         '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_decode_mpeg2.dll'       '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_dmx_asf.dll'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_dmx_audio.dll'          '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_dmx_playlist.dll'       '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_dmx_slave.dll'          '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_flac.dll'               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_wavpack.dll'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_xiph.dll'               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/xineplug_inp_cdda.dll'           '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_audio_filters.dll' '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_goom.dll'     '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_mosaico.dll'  '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_planar.dll'   '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_switch.dll'   '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_tvtime.dll'   '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/lib/xine/plugins/2.7/post/xineplug_post_visualizations.dll' '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/xine-plugins'
+    $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstfaac.dll'              '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
 
     '$(TOP_DIR)/tools/copydlldeps.sh' -c \
                                           -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin' \
