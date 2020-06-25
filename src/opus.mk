@@ -22,7 +22,7 @@ endef
 
 define $(PKG)_BUILD
     cd '$(1)' && $(SHELL) ./configure $(MXE_CONFIGURE_OPTS)
-    $(MAKE) -C '$(1)' -j '$(JOBS)' LDFLAGS='-fstack-protector' SHELL=$(SHELL) $(MXE_DISABLE_CRUFT)
+    $(MAKE) -C '$(1)' -j '$(JOBS)' SHELL=$(SHELL) $(MXE_DISABLE_CRUFT)
     $(MAKE) -C '$(1)' -j 1 install SHELL=$(SHELL) $(MXE_DISABLE_CRUFT)
     rm -f '$(PREFIX)/$(TARGET)'/share/man/man3/opus_*.3
     rm -f '$(PREFIX)/$(TARGET)'/share/man/man3/opus.h.3

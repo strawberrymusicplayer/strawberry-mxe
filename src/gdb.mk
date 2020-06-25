@@ -24,8 +24,9 @@ define $(PKG)_BUILD
         --disable-gdbtk \
         --disable-tui \
         host_configargs="LIBS=\"`$(TARGET)-pkg-config --libs dlfcn` -lmman\"" \
-        CONFIG_SHELL=$(SHELL)
-    $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' LDFLAGS='-fstack-protector'
+        CONFIG_SHELL=$(SHELL) \
+        LDFLAGS='-Wl,--allow-multiple-definition'
+    $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' MAKEINFO='/usr/bin/env true'
 
     # executables are always static and we don't want the rest
      $(INSTALL) -m755 '$(BUILD_DIR)/gdb/gdb.exe'                 '$(PREFIX)/$(TARGET)/bin/'
