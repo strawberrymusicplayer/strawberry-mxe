@@ -4,8 +4,8 @@ PKG             := fribidi
 $(PKG)_WEBSITE  := https://fribidi.org/
 $(PKG)_DESCR    := FriBidi
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.0.9
-$(PKG)_CHECKSUM := ef6f940d04213a0fb91a0177b2b57df2031bf3a7e2cd0ee2c6877a160fc206df
+$(PKG)_VERSION  := 1.0.10
+$(PKG)_CHECKSUM := 3ebb19c4184ed6dc324d2e291d7465bc6108a20be019f053f33228e07e879c4f
 $(PKG)_GH_CONF  := fribidi/fribidi/releases, v
 $(PKG)_DEPS     := cc meson-conf ninja $(BUILD)~meson
 
