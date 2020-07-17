@@ -4,8 +4,8 @@ PKG             := dlfcn-win32
 $(PKG)_WEBSITE  := https://github.com/dlfcn-win32/dlfcn-win32
 $(PKG)_DESCR    := POSIX dlfcn wrapper for Windows
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 61ad60f
-$(PKG)_CHECKSUM := 67bb50535ab8731c68bbb4b21ba6e9c740ce95c084492f12b2814f877e142e57
+$(PKG)_VERSION  := 0a494c0
+$(PKG)_CHECKSUM := d7f88819262074fbe3081a144773952f494987d6394e8ecf18df173cbec0fae5
 $(PKG)_GH_CONF  := dlfcn-win32/dlfcn-win32/branches/master
 $(PKG)_DEPS     := cc
 
