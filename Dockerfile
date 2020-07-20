@@ -1,6 +1,6 @@
 FROM opensuse/tumbleweed
 
-RUN zypper -n ar -c -f -n 'repo-mingw' https://download.opensuse.org/repositories/windows:/mingw:/win32/openSUSE_Tumbleweed/ repo-mingw
+RUN zypper -n ar -c -f -n 'repo-nsis' https://download.opensuse.org/repositories/windows:/mingw:/win32:/snapshots/openSUSE_Tumbleweed/ repo-nsis
 
 RUN zypper --non-interactive --gpg-auto-import-keys ref
 RUN zypper --non-interactive --gpg-auto-import-keys dup -l -y
