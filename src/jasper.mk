@@ -9,6 +9,11 @@ $(PKG)_CHECKSUM := f1d8b90f231184d99968f361884e2054a1714fdbbd9944ba1ae4ebdcc9bbf
 $(PKG)_GH_CONF  := mdadams/jasper/tags, version-
 $(PKG)_DEPS     := cc jpeg
 
+define $(PKG)_UPDATE
+    echo 'Updates for package $(PKG) is disabled.' >&2;
+    echo $($(PKG)_VERSION)
+endef
+
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
         -DJAS_ENABLE_SHARED=$(CMAKE_SHARED_BOOL) \
