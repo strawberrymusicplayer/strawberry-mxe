@@ -24,7 +24,6 @@ define $(PKG)_BUILD
      echo 'Name: $(PKG)'; \
      echo 'Version: '; \
      echo 'Description: Qt auto-updater lib'; \
-     echo 'Requires: Qt5Core Qt5Network Qt5Widgets'; \
      echo 'Libs: -L$${libdir} -lqtsparkle-qt5'; \
      echo 'Cflags: -I$${includedir}') \
      > '$(PREFIX)/$(TARGET)/lib/pkgconfig/qtsparkle-qt5.pc'
