@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := ddbcb49aab3a2e3672582c6e2e7bec0058feff790f67472343c79e2895e0e
 $(PKG)_SUBDIR    = $(subst qtbase,qttools,$(qtbase_SUBDIR))
 $(PKG)_FILE      = $(subst qtbase,qttools,$(qtbase_FILE))
 $(PKG)_URL       = $(subst qtbase,qttools,$(qtbase_URL))
-$(PKG)_DEPS     := cc qtactiveqt qtbase qtdeclarative
+$(PKG)_DEPS     := cc qtbase
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
 define $(PKG)_UPDATE

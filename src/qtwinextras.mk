@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := d77f2cb2ce83bdbfd0a970bc8d7d11c96b2df16befc257d6594f79dfd92ab
 $(PKG)_SUBDIR    = $(subst qtbase,qtwinextras,$(qtbase_SUBDIR))
 $(PKG)_FILE      = $(subst qtbase,qtwinextras,$(qtbase_FILE))
 $(PKG)_URL       = $(subst qtbase,qtwinextras,$(qtbase_URL))
-$(PKG)_DEPS     := cc qtbase qtdeclarative qtmultimedia
+$(PKG)_DEPS     := cc qtbase
 
 define $(PKG)_UPDATE
     echo $(qtbase_VERSION)
