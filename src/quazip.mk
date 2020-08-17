@@ -4,29 +4,13 @@ PKG             := quazip
 $(PKG)_WEBSITE  := https://github.com/stachenov/quazip
 $(PKG)_DESCR    := quazip
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := afe8ae9
-$(PKG)_CHECKSUM := d3b515e026c1f09946835b0d1d3406782e4225cedbecc29a429d4cd6029e837c
+$(PKG)_VERSION  := 90519c4
+$(PKG)_CHECKSUM := 26d605da0326ef79312d2a58b2b9e1649629f87a1c689f88014b866c54f30b4d
 $(PKG)_GH_CONF  := stachenov/quazip/branches/master
 $(PKG)_DEPS     := cc qtbase zlib
 
 define $(PKG)_BUILD
-    cd '$(BUILD_DIR)' && '$(PREFIX)/$(TARGET)/qt5/bin/qmake' '$(SOURCE_DIR)' \
-        'static:CONFIG += staticlib' \
-        PREFIX=$(PREFIX)/$(TARGET) \
-        -after \
-        'SUBDIRS = quazip' \
-        'win32:LIBS_PRIVATE += -lz' \
-        'CONFIG -= dll' \
-        'CONFIG += create_prl no_install_prl create_pc' \
-        'QMAKE_PKGCONFIG_DESTDIR = pkgconfig' \
-        'static:QMAKE_PKGCONFIG_CFLAGS += -DQUAZIP_STATIC' \
-        'DESTDIR = ' \
-        'DLLDESTDIR = ' \
-        'win32:dlltarget.path = $(PREFIX)/$(TARGET)/bin' \
-        'target.path = $(PREFIX)/$(TARGET)/lib'  \
-        '!static:win32:target.CONFIG = no_dll' \
-        'win32:INSTALLS += dlltarget' \
-        'INSTALLS += target headers'
+    cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' -DBUILD_SHARED_LIBS=$(CMAKE_SHARED_BOOL)
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 endef
