@@ -1,0 +1,8 @@
+diff -ruN stachenov-quazip-90519c4.orig/quazip.pc.cmakein stachenov-quazip-90519c4/quazip.pc.cmakein
+--- stachenov-quazip-90519c4.orig/quazip.pc.cmakein	2020-08-16 20:39:43.000000000 +0200
++++ stachenov-quazip-90519c4/quazip.pc.cmakein	2020-08-18 18:06:27.080497342 +0200
+@@ -8,4 +8,3 @@
+ Version: @QUAZIP_LIB_VERSION@
+ Libs: -l@QUAZIP_LIB_FILE_NAME@
+ Cflags:
+-Requires: @QUAZIP_PKGCONFIG_REQUIRES@
