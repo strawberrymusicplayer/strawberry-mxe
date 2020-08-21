@@ -15,8 +15,9 @@ $(PKG)_DEPS     := cc gmp
 $(PKG)_DEPS_$(BUILD) := gmp
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://www.mpfr.org/mpfr-current/#download' | \
-    $(SED) -n 's,.*mpfr-\([0-9][^<]*\)/.*,\1,p' | \
+    $(WGET) -q -O- 'https://gforge.inria.fr/frs/?group_id=136' | \
+    $(SED) -n 's,.*mpfr-\([0-9].*\)\.tar.*,\1,p' | \
+    sort |
     tail -1
 endef
 
