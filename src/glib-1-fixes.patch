@@ -4,7 +4,7 @@ Contains ad hoc patches for cross building.
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Jonas Kvinge <jonas@jkvinge.net>
-Date: Sat, 30 May 2020 14:30:03 +0200
+Date: Sun, 6 Sep 2020 16:18:37 +0200
 Subject: [PATCH 1/1] Build fixes
 
 
@@ -12,7 +12,7 @@ diff --git a/fuzzing/meson.build b/fuzzing/meson.build
 index 1111111..2222222 100644
 --- a/fuzzing/meson.build
 +++ b/fuzzing/meson.build
-@@ -20,9 +20,19 @@ else
+@@ -23,9 +23,19 @@ else
    extra_sources += 'driver.c'
  endif
  
@@ -42,7 +42,7 @@ diff --git a/gio/giomodule.c b/gio/giomodule.c
 index 1111111..2222222 100644
 --- a/gio/giomodule.c
 +++ b/gio/giomodule.c
-@@ -1051,14 +1051,12 @@ extern GType _g_win32_network_monitor_get_type (void);
+@@ -1056,14 +1056,12 @@ extern GType _g_win32_network_monitor_get_type (void);
  
  static HMODULE gio_dll = NULL;
  
@@ -59,7 +59,7 @@ index 1111111..2222222 100644
  	 DWORD     fdwReason,
  	 LPVOID    lpvReserved)
  {
-@@ -1068,8 +1066,6 @@ DllMain (HINSTANCE hinstDLL,
+@@ -1073,8 +1071,6 @@ DllMain (HINSTANCE hinstDLL,
    return TRUE;
  }
  
@@ -108,7 +108,7 @@ diff --git a/glib/gmain.c b/glib/gmain.c
 index 1111111..2222222 100644
 --- a/glib/gmain.c
 +++ b/glib/gmain.c
-@@ -2850,12 +2850,15 @@ g_get_real_time (void)
+@@ -2870,12 +2870,15 @@ g_get_real_time (void)
   * So for now we calculate (usec_per_sec / ticks_per_sec) and use floating point
   */
  static gdouble g_monotonic_usec_per_tick = 0;
@@ -124,7 +124,7 @@ index 1111111..2222222 100644
    if (!QueryPerformanceFrequency (&freq) || freq.QuadPart == 0)
      {
        /* The documentation says that this should never happen */
-@@ -2869,6 +2872,10 @@ g_clock_win32_init (void)
+@@ -2889,6 +2892,10 @@ g_clock_win32_init (void)
  gint64
  g_get_monotonic_time (void)
  {
@@ -148,8 +148,8 @@ index 1111111..2222222 100644
 +G_GNUC_INTERNAL void g_thread_win32_init (void);
 +
  /* Starting with Vista and Windows 2008, we have access to the
-  * CONDITION_VARIABLE and SRWLock primatives on Windows, which are
-  * pretty reasonable approximations of the primatives specified in
+  * CONDITION_VARIABLE and SRWLock primitives on Windows, which are
+  * pretty reasonable approximations of the primitives specified in
 @@ -79,29 +83,39 @@ g_thread_abort (gint         status,
  void
  g_mutex_init (GMutex *mutex)
@@ -469,7 +469,7 @@ diff --git a/glib/meson.build b/glib/meson.build
 index 1111111..2222222 100644
 --- a/glib/meson.build
 +++ b/glib/meson.build
-@@ -402,11 +402,13 @@ if host_system == 'windows'
+@@ -423,11 +423,13 @@ if host_system == 'windows'
      executable('gspawn-win64-helper', 'gspawn-win32-helper.c',
        install : true,
        gui_app : true,
@@ -500,9 +500,9 @@ diff --git a/gobject/meson.build b/gobject/meson.build
 index 1111111..2222222 100644
 --- a/gobject/meson.build
 +++ b/gobject/meson.build
-@@ -143,9 +143,16 @@ libgobject_dep = declare_dependency(link_with : libgobject,
-   include_directories : [gobjectinc],
-   dependencies : [libglib_dep, glib_enumtypes_dep])
+@@ -147,9 +147,16 @@ if meson.version().version_compare('>=0.54.0')
+   meson.override_dependency('gobject-2.0', libgobject_dep)
+ endif
  
 +if host_system == 'windows'
 +executable('gobject-query', 'gobject-query.c',
@@ -536,7 +536,7 @@ diff --git a/meson.build b/meson.build
 index 1111111..2222222 100644
 --- a/meson.build
 +++ b/meson.build
-@@ -378,7 +378,6 @@ if cc.get_id() == 'gcc' or cc.get_id() == 'clang'
+@@ -427,7 +427,6 @@ if cc.get_id() == 'gcc' or cc.get_id() == 'clang'
      '-Wno-format-zero-length',
      '-Werror=declaration-after-statement',
      '-Werror=format=2',
