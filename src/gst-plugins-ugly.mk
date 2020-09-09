@@ -16,7 +16,7 @@ define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)' \
         -Dtests=disabled \
         -Dorc=disabled \
-	-Dasfdemux=enabled \
+        -Dasfdemux=enabled \
         -Ddvdlpcmdec=disabled \
         -Ddvdsub=disabled \
         -Drealmedia=disabled \
@@ -24,7 +24,7 @@ define $(PKG)_BUILD
         -Da52dec=disabled \
         -Damrnb=disabled \
         -Damrwbdec=disabled \
-	-Dcdio=enabled \
+        -Dcdio=enabled \
         -Ddvdread=disabled \
         -Dmpeg2dec=disabled \
         -Dsidplay=disabled \
