@@ -1,0 +1,20 @@
+diff -ruN libcdio-2.1.0.orig/libcdio++.pc.in libcdio-2.1.0/libcdio++.pc.in
+--- libcdio-2.1.0.orig/libcdio++.pc.in	2018-08-12 18:33:48.000000000 +0200
++++ libcdio-2.1.0/libcdio++.pc.in	2020-09-09 12:51:38.172602958 +0200
+@@ -7,5 +7,5 @@
+ Description: C++ OO Portable CD-ROM I/O library
+ Version: @PACKAGE_VERSION@
+ #Requires: glib-2.0 
+-Libs: -L${libdir} -lcdio++ -lcdio @LIBS@ @DARWIN_PKG_LIB_HACK@
++Libs: -L${libdir} -lcdio++ -lcdio
+ Cflags: -I${includedir}
+diff -ruN libcdio-2.1.0.orig/libcdio.pc.in libcdio-2.1.0/libcdio.pc.in
+--- libcdio-2.1.0.orig/libcdio.pc.in	2018-08-12 18:33:48.000000000 +0200
++++ libcdio-2.1.0/libcdio.pc.in	2020-09-09 12:51:44.584557236 +0200
+@@ -7,5 +7,5 @@
+ Description: Portable CD-ROM I/O library
+ Version: @PACKAGE_VERSION@
+ #Requires: glib-2.0 
+-Libs: -L${libdir} -lcdio @LIBS@ @LTLIBICONV@ @DARWIN_PKG_LIB_HACK@
++Libs: -L${libdir} -lcdio
+ Cflags: -I${includedir}
