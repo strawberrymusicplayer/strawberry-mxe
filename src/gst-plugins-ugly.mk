@@ -3,37 +3,35 @@
 PKG             := gst-plugins-ugly
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/modules/gst-plugins-ugly.html
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.16.2
-$(PKG)_CHECKSUM := 5500415b865e8b62775d4742cbb9f37146a50caecfc0e7a6fc0160d3c560fbca
+$(PKG)_VERSION  := 1.18.0
+$(PKG)_CHECKSUM := 686644e45e08258ae240c4519376668ad8d34ea6d0f6ab556473c317bfb7e082
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad lame libcdio
+$(PKG)_DEPS     := cc gstreamer gst-plugins-base lame libcdio
 
 $(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-ugly/refs,$(gstreamer_UPDATE))
 
 define $(PKG)_BUILD
-    cd '$(BUILD_DIR)' && \
-        CFLAGS="${CFLAGS} -DGST_USE_UNSTABLE_API=1" '$(SOURCE_DIR)/configure' $(MXE_CONFIGURE_OPTS) \
-        --disable-debug \
-        --disable-examples \
-        --disable-opengl \
-        --disable-dvdlpcmdec \
-        --disable-dvdsub \
-        --disable-xingmux \
-        --disable-realmediav \
-        --disable-a52dec \
-        --disable-amrnb \
-        --disable-amrwb \
-        --disable-dvdread \
-        --disable-mpeg2dec \
-        --disable-sidplay \
-        --disable-x264 \
-        --enable-cdio \
-        --enable-asfdemux
+    cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)' \
+        -Dtests=disabled \
+        -Dorc=disabled \
+	-Dasfdemux=enabled \
+        -Ddvdlpcmdec=disabled \
+        -Ddvdsub=disabled \
+        -Drealmedia=disabled \
+        -Dxingmux=disabled \
+        -Da52dec=disabled \
+        -Damrnb=disabled \
+        -Damrwbdec=disabled \
+	-Dcdio=enabled \
+        -Ddvdread=disabled \
+        -Dmpeg2dec=disabled \
+        -Dsidplay=disabled \
+        -Dx264=disabled
 
-    $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS)
-    $(MAKE) -C '$(BUILD_DIR)' -j 1 install
+    cd '$(BUILD_DIR)' && ninja
+    cd '$(BUILD_DIR)' && ninja install
 
     # some .dlls are installed to lib - no obvious way to change
     $(if $(BUILD_SHARED),
