@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := 5c8e0d579cb3478900699110aa961c1552a422a18741cf67dd62136b1b877
 $(PKG)_GH_CONF  := acoustid/chromaprint/tags, v
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
-$(PKG)_DEPS     := cc fftw
+$(PKG)_DEPS     := cc ffmpeg
 
 define $(PKG)_BUILD
     cd '$(1)' && '$(TARGET)-cmake'
