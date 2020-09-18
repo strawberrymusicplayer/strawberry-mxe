@@ -1,0 +1,60 @@
+This file is part of MXE. See LICENSE.md for licensing information.
+
+Contains ad hoc patches for cross building.
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Fri, 18 Sep 2020 17:04:25 +0200
+Subject: [PATCH 1/1] Remove debug lines to fix compile
+
+
+diff --git a/libgomp/oacc-parallel.c b/libgomp/oacc-parallel.c
+index 1111111..2222222 100644
+--- a/libgomp/oacc-parallel.c
++++ b/libgomp/oacc-parallel.c
+@@ -119,11 +119,9 @@ GOACC_parallel_keyed (int flags_m, void (*fn) (void *),
+   unsigned tag;
+ 
+ #ifdef HAVE_INTTYPES_H
+-  gomp_debug (0, "%s: mapnum=%"PRIu64", hostaddrs=%p, size=%p, kinds=%p\n",
+-	      __FUNCTION__, (uint64_t) mapnum, hostaddrs, sizes, kinds);
++  //gomp_debug (0, "%s: mapnum=%"PRIu64", hostaddrs=%p, size=%p, kinds=%p\n", __FUNCTION__, (uint64_t) mapnum, hostaddrs, sizes, kinds);
+ #else
+-  gomp_debug (0, "%s: mapnum=%lu, hostaddrs=%p, sizes=%p, kinds=%p\n",
+-	      __FUNCTION__, (unsigned long) mapnum, hostaddrs, sizes, kinds);
++  gomp_debug (0, "%s: mapnum=%lu, hostaddrs=%p, sizes=%p, kinds=%p\n", __FUNCTION__, (unsigned long) mapnum, hostaddrs, sizes, kinds);
+ #endif
+   goacc_lazy_initialize ();
+ 
+@@ -372,11 +370,9 @@ GOACC_data_start (int flags_m, size_t mapnum,
+   struct target_mem_desc *tgt;
+ 
+ #ifdef HAVE_INTTYPES_H
+-  gomp_debug (0, "%s: mapnum=%"PRIu64", hostaddrs=%p, size=%p, kinds=%p\n",
+-	      __FUNCTION__, (uint64_t) mapnum, hostaddrs, sizes, kinds);
++  //gomp_debug (0, "%s: mapnum=%"PRIu64", hostaddrs=%p, size=%p, kinds=%p\n", __FUNCTION__, (uint64_t) mapnum, hostaddrs, sizes, kinds);
+ #else
+-  gomp_debug (0, "%s: mapnum=%lu, hostaddrs=%p, sizes=%p, kinds=%p\n",
+-	      __FUNCTION__, (unsigned long) mapnum, hostaddrs, sizes, kinds);
++  gomp_debug (0, "%s: mapnum=%lu, hostaddrs=%p, sizes=%p, kinds=%p\n", __FUNCTION__, (unsigned long) mapnum, hostaddrs, sizes, kinds);
+ #endif
+ 
+   goacc_lazy_initialize ();
+diff --git a/libgomp/target.c b/libgomp/target.c
+index 1111111..2222222 100644
+--- a/libgomp/target.c
++++ b/libgomp/target.c
+@@ -1224,11 +1224,8 @@ gomp_map_vars_internal (struct gomp_device_descr *devicep,
+ 			 was missing.  */
+ 		      size_t size = k->host_end - k->host_start;
+ 		      gomp_mutex_unlock (&devicep->lock);
+-#ifdef HAVE_INTTYPES_H
+-		      gomp_fatal ("present clause: !acc_is_present (%p, "
+-				  "%"PRIu64" (0x%"PRIx64"))",
+-				  (void *) k->host_start,
+-				  (uint64_t) size, (uint64_t) size);
++#ifdef HAVE_INTTYPES_H_
++		      //gomp_fatal ("present clause: !acc_is_present (%p," %"PRIu64" (0x%"PRIx64"))", (void *) k->host_start, (uint64_t) size, (uint64_t) size);
+ #else
+ 		      gomp_fatal ("present clause: !acc_is_present (%p, "
+ 				  "%lu (0x%lx))", (void *) k->host_start,
