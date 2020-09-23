@@ -11,7 +11,7 @@ RUN zypper --non-interactive --gpg-auto-import-keys install \
     which patch wget curl gperf tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip \
     gettext-tools gtk-doc ruby scons bison flex diffutils \
     linux-glibc-devel glibc-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel \
-    python-base python3-base python3-setuptools \
+    python-base python3-base python3-setuptools python3-Mako \
     mingw32-cross-nsis
 
 RUN mkdir -p /usr/src
