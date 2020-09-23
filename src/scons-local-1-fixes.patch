@@ -1,0 +1,9 @@
+diff -ruN scons.orig/scons.py scons/scons.py
+--- scons.orig/scons.py	2020-07-17 03:56:21.000000000 +0200
++++ scons/scons.py	2020-09-23 02:42:10.655511026 +0200
+@@ -1,4 +1,4 @@
+-#! /usr/bin/env python
++#! /usr/bin/env python3
+ #
+ # SCons - a Software Constructor
+ #
