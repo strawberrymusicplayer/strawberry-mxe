@@ -18,6 +18,7 @@ define $(PKG)_BUILD
         -Dexamples=disabled \
         -Dtests=disabled \
         -Dgtk_doc=disabled \
+        -Dorc=enabled \
         -Dalpha=disabled \
         -Dapetag=enabled \
         -Daudiofx=enabled \

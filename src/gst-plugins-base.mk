@@ -18,6 +18,7 @@ define $(PKG)_BUILD
         -Dtests=disabled \
         -Dtools=disabled \
         -Dgtk_doc=disabled \
+        -Dorc=enabled \
         -Dadder=enabled \
         -Dapp=enabled \
         -Daudioconvert=enabled \

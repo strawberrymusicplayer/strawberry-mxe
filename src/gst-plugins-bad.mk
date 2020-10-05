@@ -18,6 +18,7 @@ define $(PKG)_BUILD
         -Dtests=disabled \
         -Dgtk_doc=disabled \
         -Dexamples=disabled \
+        -Dorc=enabled \
         -Daccurip=disabled \
         -Dadpcmdec=disabled \
         -Dadpcmenc=disabled \
