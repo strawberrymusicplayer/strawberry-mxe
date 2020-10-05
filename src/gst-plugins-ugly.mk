@@ -15,7 +15,7 @@ $(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-ugly/refs,$(gstreamer_UPDATE)
 define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)' \
         -Dtests=disabled \
-        -Dorc=disabled \
+        -Dorc=enabled \
         -Dasfdemux=enabled \
         -Ddvdlpcmdec=disabled \
         -Ddvdsub=disabled \
