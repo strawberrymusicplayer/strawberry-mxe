@@ -4,8 +4,8 @@ PKG             := taglib
 $(PKG)_WEBSITE  := https://taglib.org/
 $(PKG)_DESCR    := TagLib
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 47342f6
-$(PKG)_CHECKSUM := 837bd03debbb18e4aaa4ee20a6e31fe9b1ea065e0e0826f98ca8528dc6932b4f
+$(PKG)_VERSION  := 91b00b1
+$(PKG)_CHECKSUM := 61ad5609889816d9e2f33e918546a53b10411050d5d17c599c95aac3c687b210
 $(PKG)_GH_CONF  := taglib/taglib/branches/master
 $(PKG)_DEPS     := cc zlib
 
