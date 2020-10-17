@@ -18,5 +18,4 @@ endef
 
 # unpack sources into build dir and execute directly with python2
 # scons does various PATH manipulations that don't play well with ccache
-SCONS_LOCAL = \
-    PATH='$(PREFIX)/bin:$(PATH)' $(PYTHON3) '$(BUILD_DIR).scons/scons.py'
+SCONS_LOCAL = PATH='$(PREFIX)/bin:$(PATH)' python3 '$(BUILD_DIR).scons/scons.py'
