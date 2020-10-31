@@ -52,7 +52,11 @@ define $(PKG)_BUILD
         -Dvorbis=enabled \
         -Dx11=disabled \
         -Dxshm=disabled \
-        -Dxvideo=disabled
+        -Dxvideo=disabled \
+        -Dgl=disabled \
+        -Dgl-graphene=disabled \
+        -Dgl-jpeg=disabled \
+        -Dgl-png=disabled
 
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install
