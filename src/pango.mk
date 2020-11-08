@@ -4,8 +4,8 @@ PKG             := pango
 $(PKG)_WEBSITE  := https://www.pango.org/
 $(PKG)_DESCR    := Pango
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.47.0
-$(PKG)_CHECKSUM := 730db8652fc43188e03218c3374db9d152351f51fc7011b9acae6d0a6c92c367
+$(PKG)_VERSION  := 1.48.0
+$(PKG)_CHECKSUM := 391f26f3341c2d7053e0fb26a956bd42360dadd825efe7088b1e9340a65e74e6
 $(PKG)_SUBDIR   := pango-$($(PKG)_VERSION)
 $(PKG)_FILE     := pango-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/pango/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
@@ -20,7 +20,7 @@ endef
 
 define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && $(TARGET)-meson \
-                                -Dintrospection=false \
+                                -Dintrospection=disabled \
                                 '$(BUILD_DIR)'
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install
