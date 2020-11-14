@@ -21,10 +21,11 @@ endef
 define $(PKG)_BUILD
     cd '$(1)' && ./configure \
         $(MXE_CONFIGURE_OPTS) \
-        --disable-doxygen-docs \
-        --disable-xmms-plugin \
         --enable-cpplibs \
         --enable-ogg \
+        --disable-rpath \
+        --disable-doxygen-docs \
+        --disable-xmms-plugin \
         --disable-oggtest
     $(MAKE) -C '$(1)' -j '$(JOBS)' bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
     $(MAKE) -C '$(1)' -j 1 install bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
