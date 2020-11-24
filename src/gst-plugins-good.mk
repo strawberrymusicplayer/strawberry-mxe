@@ -3,8 +3,8 @@
 PKG             := gst-plugins-good
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/modules/gst-plugins-good.html
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.18.1
-$(PKG)_CHECKSUM := e210e91a5590ecb6accc9d06c949a58ca6897d8edb3b3d55828e424c624f626c
+$(PKG)_VERSION  := 1.16.2
+$(PKG)_CHECKSUM := 40bb3bafda25c0b739c8fc36e48380fccf61c4d3f83747e97ac3f9b0171b1319
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
@@ -53,7 +53,7 @@ define $(PKG)_BUILD
         -Drtsp=enabled \
         -Dshapewipe=disabled \
         -Dsmpte=disabled \
-	-Dspectrum=enabled \
+        -Dspectrum=enabled \
         -Dudp=enabled \
         -Dvideobox=disabled \
         -Dvideocrop=disabled \
