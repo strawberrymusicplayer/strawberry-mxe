@@ -21,6 +21,11 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
+    cd '$(1)' && libtoolize --force
+    cd '$(1)' && aclocal
+    cd '$(1)' && autoheader
+    cd '$(1)' && automake --force-missing --add-missing
+    cd '$(1)' && autoconf
     cd '$(1)' && $(SHELL) ./configure $(MXE_CONFIGURE_OPTS)
     $(MAKE) -C '$(1)' -j '$(JOBS)' SHELL=$(SHELL) $(MXE_DISABLE_CRUFT)
     $(MAKE) -C '$(1)' -j 1 install SHELL=$(SHELL) $(MXE_DISABLE_CRUFT)
