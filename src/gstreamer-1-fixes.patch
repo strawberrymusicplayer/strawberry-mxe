@@ -1,0 +1,23 @@
+This file is part of MXE. See LICENSE.md for licensing information.
+
+Contains ad hoc patches for cross building.
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Tue, 24 Nov 2020 22:23:30 +0100
+Subject: [PATCH 1/1] Define _WIN32_WINNT in gstfilesrc
+
+
+diff --git a/plugins/elements/gstfilesrc.c b/plugins/elements/gstfilesrc.c
+index 1111111..2222222 100644
+--- a/plugins/elements/gstfilesrc.c
++++ b/plugins/elements/gstfilesrc.c
+@@ -37,6 +37,8 @@
+ #  include "config.h"
+ #endif
+ 
++#define _WIN32_WINNT 0x0600
++
+ #include <gst/gst.h>
+ #include "gstfilesrc.h"
+ 
