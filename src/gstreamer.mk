@@ -3,11 +3,10 @@
 PKG             := gstreamer
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/modules/gstreamer.html
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.16.2
-$(PKG)_CHECKSUM := e3f044246783fd685439647373fa13ba14f7ab0b346eadd06437092f8419e94e
-$(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
-$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
-$(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
+$(PKG)_VERSION  := 7c0dcb9
+$(PKG)_CHECKSUM := 4f11497ff9259dfc90fa442ec1bf264ba078755adab570b1cbf955e2668f1cbe
+$(PKG)_GH_CONF  := gstreamer/gstreamer/branches/master
+$(PKG)_SUBDIR   := GStreamer-gstreamer-$($(PKG)_VERSION)
 $(PKG)_DEPS     := cc glib libxml2 pthreads orc
 
 define $(PKG)_UPDATE
