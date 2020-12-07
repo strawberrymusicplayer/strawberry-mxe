@@ -3,23 +3,19 @@
 PKG             := gstreamer
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/modules/gstreamer.html
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 7c0dcb9
-$(PKG)_CHECKSUM := 4f11497ff9259dfc90fa442ec1bf264ba078755adab570b1cbf955e2668f1cbe
-$(PKG)_GH_CONF  := gstreamer/gstreamer/branches/master
-$(PKG)_SUBDIR   := GStreamer-gstreamer-$($(PKG)_VERSION)
+$(PKG)_VERSION  := 1.18.2
+$(PKG)_CHECKSUM := 66cdeb4f970c2e55932a2f427177d438fe2c55c0b6d29e80fda80263f2ae5446
+$(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
+$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
+$(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc glib libxml2 pthreads orc
 
 define $(PKG)_UPDATE
-    echo 'Updates for package $(PKG) is disabled.' >&2;
-    echo $($(PKG)_VERSION)
+    $(WGET) -q -O- 'https://cgit.freedesktop.org/gstreamer/gstreamer/refs/tags' | \
+    $(SED) -n "s,.*<a href='[^']*/tag/?h=[^0-9]*\\([0-9]\..[02468]\.[0-9][^']*\\)'.*,\\1,p" | \
+    $(SORT) -Vr | \
+    head -1
 endef
-
-#define $(PKG)_UPDATE
-#    $(WGET) -q -O- 'https://cgit.freedesktop.org/gstreamer/gstreamer/refs/tags' | \
-#    $(SED) -n "s,.*<a href='[^']*/tag/?h=[^0-9]*\\([0-9]\..[02468]\.[0-9][^']*\\)'.*,\\1,p" | \
-#    $(SORT) -Vr | \
-#    head -1
-#endef
 
 define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)' -Dexamples=disabled -Dtests=disabled -Dgtk_doc=disabled

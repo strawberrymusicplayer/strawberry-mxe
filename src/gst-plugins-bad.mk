@@ -3,19 +3,14 @@
 PKG             := gst-plugins-bad
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/modules/gst-plugins-bad.html
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.18.1
-$(PKG)_CHECKSUM := c195978c85d97406c05eb9d43ac54b9ab35eda6ffdae32b3ed597b8f1743c1b2
+$(PKG)_VERSION  := 1.18.2
+$(PKG)_CHECKSUM := 8ad5822f1118fe46a19af54422b74e3a16d79a6800dcb173b49e199a496b341a
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc gstreamer gst-plugins-base gst-plugins-good libgcrypt opus faad2 faac libmpcdec chromaprint
 
-#$(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-bad/refs,$(gstreamer_UPDATE))
-
-define $(PKG)_UPDATE
-    echo 'Updates for package $(PKG) is disabled.' >&2;
-    echo $($(PKG)_VERSION)
-endef
+$(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-bad/refs,$(gstreamer_UPDATE))
 
 define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)' \

@@ -3,19 +3,14 @@
 PKG             := gst-plugins-base
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/modules/gst-plugins-base.html
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.18.1
-$(PKG)_CHECKSUM := 1ba654d7de30f7284b4c7071b32f881b609733ce02ab6d9d9ea29386a036c641
+$(PKG)_VERSION  := 1.18.2
+$(PKG)_CHECKSUM := dd04fb1f7826e2f6d9b4d66fc22f19cc6a47c301e13041f0ee3d7f65c89b05ac
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc glib gstreamer liboil libxml2 ogg opus pango theora vorbis dlfcn-win32
 
-#$(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-base/refs,$(gstreamer_UPDATE))
-
-define $(PKG)_UPDATE
-    echo 'Updates for package $(PKG) is disabled.' >&2;
-    echo $($(PKG)_VERSION)
-endef
+$(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-base/refs,$(gstreamer_UPDATE))
 
 define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)' \
