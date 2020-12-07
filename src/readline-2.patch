@@ -1,0 +1,68 @@
+This file is part of MXE. See LICENSE.md for licensing information.
+
+Contains ad hoc patches for cross building.
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Mon, 7 Dec 2020 16:29:11 +0100
+Subject: [PATCH 1/1] Remove sigprocmask
+
+
+diff --git a/signals.c b/signals.c
+index 1111111..2222222 100644
+--- a/signals.c
++++ b/signals.c
+@@ -176,7 +176,6 @@ rl_signal_handler (int sig)
+ static RETSIGTYPE
+ _rl_handle_signal (int sig)
+ {
+-  int block_sig;
+ 
+ #if defined (HAVE_POSIX_SIGNALS)
+   sigset_t set, oset;
+@@ -210,15 +209,6 @@ _rl_handle_signal (int sig)
+       _rl_sigcleanarg = 0;
+     }
+ 
+-#if defined (HAVE_POSIX_SIGNALS)
+-  /* Get the current set of blocked signals. If we want to block a signal for
+-     the duration of the cleanup functions, make sure to add it to SET and
+-     set block_sig = 1 (see the SIGHUP case below). */
+-  block_sig = 0;	/* sentinel to block signals with sigprocmask */
+-  sigemptyset (&set);
+-  sigprocmask (SIG_BLOCK, (sigset_t *)NULL, &set);
+-#endif
+-
+   switch (sig)
+     {
+     case SIGINT:
+@@ -243,7 +233,6 @@ _rl_handle_signal (int sig)
+ 	 when we have returned from the signal handler and the signal is no
+ 	 longer blocked. */
+       sigaddset (&set, SIGTTOU);
+-      block_sig = 1;
+ #  endif
+ #endif /* SIGTSTP */
+    /* Any signals that should be blocked during cleanup should go here. */
+@@ -266,21 +255,12 @@ _rl_handle_signal (int sig)
+     case SIGQUIT:
+ #endif
+ 
+-      if (block_sig)
+-	sigprocmask (SIG_BLOCK, &set, &oset);
+-
+       rl_echo_signal_char (sig);
+       rl_cleanup_after_signal ();
+ 
+       /* At this point, the application's signal handler, if any, is the
+ 	 current handler. */
+ 
+-#if defined (HAVE_POSIX_SIGNALS)
+-      /* Unblock any signal(s) blocked above */
+-      if (block_sig)
+-	sigprocmask (SIG_UNBLOCK, &oset, (sigset_t *)NULL);
+-#endif
+-
+       /* We don't have to bother unblocking the signal because we are not
+ 	 running in a signal handler context. */
+ #if 0
