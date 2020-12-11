@@ -1,15 +1,22 @@
+# This file is part of MXE. See LICENSE.md for licensing information.
+
 PKG             := mesa
-$(PKG)_VERSION  := 20.1.8
-$(PKG)_CHECKSUM := df21351494f7caaec5a3ccc16f14f15512e98d2ecde178bba1d134edc899b961
+$(PKG)_WEBSITE  := https://mesa3d.org
+$(PKG)_DESCR    := The Mesa 3D Graphics Library
+$(PKG)_VERSION  := 20.3.0
+$(PKG)_CHECKSUM := 2999738e888731531cd62b27519fa37566cc0ea2cd7d4d97f46abaa3e949c630
 $(PKG)_SUBDIR   := mesa-$($(PKG)_VERSION)
 $(PKG)_FILE     := mesa-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := ftp://ftp.freedesktop.org/pub/mesa/$($(PKG)_FILE)
-$(PKG)_DEPS     := gcc scons-local
+$(PKG)_DEPS     := cc $(BUILD)~python-mako scons-local
+
+define $(PKG)_UPDATE
+    $(call GET_LATEST_VERSION, https://archive.mesa3d.org, mesa-)
+endef
 
 define $(PKG)_BUILD
-    mkdir -p '$(BUILD_DIR).scons'
-    $(call PREPARE_PKG_SOURCE,scons-local,'$(BUILD_DIR).scons')
-    cd '$(1)' && \
+    $(SCONS_PREP)
+    cd '$(SOURCE_DIR)' && \
     MINGW_PREFIX='$(TARGET)-' $(SCONS_LOCAL) \
         platform=windows \
         toolchain=crossmingw \
