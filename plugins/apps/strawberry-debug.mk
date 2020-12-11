@@ -2,12 +2,11 @@
 
 PKG             := strawberry-debug
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 23ee175
-$(PKG)_CHECKSUM := 8591d8d3f28855c397d7629d0ab5666eb602639a5c9ef8af8cb354400e2613fa
+$(PKG)_VERSION  := 66c60ac
+$(PKG)_CHECKSUM := 614e3dba128db277fdf481417569cda5386b890d1c170cb6ab7ef6cf1e7877af
 $(PKG)_GH_CONF  := strawberrymusicplayer/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawberrymusicplayer.org/
-$(PKG)_OWNER    := https://github.com/strawberrymusicplayer
-$(PKG)_DEPS     := cc boost protobuf qtbase qtwinextras qttranslations chromaprint gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav taglib libcdio gnutls glib-networking portaudio killproc
+$(PKG)_DEPS     := cc boost protobuf qt5base qt5winextras qt5translations chromaprint gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav taglib libcdio gnutls glib-networking portaudio killproc qtsparkle-qt5
 
 define $(PKG)_BUILD_SHARED
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
@@ -15,15 +14,13 @@ define $(PKG)_BUILD_SHARED
         -DCMAKE_BUILD_TYPE=Debug \
         -DARCH=$(TARGET) \
         -DENABLE_WIN32_CONSOLE=ON \
-        -DFORCE_GIT_REVISION="0.8.3-0-g$($(PKG)_VERSION)" \
-        -DUSE_SYSTEM_SINGLEAPPLICATION=OFF \
+        -DFORCE_GIT_REVISION="0.8.4-0-g$($(PKG)_VERSION)" \
         -DENABLE_DBUS=OFF \
         -DENABLE_LIBPULSE=OFF \
         -DENABLE_LIBGPOD=OFF \
         -DENABLE_IMOBILEDEVICE=OFF \
         -DENABLE_LIBMTP=OFF \
         -DENABLE_GSTREAMER=ON \
-        -DENABLE_XINE=OFF \
         -DENABLE_VLC=OFF
     $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS)
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
@@ -34,6 +31,8 @@ define $(PKG)_BUILD_SHARED
     $(INSTALL) '$(SOURCE_DIR)/dist/windows/strawberry.ico'                         '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin'
 
     $(INSTALL) '$(PREFIX)/$(TARGET)/bin/killproc.exe'                              '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin'
+    $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gdb.exe'                                   '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin'
+    $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gst-launch-1.0.exe'                        '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin'
 
     $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gio-modules'
     $(INSTALL) '$(PREFIX)/$(TARGET)/lib/gio/modules/libgiognutls.dll'              '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gio-modules'
@@ -108,7 +107,6 @@ define $(PKG)_BUILD_SHARED
                                           -F '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/sqldrivers' \
                                           -F '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/imageformats' \
                                           -F '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins' \
-                                          -F '$(PREFIX)/$(TARGET)/apps/$(PKG)/lib/xine/plugins/2.7' \
                                           -X '$(PREFIX)/$(TARGET)/apps' \
                                           -R '$(PREFIX)/$(TARGET)';
 endef
