@@ -17,11 +17,6 @@ $(PKG)_DEPS_$(BUILD) :=
 
 define $(PKG)_BUILD_$(BUILD)
 
-    # Ugly hack to get rid of python3 created by python3-conf
-    if [ -f usr/*/bin/python3 ]; then \
-      rename python3 python3.bak usr/*/bin/python3; \
-    fi
-
     # cross build requires artefacts from native build tree
     rm -rf '$(PREFIX)/$(BUILD)/$(PKG)'
     $(INSTALL) -d '$(PREFIX)/$(BUILD)/$(PKG)'
@@ -32,19 +27,9 @@ define $(PKG)_BUILD_$(BUILD)
         --enable-samples=no
     $(MAKE) -C '$(PREFIX)/$(BUILD)/$(PKG)' -j '$(JOBS)'
 
-    # Ugly hack to get back python3 created by python3-conf
-    if [ -f usr/*/bin/python3.bak ]; then \
-      rename python3.bak python3 usr/*/bin/python3.bak; \
-    fi
-
 endef
 
 define $(PKG)_BUILD_COMMON
-
-    # Ugly hack to get rid of python3 created by python3-conf
-    if [ -f usr/*/bin/python3 ]; then \
-      rename python3 python3.bak usr/*/bin/python3; \
-    fi
 
     rm -fv $(shell echo "$(PREFIX)/$(TARGET)"/{bin,lib}/{lib,libs,}icu'*'.{a,dll,dll.a})
     cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/source/configure' \
@@ -58,11 +43,6 @@ define $(PKG)_BUILD_COMMON
 
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' VERBOSE=1 SO_TARGET_VERSION_SUFFIX=
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install VERBOSE=1 SO_TARGET_VERSION_SUFFIX=
-
-    # Ugly hack to get back python3 created by python3-conf
-    if [ -f usr/*/bin/python3.bak ]; then \
-      rename python3.bak python3 usr/*/bin/python3.bak; \
-    fi
 
 endef
 
@@ -88,7 +68,7 @@ define $(PKG)_BUILD_SHARED
     rm -rfv '$(PREFIX)/$(TARGET)/bin/test-$(PKG)' '$(PREFIX)/$(TARGET)/bin/test-$(PKG).zip'
     $(INSTALL) -d '$(PREFIX)/$(TARGET)/bin/test-$(PKG)'
     cp $$($(TARGET)-peldd --all '$(PREFIX)/$(TARGET)/bin/test-$(PKG).exe') '$(PREFIX)/$(TARGET)/bin/test-$(PKG)'
-    cd '$(PREFIX)/$(TARGET)/bin' && zip -r test-$(PKG).zip test-$(PKG)
+    cd '$(PREFIX)/$(TARGET)/bin' && 7za a -tzip test-$(PKG).zip test-$(PKG)
     rm -rfv '$(PREFIX)/$(TARGET)/bin/test-$(PKG)'
 endef
 
