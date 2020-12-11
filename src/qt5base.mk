@@ -1,15 +1,15 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
-PKG             := qtbase
+PKG             := qt5base
 $(PKG)_WEBSITE  := https://www.qt.io/
-$(PKG)_DESCR    := Qt
+$(PKG)_DESCR    := Qt 5 Base
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 5.15.2
 $(PKG)_CHECKSUM := 909fad2591ee367993a75d7e2ea50ad4db332f05e1c38dd7a5a274e156a4e0f8
-$(PKG)_SUBDIR   := $(PKG)-everywhere-src-$($(PKG)_VERSION)
-$(PKG)_FILE     := $(PKG)-everywhere-src-$($(PKG)_VERSION).tar.xz
+$(PKG)_SUBDIR   := qtbase-everywhere-src-$($(PKG)_VERSION)
+$(PKG)_FILE     := qtbase-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/5.15/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc dbus fontconfig freetype harfbuzz jpeg libpng openssl pcre2 zlib zstd sqlite freetds mesa
+$(PKG)_DEPS     := cc dbus fontconfig freetype harfbuzz jpeg libpng openssl pcre2 zlib zstd sqlite mesa
 $(PKG)_DEPS_$(BUILD) :=
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
@@ -25,8 +25,6 @@ define $(PKG)_BUILD
     # ICU is buggy. See #653. TODO: reenable it some time in the future.
     cd '$(1)' && \
         OPENSSL_LIBS="`'$(TARGET)-pkg-config' --libs-only-l openssl`" \
-        PSQL_LIBS="-lpq -lsecur32 `'$(TARGET)-pkg-config' --libs-only-l openssl pthreads` -lws2_32" \
-        SYBASE_LIBS="-lsybdb `'$(TARGET)-pkg-config' --libs-only-l openssl` -liconv -lws2_32" \
         PKG_CONFIG="${TARGET}-pkg-config" \
         PKG_CONFIG_SYSROOT_DIR="/" \
         PKG_CONFIG_LIBDIR="$(PREFIX)/$(TARGET)/lib/pkgconfig" \
@@ -43,27 +41,25 @@ define $(PKG)_BUILD
             -release \
             $(if $(BUILD_STATIC), -static,)$(if $(BUILD_SHARED), -shared,) \
             -prefix '$(PREFIX)/$(TARGET)/qt5' \
-            -no-icu \
-            -opengl dynamic \
-            -no-glib \
-            -accessibility \
             -nomake examples \
             -nomake tests \
-            -plugin-sql-sqlite \
-            -plugin-sql-odbc \
-            -plugin-sql-tds -D Q_USE_SYBASE \
+            -accessibility \
+            -fontconfig \
+            -no-glib \
+            -no-pch \
+            -no-icu \
             -system-zlib \
             -system-libpng \
             -system-libjpeg \
             -system-sqlite \
-            -fontconfig \
             -system-freetype \
-            -system-harfbuzz \
             -system-pcre \
             -openssl-linked \
             -dbus-linked \
-            -no-pch \
+            -opengl dynamic \
             -v \
+            -plugin-sql-sqlite \
+            -plugin-sql-odbc \
             $($(PKG)_CONFIGURE_OPTS)
 
     $(MAKE) -C '$(1)' -j '$(JOBS)'

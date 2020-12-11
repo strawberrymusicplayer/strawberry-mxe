@@ -7,7 +7,7 @@ $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 0.11.1
 $(PKG)_CHECKSUM := 77fc6841c1743d9e6bd499989481cd9239c21bc9bf0760d41a4f4068d2f0a49d
 $(PKG)_GH_CONF  := frankosterfeld/qtkeychain/tags,v
-$(PKG)_DEPS     := cc qttools
+$(PKG)_DEPS     := cc qt5tools
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \

@@ -5,7 +5,7 @@
 set(TGT test-${PKG}-cmake)
 
 enable_language(CXX)
-add_executable(${TGT} ${CMAKE_CURRENT_LIST_DIR}/${PKG}-test.cpp)
+add_executable(${TGT} ${CMAKE_CURRENT_LIST_DIR}/qttools-test.cpp)
 
 find_package(Qt5 ${PKG_VERSION} EXACT REQUIRED COMPONENTS UiTools)
 
