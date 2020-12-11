@@ -17,6 +17,7 @@ MXE_TARGETS        := i686-w64-mingw32.static
 
 DEFAULT_MAX_JOBS   := 6
 PRINTF_COL_1_WIDTH := 13
+DUMMY_PROXY        := 192.0.2.0
 SOURCEFORGE_MIRROR := downloads.sourceforge.net
 MXE_MIRROR         := https://mirror.mxe.cc/pkg
 PKG_MIRROR         := https://mxe-pkg.s3.amazonaws.com
@@ -30,6 +31,7 @@ SHELL      := bash
 
 MXE_TMP := $(PWD)
 
+ORIG_PATH  := $(call merge,:,$(filter-out $(PREFIX)/$(BUILD)/bin $(PREFIX)/bin,$(call split,:,$(PATH))))
 BUILD_CC   := $(shell (gcc --help >/dev/null 2>&1 && echo gcc) || (clang --help >/dev/null 2>&1 && echo clang))
 BUILD_CXX  := $(shell (g++ --help >/dev/null 2>&1 && echo g++) || (clang++ --help >/dev/null 2>&1 && echo clang++))
 DATE       := $(shell gdate --help >/dev/null 2>&1 && echo g)date
@@ -38,21 +40,42 @@ LIBTOOL    := $(shell glibtool --help >/dev/null 2>&1 && echo g)libtool
 LIBTOOLIZE := $(shell glibtoolize --help >/dev/null 2>&1 && echo g)libtoolize
 OPENSSL    := openssl
 PATCH      := $(shell gpatch --help >/dev/null 2>&1 && echo g)patch
-PYTHON2    := $(or $(shell ([ `python -c "import sys; print('{0[0]}'.format(sys.version_info))"` == 2 ] && echo python) 2>/dev/null || \
-                           which python2 2>/dev/null || \
-                           which python2.7 2>/dev/null), \
-                   $(warning Warning: python v2 not found (or default python changed to v3))\
-                   $(shell touch check-requirements-failed))
+PYTHON     := $(shell PATH="$(ORIG_PATH)" which python3)
+PY_XY_VER  := $(shell $(PYTHON) -c "import sys; print('{0[0]}.{0[1]}'.format(sys.version_info))")
 SED        := $(shell gsed --help >/dev/null 2>&1 && echo g)sed
 SORT       := $(shell gsort --help >/dev/null 2>&1 && echo g)sort
 DEFAULT_UA := $(shell wget --version | $(SED) -n 's,GNU \(Wget\) \([0-9.]*\).*,\1/\2,p')
 WGET_TOOL   = wget
 WGET        = $(WGET_TOOL) --user-agent='$(or $($(1)_UA),$(DEFAULT_UA))' -t 2 --timeout=10
 
-REQUIREMENTS := autoconf automake autopoint bash bison bzip2 flex \
-                $(BUILD_CC) $(BUILD_CXX) gperf intltoolize $(LIBTOOL) \
-                $(LIBTOOLIZE) lzip $(MAKE) $(OPENSSL) $(PATCH) $(PERL) python \
-                ruby $(SED) $(SORT) unzip wget xz 7za gdk-pixbuf-csource
+REQUIREMENTS := \
+    7za \
+    autoconf \
+    automake \
+    autopoint \
+    bash \
+    bison \
+    $(BUILD_CC) \
+    $(BUILD_CXX) \
+    bzip2 \
+    flex \
+    gdk-pixbuf-csource \
+    gperf \
+    intltoolize \
+    $(LIBTOOL) \
+    $(LIBTOOLIZE) \
+    lzip \
+    $(MAKE) \
+    $(OPENSSL) \
+    $(PATCH) \
+    perl \
+    $(PYTHON) \
+    ruby \
+    $(SED) \
+    $(SORT) \
+    unzip \
+    wget \
+    xz
 
 PREFIX     := $(PWD)/usr
 LOG_DIR    := $(PWD)/log
@@ -62,7 +85,6 @@ TIMESTAMP  := $(shell date +%Y%m%d_%H%M%S)
 PKG_DIR    := $(PWD)/pkg
 TMP_DIR     = $(MXE_TMP)/tmp-$(1)
 BUILD      := $(shell '$(EXT_DIR)/config.guess')
-ORIG_PATH  := $(call merge,:,$(filter-out $(PREFIX)/$(BUILD)/bin $(PREFIX)/bin,$(call split,:,$(PATH))))
 PATH       := $(PREFIX)/$(BUILD)/bin:$(PREFIX)/bin:$(shell echo $$PATH | $(SED) -e 's,:\.$$,,' -e 's,\.:,,g')
 
 # set to empty or $(false) to disable stripping
@@ -287,7 +309,7 @@ PKG_CHECKSUM = \
 CHECK_PKG_ARCHIVE = \
     $(if $($(1)_SOURCE_TREE),\
         $(PRINTF_FMT) '[local]' '$(1)' '$($(1)_SOURCE_TREE)' | $(RTRIM)\
-    $(else),$(if $(SKIP_CHECHSUM),true, \
+    $(else),$(if $(SKIP_CHECKSUM),true, \
         [ '$($(1)_CHECKSUM)' == "`$$(call PKG_CHECKSUM,$(1),$(2))`" ]\
     ))
 
@@ -475,6 +497,9 @@ SCRIPT_PKG_TYPES := script
 # all pkgs have (implied) order-only dependencies on MXE_CONF_PKGS.
 MXE_CONF_PKGS := mxe-conf
 
+# dummy *.mk files (usually overrides for plugins)
+NON_PKG_BASENAMES := overrides
+
 # autotools/cmake are generally always required, but separate them
 # for the case of `make gcc` which should only build real deps.
 AUTOTOOLS_PKGS := $(filter-out $(MXE_CONF_PKGS) %autotools autoconf automake libtool, \
@@ -506,9 +531,9 @@ PKG_DEPS = \
                       $(filter $($($(DEP)_PKG)_TYPE),$(BUILD_PKG_TYPES))), \
                 $($(DEP)_TGT)/installed/$($(DEP)_PKG))))
 
-# order-only package deps unlikely to need target lookup
+# order-only package deps - needs target lookup for e.g. zstd native case
 PKG_OO_DEPS = \
-    $(foreach DEP,$($(PKG)_OO_DEPS), \
+    $(foreach DEP,$(value $(call LOOKUP_PKG_RULE,$(PKG),OO_DEPS,$(TARGET))), \
         $(if $(filter $(DEP),$(PKGS)), \
             $(if $(or $(value $(call LOOKUP_PKG_RULE,$(DEP),BUILD,$(TARGET))), \
                       $(filter $($(DEP)_TYPE),$(BUILD_PKG_TYPES))), \
@@ -568,7 +593,7 @@ $(foreach TARGET,$(MXE_TARGETS),\
     $(eval $(TARGET)_UC_LIB_TYPE := $(if $(findstring shared,$(TARGET)),SHARED,STATIC)))
 
 # finds a package rule defintion
-RULE_TYPES := BUILD DEPS FILE MESSAGE URL
+RULE_TYPES := BUILD DEPS FILE MESSAGE OO_DEPS URL
 # by truncating the target elements then looking for STAIC|SHARED rules:
 #
 # foo_BUILD_i686-w64-mingw32.static.win32.dw2
@@ -683,7 +708,8 @@ ifeq ($(findstring darwin,$(BUILD)),)
     PRELOAD   := LD_PRELOAD='$(NONET_LIB)'
 else
     NONET_LIB := $(PREFIX)/$(BUILD)/lib/nonetwork.dylib
-    PRELOAD   := DYLD_FORCE_FLAT_NAMESPACE=1 DYLD_INSERT_LIBRARIES='$(NONET_LIB)'
+    PRELOAD   := DYLD_FORCE_FLAT_NAMESPACE=1 DYLD_INSERT_LIBRARIES='$(NONET_LIB)' \
+                 http_proxy=$(DUMMY_PROXY) https_proxy=$(DUMMY_PROXY)
     NONET_CFLAGS := -arch x86_64
 endif
 
