@@ -3,8 +3,8 @@
 PKG             := libusb
 $(PKG)_WEBSITE  := https://github.com/libusb/libusb
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.0.23
-$(PKG)_CHECKSUM := 02620708c4eea7e736240a623b0b156650c39bfa93a14bcfa5f3e05270313eba
+$(PKG)_VERSION  := 1.0.24
+$(PKG)_CHECKSUM := b7724c272dfc5713dce88ff717efd60f021ca5b7c8e30f08ebb2c42d2eea08ae
 $(PKG)_GH_CONF  := libusb/libusb/tags, v
 $(PKG)_DEPS     := cc
 
