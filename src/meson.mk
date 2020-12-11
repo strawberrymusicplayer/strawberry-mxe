@@ -11,11 +11,11 @@ $(PKG)_SUBDIR    := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE      := $($(PKG)_SUBDIR).tar.gz
 $(PKG)_URL       := https://github.com/mesonbuild/meson/archive/$($(PKG)_VERSION).tar.gz
 $(PKG)_FILE_DEPS := $(wildcard $(PWD)/src/meson/conf/*)
-$(PKG)_DEPS      := cmake-conf python3-conf
+$(PKG)_DEPS      := cmake-conf python-conf
 $(PKG)_TARGETS  := $(BUILD)
 
 define $(PKG)_BUILD_$(BUILD)
-    cd '$(SOURCE_DIR)' && python3 setup.py install --prefix='$(PREFIX)/$(TARGET)'
+    $(PYTHON_SETUP_INSTALL)
 
     # Awful hacks: we must hijack the python entry points here to install our
     # site-packages path. This is because Meson is going to put the path to the
