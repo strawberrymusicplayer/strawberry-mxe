@@ -10,7 +10,7 @@ $(PKG)_FILE     := qttools-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_SUBDIR   := qttools-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/6.0/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc qt6base $(BUILD)~$(PKG)
-$(PKG)_DEPS_$(BUILD) :=
+$(PKG)_DEPS_$(BUILD) := qt6base
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
 define $(PKG)_UPDATE
@@ -62,8 +62,8 @@ define $(PKG)_BUILD
     cp '$(PREFIX)/x86_64-pc-linux-gnu/qt6/bin/moc' '$(PREFIX)/$(TARGET)/qt6/bin/moc.exe'
     cp '$(PREFIX)/x86_64-pc-linux-gnu/qt6/bin/rcc' '$(PREFIX)/$(TARGET)/qt6/bin/rcc.exe'
     cp '$(PREFIX)/x86_64-pc-linux-gnu/qt6/bin/uic' '$(PREFIX)/$(TARGET)/qt6/bin/uic.exe'
-    cp '$(PREFIX)/x86_64-pc-linux-gnu/qt6/bin/lrelease' '$(PREFIX)/$(TARGET)/qt6/bin/lrelease'
-    cp '$(PREFIX)/x86_64-pc-linux-gnu/qt6/bin/lrelease' '$(PREFIX)/$(TARGET)/qt6/bin/lrelease.exe'
-    cp '$(PREFIX)/x86_64-pc-linux-gnu/qt6/bin/lconvert' '$(PREFIX)/$(TARGET)/qt6/bin/lconvert.exe'
+    #cp '$(PREFIX)/x86_64-pc-linux-gnu/qt6/bin/lrelease' '$(PREFIX)/$(TARGET)/qt6/bin/lrelease'
+    #cp '$(PREFIX)/x86_64-pc-linux-gnu/qt6/bin/lrelease' '$(PREFIX)/$(TARGET)/qt6/bin/lrelease.exe'
+    #cp '$(PREFIX)/x86_64-pc-linux-gnu/qt6/bin/lconvert' '$(PREFIX)/$(TARGET)/qt6/bin/lconvert.exe'
 
 endef
