@@ -66,6 +66,7 @@ REQUIREMENTS := \
     $(LIBTOOLIZE) \
     lzip \
     $(MAKE) \
+    meson \
     $(OPENSSL) \
     $(PATCH) \
     perl \
