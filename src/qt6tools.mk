@@ -62,8 +62,9 @@ define $(PKG)_BUILD
     cp '$(PREFIX)/x86_64-pc-linux-gnu/qt6/bin/moc' '$(PREFIX)/$(TARGET)/qt6/bin/moc.exe'
     cp '$(PREFIX)/x86_64-pc-linux-gnu/qt6/bin/rcc' '$(PREFIX)/$(TARGET)/qt6/bin/rcc.exe'
     cp '$(PREFIX)/x86_64-pc-linux-gnu/qt6/bin/uic' '$(PREFIX)/$(TARGET)/qt6/bin/uic.exe'
-    #cp '$(PREFIX)/x86_64-pc-linux-gnu/qt6/bin/lrelease' '$(PREFIX)/$(TARGET)/qt6/bin/lrelease'
-    #cp '$(PREFIX)/x86_64-pc-linux-gnu/qt6/bin/lrelease' '$(PREFIX)/$(TARGET)/qt6/bin/lrelease.exe'
-    #cp '$(PREFIX)/x86_64-pc-linux-gnu/qt6/bin/lconvert' '$(PREFIX)/$(TARGET)/qt6/bin/lconvert.exe'
+    cp '$(PREFIX)/x86_64-pc-linux-gnu/qt6/bin/lrelease' '$(PREFIX)/$(TARGET)/qt6/bin/lrelease'
+    cp '$(PREFIX)/x86_64-pc-linux-gnu/qt6/bin/lrelease' '$(PREFIX)/$(TARGET)/qt6/bin/lrelease.exe'
+    cp '$(PREFIX)/x86_64-pc-linux-gnu/qt6/bin/lconvert' '$(PREFIX)/$(TARGET)/qt6/bin/lconvert'
+    cp '$(PREFIX)/x86_64-pc-linux-gnu/qt6/bin/lconvert' '$(PREFIX)/$(TARGET)/qt6/bin/lconvert.exe'
 
 endef
