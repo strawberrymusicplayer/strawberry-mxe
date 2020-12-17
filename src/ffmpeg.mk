@@ -8,7 +8,7 @@ $(PKG)_CHECKSUM := f4a4ac63946b6eee3bbdde523e298fca6019d048d6e1db0d1439a62cea65f
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_URL      := https://ffmpeg.org/releases/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc yasm zlib bzip2 gnutls vorbis opus speex lame libcdio
+$(PKG)_DEPS     := cc yasm zlib bzip2 gnutls wavpack vorbis opus speex lame libcdio
 
 # DO NOT ADD fdk-aac OR openssl SUPPORT.
 # Although they are free softwares, their licenses are not compatible with
