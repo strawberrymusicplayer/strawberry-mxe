@@ -4,11 +4,11 @@ PKG             := icu4c
 $(PKG)_WEBSITE  := https://github.com/unicode-org/icu
 $(PKG)_DESCR    := ICU4C
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 68.1
+$(PKG)_VERSION  := 68.2
 $(PKG)_MAJOR    := $(word 1,$(subst ., ,$($(PKG)_VERSION)))
-$(PKG)_CHECKSUM := 5b3cfb519c20511c1c0429b093ec16960f6a6a0d7968a9065fda393f9eba48fc
+$(PKG)_CHECKSUM := f790b0202facbbf19c5581a7a5f21b2b4b6ed70ba3e4bef8d5560868e5e82476
 $(PKG)_GH_CONF  := unicode-org/icu/releases/latest,release-,,,-
-$(PKG)_SUBDIR   := icu-release-68-1/icu4c
+$(PKG)_SUBDIR   := icu-release-$(subst .,-,$($(PKG)_VERSION))/$(PKG)/source
 $(PKG)_URL      := $($(PKG)_WEBSITE)/releases/download/release-$(subst .,-,$($(PKG)_VERSION))/icu4c-$(subst .,_,$($(PKG)_VERSION))-src.tgz
 $(PKG)_DEPS     := cc $(BUILD)~$(PKG) pe-util
 
@@ -20,7 +20,7 @@ define $(PKG)_BUILD_$(BUILD)
     # cross build requires artefacts from native build tree
     rm -rf '$(PREFIX)/$(BUILD)/$(PKG)'
     $(INSTALL) -d '$(PREFIX)/$(BUILD)/$(PKG)'
-    cd '$(PREFIX)/$(BUILD)/$(PKG)' && '$(SOURCE_DIR)/source/configure' \
+    cd '$(PREFIX)/$(BUILD)/$(PKG)' && '$(SOURCE_DIR)/configure' \
         CC=$(BUILD_CC) \
         CXX=$(BUILD_CXX) \
         --enable-tests=no \
@@ -32,7 +32,7 @@ endef
 define $(PKG)_BUILD_COMMON
 
     rm -fv $(shell echo "$(PREFIX)/$(TARGET)"/{bin,lib}/{lib,libs,}icu'*'.{a,dll,dll.a})
-    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/source/configure' \
+    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
         $(MXE_CONFIGURE_OPTS) \
         --with-cross-build='$(PREFIX)/$(BUILD)/$(PKG)' \
         --enable-icu-config=no \
