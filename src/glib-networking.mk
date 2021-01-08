@@ -9,11 +9,12 @@ $(PKG)_CHECKSUM := c5d7be2437fdd196eebfb70c4517b96d3ba7ec13bd496318b8f02dea383e0
 $(PKG)_SUBDIR   := glib-networking-$($(PKG)_VERSION)
 $(PKG)_FILE     := glib-networking-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/$(PKG)/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc meson-conf ninja glib gnutls openssl
+$(PKG)_DEPS     := cc meson-conf glib gnutls openssl
 
 define $(PKG)_UPDATE
     $(call MXE_GET_GH_TAGS,GNOME/glib-networking) | \
     grep -v '\([0-9]\+\.\)\{2\}9[0-9]' | \
+    grep -v 'alpha' |
     $(SORT) -Vr | \
     head -1
 endef
