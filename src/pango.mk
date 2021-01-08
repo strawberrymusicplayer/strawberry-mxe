@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := 391f26f3341c2d7053e0fb26a956bd42360dadd825efe7088b1e9340a65e7
 $(PKG)_SUBDIR   := pango-$($(PKG)_VERSION)
 $(PKG)_FILE     := pango-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/pango/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc ninja glib fontconfig freetype cairo harfbuzz fribidi
+$(PKG)_DEPS     := cc glib fontconfig freetype cairo harfbuzz fribidi $(BUILD)~ninja
 
 define $(PKG)_UPDATE
     $(call MXE_GET_GH_TAGS,GNOME/pango) | \
@@ -19,9 +19,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(SOURCE_DIR)' && $(TARGET)-meson \
-                                -Dintrospection=disabled \
-                                '$(BUILD_DIR)'
+    cd '$(SOURCE_DIR)' && $(TARGET)-meson -Dintrospection=disabled '$(BUILD_DIR)'
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install
 endef

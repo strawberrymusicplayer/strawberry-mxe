@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := 170c3f8446b0f65f8e4b93603349172b1085fb8917c181d10962f02bb85f5
 $(PKG)_SUBDIR   := libsoup-$($(PKG)_VERSION)
 $(PKG)_FILE     := libsoup-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/libsoup/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc ninja glib glib-networking libxml2 sqlite brotli libpsl
+$(PKG)_DEPS     := cc glib glib-networking libxml2 sqlite brotli libpsl $(BUILD)~ninja
 
 define $(PKG)_UPDATE
     $(call MXE_GET_GH_TAGS,GNOME/libsoup) | \
