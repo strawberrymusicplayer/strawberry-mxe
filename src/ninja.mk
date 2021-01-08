@@ -10,15 +10,11 @@ $(PKG)_GH_CONF  := ninja-build/ninja/releases/latest,v
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $($(PKG)_SUBDIR).tar.gz
 $(PKG)_URL      := https://github.com/ninja-build/ninja/archive/v$($(PKG)_VERSION).tar.gz
-$(PKG)_DEPS     :=
-$(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
+$(PKG)_DEPS     := cmake
+$(PKG)_TARGETS  := $(BUILD)
 
 define $(PKG)_BUILD
-    ln -sf '$(PREFIX)/$(BUILD)/bin/ninja' '$(PREFIX)/bin/$(TARGET)-ninja'
-endef
-
-define $(PKG)_BUILD_$(BUILD)
-    cd '$(SOURCE_DIR)' && python2 ./configure.py --bootstrap \
-        --with-python="`which python2`" && \
-    $(INSTALL) -m755 -D ninja "$(PREFIX)/$(TARGET)/bin/ninja"
+    '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' -DCMAKE_INSTALL_PREFIX='$(PREFIX)/$(TARGET)' -DBUILD_TESTING=OFF
+    '$(TARGET)-cmake' --build '$(BUILD_DIR)' -j '$(JOBS)'
+    '$(TARGET)-cmake' --install '$(BUILD_DIR)'
 endef
