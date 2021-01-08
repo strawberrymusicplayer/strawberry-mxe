@@ -15,9 +15,10 @@ $(PKG)_DEPS     := cc gmp
 $(PKG)_DEPS_$(BUILD) := gmp
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://gforge.inria.fr/frs/?group_id=136' | \
-    $(SED) -n 's,.*mpfr-\([0-9].*\)\.tar.*,\1,p' | \
-    sort |
+    $(WGET) -q -O- 'https://www.mpfr.org/mpfr-current/#download' | \
+    grep -a 'mpfr-' | \
+    LC_ALL=C $(SED) 's/[\d128-\d255]//g' | \
+    $(SED) 's/^.*mpfr-\([0-9\.]*\)\..*/\1/p' | \
     tail -1
 endef
 
@@ -43,9 +44,7 @@ endef
 
 define $(PKG)_BUILD_$(BUILD)
     mkdir '$(1).build'
-    cd    '$(1).build' && '$(1)/configure' \
-        $(MXE_CONFIGURE_OPTS) \
-        --with-gmp='$(PREFIX)/$(TARGET)'
+    cd    '$(1).build' && '$(1)/configure' $(MXE_CONFIGURE_OPTS) --with-gmp='$(PREFIX)/$(TARGET)'
     $(MAKE) -C '$(1).build' -j '$(JOBS)'
     $(MAKE) -C '$(1).build' -j 1 install
 endef
