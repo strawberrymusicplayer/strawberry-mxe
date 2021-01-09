@@ -103,7 +103,7 @@ define $(PKG)_BUILD_$(BUILD)
         -G Ninja \
         -DCMAKE_INSTALL_PREFIX='$(PREFIX)/$(TARGET)/qt6' \
         -DQT_BUILD_{TESTS,EXAMPLES}=OFF \
-        -DFEATURE_{eventfd,glib,icu,openssl}=OFF \
+        -DFEATURE_{eventfd,glib,icu,openssl,opengl}=OFF \
         -DFEATURE_sql_{db2,ibase,mysql,oci,odbc,psql,sqlite}=OFF
     '$(TARGET)-cmake' --build '$(BUILD_DIR)' -j '$(JOBS)'
     rm -rf '$(PREFIX)/$(TARGET)/qt6'
