@@ -78,34 +78,33 @@ define $(PKG)_BUILD
 
 endef
 
-#define $(PKG)_BUILD_$(BUILD)
-#    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
-#        -prefix '$(PREFIX)/$(TARGET)/qt6' \
-#        -static \
-#        -release \
-#        -opensource \
-#        -confirm-license \
-#        -no-{eventfd,glib,icu,openssl,opengl} \
-#        -no-sql-{db2,ibase,mysql,oci,odbc,psql,sqlite} \
-#        -no-use-gold-linker \
-#        -nomake examples \
-#        -nomake tests \
-#        -make tools
-
-#    '$(TARGET)-cmake' --build '$(BUILD_DIR)' -j '$(JOBS)'
-#    rm -rf '$(PREFIX)/$(TARGET)/qt6'
-#    '$(TARGET)-cmake' --install '$(BUILD_DIR)'
-#    #ln -sf '$(PREFIX)/$(TARGET)/qt6/bin/qmake' '$(PREFIX)/bin/$(TARGET)'-qmake-qt6
-#endef
-
 define $(PKG)_BUILD_$(BUILD)
-    '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
-        -G Ninja \
-        -DCMAKE_INSTALL_PREFIX='$(PREFIX)/$(TARGET)/qt6' \
-        -DQT_BUILD_{TESTS,EXAMPLES}=OFF \
-        -DFEATURE_{eventfd,glib,icu,openssl,opengl}=OFF \
-        -DFEATURE_sql_{db2,ibase,mysql,oci,odbc,psql,sqlite}=OFF
+    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
+        -prefix '$(PREFIX)/$(TARGET)/qt6' \
+        -static \
+        -release \
+        -opensource \
+        -confirm-license \
+        -no-{eventfd,glib,icu,openssl,opengl} \
+        -no-sql-{db2,ibase,mysql,oci,odbc,psql,sqlite} \
+        -no-use-gold-linker \
+        -nomake examples \
+        -nomake tests \
+        -make tools
+
     '$(TARGET)-cmake' --build '$(BUILD_DIR)' -j '$(JOBS)'
     rm -rf '$(PREFIX)/$(TARGET)/qt6'
     '$(TARGET)-cmake' --install '$(BUILD_DIR)'
 endef
+
+#define $(PKG)_BUILD_$(BUILD)
+#    '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
+#        -G Ninja \
+#        -DCMAKE_INSTALL_PREFIX='$(PREFIX)/$(TARGET)/qt6' \
+#        -DQT_BUILD_{TESTS,EXAMPLES}=OFF \
+#        -DFEATURE_{eventfd,glib,icu,openssl,opengl}=OFF \
+#        -DFEATURE_sql_{db2,ibase,mysql,oci,odbc,psql,sqlite}=OFF
+#    '$(TARGET)-cmake' --build '$(BUILD_DIR)' -j '$(JOBS)'
+#    rm -rf '$(PREFIX)/$(TARGET)/qt6'
+#    '$(TARGET)-cmake' --install '$(BUILD_DIR)'
+#endef
