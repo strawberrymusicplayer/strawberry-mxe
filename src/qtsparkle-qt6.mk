@@ -10,7 +10,7 @@ $(PKG)_GH_CONF  := davidsansome/qtsparkle/branches/master
 $(PKG)_DEPS     := cc qt6base qt6tools
 
 define $(PKG)_BUILD
-    $(QT6_CMAKE) -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)'
+    cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
         -DBUILD_WITH_QT6=ON \
         -DQt6_DIR=$(PREFIX)/$(TARGET)/qt6/lib/cmake \
         -DCMAKE_PREFIX_PATH=$(PREFIX)/$(TARGET)/qt6/lib/cmake
