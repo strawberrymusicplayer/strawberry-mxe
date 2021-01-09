@@ -23,10 +23,10 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD_$(BUILD)
-    cd '$(SOURCE_DIR)' && meson --prefix='$(PREFIX)/$(TARGET)' \
-                                --buildtype=release \
-                                --pkg-config-path='$(PREFIX)/$(TARGET)/bin/pkgconf' \
-                                '$(BUILD_DIR)'
+    cd '$(SOURCE_DIR)' &&  $(PREFIX)/$(BUILD)/bin/meson --prefix='$(PREFIX)/$(TARGET)' \
+                                                        --buildtype=release \
+                                                        --pkg-config-path='$(PREFIX)/$(TARGET)/bin/pkgconf' \
+                                                        '$(BUILD_DIR)'
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install
 endef
