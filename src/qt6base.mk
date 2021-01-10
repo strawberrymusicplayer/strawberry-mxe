@@ -62,7 +62,6 @@ define $(PKG)_BUILD
         -DFEATURE_pcre2=ON \
         -DFEATURE_libjpeg=ON \
         -DFEATURE_libpng=ON \
-        -DFEATURE_system_harfbuzz=ON \
         -DFEATURE_style_windows=ON \
         -DFEATURE_style_windowsvista=ON \
         -DINPUT_sqlite=system \
