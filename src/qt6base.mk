@@ -58,7 +58,7 @@ define $(PKG)_BUILD
         -DFEATURE_dbus=OFF \
         -DFEATURE_sql=ON \
         -DFEATURE_sql_sqlite=ON \
-        -DFEATURE_sql_odbc=OFF \
+        -DFEATURE_sql_odbc=ON \
         -DFEATURE_pcre2=ON \
         -DFEATURE_libjpeg=ON \
         -DFEATURE_libpng=ON \
