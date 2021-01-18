@@ -15,7 +15,7 @@ define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://astron.com/pub/file/' | \
     grep 'file-' | \
     $(SED) -n 's,.*file-\([0-9][^>]*\)\.tar.*,\1,p' | \
-    grep -v '5.39' |
+    grep -v '5.39' | \
     tail -1
 endef
 
