@@ -3,8 +3,8 @@
 PKG             := file
 $(PKG)_WEBSITE  := https://www.darwinsys.com/file/
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 5.39
-$(PKG)_CHECKSUM := f05d286a76d9556243d0cb05814929c2ecf3a5ba07963f8f70bfaaa70517fad1
+$(PKG)_VERSION  := 5.38
+$(PKG)_CHECKSUM := 593c2ffc2ab349c5aea0f55fedfe4d681737b6b62376a9b3ad1e77b2cc19fa34
 $(PKG)_SUBDIR   := file-$($(PKG)_VERSION)
 $(PKG)_FILE     := file-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://astron.com/pub/file/$($(PKG)_FILE)
@@ -15,6 +15,7 @@ define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://astron.com/pub/file/' | \
     grep 'file-' | \
     $(SED) -n 's,.*file-\([0-9][^>]*\)\.tar.*,\1,p' | \
+    grep -v '5.39' |
     tail -1
 endef
 
