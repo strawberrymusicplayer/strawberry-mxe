@@ -58,33 +58,6 @@ index 1111111..2222222 100644
  
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Saikrishna Arcot <saiarcot895@gmail.com>
-Date: Fri, 12 Jun 2015 14:53:55 -0700
-Subject: [PATCH 2/3] Don't call git to determine the revision.
-
-
-diff --git a/configure.ac b/configure.ac
-index 1111111..2222222 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -38,13 +38,10 @@ m4_define(mym4_version_micro, [1])
- # processing is done by autoconf and not during the configure run.
- m4_define(mym4_version,
-           [mym4_version_major.mym4_version_minor.mym4_version_micro])
--m4_define([mym4_revision],
--          m4_esyscmd([git rev-parse --short HEAD | tr -d '\n\r']))
-+m4_define([mym4_revision], [4091])
- m4_define([mym4_revision_dec],
-           m4_esyscmd_s([echo $((0x$(echo ]mym4_revision[|head -c 4)))]))
--m4_define([mym4_betastring],
--          m4_esyscmd_s([git describe --match 'libgcrypt-[0-9].*[0-9]' --long|\
--                        awk -F- '$3!=0{print"-beta"$3}']))
-+m4_define([mym4_betastring], [])
- m4_define([mym4_isgit],m4_if(mym4_betastring,[],[no],[yes]))
- m4_define([mym4_full_version],[mym4_version[]mym4_betastring])
- 
-
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Sun, 28 Jun 2015 17:17:25 +0200
 Subject: [PATCH 3/3] configure.ac: no serial-tests if automake < 1.12
