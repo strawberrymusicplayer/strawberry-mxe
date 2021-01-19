@@ -4,7 +4,7 @@ Contains ad hoc patches for cross building.
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Jonas Kvinge <jonas@jkvinge.net>
-Date: Sun, 6 Sep 2020 16:18:37 +0200
+Date: Tue, 19 Jan 2021 22:56:24 +0100
 Subject: [PATCH 1/1] Build fixes
 
 
@@ -12,7 +12,7 @@ diff --git a/fuzzing/meson.build b/fuzzing/meson.build
 index 1111111..2222222 100644
 --- a/fuzzing/meson.build
 +++ b/fuzzing/meson.build
-@@ -23,9 +23,19 @@ else
+@@ -30,9 +30,19 @@ else
    extra_sources += 'driver.c'
  endif
  
@@ -42,7 +42,7 @@ diff --git a/gio/giomodule.c b/gio/giomodule.c
 index 1111111..2222222 100644
 --- a/gio/giomodule.c
 +++ b/gio/giomodule.c
-@@ -1056,14 +1056,12 @@ extern GType _g_win32_network_monitor_get_type (void);
+@@ -1069,14 +1069,12 @@ extern GType _g_win32_network_monitor_get_type (void);
  
  static HMODULE gio_dll = NULL;
  
@@ -59,7 +59,7 @@ index 1111111..2222222 100644
  	 DWORD     fdwReason,
  	 LPVOID    lpvReserved)
  {
-@@ -1073,8 +1071,6 @@ DllMain (HINSTANCE hinstDLL,
+@@ -1089,8 +1087,6 @@ DllMain (HINSTANCE hinstDLL,
    return TRUE;
  }
  
@@ -87,7 +87,7 @@ diff --git a/glib/glib-init.c b/glib/glib-init.c
 index 1111111..2222222 100644
 --- a/glib/glib-init.c
 +++ b/glib/glib-init.c
-@@ -271,14 +271,14 @@ glib_init (void)
+@@ -342,14 +342,14 @@ glib_init (void)
  
  #if defined (G_OS_WIN32)
  
@@ -394,7 +394,7 @@ index 1111111..2222222 100644
        EnterCriticalSection (&g_private_lock);
        impl = (DWORD) key->p;
        if (impl == 0)
-@@ -404,6 +477,9 @@ g_system_thread_free (GRealThread *thread)
+@@ -405,6 +478,9 @@ g_system_thread_free (GRealThread *thread)
  {
    GThreadWin32 *wt = (GThreadWin32 *) thread;
  
@@ -404,7 +404,7 @@ index 1111111..2222222 100644
    win32_check_for_error (CloseHandle (wt->handle));
    g_slice_free (GThreadWin32, wt);
  }
-@@ -411,6 +487,9 @@ g_system_thread_free (GRealThread *thread)
+@@ -412,6 +488,9 @@ g_system_thread_free (GRealThread *thread)
  void
  g_system_thread_exit (void)
  {
@@ -414,7 +414,7 @@ index 1111111..2222222 100644
    _endthreadex (0);
  }
  
-@@ -419,6 +498,9 @@ g_thread_win32_proxy (gpointer data)
+@@ -420,6 +499,9 @@ g_thread_win32_proxy (gpointer data)
  {
    GThreadWin32 *self = data;
  
@@ -424,7 +424,7 @@ index 1111111..2222222 100644
    self->proxy (self);
  
    g_system_thread_exit ();
-@@ -452,6 +534,9 @@ g_system_thread_new (GThreadFunc proxy,
+@@ -453,6 +535,9 @@ g_system_thread_new (GThreadFunc proxy,
    const gchar *message = NULL;
    int thread_prio;
  
@@ -434,7 +434,7 @@ index 1111111..2222222 100644
    thread = g_slice_new0 (GThreadWin32);
    thread->proxy = proxy;
    thread->handle = (HANDLE) NULL;
-@@ -535,6 +620,9 @@ g_system_thread_wait (GRealThread *thread)
+@@ -536,6 +621,9 @@ g_system_thread_wait (GRealThread *thread)
  {
    GThreadWin32 *wt = (GThreadWin32 *) thread;
  
@@ -444,7 +444,7 @@ index 1111111..2222222 100644
    win32_check_for_error (WAIT_FAILED != WaitForSingleObject (wt->handle, INFINITE));
  }
  
-@@ -608,6 +696,8 @@ g_thread_win32_init (void)
+@@ -610,6 +698,8 @@ g_thread_win32_init (void)
  {
    InitializeCriticalSection (&g_private_lock);
  
@@ -469,7 +469,7 @@ diff --git a/glib/meson.build b/glib/meson.build
 index 1111111..2222222 100644
 --- a/glib/meson.build
 +++ b/glib/meson.build
-@@ -423,11 +423,13 @@ if host_system == 'windows'
+@@ -425,11 +425,13 @@ if host_system == 'windows'
      executable('gspawn-win64-helper', 'gspawn-win32-helper.c',
        install : true,
        gui_app : true,
@@ -487,7 +487,7 @@ diff --git a/gobject/gtype.c b/gobject/gtype.c
 index 1111111..2222222 100644
 --- a/gobject/gtype.c
 +++ b/gobject/gtype.c
-@@ -4456,7 +4456,7 @@ gobject_init (void)
+@@ -4510,7 +4510,7 @@ gobject_init (void)
    _g_signal_init ();
  }
  
@@ -536,7 +536,7 @@ diff --git a/meson.build b/meson.build
 index 1111111..2222222 100644
 --- a/meson.build
 +++ b/meson.build
-@@ -427,7 +427,6 @@ if cc.get_id() == 'gcc' or cc.get_id() == 'clang'
+@@ -428,7 +428,6 @@ if cc.get_id() == 'gcc' or cc.get_id() == 'clang'
      '-Wno-format-zero-length',
      '-Werror=declaration-after-statement',
      '-Werror=format=2',
