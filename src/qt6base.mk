@@ -4,13 +4,13 @@ PKG             := qt6base
 $(PKG)_WEBSITE  := https://www.qt.io/
 $(PKG)_DESCR    := Qt 6 Base
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 6.0.0
-$(PKG)_CHECKSUM := ae227180272d199cbb15318e3353716afada5c57fd5185b812ae26912c958656
+$(PKG)_VERSION  := 6.0.1
+$(PKG)_CHECKSUM := 8d2bc1829c1479e539f66c2f51a7e11c38a595c9e8b8e45a3b45f3cb41c6d6aa
 $(PKG)_FILE     := qtbase-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_SUBDIR   := qtbase-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/6.0/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
-$(PKG)_DEPS     := cc dbus openssl pcre2 fontconfig freetype harfbuzz jpeg libpng zlib zstd sqlite mesa $(BUILD)~$(PKG) $(BUILD)~qt6tools
+$(PKG)_DEPS     := cc openssl pcre2 fontconfig freetype harfbuzz jpeg libpng zlib zstd sqlite mesa $(BUILD)~$(PKG) $(BUILD)~qt6tools
 $(PKG)_DEPS_$(BUILD) :=
 $(PKG)_OO_DEPS_$(BUILD) += qt6-conf ninja
 
@@ -28,6 +28,7 @@ define $(PKG)_BUILD
     PKG_CONFIG_SYSROOT_DIR="/" \
     PKG_CONFIG_LIBDIR="$(PREFIX)/$(TARGET)/lib/pkgconfig" \
     '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
+        -G Ninja \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX='$(PREFIX)/$(TARGET)/qt6' \
         -DBUILD_SHARED_LIBS=$(CMAKE_SHARED_BOOL) \
@@ -60,8 +61,6 @@ define $(PKG)_BUILD
         -DFEATURE_sql_sqlite=ON \
         -DFEATURE_sql_odbc=ON \
         -DFEATURE_pcre2=ON \
-        -DFEATURE_libjpeg=ON \
-        -DFEATURE_libpng=ON \
         -DFEATURE_style_windows=ON \
         -DFEATURE_style_windowsvista=ON \
         -DINPUT_sqlite=system \
@@ -84,7 +83,7 @@ define $(PKG)_BUILD_$(BUILD)
         -release \
         -opensource \
         -confirm-license \
-        -no-{eventfd,glib,icu,openssl,opengl} \
+        -no-{eventfd,glib,icu,openssl,opengl,dbus} \
         -no-sql-{db2,ibase,mysql,oci,odbc,psql,sqlite} \
         -no-use-gold-linker \
         -nomake examples \
@@ -95,15 +94,3 @@ define $(PKG)_BUILD_$(BUILD)
     rm -rf '$(PREFIX)/$(TARGET)/qt6'
     '$(TARGET)-cmake' --install '$(BUILD_DIR)'
 endef
-
-#define $(PKG)_BUILD_$(BUILD)
-#    '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
-#        -G Ninja \
-#        -DCMAKE_INSTALL_PREFIX='$(PREFIX)/$(TARGET)/qt6' \
-#        -DQT_BUILD_{TESTS,EXAMPLES}=OFF \
-#        -DFEATURE_{eventfd,glib,icu,openssl,opengl}=OFF \
-#        -DFEATURE_sql_{db2,ibase,mysql,oci,odbc,psql,sqlite}=OFF
-#    '$(TARGET)-cmake' --build '$(BUILD_DIR)' -j '$(JOBS)'
-#    rm -rf '$(PREFIX)/$(TARGET)/qt6'
-#    '$(TARGET)-cmake' --install '$(BUILD_DIR)'
-#endef

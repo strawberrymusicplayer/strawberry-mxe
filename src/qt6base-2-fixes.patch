@@ -1,67 +1,30 @@
-From d2e2d0d3a6249ccbc17ec92acb32fec9a0d71807 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?M=C3=A5rten=20Nordheim?= <marten.nordheim@qt.io>
-Date: Tue, 12 Jan 2021 17:25:03 +0100
-Subject: QCache: when overwriting, store the new cost instead of the delta
+This file is part of MXE. See LICENSE.md for licensing information.
 
-The delta was clearly intended to be used on the total (and still is)
-but it also wound up getting stored in the cache, which wouldn't be a
-big problem unless the object was removed, in which case we could
-incidentally 'free up more space' than intended.
+Contains ad hoc patches for cross building.
 
-Pick-to: 6.0
-Change-Id: Ib2b0f072d30da6d16a93dce60e4c5f6080c109fc
-Reviewed-by: Lars Knoll <lars.knoll@qt.io>
----
- src/corelib/tools/qcache.h                     |  3 ++-
- tests/auto/corelib/tools/qcache/tst_qcache.cpp | 14 ++++++++++++++
- 2 files changed, 16 insertions(+), 1 deletion(-)
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Wed, 3 Feb 2021 18:46:32 +0100
+Subject: [PATCH 1/1] Disable D-Bus
 
-diff --git a/src/corelib/tools/qcache.h b/src/corelib/tools/qcache.h
-index 41cf9abc46..8a341c8555 100644
---- a/src/corelib/tools/qcache.h
-+++ b/src/corelib/tools/qcache.h
-@@ -245,8 +245,9 @@ public:
-         auto result = d.findOrInsert(key);
-         Node *n = result.it.node();
-         if (result.initialized) {
--            cost -= n->value.cost;
-+            auto prevCost = n->value.cost;
-             result.it.node()->emplace(object, cost);
-+            cost -= prevCost;
-             relink(key);
-         } else {
-             Node::createInPlace(n, key, object, cost);
-diff --git a/tests/auto/corelib/tools/qcache/tst_qcache.cpp b/tests/auto/corelib/tools/qcache/tst_qcache.cpp
-index 8fb7644b65..f8b0aba2dc 100644
---- a/tests/auto/corelib/tools/qcache/tst_qcache.cpp
-+++ b/tests/auto/corelib/tools/qcache/tst_qcache.cpp
-@@ -49,6 +49,7 @@ private slots:
-     void axioms_on_key_type();
-     void largeCache();
-     void internalChainOrderAfterEntryUpdate();
-+    void emplaceLowerCost();
- };
+
+diff --git a/cmake/FindWrapDBus1.cmake b/cmake/FindWrapDBus1.cmake
+index 1111111..2222222 100644
+--- a/cmake/FindWrapDBus1.cmake
++++ b/cmake/FindWrapDBus1.cmake
+@@ -4,10 +4,12 @@
  
+ # When doing top-level static Qt builds, we need to protect against double creation of the dbus
+ # target.
+-if(DBus1_FOUND OR WrapDBus1_FOUND OR TARGET dbus-1)
+-    set(WrapDBus1_FOUND 1)
++#if(DBus1_FOUND OR WrapDBus1_FOUND OR TARGET dbus-1)
++    #set(WrapDBus1_FOUND 1)
++    unset(DBus1_FOUND)
++    unset(WrapDBus1_FOUND)
+     return()
+-endif()
++#endif()
  
-@@ -431,5 +432,18 @@ void tst_QCache::internalChainOrderAfterEntryUpdate()
-     QCOMPARE(cache.size(), 0);
- }
- 
-+void tst_QCache::emplaceLowerCost()
-+{
-+    QCache<QString, int> cache;
-+    cache.setMaxCost(5);
-+    cache.insert("a", new int, 3); // insert high cost
-+    cache.insert("a", new int, 1); // and then exchange it with a lower-cost object
-+    QCOMPARE(cache.totalCost(), 1);
-+    cache.remove("a"); // then remove the object
-+    // The cache should now have a cost == 0 and be empty.
-+    QCOMPARE(cache.totalCost(), 0);
-+    QVERIFY(cache.isEmpty());
-+}
-+
- QTEST_APPLESS_MAIN(tst_QCache)
- #include "tst_qcache.moc"
--- 
-cgit v1.2.1
-
+ if(DEFINED ENV{PKG_CONFIG_DIR})
+     set(__qt_dbus_pcd "$ENV{PKG_CONFIG_DIR}")
