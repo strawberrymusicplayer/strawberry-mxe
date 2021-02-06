@@ -1,30 +1,214 @@
-This file is part of MXE. See LICENSE.md for licensing information.
+From 6b671ab86de4d11013dd07f4a767453b0af95b67 Mon Sep 17 00:00:00 2001
+From: Jacek Tomaszewski <lord.jacold@gmail.com>
+Date: Fri, 22 May 2020 21:56:11 +0200
+Subject: [PATCH] wasapi: COM library is uninitialized automatically on thread
+ exit.
 
-Contains ad hoc patches for cross building.
+CoInitializeEx() and corresponding CoUninitialize() must be called from the same thread. Common mechanism for that using GPrivate was implemented in gstwasapiutil.c.
 
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Jonas Kvinge <jonas@jkvinge.net>
-Date: Thu, 15 Oct 2020 15:30:51 +0200
-Subject: [PATCH 1/1] Add CoInitializeEx() in
- gst_wasapi_util_get_device_enumerator
+Fixes #1482
+https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1482
+---
+ sys/wasapi/gstwasapidevice.c | 11 +---------
+ sys/wasapi/gstwasapisink.c   |  8 ++------
+ sys/wasapi/gstwasapisrc.c    |  8 ++------
+ sys/wasapi/gstwasapiutil.c   | 39 +++++++++++++++++++++++++++++++++++-
+ sys/wasapi/gstwasapiutil.h   |  2 ++
+ 5 files changed, 45 insertions(+), 23 deletions(-)
 
-
-diff --git a/sys/wasapi/gstwasapiutil.c b/sys/wasapi/gstwasapiutil.c
-index 1111111..2222222 100644
---- a/sys/wasapi/gstwasapiutil.c
-+++ b/sys/wasapi/gstwasapiutil.c
-@@ -311,10 +311,14 @@ gst_wasapi_util_get_device_enumerator (GstObject * self)
-   HRESULT hr;
-   IMMDeviceEnumerator *enumerator = NULL;
+diff --git a/sys/wasapi/gstwasapidevice.c b/sys/wasapi/gstwasapidevice.c
+index 4e6379c3e2..2be3cf2d58 100644
+--- a/sys/wasapi/gstwasapidevice.c
++++ b/sys/wasapi/gstwasapidevice.c
+@@ -26,7 +26,6 @@
+ G_DEFINE_TYPE (GstWasapiDeviceProvider, gst_wasapi_device_provider,
+     GST_TYPE_DEVICE_PROVIDER);
  
-+  HRESULT hr_coinit = CoInitializeEx (NULL, COINIT_MULTITHREADED);
-+
-   hr = CoCreateInstance (&CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL,
-       &IID_IMMDeviceEnumerator, (void **) &enumerator);
-   HR_FAILED_RET (hr, CoCreateInstance (MMDeviceEnumerator), NULL);
+-static void gst_wasapi_device_provider_finalize (GObject * object);
+ static GList *gst_wasapi_device_provider_probe (GstDeviceProvider * provider);
  
-+  if (hr_coinit == S_OK || hr_coinit == S_FALSE) CoUninitialize();
-+
-   return enumerator;
+ static void
+@@ -35,8 +34,6 @@ gst_wasapi_device_provider_class_init (GstWasapiDeviceProviderClass * klass)
+   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+   GstDeviceProviderClass *dm_class = GST_DEVICE_PROVIDER_CLASS (klass);
+ 
+-  gobject_class->finalize = gst_wasapi_device_provider_finalize;
+-
+   dm_class->probe = gst_wasapi_device_provider_probe;
+ 
+   gst_device_provider_class_set_static_metadata (dm_class,
+@@ -48,13 +45,7 @@ gst_wasapi_device_provider_class_init (GstWasapiDeviceProviderClass * klass)
+ static void
+ gst_wasapi_device_provider_init (GstWasapiDeviceProvider * provider)
+ {
+-  CoInitializeEx (NULL, COINIT_MULTITHREADED);
+-}
+-
+-static void
+-gst_wasapi_device_provider_finalize (GObject * object)
+-{
+-  CoUninitialize ();
++  gst_wasapi_util_initialize_com ();
  }
  
+ static GList *
+diff --git a/sys/wasapi/gstwasapisink.c b/sys/wasapi/gstwasapisink.c
+index 1d114a2d79..75328eeddd 100644
+--- a/sys/wasapi/gstwasapisink.c
++++ b/sys/wasapi/gstwasapisink.c
+@@ -180,7 +180,7 @@ gst_wasapi_sink_init (GstWasapiSink * self)
+   self->cancellable = CreateEvent (NULL, TRUE, FALSE, NULL);
+   self->client_needs_restart = FALSE;
+ 
+-  CoInitializeEx (NULL, COINIT_MULTITHREADED);
++  gst_wasapi_util_initialize_com ();
+ }
+ 
+ static void
+@@ -219,8 +219,6 @@ gst_wasapi_sink_finalize (GObject * object)
+   CoTaskMemFree (self->mix_format);
+   self->mix_format = NULL;
+ 
+-  CoUninitialize ();
+-
+   if (self->cached_caps != NULL) {
+     gst_caps_unref (self->cached_caps);
+     self->cached_caps = NULL;
+@@ -483,7 +481,7 @@ gst_wasapi_sink_prepare (GstAudioSink * asink, GstAudioRingBufferSpec * spec)
+   guint bpf, rate, devicep_frames;
+   HRESULT hr;
+ 
+-  CoInitializeEx (NULL, COINIT_MULTITHREADED);
++  gst_wasapi_util_initialize_com ();
+ 
+   if (gst_wasapi_sink_can_audioclient3 (self)) {
+     if (!gst_wasapi_util_initialize_audioclient3 (GST_ELEMENT (self), spec,
+@@ -598,8 +596,6 @@ gst_wasapi_sink_unprepare (GstAudioSink * asink)
+     self->render_client = NULL;
+   }
+ 
+-  CoUninitialize ();
+-
+   return TRUE;
+ }
+ 
+diff --git a/sys/wasapi/gstwasapisrc.c b/sys/wasapi/gstwasapisrc.c
+index db6917036f..db6f0aefb0 100644
+--- a/sys/wasapi/gstwasapisrc.c
++++ b/sys/wasapi/gstwasapisrc.c
+@@ -199,7 +199,7 @@ gst_wasapi_src_init (GstWasapiSrc * self)
+   self->loopback_event_handle = CreateEvent (NULL, FALSE, FALSE, NULL);
+   self->loopback_cancellable = CreateEvent (NULL, TRUE, FALSE, NULL);
+ 
+-  CoInitializeEx (NULL, COINIT_MULTITHREADED);
++  gst_wasapi_util_initialize_com ();
+ }
+ 
+ static void
+@@ -258,8 +258,6 @@ gst_wasapi_src_finalize (GObject * object)
+   CoTaskMemFree (self->mix_format);
+   self->mix_format = NULL;
+ 
+-  CoUninitialize ();
+-
+   g_clear_pointer (&self->cached_caps, gst_caps_unref);
+   g_clear_pointer (&self->positions, g_free);
+   g_clear_pointer (&self->device_strid, g_free);
+@@ -601,7 +599,7 @@ gst_wasapi_src_prepare (GstAudioSrc * asrc, GstAudioRingBufferSpec * spec)
+   guint bpf, rate, devicep_frames, buffer_frames;
+   HRESULT hr;
+ 
+-  CoInitializeEx (NULL, COINIT_MULTITHREADED);
++  gst_wasapi_util_initialize_com ();
+ 
+   if (gst_wasapi_src_can_audioclient3 (self)) {
+     if (!gst_wasapi_util_initialize_audioclient3 (GST_ELEMENT (self), spec,
+@@ -741,8 +739,6 @@ gst_wasapi_src_unprepare (GstAudioSrc * asrc)
+ 
+   self->client_clock_freq = 0;
+ 
+-  CoUninitialize ();
+-
+   return TRUE;
+ }
+ 
+diff --git a/sys/wasapi/gstwasapiutil.c b/sys/wasapi/gstwasapiutil.c
+index 61076df842..1492bb8a27 100644
+--- a/sys/wasapi/gstwasapiutil.c
++++ b/sys/wasapi/gstwasapiutil.c
+@@ -114,6 +114,34 @@ static struct
+ 
+ static int windows_major_version = 0;
+ 
++static const gchar *hresult_to_string_fallback (HRESULT hr);
++void gst_wasapi_util_initialize_com (void);
++static void uninitialize_com (gpointer data);
++
++static GPrivate com_initialized = G_PRIVATE_INIT (uninitialize_com);
++
++void
++gst_wasapi_util_initialize_com (void)
++{
++  if (!g_private_get (&com_initialized)) {
++    HRESULT hr = CoInitializeEx (NULL, COINIT_MULTITHREADED);
++    GST_DEBUG ("COM initialized in thread %lu with result %s",
++        GetCurrentThreadId (), hresult_to_string_fallback (hr));
++    if (hr == S_OK || hr == S_FALSE)
++      g_private_set (&com_initialized, GUINT_TO_POINTER (TRUE));
++  }
++}
++
++static void
++uninitialize_com (gpointer data)
++{
++  /* data is set to GUINT_TO_POINTER (TRUE) when COM was successfully initialized */
++  if (data) {
++    CoUninitialize ();
++    GST_DEBUG ("COM uninitialized in thread %lu", GetCurrentThreadId ());
++  }
++}
++
+ gboolean
+ gst_wasapi_util_have_audioclient3 (void)
+ {
+@@ -284,6 +312,15 @@ hresult_to_string_fallback (HRESULT hr)
+     case E_INVALIDARG:
+       s = "E_INVALIDARG";
+       break;
++    case S_OK:
++      s = "S_OK";
++      break;
++    case S_FALSE:
++      s = "S_FALSE";
++      break;
++    case RPC_E_CHANGED_MODE:
++      s = "RPC_E_CHANGED_MODE";
++      break;
+   }
+ 
+   return s;
+@@ -534,7 +571,7 @@ out:
+ 
+ gboolean
+ gst_wasapi_util_get_device_client (GstElement * self,
+-    gint data_flow, gint role, const wchar_t * device_strid,
++    gint data_flow, gint role, const wchar_t *device_strid,
+     IMMDevice ** ret_device, IAudioClient ** ret_client)
+ {
+   gboolean res = FALSE;
+diff --git a/sys/wasapi/gstwasapiutil.h b/sys/wasapi/gstwasapiutil.h
+index 4e560e6bd1..b4b41e77e6 100644
+--- a/sys/wasapi/gstwasapiutil.h
++++ b/sys/wasapi/gstwasapiutil.h
+@@ -84,6 +84,8 @@ GType gst_wasapi_device_role_get_type (void);
+ 
+ /* Utilities */
+ 
++void gst_wasapi_util_initialize_com (void);
++
+ gboolean gst_wasapi_util_have_audioclient3 (void);
+ 
+ gint gst_wasapi_device_role_to_erole (gint role);
+-- 
+GitLab
+
