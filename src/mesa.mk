@@ -8,7 +8,7 @@ $(PKG)_CHECKSUM := dc21a987ec1ff45b278fe4b1419b1719f1968debbb80221480e44180849b4
 $(PKG)_SUBDIR   := mesa-$($(PKG)_VERSION)
 $(PKG)_FILE     := mesa-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := ftp://ftp.freedesktop.org/pub/mesa/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc $(BUILD)~python-mako scons-local
+$(PKG)_DEPS     := cc scons-local
 
 define $(PKG)_UPDATE
     $(call GET_LATEST_VERSION, https://archive.mesa3d.org, mesa-)
