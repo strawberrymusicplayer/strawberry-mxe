@@ -10,5 +10,5 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
-        repository: jonaski/strawberry-mxe
+        repository: strawberrymusicplayer/strawberry-mxe
         tags: latest
