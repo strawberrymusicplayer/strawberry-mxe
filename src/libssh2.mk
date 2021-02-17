@@ -18,7 +18,6 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && ./buildconf
     cd '$(1)' && ./configure \
         $(MXE_CONFIGURE_OPTS) \
         --disable-examples-build \
