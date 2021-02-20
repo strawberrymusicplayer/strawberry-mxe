@@ -3,8 +3,8 @@
 PKG             := protobuf
 $(PKG)_WEBSITE  := https://github.com/google/protobuf
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 3.15.0
-$(PKG)_CHECKSUM := 6aff9834fd7c540875e1836967c8d14c6897e3785a2efac629f69860fb7834ff
+$(PKG)_VERSION  := 3.15.1
+$(PKG)_CHECKSUM := f18a40816260a9a3190a94efb0fc26270b244a2436681602f0a944739095d632
 $(PKG)_GH_CONF  := google/protobuf/tags, v
 $(PKG)_DEPS     := cc googletest zlib $(BUILD)~$(PKG)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
