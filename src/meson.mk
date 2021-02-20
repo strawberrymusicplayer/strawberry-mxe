@@ -14,6 +14,11 @@ $(PKG)_FILE_DEPS := $(wildcard $(PWD)/src/meson/conf/*)
 $(PKG)_DEPS      := cmake-conf python-conf
 $(PKG)_TARGETS  := $(BUILD)
 
+define $(PKG)_UPDATE
+    echo 'Updates for package $(PKG) is disabled.' >&2;
+    echo $($(PKG)_VERSION)
+endef
+
 define $(PKG)_BUILD_$(BUILD)
     $(PYTHON_SETUP_INSTALL)
 
