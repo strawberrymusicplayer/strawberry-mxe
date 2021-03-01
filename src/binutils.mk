@@ -15,6 +15,7 @@ define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://ftp.gnu.org/gnu/binutils/?C=M;O=D' | \
     $(SED) -n 's,.*<a href="binutils-\([0-9][^"]*\)\.tar.*,\1,p' | \
     $(SORT) -V | \
+    grep -v '2.36' | \
     tail -1
 endef
 
