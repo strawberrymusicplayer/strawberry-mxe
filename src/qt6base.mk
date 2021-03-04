@@ -4,8 +4,8 @@ PKG             := qt6base
 $(PKG)_WEBSITE  := https://www.qt.io/
 $(PKG)_DESCR    := Qt 6 Base
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 6.0.1
-$(PKG)_CHECKSUM := 8d2bc1829c1479e539f66c2f51a7e11c38a595c9e8b8e45a3b45f3cb41c6d6aa
+$(PKG)_VERSION  := 6.0.2
+$(PKG)_CHECKSUM := 991a0e4e123104e76563067fcfa58602050c03aba8c8bb0c6198347c707817f1
 $(PKG)_FILE     := qtbase-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_SUBDIR   := qtbase-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/6.0/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
@@ -49,7 +49,6 @@ define $(PKG)_BUILD
         -DFEATURE_accessibility=ON \
         -DFEATURE_fontconfig=OFF \
         -DFEATURE_openssl=ON \
-        -DFEATURE_openssl_linked=ON \
         -DFEATURE_opengl=ON \
         -DFEATURE_opengl_dynamic=ON \
         -DFEATURE_use_gold_linker_alias=OFF \
@@ -67,8 +66,7 @@ define $(PKG)_BUILD
         -DINPUT_libpng=system \
         -DINPUT_libjpeg=system \
         -DINPUT_freetype=system \
-        -DINPUT_pcre=system \
-        -DINPUT_openssl=linked
+        -DINPUT_pcre=system
 
     cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
     rm -rf '$(PREFIX)/$(TARGET)/qt6'
