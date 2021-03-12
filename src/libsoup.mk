@@ -15,7 +15,7 @@ define $(PKG)_UPDATE
     $(call MXE_GET_GH_TAGS,GNOME/libsoup) | \
     grep -v '\([0-9]\+\.\)\{2\}9[0-9]' | \
     $(SORT) -Vr | \
-    grep -v '2.99.1' | \
+    grep -v '2.99.' | \
     head -1
 endef
 
