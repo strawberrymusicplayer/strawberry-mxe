@@ -15,6 +15,11 @@ RUN zypper --non-interactive --gpg-auto-import-keys install \
     python-base python3-base python3-setuptools python3-Mako \
     mingw32-cross-nsis
 
+RUN mkdir -p /tmp/lockedlist && wget https://nsis.sourceforge.io/mediawiki/images/d/d3/LockedList.zip --directory-prefix=/tmp/lockedlist
+RUN cd /tmp/lockedlist && unzip /tmp/lockedlist/LockedList.zip
+RUN cp /tmp/lockedlist/Plugins/x86-unicode/LockedList.dll /usr/share/nsis/Plugins/x86-unicode/
+RUN cp /tmp/lockedlist/Plugins/LockedList64.dll /usr/share/nsis/Plugins/
+
 RUN mkdir -p /usr/src
 RUN cd /usr/src/ && git clone https://github.com/strawberrymusicplayer/strawberry-mxe
 RUN sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := x86_64-w64-mingw32.shared/g' /usr/src/strawberry-mxe/settings.mk
