@@ -3,8 +3,8 @@
 PKG             := ffmpeg
 $(PKG)_WEBSITE  := https://ffmpeg.org/
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 4.3.2
-$(PKG)_CHECKSUM := ab3a6d6a70358ba0a5f67f37f91f6656b7302b02e98e5b8c846c16763c99913a
+$(PKG)_VERSION  := 4.4
+$(PKG)_CHECKSUM := 42093549751b582cf0f338a21a3664f52e0a9fbe0d238d3c992005e493607d0e
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_URL      := https://ffmpeg.org/releases/$($(PKG)_FILE)
@@ -40,7 +40,6 @@ define $(PKG)_BUILD
         --enable-gpl \
         --enable-version3 \
         --enable-gnutls \
-        --enable-libwavpack \
         --enable-libvorbis \
         --enable-libopus \
         --enable-libspeex \
