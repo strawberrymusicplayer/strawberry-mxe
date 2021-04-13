@@ -52,7 +52,7 @@ define $(PKG)_BUILD
         -DFEATURE_opengl=ON \
         -DFEATURE_opengl_dynamic=ON \
         -DFEATURE_use_gold_linker_alias=OFF \
-        -DFEATURE_glib=OFF \
+        -DFEATURE_glib=ON \
         -DFEATURE_icu=OFF \
         -DFEATURE_directfb=OFF \
         -DFEATURE_dbus=OFF \

@@ -45,7 +45,7 @@ define $(PKG)_BUILD
             -nomake tests \
             -accessibility \
             -fontconfig \
-            -no-glib \
+            -glib \
             -no-pch \
             -no-icu \
             -system-zlib \
