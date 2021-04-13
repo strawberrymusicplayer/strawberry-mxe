@@ -3,8 +3,8 @@
 PKG             := binutils
 $(PKG)_WEBSITE  := https://www.gnu.org/software/binutils/
 $(PKG)_DESCR    := GNU Binutils
-$(PKG)_VERSION  := 2.35.2
-$(PKG)_CHECKSUM := dcd5b0416e7b0a9b24bed76cd8c6c132526805761863150a26d016415b8bdc7b
+$(PKG)_VERSION  := 2.36.1
+$(PKG)_CHECKSUM := e81d9edf373f193af428a0f256674aea62a9d74dfe93f65192d4eae030b0f3b0
 $(PKG)_SUBDIR   := binutils-$($(PKG)_VERSION)
 $(PKG)_FILE     := binutils-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://ftp.gnu.org/gnu/binutils/$($(PKG)_FILE)
@@ -15,7 +15,6 @@ define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://ftp.gnu.org/gnu/binutils/?C=M;O=D' | \
     $(SED) -n 's,.*<a href="binutils-\([0-9][^"]*\)\.tar.*,\1,p' | \
     $(SORT) -V | \
-    grep -v '2.36' | \
     tail -1
 endef
 

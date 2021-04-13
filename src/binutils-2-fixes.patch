@@ -1,0 +1,29 @@
+This file is part of MXE. See LICENSE.md for licensing information.
+
+Contains ad hoc patches for cross building.
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Tue, 13 Apr 2021 17:20:33 +0200
+Subject: [PATCH 1/1] Fix ffmpeg compile
+
+
+diff --git a/binutils/windres.c b/binutils/windres.c
+index 1111111..2222222 100644
+--- a/binutils/windres.c
++++ b/binutils/windres.c
+@@ -885,13 +885,7 @@ main (int argc, char **argv)
+ 	  break;
+ 
+ 	case OPTION_PREPROCESSOR:
+-	  if (strchr (optarg, ' '))
+-	    {
+-	      if (asprintf (& preprocessor, "\"%s\"", optarg) == -1)
+-		preprocessor = optarg;
+-	    }
+-	  else
+-	    preprocessor = optarg;	    
++	  preprocessor = optarg;
+ 	  break;
+ 
+ 	case OPTION_PREPROCESSOR_ARG:
