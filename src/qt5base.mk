@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := 909fad2591ee367993a75d7e2ea50ad4db332f05e1c38dd7a5a274e156a4e
 $(PKG)_SUBDIR   := qtbase-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_FILE     := qtbase-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/5.15/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc dbus fontconfig freetype harfbuzz jpeg libpng openssl pcre2 zlib zstd sqlite mesa
+$(PKG)_DEPS     := cc pcre2 fontconfig freetype harfbuzz openssl glib dbus jpeg libpng zlib zstd sqlite mesa
 $(PKG)_DEPS_$(BUILD) :=
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
