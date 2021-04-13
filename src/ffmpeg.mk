@@ -31,12 +31,11 @@ define $(PKG)_BUILD
         --target-os=mingw32 \
         --prefix='$(PREFIX)/$(TARGET)' \
         $(if $(BUILD_STATIC), --enable-static --disable-shared , --disable-static --enable-shared ) \
-        --yasmexe='$(TARGET)-yasm' \
+        --x86asmexe='$(TARGET)-yasm' \
         --extra-libs='-mconsole' \
         --disable-debug \
         --disable-doc \
         --disable-$(if $(POSIX_THREADS),w32threads,pthreads) \
-        --enable-avresample \
         --enable-gpl \
         --enable-version3 \
         --enable-gnutls \
