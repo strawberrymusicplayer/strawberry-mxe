@@ -16,7 +16,7 @@ define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)' \
         -Dexamples=disabled \
         -Dtests=disabled \
-        -Dtools=disabled \
+        -Dtools=enabled \
         -Dgtk_doc=disabled \
         -Dorc=enabled \
         -Dadder=enabled \
