@@ -66,7 +66,8 @@ define $(PKG)_BUILD
         -DINPUT_libpng=system \
         -DINPUT_libjpeg=system \
         -DINPUT_freetype=system \
-        -DINPUT_pcre=system
+        -DINPUT_pcre=system \
+        -DINPUT_harfbuzz=system
 
     cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
     rm -rf '$(PREFIX)/$(TARGET)/qt6'
