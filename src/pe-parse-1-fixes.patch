@@ -4,15 +4,15 @@ Contains ad hoc patches for cross building.
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Jonas Kvinge <jonas@jkvinge.net>
-Date: Fri, 1 May 2020 12:45:59 +0200
-Subject: [PATCH 1/1] Fix compile
+Date: Fri, 30 Apr 2021 19:25:52 +0200
+Subject: [PATCH 1/1] Fix build
 
 
 diff --git a/cmake/compilation_flags.cmake b/cmake/compilation_flags.cmake
 index 1111111..2222222 100644
 --- a/cmake/compilation_flags.cmake
 +++ b/cmake/compilation_flags.cmake
-@@ -22,9 +22,9 @@ else ()
+@@ -25,9 +25,9 @@ else ()
  
      -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization
      -Wformat=2 -Winit-self -Wlong-long -Wmissing-declarations -Wmissing-include-dirs -Wcomment
@@ -33,10 +33,10 @@ index 1111111..2222222 100644
  find_package(pe-parse REQUIRED)
  
 -add_executable(${PROJECT_NAME} main.cpp)
--target_link_libraries(${PROJECT_NAME} pe-parse::pe-parser-library)
+-target_link_libraries(${PROJECT_NAME} pe-parse::pe-parse)
 -target_compile_options(${PROJECT_NAME} PRIVATE ${PEADDRCONV_CXXFLAGS})
 +#add_executable(${PROJECT_NAME} main.cpp)
-+#target_link_libraries(${PROJECT_NAME} pe-parse::pe-parser-library)
++#target_link_libraries(${PROJECT_NAME} pe-parse::pe-parse)
 +#target_compile_options(${PROJECT_NAME} PRIVATE ${PEADDRCONV_CXXFLAGS})
  
 -install(TARGETS ${PROJECT_NAME} DESTINATION "bin")
