@@ -1,0 +1,1016 @@
+This file is part of MXE. See LICENSE.md for licensing information.
+
+Contains ad hoc patches for cross building.
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Wed, 5 May 2021 10:29:52 +0200
+Subject: [PATCH 1/1] gst: don't use volatile to mean atomic
+
+
+diff --git a/ext/colormanagement/gstlcms.c b/ext/colormanagement/gstlcms.c
+index 1111111..2222222 100644
+--- a/ext/colormanagement/gstlcms.c
++++ b/ext/colormanagement/gstlcms.c
+@@ -67,7 +67,7 @@ enum
+ GType
+ gst_lcms_intent_get_type (void)
+ {
+-  static volatile gsize intent_type = 0;
++  static gsize intent_type = 0;
+   static const GEnumValue intent[] = {
+     {GST_LCMS_INTENT_PERCEPTUAL, "Perceptual",
+         "perceptual"},
+@@ -90,7 +90,7 @@ gst_lcms_intent_get_type (void)
+ static GType
+ gst_lcms_lookup_method_get_type (void)
+ {
+-  static volatile gsize lookup_method_type = 0;
++  static gsize lookup_method_type = 0;
+   static const GEnumValue lookup_method[] = {
+     {GST_LCMS_LOOKUP_METHOD_UNCACHED,
+           "Uncached, calculate every pixel on the fly (very slow playback)",
+diff --git a/ext/curl/gstcurlqueue.h b/ext/curl/gstcurlqueue.h
+index 1111111..2222222 100644
+--- a/ext/curl/gstcurlqueue.h
++++ b/ext/curl/gstcurlqueue.h
+@@ -51,7 +51,7 @@
+ struct _GstCurlHttpSrcQueueElement
+ {
+   GstCurlHttpSrc *p;
+-  volatile gint running;
++  gint running;
+   GstCurlHttpSrcQueueElement *next;
+ };
+ 
+diff --git a/ext/iqa/iqa.c b/ext/iqa/iqa.c
+index 1111111..2222222 100644
+--- a/ext/iqa/iqa.c
++++ b/ext/iqa/iqa.c
+@@ -159,7 +159,7 @@ gst_iqa_mode_flags_get_type (void)
+     {GST_IQA_MODE_STRICT, "Strict comparison of frames.", "strict"},
+     {0, NULL, NULL}
+   };
+-  static volatile GType id = 0;
++  static GType id = 0;
+ 
+   if (g_once_init_enter ((gsize *) & id)) {
+     GType _id;
+diff --git a/ext/opencv/gstcvdilateerode.cpp b/ext/opencv/gstcvdilateerode.cpp
+index 1111111..2222222 100644
+--- a/ext/opencv/gstcvdilateerode.cpp
++++ b/ext/opencv/gstcvdilateerode.cpp
+@@ -87,7 +87,7 @@ static void gst_cv_dilate_erode_get_property (GObject * object, guint prop_id,
+ GType
+ gst_cv_dilate_erode_get_type (void)
+ {
+-  static volatile gsize opencv_dilate_erode_type = 0;
++  static gsize opencv_dilate_erode_type = 0;
+ 
+   if (g_once_init_enter (&opencv_dilate_erode_type)) {
+     GType _type;
+diff --git a/ext/openjpeg/gstopenjpegenc.c b/ext/openjpeg/gstopenjpegenc.c
+index 1111111..2222222 100644
+--- a/ext/openjpeg/gstopenjpegenc.c
++++ b/ext/openjpeg/gstopenjpegenc.c
+@@ -44,7 +44,7 @@ gst_openjpeg_enc_progression_order_get_type (void)
+     {OPJ_CPRL, "CPRL", "crpl"},
+     {0, NULL, NULL}
+   };
+-  static volatile GType id = 0;
++  static GType id = 0;
+ 
+   if (g_once_init_enter ((gsize *) & id)) {
+     GType _id;
+diff --git a/ext/resindvd/rsndec.c b/ext/resindvd/rsndec.c
+index 1111111..2222222 100644
+--- a/ext/resindvd/rsndec.c
++++ b/ext/resindvd/rsndec.c
+@@ -346,7 +346,7 @@ rsn_dec_change_state (GstElement * element, GstStateChange transition)
+ GType
+ rsn_dec_get_type (void)
+ {
+-  static volatile gsize type = 0;
++  static gsize type = 0;
+ 
+   if (g_once_init_enter (&type)) {
+     GType _type;
+diff --git a/ext/sctp/sctpassociation.c b/ext/sctp/sctpassociation.c
+index 1111111..2222222 100644
+--- a/ext/sctp/sctpassociation.c
++++ b/ext/sctp/sctpassociation.c
+@@ -56,7 +56,7 @@ gst_sctp_association_state_get_type (void)
+     {GST_SCTP_ASSOCIATION_STATE_ERROR, "state-error", "state-error"},
+     {0, NULL, NULL}
+   };
+-  static volatile GType id = 0;
++  static GType id = 0;
+ 
+   if (g_once_init_enter ((gsize *) & id)) {
+     GType _id;
+diff --git a/ext/ttml/subtitlemeta.c b/ext/ttml/subtitlemeta.c
+index 1111111..2222222 100644
+--- a/ext/ttml/subtitlemeta.c
++++ b/ext/ttml/subtitlemeta.c
+@@ -32,7 +32,7 @@
+ GType
+ gst_subtitle_meta_api_get_type (void)
+ {
+-  static volatile GType type;
++  static GType type;
+   static const gchar *tags[] = { "memory", NULL };
+ 
+   if (g_once_init_enter (&type)) {
+diff --git a/ext/wildmidi/gstwildmididec.c b/ext/wildmidi/gstwildmididec.c
+index 1111111..2222222 100644
+--- a/ext/wildmidi/gstwildmididec.c
++++ b/ext/wildmidi/gstwildmididec.c
+@@ -151,7 +151,7 @@ static void gst_wildmidi_dec_update_options (GstWildmidiDec * wildmidi_dec);
+ 
+ static GMutex load_mutex;
+ static unsigned long init_refcount = 0;
+-static volatile gint wildmidi_initialized = 0;
++static gint wildmidi_initialized = 0;
+ 
+ 
+ static gchar *
+diff --git a/gst-libs/gst/adaptivedemux/gstadaptivedemux.c b/gst-libs/gst/adaptivedemux/gstadaptivedemux.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/adaptivedemux/gstadaptivedemux.c
++++ b/gst-libs/gst/adaptivedemux/gstadaptivedemux.c
+@@ -211,7 +211,7 @@ struct _GstAdaptiveDemuxPrivate
+ 
+ typedef struct _GstAdaptiveDemuxTimer
+ {
+-  volatile gint ref_count;
++  gint ref_count;
+   GCond *cond;
+   GMutex *mutex;
+   GstClockID clock_id;
+@@ -312,7 +312,7 @@ gst_adaptive_demux_requires_periodical_playlist_update_default (GstAdaptiveDemux
+ GType
+ gst_adaptive_demux_get_type (void)
+ {
+-  static volatile gsize type = 0;
++  static gsize type = 0;
+ 
+   if (g_once_init_enter (&type)) {
+     GType _type;
+@@ -4577,7 +4577,7 @@ gst_adaptive_demux_timer_new (GCond * cond, GMutex * mutex)
+   timer->fired = FALSE;
+   timer->cond = cond;
+   timer->mutex = mutex;
+-  timer->ref_count = 1;
++  g_atomic_int_set (&timer->ref_count, 1);
+   return timer;
+ }
+ 
+diff --git a/gst-libs/gst/audio/gstnonstreamaudiodecoder.c b/gst-libs/gst/audio/gstnonstreamaudiodecoder.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/audio/gstnonstreamaudiodecoder.c
++++ b/gst-libs/gst/audio/gstnonstreamaudiodecoder.c
+@@ -339,7 +339,7 @@ gst_nonstream_audio_decoder_subsong_mode_get_type (void)
+ GType
+ gst_nonstream_audio_decoder_get_type (void)
+ {
+-  static volatile gsize nonstream_audio_decoder_type = 0;
++  static gsize nonstream_audio_decoder_type = 0;
+ 
+   if (g_once_init_enter (&nonstream_audio_decoder_type)) {
+     GType type_;
+diff --git a/gst-libs/gst/codecparsers/gstmpegvideometa.c b/gst-libs/gst/codecparsers/gstmpegvideometa.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/codecparsers/gstmpegvideometa.c
++++ b/gst-libs/gst/codecparsers/gstmpegvideometa.c
+@@ -96,7 +96,7 @@ gst_mpeg_video_meta_transform (GstBuffer * dest, GstMeta * meta,
+ GType
+ gst_mpeg_video_meta_api_get_type (void)
+ {
+-  static volatile GType type;
++  static GType type;
+   static const gchar *tags[] = { "memory", NULL };      /* don't know what to set here */
+ 
+   if (g_once_init_enter (&type)) {
+diff --git a/gst-libs/gst/sctp/sctpreceivemeta.c b/gst-libs/gst/sctp/sctpreceivemeta.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/sctp/sctpreceivemeta.c
++++ b/gst-libs/gst/sctp/sctpreceivemeta.c
+@@ -37,7 +37,7 @@ GType
+ gst_sctp_receive_meta_api_get_type (void)
+ {
+   static const gchar *tags[] = { NULL };
+-  static volatile GType type;
++  static GType type;
+   if (g_once_init_enter (&type)) {
+     GType _type = gst_meta_api_type_register ("GstSctpReceiveMetaAPI", tags);
+     g_once_init_leave (&type, _type);
+diff --git a/gst-libs/gst/sctp/sctpsendmeta.c b/gst-libs/gst/sctp/sctpsendmeta.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/sctp/sctpsendmeta.c
++++ b/gst-libs/gst/sctp/sctpsendmeta.c
+@@ -37,7 +37,7 @@ GType
+ gst_sctp_send_meta_api_get_type (void)
+ {
+   static const gchar *tags[] = { NULL };
+-  static volatile GType type;
++  static GType type;
+   if (g_once_init_enter (&type)) {
+     GType _type = gst_meta_api_type_register ("GstSctpSendMetaAPI", tags);
+     g_once_init_leave (&type, _type);
+diff --git a/gst-libs/gst/vulkan/android/gstvkwindow_android.c b/gst-libs/gst/vulkan/android/gstvkwindow_android.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/vulkan/android/gstvkwindow_android.c
++++ b/gst-libs/gst/vulkan/android/gstvkwindow_android.c
+@@ -37,7 +37,7 @@ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
+ static void
+ _init_debug (void)
+ {
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "vulkanwindowandroid", 0,
+diff --git a/gst-libs/gst/vulkan/cocoa/gstvkwindow_cocoa.m b/gst-libs/gst/vulkan/cocoa/gstvkwindow_cocoa.m
+index 1111111..2222222 100644
+--- a/gst-libs/gst/vulkan/cocoa/gstvkwindow_cocoa.m
++++ b/gst-libs/gst/vulkan/cocoa/gstvkwindow_cocoa.m
+@@ -42,7 +42,7 @@ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
+ static void
+ _init_debug (void)
+ {
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "vulkanwindowmacos", 0,
+diff --git a/gst-libs/gst/vulkan/gstvkbuffermemory.c b/gst-libs/gst/vulkan/gstvkbuffermemory.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/vulkan/gstvkbuffermemory.c
++++ b/gst-libs/gst/vulkan/gstvkbuffermemory.c
+@@ -363,7 +363,7 @@ gst_vulkan_buffer_memory_allocator_init (GstVulkanBufferMemoryAllocator *
+ void
+ gst_vulkan_buffer_memory_init_once (void)
+ {
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_VULKAN_BUFFER_MEMORY, "vulkanbuffermemory",
+diff --git a/gst-libs/gst/vulkan/gstvkcommandbuffer.c b/gst-libs/gst/vulkan/gstvkcommandbuffer.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/vulkan/gstvkcommandbuffer.c
++++ b/gst-libs/gst/vulkan/gstvkcommandbuffer.c
+@@ -41,7 +41,7 @@ GST_DEBUG_CATEGORY (GST_CAT_DEFAULT);
+ static void
+ init_debug (void)
+ {
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "vulkancommandbuffer", 0,
+diff --git a/gst-libs/gst/vulkan/gstvkdescriptorset.c b/gst-libs/gst/vulkan/gstvkdescriptorset.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/vulkan/gstvkdescriptorset.c
++++ b/gst-libs/gst/vulkan/gstvkdescriptorset.c
+@@ -44,7 +44,7 @@ GST_DEBUG_CATEGORY (GST_CAT_DEFAULT);
+ static void
+ init_debug (void)
+ {
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "vulkandescriptorset", 0,
+diff --git a/gst-libs/gst/vulkan/gstvkdevice.c b/gst-libs/gst/vulkan/gstvkdevice.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/vulkan/gstvkdevice.c
++++ b/gst-libs/gst/vulkan/gstvkdevice.c
+@@ -67,7 +67,7 @@ struct _GstVulkanDevicePrivate
+ static void
+ _init_debug (void)
+ {
+-  static volatile gsize init;
++  static gsize init;
+ 
+   if (g_once_init_enter (&init)) {
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "vulkandevice", 0,
+diff --git a/gst-libs/gst/vulkan/gstvkdisplay.c b/gst-libs/gst/vulkan/gstvkdisplay.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/vulkan/gstvkdisplay.c
++++ b/gst-libs/gst/vulkan/gstvkdisplay.c
+@@ -59,7 +59,7 @@ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
+ static void
+ _init_debug (void)
+ {
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "vulkandisplay", 0,
+diff --git a/gst-libs/gst/vulkan/gstvkfence.c b/gst-libs/gst/vulkan/gstvkfence.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/vulkan/gstvkfence.c
++++ b/gst-libs/gst/vulkan/gstvkfence.c
+@@ -42,7 +42,7 @@ GST_DEBUG_CATEGORY (gst_debug_vulkan_fence);
+ static void
+ _init_debug (void)
+ {
+-  static volatile gsize init;
++  static gsize init;
+ 
+   if (g_once_init_enter (&init)) {
+     GST_DEBUG_CATEGORY_INIT (gst_debug_vulkan_fence,
+diff --git a/gst-libs/gst/vulkan/gstvkhandle.c b/gst-libs/gst/vulkan/gstvkhandle.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/vulkan/gstvkhandle.c
++++ b/gst-libs/gst/vulkan/gstvkhandle.c
+@@ -40,7 +40,7 @@ GST_DEBUG_CATEGORY (GST_CAT_DEFAULT);
+ static void
+ init_debug (void)
+ {
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "vulkanhandle", 0,
+diff --git a/gst-libs/gst/vulkan/gstvkimagememory.c b/gst-libs/gst/vulkan/gstvkimagememory.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/vulkan/gstvkimagememory.c
++++ b/gst-libs/gst/vulkan/gstvkimagememory.c
+@@ -705,7 +705,7 @@ gst_vulkan_image_memory_allocator_init (GstVulkanImageMemoryAllocator *
+ void
+ gst_vulkan_image_memory_init_once (void)
+ {
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_VULKAN_IMAGE_MEMORY, "vulkanimagememory",
+diff --git a/gst-libs/gst/vulkan/gstvkimageview.c b/gst-libs/gst/vulkan/gstvkimageview.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/vulkan/gstvkimageview.c
++++ b/gst-libs/gst/vulkan/gstvkimageview.c
+@@ -40,7 +40,7 @@ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFUALT);
+ static void
+ init_debug (void)
+ {
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_VULKAN_IMAGE_VIEW, "vulkanimageview",
+diff --git a/gst-libs/gst/vulkan/gstvkinstance.c b/gst-libs/gst/vulkan/gstvkinstance.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/vulkan/gstvkinstance.c
++++ b/gst-libs/gst/vulkan/gstvkinstance.c
+@@ -96,7 +96,7 @@ struct _GstVulkanInstancePrivate
+ static void
+ _init_debug (void)
+ {
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "vulkaninstance", 0,
+diff --git a/gst-libs/gst/vulkan/gstvkmemory.c b/gst-libs/gst/vulkan/gstvkmemory.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/vulkan/gstvkmemory.c
++++ b/gst-libs/gst/vulkan/gstvkmemory.c
+@@ -309,7 +309,7 @@ gst_vulkan_memory_allocator_init (GstVulkanMemoryAllocator * allocator)
+ void
+ gst_vulkan_memory_init_once (void)
+ {
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_VULKAN_MEMORY, "vulkanmemory", 0,
+diff --git a/gst-libs/gst/vulkan/gstvkphysicaldevice.c b/gst-libs/gst/vulkan/gstvkphysicaldevice.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/vulkan/gstvkphysicaldevice.c
++++ b/gst-libs/gst/vulkan/gstvkphysicaldevice.c
+@@ -71,7 +71,7 @@ struct _GstVulkanPhysicalDevicePrivate
+ static void
+ _init_debug (void)
+ {
+-  static volatile gsize init;
++  static gsize init;
+ 
+   if (g_once_init_enter (&init)) {
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "vulkandevice", 0,
+diff --git a/gst-libs/gst/vulkan/gstvkqueue.c b/gst-libs/gst/vulkan/gstvkqueue.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/vulkan/gstvkqueue.c
++++ b/gst-libs/gst/vulkan/gstvkqueue.c
+@@ -40,7 +40,7 @@ GST_DEBUG_CATEGORY_STATIC (GST_CAT_CONTEXT);
+ static void
+ _init_debug (void)
+ {
+-  static volatile gsize init;
++  static gsize init;
+ 
+   if (g_once_init_enter (&init)) {
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "vulkanqueue", 0, "Vulkan Queue");
+diff --git a/gst-libs/gst/vulkan/gstvktrash.c b/gst-libs/gst/vulkan/gstvktrash.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/vulkan/gstvktrash.c
++++ b/gst-libs/gst/vulkan/gstvktrash.c
+@@ -44,7 +44,7 @@ GST_DEBUG_CATEGORY (gst_debug_vulkan_trash);
+ static void
+ _init_debug (void)
+ {
+-  static volatile gsize init;
++  static gsize init;
+ 
+   if (g_once_init_enter (&init)) {
+     GST_DEBUG_CATEGORY_INIT (gst_debug_vulkan_trash,
+diff --git a/gst-libs/gst/vulkan/gstvkutils.c b/gst-libs/gst/vulkan/gstvkutils.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/vulkan/gstvkutils.c
++++ b/gst-libs/gst/vulkan/gstvkutils.c
+@@ -37,7 +37,7 @@ static void
+ _init_context_debug (void)
+ {
+ #ifndef GST_DISABLE_GST_DEBUG
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_GET (GST_CAT_CONTEXT, "GST_CONTEXT");
+diff --git a/gst-libs/gst/vulkan/gstvkwindow.c b/gst-libs/gst/vulkan/gstvkwindow.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/vulkan/gstvkwindow.c
++++ b/gst-libs/gst/vulkan/gstvkwindow.c
+@@ -138,7 +138,7 @@ gst_vulkan_window_default_close (GstVulkanWindow * window)
+ static void
+ _init_debug (void)
+ {
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "vulkanwindow", 0,
+diff --git a/gst-libs/gst/vulkan/ios/gstvkwindow_ios.m b/gst-libs/gst/vulkan/ios/gstvkwindow_ios.m
+index 1111111..2222222 100644
+--- a/gst-libs/gst/vulkan/ios/gstvkwindow_ios.m
++++ b/gst-libs/gst/vulkan/ios/gstvkwindow_ios.m
+@@ -41,7 +41,7 @@ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
+ static void
+ _init_debug (void)
+ {
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "vulkanwindowios", 0,
+diff --git a/gst-libs/gst/vulkan/vulkan_mkenum.py b/gst-libs/gst/vulkan/vulkan_mkenum.py
+index 1111111..2222222 100644
+--- a/gst-libs/gst/vulkan/vulkan_mkenum.py
++++ b/gst-libs/gst/vulkan/vulkan_mkenum.py
+@@ -22,11 +22,11 @@ c_array = ['--fhead',
+            '--fprod',
+            "\n/* enumerations from \"@basename@\" */",
+            '--vhead',
+-           "GType\n@enum_name@_get_type (void)\n{\n  static volatile gsize g_define_type_id__volatile = 0;\n  if (g_once_init_enter (&g_define_type_id__volatile)) {\n    static const G@Type@Value values[] = {",
++           "GType\n@enum_name@_get_type (void)\n{\n  static gsize static_g_define_type_id = 0;\n  if (g_once_init_enter (&static_g_define_type_id)) {\n    static const G@Type@Value values[] = {",
+            '--vprod',
+            "      { C_@TYPE@ (@VALUENAME@), \"@VALUENAME@\", \"@valuenick@\" },",
+            '--vtail',
+-           "      { 0, NULL, NULL }\n    };\n    GType g_define_type_id = g_@type@_register_static (\"@EnumName@\", values);\n    g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);\n  }\n  return g_define_type_id__volatile;\n}\n"
++           "      { 0, NULL, NULL }\n    };\n    GType g_define_type_id = g_@type@_register_static (\"@EnumName@\", values);\n    g_once_init_leave (&static_g_define_type_id, g_define_type_id);\n  }\n  return static_g_define_type_id;\n}\n"
+ ]
+ 
+ cmd = []
+diff --git a/gst-libs/gst/vulkan/wayland/gstvkwindow_wayland.c b/gst-libs/gst/vulkan/wayland/gstvkwindow_wayland.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/vulkan/wayland/gstvkwindow_wayland.c
++++ b/gst-libs/gst/vulkan/wayland/gstvkwindow_wayland.c
+@@ -37,7 +37,7 @@ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
+ static void
+ _init_debug (void)
+ {
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "vulkanwindowxcb", 0,
+diff --git a/gst-libs/gst/vulkan/xcb/gstvkwindow_xcb.c b/gst-libs/gst/vulkan/xcb/gstvkwindow_xcb.c
+index 1111111..2222222 100644
+--- a/gst-libs/gst/vulkan/xcb/gstvkwindow_xcb.c
++++ b/gst-libs/gst/vulkan/xcb/gstvkwindow_xcb.c
+@@ -39,7 +39,7 @@ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
+ static void
+ _init_debug (void)
+ {
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "vulkanwindowxcb", 0,
+diff --git a/gst/camerabin2/gstcamerabin2.c b/gst/camerabin2/gstcamerabin2.c
+index 1111111..2222222 100644
+--- a/gst/camerabin2/gstcamerabin2.c
++++ b/gst/camerabin2/gstcamerabin2.c
+@@ -263,7 +263,7 @@ gst_cam_flags_get_type (void)
+           "elements", "no-image-conversion"},
+     {0, NULL, NULL}
+   };
+-  static volatile GType id = 0;
++  static GType id = 0;
+ 
+   if (g_once_init_enter ((gsize *) & id)) {
+     GType _id;
+diff --git a/gst/debugutils/gstfakevideosink.c b/gst/debugutils/gstfakevideosink.c
+index 1111111..2222222 100644
+--- a/gst/debugutils/gstfakevideosink.c
++++ b/gst/debugutils/gstfakevideosink.c
+@@ -54,7 +54,7 @@ gst_fake_video_sink_allocation_meta_flags_get_type (void)
+         "overlay-composition"},
+     {0, NULL, NULL}
+   };
+-  static volatile GType id = 0;
++  static GType id = 0;
+ 
+   if (g_once_init_enter ((gsize *) & id)) {
+     GType _id;
+diff --git a/gst/mxf/mxfmetadata.c b/gst/mxf/mxfmetadata.c
+index 1111111..2222222 100644
+--- a/gst/mxf/mxfmetadata.c
++++ b/gst/mxf/mxfmetadata.c
+@@ -6581,7 +6581,7 @@ mxf_descriptive_metadata_new (guint8 scheme, guint32 type,
+ GType
+ mxf_descriptive_metadata_framework_get_type (void)
+ {
+-  static volatile gsize type = 0;
++  static gsize type = 0;
+   if (g_once_init_enter (&type)) {
+     GType _type = 0;
+     static const GTypeInfo info = {
+diff --git a/gst/netsim/gstnetsim.c b/gst/netsim/gstnetsim.c
+index 1111111..2222222 100644
+--- a/gst/netsim/gstnetsim.c
++++ b/gst/netsim/gstnetsim.c
+@@ -38,8 +38,8 @@ GST_DEBUG_CATEGORY (netsim_debug);
+ static GType
+ distribution_get_type (void)
+ {
+-  static volatile gsize g_define_type_id__volatile = 0;
+-  if (g_once_init_enter (&g_define_type_id__volatile)) {
++  static gsize static_g_define_type_id = 0;
++  if (g_once_init_enter (&static_g_define_type_id)) {
+     static const GEnumValue values[] = {
+       {DISTRIBUTION_UNIFORM, "uniform", "uniform"},
+       {DISTRIBUTION_NORMAL, "normal", "normal"},
+@@ -48,9 +48,9 @@ distribution_get_type (void)
+     };
+     GType g_define_type_id =
+         g_enum_register_static ("GstNetSimDistribution", values);
+-    g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
++    g_once_init_leave (&static_g_define_type_id, g_define_type_id);
+   }
+-  return g_define_type_id__volatile;
++  return static_g_define_type_id;
+ }
+ 
+ enum
+diff --git a/gst/rtmp2/rtmp/amf.c b/gst/rtmp2/rtmp/amf.c
+index 1111111..2222222 100644
+--- a/gst/rtmp2/rtmp/amf.c
++++ b/gst/rtmp2/rtmp/amf.c
+@@ -38,7 +38,7 @@ static GBytes *empty_bytes;
+ static void
+ init_static (void)
+ {
+-  static volatile gsize done = 0;
++  static gsize done = 0;
+   if (g_once_init_enter (&done)) {
+     empty_bytes = g_bytes_new_static ("", 0);
+     GST_DEBUG_CATEGORY_INIT (gst_rtmp_amf_debug_category, "rtmpamf", 0,
+diff --git a/gst/rtmp2/rtmp/rtmpchunkstream.c b/gst/rtmp2/rtmp/rtmpchunkstream.c
+index 1111111..2222222 100644
+--- a/gst/rtmp2/rtmp/rtmpchunkstream.c
++++ b/gst/rtmp2/rtmp/rtmpchunkstream.c
+@@ -31,7 +31,7 @@ GST_DEBUG_CATEGORY_STATIC (gst_rtmp_chunk_stream_debug_category);
+ static void
+ init_debug (void)
+ {
+-  static volatile gsize done = 0;
++  static gsize done = 0;
+   if (g_once_init_enter (&done)) {
+     GST_DEBUG_CATEGORY_INIT (gst_rtmp_chunk_stream_debug_category,
+         "rtmpchunkstream", 0, "debug category for rtmp chunk streams");
+diff --git a/gst/rtmp2/rtmp/rtmpclient.c b/gst/rtmp2/rtmp/rtmpclient.c
+index 1111111..2222222 100644
+--- a/gst/rtmp2/rtmp/rtmpclient.c
++++ b/gst/rtmp2/rtmp/rtmpclient.c
+@@ -44,7 +44,7 @@ static void on_publish_or_play_status (const gchar * command_name,
+ static void
+ init_debug (void)
+ {
+-  static volatile gsize done = 0;
++  static gsize done = 0;
+   if (g_once_init_enter (&done)) {
+     GST_DEBUG_CATEGORY_INIT (gst_rtmp_client_debug_category,
+         "rtmpclient", 0, "debug category for the rtmp client");
+@@ -66,7 +66,7 @@ static const gchar *scheme_strings[] = {
+ GType
+ gst_rtmp_scheme_get_type (void)
+ {
+-  static volatile gsize scheme_type = 0;
++  static gsize scheme_type = 0;
+   static const GEnumValue scheme[] = {
+     {GST_RTMP_SCHEME_RTMP, "GST_RTMP_SCHEME_RTMP", "rtmp"},
+     {GST_RTMP_SCHEME_RTMPS, "GST_RTMP_SCHEME_RTMPS", "rtmps"},
+@@ -142,7 +142,7 @@ gst_rtmp_scheme_get_default_port (GstRtmpScheme scheme)
+ GType
+ gst_rtmp_authmod_get_type (void)
+ {
+-  static volatile gsize authmod_type = 0;
++  static gsize authmod_type = 0;
+   static const GEnumValue authmod[] = {
+     {GST_RTMP_AUTHMOD_NONE, "GST_RTMP_AUTHMOD_NONE", "none"},
+     {GST_RTMP_AUTHMOD_AUTO, "GST_RTMP_AUTHMOD_AUTO", "auto"},
+@@ -169,7 +169,7 @@ gst_rtmp_authmod_get_nick (GstRtmpAuthmod value)
+ GType
+ gst_rtmp_stop_commands_get_type (void)
+ {
+-  static volatile gsize stop_commands_type = 0;
++  static gsize stop_commands_type = 0;
+   static const GFlagsValue stop_commands[] = {
+     {GST_RTMP_STOP_COMMANDS_NONE, "No command", "none"},
+     {GST_RTMP_STOP_COMMANDS_FCUNPUBLISH, "FCUnpublish", "fcunpublish"},
+diff --git a/gst/rtmp2/rtmp/rtmphandshake.c b/gst/rtmp2/rtmp/rtmphandshake.c
+index 1111111..2222222 100644
+--- a/gst/rtmp2/rtmp/rtmphandshake.c
++++ b/gst/rtmp2/rtmp/rtmphandshake.c
+@@ -34,7 +34,7 @@ GST_DEBUG_CATEGORY_STATIC (gst_rtmp_handshake_debug_category);
+ static void
+ init_debug (void)
+ {
+-  static volatile gsize done = 0;
++  static gsize done = 0;
+   if (g_once_init_enter (&done)) {
+     GST_DEBUG_CATEGORY_INIT (gst_rtmp_handshake_debug_category, "rtmphandshake",
+         0, "debug category for the rtmp connection handshake");
+diff --git a/gst/rtmp2/rtmp/rtmpmessage.c b/gst/rtmp2/rtmp/rtmpmessage.c
+index 1111111..2222222 100644
+--- a/gst/rtmp2/rtmp/rtmpmessage.c
++++ b/gst/rtmp2/rtmp/rtmpmessage.c
+@@ -146,7 +146,7 @@ gst_rtmp_user_control_type_get_nick (GstRtmpUserControlType type)
+ GType
+ gst_rtmp_meta_api_get_type (void)
+ {
+-  static volatile GType type = 0;
++  static GType type = 0;
+   static const gchar *tags[] = {
+     NULL
+   };
+diff --git a/gst/segmentclip/gstsegmentclip.c b/gst/segmentclip/gstsegmentclip.c
+index 1111111..2222222 100644
+--- a/gst/segmentclip/gstsegmentclip.c
++++ b/gst/segmentclip/gstsegmentclip.c
+@@ -56,7 +56,7 @@ static GstElementClass *parent_class;
+ GType
+ gst_segment_clip_get_type (void)
+ {
+-  static volatile gsize segment_clip_type = 0;
++  static gsize segment_clip_type = 0;
+ 
+   if (g_once_init_enter (&segment_clip_type)) {
+     GType _type;
+diff --git a/sys/androidmedia/gstamcaudiodec.c b/sys/androidmedia/gstamcaudiodec.c
+index 1111111..2222222 100644
+--- a/sys/androidmedia/gstamcaudiodec.c
++++ b/sys/androidmedia/gstamcaudiodec.c
+@@ -90,7 +90,7 @@ static GstAudioDecoderClass *parent_class = NULL;
+ GType
+ gst_amc_audio_dec_get_type (void)
+ {
+-  static volatile gsize type = 0;
++  static gsize type = 0;
+ 
+   if (g_once_init_enter (&type)) {
+     GType _type;
+diff --git a/sys/androidmedia/gstamcvideodec.c b/sys/androidmedia/gstamcvideodec.c
+index 1111111..2222222 100644
+--- a/sys/androidmedia/gstamcvideodec.c
++++ b/sys/androidmedia/gstamcvideodec.c
+@@ -263,7 +263,7 @@ static GstVideoDecoderClass *parent_class = NULL;
+ GType
+ gst_amc_video_dec_get_type (void)
+ {
+-  static volatile gsize type = 0;
++  static gsize type = 0;
+ 
+   if (g_once_init_enter (&type)) {
+     GType _type;
+diff --git a/sys/androidmedia/gstamcvideoenc.c b/sys/androidmedia/gstamcvideoenc.c
+index 1111111..2222222 100644
+--- a/sys/androidmedia/gstamcvideoenc.c
++++ b/sys/androidmedia/gstamcvideoenc.c
+@@ -114,7 +114,7 @@ static GstVideoEncoderClass *parent_class = NULL;
+ GType
+ gst_amc_video_enc_get_type (void)
+ {
+-  static volatile gsize type = 0;
++  static gsize type = 0;
+ 
+   if (g_once_init_enter (&type)) {
+     GType _type;
+diff --git a/sys/applemedia/coremediabuffer.c b/sys/applemedia/coremediabuffer.c
+index 1111111..2222222 100644
+--- a/sys/applemedia/coremediabuffer.c
++++ b/sys/applemedia/coremediabuffer.c
+@@ -93,7 +93,7 @@ gst_core_media_meta_transform (GstBuffer * transbuf, GstCoreMediaMeta * meta,
+ GType
+ gst_core_media_meta_api_get_type (void)
+ {
+-  static volatile GType type;
++  static GType type;
+   static const gchar *tags[] = { "memory", NULL };
+ 
+   if (g_once_init_enter (&type)) {
+diff --git a/sys/applemedia/corevideobuffer.c b/sys/applemedia/corevideobuffer.c
+index 1111111..2222222 100644
+--- a/sys/applemedia/corevideobuffer.c
++++ b/sys/applemedia/corevideobuffer.c
+@@ -80,7 +80,7 @@ gst_core_video_meta_transform (GstBuffer * transbuf, GstCoreVideoMeta * meta,
+ GType
+ gst_core_video_meta_api_get_type (void)
+ {
+-  static volatile GType type;
++  static GType type;
+   static const gchar *tags[] = { "memory", NULL };
+ 
+   if (g_once_init_enter (&type)) {
+diff --git a/sys/applemedia/corevideomemory.c b/sys/applemedia/corevideomemory.c
+index 1111111..2222222 100644
+--- a/sys/applemedia/corevideomemory.c
++++ b/sys/applemedia/corevideomemory.c
+@@ -261,7 +261,7 @@ static GstAppleCoreVideoAllocator *_apple_core_video_allocator;
+ void
+ gst_apple_core_video_memory_init (void)
+ {
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_APPLE_CORE_VIDEO_MEMORY, "corevideomemory",
+diff --git a/sys/applemedia/iosglmemory.c b/sys/applemedia/iosglmemory.c
+index 1111111..2222222 100644
+--- a/sys/applemedia/iosglmemory.c
++++ b/sys/applemedia/iosglmemory.c
+@@ -105,7 +105,7 @@ gst_ios_gl_memory_allocator_init (GstIOSGLMemoryAllocator * allocator)
+ void
+ gst_ios_gl_memory_init (void)
+ {
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_IOS_GL_MEMORY, "iosurface", 0,
+diff --git a/sys/applemedia/iosurfaceglmemory.c b/sys/applemedia/iosurfaceglmemory.c
+index 1111111..2222222 100644
+--- a/sys/applemedia/iosurfaceglmemory.c
++++ b/sys/applemedia/iosurfaceglmemory.c
+@@ -141,7 +141,7 @@ gst_io_surface_gl_memory_allocator_init (GstIOSurfaceGLMemoryAllocator *
+ void
+ gst_ios_surface_gl_memory_init (void)
+ {
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_IO_SURFACE_GL_MEMORY, "iosurfacegl", 0,
+diff --git a/sys/applemedia/iosurfacevulkanmemory.c b/sys/applemedia/iosurfacevulkanmemory.c
+index 1111111..2222222 100644
+--- a/sys/applemedia/iosurfacevulkanmemory.c
++++ b/sys/applemedia/iosurfacevulkanmemory.c
+@@ -114,7 +114,7 @@ gst_io_surface_vulkan_memory_allocator_init (GstIOSurfaceVulkanMemoryAllocator *
+ void
+ gst_io_surface_vulkan_memory_init (void)
+ {
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_IO_SURFACE_VULKAN_MEMORY,
+diff --git a/sys/bluez/gstavdtpsrc.h b/sys/bluez/gstavdtpsrc.h
+index 1111111..2222222 100644
+--- a/sys/bluez/gstavdtpsrc.h
++++ b/sys/bluez/gstavdtpsrc.h
+@@ -59,7 +59,7 @@ struct _GstAvdtpSrc
+ 
+   GstPoll *poll;
+   GstPollFD pfd;
+-  volatile gint unlocked;
++  gint unlocked;
+ 
+   GstClockTime duration;
+ 
+diff --git a/sys/d3d11/gstd3d11window.cpp b/sys/d3d11/gstd3d11window.cpp
+index 1111111..2222222 100644
+--- a/sys/d3d11/gstd3d11window.cpp
++++ b/sys/d3d11/gstd3d11window.cpp
+@@ -73,7 +73,7 @@ static guint d3d11_window_signals[SIGNAL_LAST] = { 0, };
+ GType
+ gst_d3d11_window_fullscreen_toggle_mode_type (void)
+ {
+-  static volatile gsize mode_type = 0;
++  static gsize mode_type = 0;
+ 
+   if (g_once_init_enter (&mode_type)) {
+     static const GFlagsValue mode_types[] = {
+diff --git a/sys/d3d11/gstd3d11window_win32.cpp b/sys/d3d11/gstd3d11window_win32.cpp
+index 1111111..2222222 100644
+--- a/sys/d3d11/gstd3d11window_win32.cpp
++++ b/sys/d3d11/gstd3d11window_win32.cpp
+@@ -80,7 +80,7 @@ struct _GstD3D11WindowWin32
+   gboolean have_swapchain1;
+ 
+   /* atomic */
+-  volatile gint pending_fullscreen_count;
++  gint pending_fullscreen_count;
+ 
+   /* fullscreen related */
+   RECT restore_rect;
+diff --git a/sys/ipcpipeline/gstipcpipelinecomm.c b/sys/ipcpipeline/gstipcpipelinecomm.c
+index 1111111..2222222 100644
+--- a/sys/ipcpipeline/gstipcpipelinecomm.c
++++ b/sys/ipcpipeline/gstipcpipelinecomm.c
+@@ -2318,7 +2318,7 @@ G_STMT_START {                                                          \
+ void
+ gst_ipc_pipeline_comm_plugin_init (void)
+ {
+-  static volatile gsize once = 0;
++  static gsize once = 0;
+ 
+   if (g_once_init_enter (&once)) {
+     GST_DEBUG_CATEGORY_INIT (gst_ipc_pipeline_comm_debug, "ipcpipelinecomm", 0,
+diff --git a/sys/msdk/gstmsdkcontextutil.c b/sys/msdk/gstmsdkcontextutil.c
+index 1111111..2222222 100644
+--- a/sys/msdk/gstmsdkcontextutil.c
++++ b/sys/msdk/gstmsdkcontextutil.c
+@@ -38,7 +38,7 @@ static void
+ _init_context_debug (void)
+ {
+ #ifndef GST_DISABLE_GST_DEBUG
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_GET (GST_CAT_CONTEXT, "GST_CONTEXT");
+diff --git a/sys/nvcodec/gstcudacontext.c b/sys/nvcodec/gstcudacontext.c
+index 1111111..2222222 100644
+--- a/sys/nvcodec/gstcudacontext.c
++++ b/sys/nvcodec/gstcudacontext.c
+@@ -121,7 +121,7 @@ gst_cuda_context_get_property (GObject * object, guint prop_id,
+ static void
+ gst_cuda_context_constructed (GObject * object)
+ {
+-  static volatile gsize once = 0;
++  static gsize once = 0;
+   GstCudaContext *context = GST_CUDA_CONTEXT (object);
+   GstCudaContextPrivate *priv = context->priv;
+   CUcontext cuda_ctx, old_ctx;
+diff --git a/sys/nvcodec/gstcudautils.c b/sys/nvcodec/gstcudautils.c
+index 1111111..2222222 100644
+--- a/sys/nvcodec/gstcudautils.c
++++ b/sys/nvcodec/gstcudautils.c
+@@ -36,7 +36,7 @@ GST_DEBUG_CATEGORY_STATIC (GST_CAT_CONTEXT);
+ static void
+ _init_debug (void)
+ {
+-  static volatile gsize once_init = 0;
++  static gsize once_init = 0;
+ 
+   if (g_once_init_enter (&once_init)) {
+ 
+@@ -354,7 +354,7 @@ static GQuark gst_cuda_quark_table[GST_CUDA_QUARK_MAX];
+ static void
+ init_cuda_quark_once (void)
+ {
+-  static volatile gsize once_init = 0;
++  static gsize once_init = 0;
+ 
+   if (g_once_init_enter (&once_init)) {
+     gint i;
+diff --git a/sys/opensles/openslescommon.c b/sys/opensles/openslescommon.c
+index 1111111..2222222 100644
+--- a/sys/opensles/openslescommon.c
++++ b/sys/opensles/openslescommon.c
+@@ -42,7 +42,7 @@ gst_opensles_recording_preset_get_type (void)
+         "voice-communication"},
+     {0, NULL, NULL}
+   };
+-  static volatile GType id = 0;
++  static GType id = 0;
+ 
+   if (g_once_init_enter ((gsize *) & id)) {
+     GType _id;
+@@ -100,7 +100,7 @@ gst_opensles_stream_type_get_type (void)
+         "GST_OPENSLES_STREAM_TYPE_NONE", "none"},
+     {0, NULL, NULL}
+   };
+-  static volatile GType id = 0;
++  static GType id = 0;
+ 
+   if (g_once_init_enter ((gsize *) & id)) {
+     GType _id;
+diff --git a/sys/va/gstvaallocator.c b/sys/va/gstvaallocator.c
+index 1111111..2222222 100644
+--- a/sys/va/gstvaallocator.c
++++ b/sys/va/gstvaallocator.c
+@@ -63,7 +63,7 @@ static void
+ _init_debug_category (void)
+ {
+ #ifndef GST_DISABLE_GST_DEBUG
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_INIT (gst_va_memory_debug, "vamemory", 0, "VA memory");
+@@ -573,7 +573,7 @@ struct _GstVaMemory
+   gpointer mapped_data;
+ 
+   GstMapFlags prev_mapflags;
+-  volatile gint map_count;
++  gint map_count;
+ 
+   gboolean is_derived;
+   gboolean is_dirty;
+diff --git a/sys/va/gstvautils.c b/sys/va/gstvautils.c
+index 1111111..2222222 100644
+--- a/sys/va/gstvautils.c
++++ b/sys/va/gstvautils.c
+@@ -32,7 +32,7 @@ static void
+ _init_context_debug (void)
+ {
+ #ifndef GST_DISABLE_GST_DEBUG
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+ 
+   if (g_once_init_enter (&_init)) {
+     GST_DEBUG_CATEGORY_GET (GST_CAT_CONTEXT, "GST_CONTEXT");
+diff --git a/sys/wasapi/gstwasapiutil.c b/sys/wasapi/gstwasapiutil.c
+index 1111111..2222222 100644
+--- a/sys/wasapi/gstwasapiutil.c
++++ b/sys/wasapi/gstwasapiutil.c
+@@ -144,7 +144,7 @@ gst_wasapi_device_role_get_type (void)
+     {GST_WASAPI_DEVICE_ROLE_COMMS, "Voice communications", "comms"},
+     {0, NULL, NULL}
+   };
+-  static volatile GType id = 0;
++  static GType id = 0;
+ 
+   if (g_once_init_enter ((gsize *) & id)) {
+     GType _id;
+diff --git a/sys/wasapi2/gstwasapi2client.cpp b/sys/wasapi2/gstwasapi2client.cpp
+index 1111111..2222222 100644
+--- a/sys/wasapi2/gstwasapi2client.cpp
++++ b/sys/wasapi2/gstwasapi2client.cpp
+@@ -277,7 +277,7 @@ struct _GstWasapi2Client
+ GType
+ gst_wasapi2_client_device_class_get_type (void)
+ {
+-  static volatile GType class_type = 0;
++  static GType class_type = 0;
+   static const GEnumValue types[] = {
+     {GST_WASAPI2_CLIENT_DEVICE_CLASS_CAPTURE, "Capture", "capture"},
+     {GST_WASAPI2_CLIENT_DEVICE_CLASS_RENDER, "Render", "render"},
+diff --git a/sys/winscreencap/dxgicapture.c b/sys/winscreencap/dxgicapture.c
+index 1111111..2222222 100644
+--- a/sys/winscreencap/dxgicapture.c
++++ b/sys/winscreencap/dxgicapture.c
+@@ -166,7 +166,7 @@ static pD3DCompile GstD3DCompileFunc = NULL;
+ gboolean
+ gst_dxgicap_shader_init (void)
+ {
+-  static volatile gsize _init = 0;
++  static gsize _init = 0;
+   static const gchar *d3d_compiler_names[] = {
+     "d3dcompiler_47.dll",
+     "d3dcompiler_46.dll",
+diff --git a/tests/check/libs/vkimage.c b/tests/check/libs/vkimage.c
+index 1111111..2222222 100644
+--- a/tests/check/libs/vkimage.c
++++ b/tests/check/libs/vkimage.c
+@@ -149,7 +149,7 @@ struct view_stress
+   GMutex lock;
+   GCond cond;
+   gboolean ready;
+-  volatile int n_ops;
++  int n_ops;
+   GQueue *memories;
+   GstHarnessThread *threads[N_THREADS];
+ };
+@@ -189,7 +189,7 @@ GST_START_TEST (test_image_view_stress)
+   g_mutex_init (&stress.lock);
+   g_cond_init (&stress.cond);
+   stress.ready = FALSE;
+-  stress.n_ops = 0;
++  g_atomic_int_set (&stress.n_ops, 0);
+   stress.memories = g_queue_new ();
+ 
+   gst_video_info_set_format (&v_info, GST_VIDEO_FORMAT_RGBA, 16, 16);
