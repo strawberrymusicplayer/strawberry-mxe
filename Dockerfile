@@ -1,6 +1,5 @@
 FROM opensuse/tumbleweed
 
-RUN zypper -n ar -c -f -n 'repo-devel-tools-building' https://download.opensuse.org/repositories/devel:tools:building/openSUSE_Tumbleweed/ repo-devel-tools-building
 RUN zypper -n ar -c -f -n 'repo-nsis' https://download.opensuse.org/repositories/windows:/mingw:/win32/openSUSE_Tumbleweed/ repo-nsis
 
 RUN zypper -n --gpg-auto-import-keys ref
