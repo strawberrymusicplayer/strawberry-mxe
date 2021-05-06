@@ -1,14 +1,14 @@
-FROM opensuse/leap:15.2
+FROM opensuse/tumbleweed
 
-RUN zypper -n ar -c -f -n 'repo-nsis' https://download.opensuse.org/repositories/windows:/mingw:/win32/openSUSE_Leap_15.2/ repo-nsis
-RUN zypper -n ar -c -f -n 'repo-devel-tools-building' https://download.opensuse.org/repositories/devel:tools:building/openSUSE_Leap_15.2/ repo-devel-tools-building
+RUN zypper -n ar -c -f -n 'repo-devel-tools-building' https://download.opensuse.org/repositories/devel:tools:building/openSUSE_Tumbleweed/ repo-devel-tools-building
+RUN zypper -n ar -c -f -n 'repo-nsis' https://download.opensuse.org/repositories/windows:/mingw:/win32/openSUSE_Tumbleweed/ repo-nsis
 
-RUN zypper --non-interactive --gpg-auto-import-keys ref
-RUN zypper --non-interactive --gpg-auto-import-keys up -l -y
+RUN zypper -n --gpg-auto-import-keys ref
+RUN zypper -n --gpg-auto-import-keys dup -l -y
 
-RUN zypper --non-interactive --gpg-auto-import-keys install \
+RUN zypper -n --gpg-auto-import-keys install \
     glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc-c++ \
-    git make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool \
+    shadow git make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool \
     which patch wget curl gperf tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip \
     gettext-tools gtk-doc ruby scons bison flex diffutils orc \
     linux-glibc-devel glibc-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel \
