@@ -16,6 +16,7 @@ define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://ftp.gnu.org/gnu/gcc/?C=M;O=D' | \
     $(SED) -n 's,.*<a href="gcc-\([0-9][^"]*\)/".*,\1,p' | \
     grep -v '10.3.0' | \
+    grep -v '11.1.0' | \
     $(SORT) -V | \
     tail -1
 endef
@@ -39,7 +40,7 @@ define $(PKG)_CONFIGURE
         --disable-multilib \
         --without-x \
         --disable-win32-registry \
-        --enable-threads=$(MXE_GCC_THREADS) \
+        --enable-threads=$(if $(POSIX_THREADS),posix,win32) \
         $(MXE_GCC_EXCEPTION_OPTS) \
         --enable-default-ssp \
         --enable-libgomp \
