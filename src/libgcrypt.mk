@@ -34,7 +34,9 @@ define $(PKG)_MAKE
      echo 'Version: $($(PKG)_VERSION)'; \
      echo 'Description: $(PKG)'; \
      echo 'Libs: ' "`$(TARGET)-libgcrypt-config --libs`"; \
-     echo 'Cflags: ' "`$(TARGET)-libgcrypt-config --cflags`";) \
+     echo 'Cflags: ' "`$(TARGET)-libgcrypt-config --cflags`"; \
+     echo 'Libs: -lws2_32'; \
+     ) \
      > '$(PREFIX)/$(TARGET)/lib/pkgconfig/$(PKG).pc'
 
     '$(TARGET)-gcc' \
