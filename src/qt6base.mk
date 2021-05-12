@@ -23,6 +23,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
+    mkdir -p '$(PREFIX)/$(TARGET)/qt6/bin/'
     cp '$(PREFIX)/$(BUILD)/qt6/libexec/qvkgen' '$(PREFIX)/$(TARGET)/qt6/bin/qvkgen.exe'
     OPENSSL_LIBS="`'$(TARGET)-pkg-config' --libs-only-l openssl`" \
     PKG_CONFIG="${TARGET}-pkg-config" \
