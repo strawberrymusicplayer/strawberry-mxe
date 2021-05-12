@@ -4,12 +4,11 @@ PKG             := isl
 $(PKG)_WEBSITE  := https://isl.gforge.inria.fr/
 $(PKG)_DESCR    := Integer Set Library
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 0.24
+$(PKG)_VERSION  := 0.21
 $(PKG)_CHECKSUM := fcf78dd9656c10eb8cf9fbd5f59a0b6b01386205fe1934b3b287a0a1898145c0
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_URL      := http://isl.gforge.inria.fr/$($(PKG)_FILE)
-$(PKG)_URL_2    := https://gcc.gnu.org/pub/gcc/infrastructure/$($(PKG)_FILE)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS     := cc gmp
 
