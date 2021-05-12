@@ -4,7 +4,7 @@ PKG             := isl
 $(PKG)_WEBSITE  := https://isl.gforge.inria.fr/
 $(PKG)_DESCR    := Integer Set Library
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 0.21
+$(PKG)_VERSION  := 0.24
 $(PKG)_CHECKSUM := fcf78dd9656c10eb8cf9fbd5f59a0b6b01386205fe1934b3b287a0a1898145c0
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.bz2
@@ -14,9 +14,6 @@ $(PKG)_DEPS     := cc gmp
 
 $(PKG)_DEPS_$(BUILD) := gmp
 
-# stick to tested versions from gcc
-# while in gcc4 series specific versions are required:
-# https://web.archive.org/web/20141031011459/https://gcc.gnu.org/install/prerequisites.html
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://isl.gforge.inria.fr/' | \
     $(SED) -n 's,.*isl-\([0-9][^>]*\)\.tar.*,\1,p' | \
