@@ -4,25 +4,26 @@ PKG             := qt6base
 $(PKG)_WEBSITE  := https://www.qt.io/
 $(PKG)_DESCR    := Qt 6 Base
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 6.0.4
-$(PKG)_CHECKSUM := c42757932d7cb264a043cc2a0eed30774d938f63db67bfff11d8e319c0c8799a
+$(PKG)_VERSION  := 6.1.0
+$(PKG)_CHECKSUM := f7af3c87e96051d09b5abce6c88277c33031bef241ebfe1db4106d33ed0814c4
 $(PKG)_FILE     := qtbase-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_SUBDIR   := qtbase-everywhere-src-$($(PKG)_VERSION)
-$(PKG)_URL      := https://download.qt.io/official_releases/qt/6.0/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
+$(PKG)_URL      := https://download.qt.io/official_releases/qt/6.1/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS     := cc openssl pcre2 fontconfig freetype harfbuzz glib jpeg libpng zlib zstd sqlite mesa $(BUILD)~$(PKG) $(BUILD)~qt6tools
 $(PKG)_DEPS_$(BUILD) :=
 $(PKG)_OO_DEPS_$(BUILD) += qt6-conf ninja
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- https://download.qt.io/official_releases/qt/6.0/ | \
-    $(SED) -n 's,.*href="\(6\.0\.[^/]*\)/".*,\1,p' | \
+    $(WGET) -q -O- https://download.qt.io/official_releases/qt/6.1/ | \
+    $(SED) -n 's,.*href="\(6\.1\.[^/]*\)/".*,\1,p' | \
     grep -iv -- '-rc' | \
     sort |
     tail -1
 endef
 
 define $(PKG)_BUILD
+    cp '$(PREFIX)/$(BUILD)/qt6/libexec/qvkgen' '$(PREFIX)/$(TARGET)/qt6/bin/qvkgen.exe'
     OPENSSL_LIBS="`'$(TARGET)-pkg-config' --libs-only-l openssl`" \
     PKG_CONFIG="${TARGET}-pkg-config" \
     PKG_CONFIG_SYSROOT_DIR="/" \
@@ -70,7 +71,6 @@ define $(PKG)_BUILD
         -DINPUT_harfbuzz=system
 
     cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
-    rm -rf '$(PREFIX)/$(TARGET)/qt6'
     cmake --install '$(BUILD_DIR)'
 
 endef
@@ -90,6 +90,5 @@ define $(PKG)_BUILD_$(BUILD)
         -make tools
 
     '$(TARGET)-cmake' --build '$(BUILD_DIR)' -j '$(JOBS)'
-    rm -rf '$(PREFIX)/$(TARGET)/qt6'
     '$(TARGET)-cmake' --install '$(BUILD_DIR)'
 endef
