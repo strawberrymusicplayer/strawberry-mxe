@@ -1,0 +1,59 @@
+From 2bae53ddcfa35e5861ff9888fdc535b5c0792565 Mon Sep 17 00:00:00 2001
+From: promero <promero@mathworks.com>
+Date: Wed, 5 May 2021 10:04:02 +0200
+Subject: [PATCH] Fixes #8487.
+
+---
+ src/google/protobuf/io/coded_stream.h |  2 ++
+ src/google/protobuf/stubs/port.h      | 18 ++++++++++--------
+ 2 files changed, 12 insertions(+), 8 deletions(-)
+
+diff --git a/src/google/protobuf/io/coded_stream.h b/src/google/protobuf/io/coded_stream.h
+index b6c11d27a2..ac90f2eb85 100644
+--- a/src/google/protobuf/io/coded_stream.h
++++ b/src/google/protobuf/io/coded_stream.h
+@@ -135,6 +135,8 @@
+ #include <machine/endian.h>  // __BYTE_ORDER
+ #elif defined(__FreeBSD__)
+ #include <sys/endian.h>  // __BYTE_ORDER
++#elif defined(__QNXNTO__)
++#include <gulliver.h> // __BYTE_ORDER
+ #else
+ #include <endian.h>  // __BYTE_ORDER
+ #endif
+diff --git a/src/google/protobuf/stubs/port.h b/src/google/protobuf/stubs/port.h
+index eec96faf38..cd4538629c 100644
+--- a/src/google/protobuf/stubs/port.h
++++ b/src/google/protobuf/stubs/port.h
+@@ -61,6 +61,8 @@
+ #include <machine/endian.h>  // __BYTE_ORDER
+ #elif defined(__FreeBSD__)
+ #include <sys/endian.h>  // __BYTE_ORDER
++#elif defined(__QNXNTO__)
++#include <gulliver.h> // __BYTE_ORDER
+ #else
+ #include <endian.h>  // __BYTE_ORDER
+ #endif
+@@ -263,14 +265,14 @@ static inline uint32 bswap_32(uint32 x) {
+ 
+ #ifndef bswap_64
+ static inline uint64 bswap_64(uint64 x) {
+-  return (((x & uint64_t{0xFFu)) << 56) |
+-          ((x & uint64_t{0xFF00u)) << 40) |
+-          ((x & uint64_t{0xFF0000u)) << 24) |
+-          ((x & uint64_t{0xFF000000u)) << 8) |
+-          ((x & uint64_t{0xFF00000000u)) >> 8) |
+-          ((x & uint64_t{0xFF0000000000u)) >> 24) |
+-          ((x & uint64_t{0xFF000000000000u)) >> 40) |
+-          ((x & uint64_t{0xFF00000000000000u)) >> 56));
++  return (((x & uint64_t(0xFFu)) << 56) |
++          ((x & uint64_t(0xFF00u)) << 40) |
++          ((x & uint64_t(0xFF0000u)) << 24) |
++          ((x & uint64_t(0xFF000000u)) << 8) |
++          ((x & uint64_t(0xFF00000000u)) >> 8) |
++          ((x & uint64_t(0xFF0000000000u)) >> 24) |
++          ((x & uint64_t(0xFF000000000000u)) >> 40) |
++          ((x & uint64_t(0xFF00000000000000u)) >> 56));
+ }
+ #define bswap_64(x) bswap_64(x)
+ #endif
