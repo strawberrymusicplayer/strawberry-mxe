@@ -10,18 +10,8 @@ $(PKG)_GH_CONF  := dlfcn-win32/dlfcn-win32/tags, v
 $(PKG)_DEPS     := cc
 
 define $(PKG)_BUILD
-    # can't use $(MXE_CONFIGURE_OPTS), handwritten ./configure
-    #   - rejects unknown options
-    #   - no support for out-of-source build
-    cd '$(SOURCE_DIR)' && ./configure \
-        --prefix='$(PREFIX)/$(TARGET)' \
-        --cross-prefix='$(TARGET)-' \
-        $(if $(BUILD_STATIC), \
-            --enable-static --disable-shared , \
-            --disable-static --enable-shared )
-    $(MAKE) -C '$(SOURCE_DIR)' -j '$(JOBS)'
-    $(MAKE) -C '$(SOURCE_DIR)' -j 1 install
-    #$(MAKE) -C '$(SOURCE_DIR)' -j '$(JOBS)' test.exe testdll.dll
+    cd '$(1)' && '$(TARGET)-cmake'
+    $(MAKE) -C '$(1)' -j 1 install
 
     # create pkg-config file - mostly for psapi dependency
     mkdir -p '$(PREFIX)/$(TARGET)/lib/pkgconfig'
