@@ -1,0 +1,222 @@
+From 9211d04730da7495fd2584e6768b73c3f86aba00 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?M=C3=A5rten=20Nordheim?= <marten.nordheim@qt.io>
+Date: Thu, 25 Mar 2021 13:58:00 +0100
+Subject: QSemaphore: move suspect increment of waiter count
+
+We might return false a few lines down, without decreasing the count.
+
+Change-Id: I0a90c07f279860987e41539e9d5f3b5d2cb15207
+Reviewed-by: Thiago Macieira <thiago.macieira@intel.com>
+---
+ src/corelib/thread/qsemaphore.cpp | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+(limited to 'src/corelib/thread/qsemaphore.cpp')
+
+diff --git a/src/corelib/thread/qsemaphore.cpp b/src/corelib/thread/qsemaphore.cpp
+index ee4cee5281..5111d80ac6 100644
+--- a/src/corelib/thread/qsemaphore.cpp
++++ b/src/corelib/thread/qsemaphore.cpp
+@@ -246,13 +246,13 @@ template <bool IsTimed> bool futexSemaphoreTryAcquire(QBasicAtomicInteger<quintp
+     // we need to wait
+     quintptr oneWaiter = quintptr(Q_UINT64_C(1) << 32); // zero on 32-bit
+     if (futexHasWaiterCount) {
+-        // increase the waiter count
+-        u.fetchAndAddRelaxed(oneWaiter);
+-
+         // We don't use the fetched value from above so futexWait() fails if
+         // it changed after the testAndSetOrdered above.
+         if ((quint64(curValue) >> 32) == 0x7fffffff)
+             return false;       // overflow!
++
++        // increase the waiter count
++        u.fetchAndAddRelaxed(oneWaiter);
+         curValue += oneWaiter;
+ 
+         // Also adjust nn to subtract oneWaiter when we succeed in acquiring.
+-- 
+cgit v1.2.1
+
+From 587e3bb0ba6def90906f1f6b8c60c8f33ec88571 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?M=C3=A5rten=20Nordheim?= <marten.nordheim@qt.io>
+Date: Thu, 25 Mar 2021 17:26:37 +0100
+Subject: QSemaphore: fix missed wakes with futex on Windows
+
+We do this by making the 'futexNeedsWakeAllBit' to be part of both the
+expectedValue and the pointer we're waiting on.
+This makes sense since having the 'futexNeedsWakeAllBit' set is a
+requirement for starting a sleep. Thus we should condition
+sleeping on whether or not another thread unset it.
+
+Since the futexNeedsWakeAllBit is in the "topmost" bit of the pointer we
+wait on we'll need to use the full 64-bits on 64-bit platforms.
+
+This isn't enabled (nor was it an issue) for configurations with
+'futexHasWaiterCount' since that works differently, and waits for the
+high 32 bits.
+
+Fixes: QTBUG-92148
+Change-Id: I424c605f0120ea5e647c5bb19b00ff35eaf1608a
+Reviewed-by: Thiago Macieira <thiago.macieira@intel.com>
+---
+ src/corelib/thread/qsemaphore.cpp | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
+
+(limited to 'src/corelib/thread/qsemaphore.cpp')
+
+diff --git a/src/corelib/thread/qsemaphore.cpp b/src/corelib/thread/qsemaphore.cpp
+index 5111d80ac6..45983d47ab 100644
+--- a/src/corelib/thread/qsemaphore.cpp
++++ b/src/corelib/thread/qsemaphore.cpp
+@@ -200,14 +200,21 @@ futexSemaphoreTryAcquire_loop(QBasicAtomicInteger<quintptr> &u, quintptr curValu
+ 
+         // indicate we're waiting
+ start_wait:
+-        auto ptr = futexLow32(&u);
++        auto ptr = [&u]() {
++            if constexpr (futexHasWaiterCount)
++                return futexLow32(&u);
++            else
++                return &u;
++        }();
+         if (n > 1 || !futexHasWaiterCount) {
+             u.fetchAndOrRelaxed(futexNeedsWakeAllBit);
+             curValue |= futexNeedsWakeAllBit;
+-            if (n > 1 && futexHasWaiterCount) {
+-                ptr = futexHigh32(&u);
+-                //curValue >>= 32;  // but this is UB in 32-bit, so roundabout:
+-                curValue = quint64(curValue) >> 32;
++            if constexpr (futexHasWaiterCount) {
++                if (n > 1) {
++                    ptr = futexHigh32(&u);
++                    // curValue >>= 32;  // but this is UB in 32-bit, so roundabout:
++                    curValue = quint64(curValue) >> 32;
++                }
+             }
+         }
+ 
+@@ -397,7 +404,7 @@ void QSemaphore::release(int n)
+                 futexWakeOp(*futexLow32(&u), n, INT_MAX, *futexHigh32(&u), FUTEX_OP(op, oparg, cmp, cmparg));
+             }
+ #else
+-            // Unset the bit and wake everyone. There are two possibibilies
++            // Unset the bit and wake everyone. There are two possibilities
+             // under which a thread can set the bit between the AND and the
+             // futexWake:
+             // 1) it did see the new counter value, but it wasn't enough for
+-- 
+cgit v1.2.1
+
+From d58d8d2aeae4ab18dde060b6ca8cee1477eaa83b Mon Sep 17 00:00:00 2001
+From: Allan Sandfeld Jensen <allan.jensen@qt.io>
+Date: Fri, 9 Apr 2021 11:44:28 +0200
+Subject: Fix futexNeedsWake() on 64-bit systems
+
+It was mistaking semaphore values over 0 as waiters, regardless of
+actual waiters.
+
+Change-Id: Icebd01592ca8bdc1687a29dc569e3b630a262606
+Reviewed-by: Thiago Macieira <thiago.macieira@intel.com>
+(cherry picked from commit c2348e2c7a4d92be21714deffed9c7a611e1b792)
+Reviewed-by: Qt Cherry-pick Bot <cherrypick_bot@qt-project.org>
+---
+ src/corelib/thread/qsemaphore.cpp | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+(limited to 'src/corelib/thread/qsemaphore.cpp')
+
+diff --git a/src/corelib/thread/qsemaphore.cpp b/src/corelib/thread/qsemaphore.cpp
+index ee4cee5281..a1eb020f77 100644
+--- a/src/corelib/thread/qsemaphore.cpp
++++ b/src/corelib/thread/qsemaphore.cpp
+@@ -150,10 +150,11 @@ static int futexAvailCounter(quintptr v)
+ 
+ static bool futexNeedsWake(quintptr v)
+ {
+-    // If we're counting waiters, the number of waiters is stored in the low 31
+-    // bits of the high word (that is, bits 32-62). If we're not, then we use
+-    // bit 31 to indicate anyone is waiting. Either way, if any bit 31 or above
+-    // is set, there are waiters.
++    // If we're counting waiters, the number of waiters plus value is stored in the
++    // low 31 bits of the high word (that is, bits 32-62). If we're not, then we only
++    // use futexNeedsWakeAllBit to indicate anyone is waiting.
++    if constexpr (futexHasWaiterCount)
++        return (v >> 32) > (unsigned(v));
+     return v >> 31;
+ }
+ 
+-- 
+cgit v1.2.1
+
+diff --git a/src/corelib/thread/qsemaphore.cpp b/src/corelib/thread/qsemaphore.cpp
+index 21385225..922d1109 100644
+--- a/src/corelib/thread/qsemaphore.cpp
++++ b/src/corelib/thread/qsemaphore.cpp
+@@ -365,44 +365,28 @@ void QSemaphore::release(int n)
+         quintptr prevValue = u.fetchAndAddRelease(nn);
+         if (futexNeedsWake(prevValue)) {
+ #ifdef FUTEX_OP
+-            if (!futexHasWaiterCount) {
+-                /*
+-                   On 32-bit systems, all waiters are waiting on the same address,
+-                   so we'll wake them all and ask the kernel to clear the high bit.
+-
+-                   atomic {
+-                      int oldval = u;
+-                      u = oldval & ~(1 << 31);
+-                      futexWake(u, INT_MAX);
+-                      if (oldval == 0)       // impossible condition
+-                          futexWake(u, INT_MAX);
+-                   }
+-                */
+-                quint32 op = FUTEX_OP_ANDN | FUTEX_OP_OPARG_SHIFT;
+-                quint32 oparg = 31;
+-                quint32 cmp = FUTEX_OP_CMP_EQ;
+-                quint32 cmparg = 0;
+-                futexWakeOp(u, INT_MAX, INT_MAX, u, FUTEX_OP(op, oparg, cmp, cmparg));
+-            } else {
++            if (futexHasWaiterCount) {
+                 /*
+                    On 64-bit systems, the single-token waiters wait on the low half
+                    and the multi-token waiters wait on the upper half. So we ask
+                    the kernel to wake up n single-token waiters and all multi-token
+-                   waiters (if any), then clear the multi-token wait bit.
++                   waiters (if any), and clear the multi-token wait bit.
+ 
+                    atomic {
+                       int oldval = *upper;
+-                      *upper = oldval & ~(1 << 31);
++                      *upper = oldval | 0;
+                       futexWake(lower, n);
+-                      if (oldval < 0)   // sign bit set
++                      if (oldval > 0)   // always true
+                           futexWake(upper, INT_MAX);
+                    }
+                 */
+-                quint32 op = FUTEX_OP_ANDN | FUTEX_OP_OPARG_SHIFT;
+-                quint32 oparg = 31;
+-                quint32 cmp = FUTEX_OP_CMP_LT;
++                quint32 op = FUTEX_OP_OR;
++                quint32 oparg = 0;
++                quint32 cmp = FUTEX_OP_CMP_GT;
+                 quint32 cmparg = 0;
++                u.fetchAndAndRelease(futexNeedsWakeAllBit - 1);
+                 futexWakeOp(*futexLow32(&u), n, INT_MAX, *futexHigh32(&u), FUTEX_OP(op, oparg, cmp, cmparg));
++                return;
+             }
+ #else
+             // Unset the bit and wake everyone. There are two possibilities
+@@ -413,7 +397,12 @@ void QSemaphore::release(int n)
+             // 2) it did not see the new counter value, in which case its
+             //    futexWait will fail.
+             u.fetchAndAndRelease(futexNeedsWakeAllBit - 1);
+-            futexWakeAll(u);
++            if (futexHasWaiterCount) {
++                futexWakeAll(*futexLow32(&u));
++                futexWakeAll(*futexHigh32(&u));
++            } else {
++                futexWakeAll(u);
++            }
+ #endif
+         }
+         return;
