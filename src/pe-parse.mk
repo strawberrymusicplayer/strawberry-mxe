@@ -16,14 +16,13 @@ $(PKG)_BUILD_$(BUILD) :=
 
 define $(PKG)_BUILD
     # build and install the cross-library
-    cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
-        -DBUILD_COMMAND_LINE_TOOLS=OFF
+    cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' -DBUILD_COMMAND_LINE_TOOLS=OFF
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 
     # test cmake find_package() example
-    #mkdir '$(BUILD_DIR).cmake'
-    #cd '$(BUILD_DIR).cmake' && $(TARGET)-cmake '$(SOURCE_DIR)/examples/peaddrconv'
-    #$(MAKE) -C '$(BUILD_DIR).cmake' -j '$(JOBS)'
-    #$(INSTALL) -m755 '$(BUILD_DIR).cmake/peaddrconv.exe' '$(PREFIX)/$(TARGET)/bin/test-$(PKG).exe'
+    mkdir '$(BUILD_DIR).cmake'
+    cd '$(BUILD_DIR).cmake' && $(TARGET)-cmake '$(SOURCE_DIR)/examples/peaddrconv'
+    $(MAKE) -C '$(BUILD_DIR).cmake' -j '$(JOBS)'
+    $(INSTALL) -m755 '$(BUILD_DIR).cmake/peaddrconv.exe' '$(PREFIX)/$(TARGET)/bin/test-$(PKG).exe'
 endef
