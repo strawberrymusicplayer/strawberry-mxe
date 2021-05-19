@@ -22,8 +22,8 @@ define $(PKG)_BUILD
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 
     # test cmake find_package() example
-    mkdir '$(BUILD_DIR).cmake'
-    cd '$(BUILD_DIR).cmake' && $(TARGET)-cmake '$(SOURCE_DIR)/examples/peaddrconv'
-    $(MAKE) -C '$(BUILD_DIR).cmake' -j '$(JOBS)'
+    #mkdir '$(BUILD_DIR).cmake'
+    #cd '$(BUILD_DIR).cmake' && $(TARGET)-cmake '$(SOURCE_DIR)/examples/peaddrconv'
+    #$(MAKE) -C '$(BUILD_DIR).cmake' -j '$(JOBS)'
     #$(INSTALL) -m755 '$(BUILD_DIR).cmake/peaddrconv.exe' '$(PREFIX)/$(TARGET)/bin/test-$(PKG).exe'
 endef
