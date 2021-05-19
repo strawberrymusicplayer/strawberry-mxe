@@ -4,20 +4,19 @@ Contains ad hoc patches for cross building.
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: "jonas@jkvinge.net" <jonas@jkvinge.net>
-Date: Wed, 19 May 2021 20:14:40 +0200
-Subject: [PATCH 1/1] Add -Wno-redundant-decls
+Date: Wed, 19 May 2021 20:25:06 +0200
+Subject: [PATCH 1/1] Remove intrin.h include
 
 
-diff --git a/cmake/compilation_flags.cmake b/cmake/compilation_flags.cmake
+diff --git a/pe-parser-library/src/buffer.cpp b/pe-parser-library/src/buffer.cpp
 index 1111111..2222222 100644
---- a/cmake/compilation_flags.cmake
-+++ b/cmake/compilation_flags.cmake
-@@ -25,7 +25,7 @@ else ()
+--- a/pe-parser-library/src/buffer.cpp
++++ b/pe-parser-library/src/buffer.cpp
+@@ -33,7 +33,6 @@ THE SOFTWARE.
+ #define WIN32_LEAN_AND_MEAN
+ #define VC_EXTRALEAN
  
-     -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization
-     -Wformat=2 -Winit-self -Wlong-long -Wmissing-declarations -Wmissing-include-dirs -Wcomment
--    -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion
-+    -Wold-style-cast -Woverloaded-virtual -Wno-redundant-decls -Wshadow -Wsign-conversion
-     -Wsign-promo -Wstrict-overflow=5 -Wswitch-default -Wundef -Werror -Wunused -Wuninitialized
-     -Wno-missing-declarations -Wno-strict-overflow
-   )
+-#include <intrin.h>
+ #include <windows.h>
+ #else
+ #include <fcntl.h>
