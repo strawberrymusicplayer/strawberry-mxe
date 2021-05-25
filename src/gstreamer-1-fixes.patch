@@ -16,7 +16,7 @@ index 1111111..2222222 100644
  #  include "config.h"
  #endif
  
-+#define _WIN32_WINNT 0x0600
++#define _WIN32_WINNT 0x0601
 +
  #include <gst/gst.h>
  #include "gstfilesrc.h"
