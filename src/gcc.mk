@@ -66,6 +66,7 @@ define $(PKG)_BUILD_mingw-w64
         --enable-idl \
         --enable-secure-api \
         --with-default-msvcrt=msvcrt \
+        --with-default-win32-winnt=0x0601 \
         $(mingw-w64-headers_CONFIGURE_OPTS)
     $(MAKE) -C '$(BUILD_DIR).headers' install
 
@@ -80,6 +81,7 @@ define $(PKG)_BUILD_mingw-w64
         --host='$(TARGET)' \
         --prefix='$(PREFIX)/$(TARGET)' \
         --with-default-msvcrt=msvcrt \
+        --with-default-win32-winnt=0x0601 \
         @gcc-crt-config-opts@ \
         $(mingw-w64-crt_CONFIGURE_OPTS)
     $(MAKE) -C '$(BUILD_DIR).crt' -j '$(JOBS)' || $(MAKE) -C '$(BUILD_DIR).crt' -j '$(JOBS)'
