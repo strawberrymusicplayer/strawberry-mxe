@@ -4,8 +4,8 @@ PKG             := gcc
 $(PKG)_WEBSITE  := https://gcc.gnu.org/
 $(PKG)_DESCR    := GCC
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 10.2.0
-$(PKG)_CHECKSUM := b8dd4368bb9c7f0b98188317ee0254dd8cc99d1e3a18d0ff146c855fe16c1d8c
+$(PKG)_VERSION  := 11.1.0
+$(PKG)_CHECKSUM := 4c4a6fb8a8396059241c2e674b85b351c26a5d678274007f076957afa1cc9ddf
 $(PKG)_SUBDIR   := gcc-$($(PKG)_VERSION)
 $(PKG)_FILE     := gcc-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://ftp.gnu.org/gnu/gcc/gcc-$($(PKG)_VERSION)/$($(PKG)_FILE)
@@ -15,8 +15,6 @@ $(PKG)_DEPS     := binutils mingw-w64 $(addprefix $(BUILD)~,gmp isl mpc mpfr)
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://ftp.gnu.org/gnu/gcc/?C=M;O=D' | \
     $(SED) -n 's,.*<a href="gcc-\([0-9][^"]*\)/".*,\1,p' | \
-    grep -v '10.3.0' | \
-    grep -v '11.1.0' | \
     $(SORT) -V | \
     tail -1
 endef
