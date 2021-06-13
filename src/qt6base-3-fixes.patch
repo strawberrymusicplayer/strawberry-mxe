@@ -1,0 +1,31 @@
+From 93450a6ab263bc940ce4fc82836c965a5ea9bb4e Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?M=C3=A5rten=20Nordheim?= <marten.nordheim@qt.io>
+Date: Wed, 9 Jun 2021 10:41:51 +0200
+Subject: QHttpSocketEngine: Fix memory leak
+
+The reply needs to be parented or it's not guaranteed to be deleted
+
+Change-Id: I7cbc31682f80dbbd9fb240fff9e6781cb6ca7b36
+Reviewed-by: Edward Welbourne <edward.welbourne@qt.io>
+(cherry picked from commit d8077a0973f362376b69564a730c74e5c9366f8f)
+Reviewed-by: Qt Cherry-pick Bot <cherrypick_bot@qt-project.org>
+---
+ src/network/socket/qhttpsocketengine.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/network/socket/qhttpsocketengine.cpp b/src/network/socket/qhttpsocketengine.cpp
+index 5324038dbd..6170f114f5 100644
+--- a/src/network/socket/qhttpsocketengine.cpp
++++ b/src/network/socket/qhttpsocketengine.cpp
+@@ -642,7 +642,7 @@ void QHttpSocketEngine::slotSocketReadNotification()
+             d->socket->readAll();
+             //We're done with the reply and need to reset it for the next connection
+             delete d->reply;
+-            d->reply = new QHttpNetworkReply;
++            d->reply = new QHttpNetworkReply(QUrl(), this);
+         }
+ 
+         if (priv->phase == QAuthenticatorPrivate::Done)
+-- 
+cgit v1.2.1
+
