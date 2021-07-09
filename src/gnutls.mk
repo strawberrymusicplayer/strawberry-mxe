@@ -28,8 +28,7 @@ define $(PKG)_BUILD
         --disable-tests \
         --enable-local-libopts \
         --without-p11-kit \
-        --disable-silent-rules \
-        CFLAGS='-D_WIN32_WINNT=0x0601'
+        --disable-silent-rules
     $(MAKE) -C '$(1)' -j '$(JOBS)' install
 
     '$(TARGET)-gcc' \
