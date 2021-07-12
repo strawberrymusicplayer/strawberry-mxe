@@ -26,7 +26,8 @@ define $(PKG)_BUILD
         --with-system-readline \
         --disable-gdbtk \
         --disable-tui \
-        host_configargs="LIBS=\"`$(TARGET)-pkg-config --libs dlfcn` -lmman\""
+        host_configargs="LIBS=\"`$(TARGET)-pkg-config --libs dlfcn` -lmman\"" \
+        LDFLAGS='-Wl,--allow-multiple-definition'
 
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' CFLAGS='-D_WIN32_WINNT=0x0600'
     $(INSTALL) -m755 '$(BUILD_DIR)/gdb/gdb.exe'                 '$(PREFIX)/$(TARGET)/bin/'
