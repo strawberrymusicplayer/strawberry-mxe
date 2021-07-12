@@ -4,53 +4,20 @@ Contains ad hoc patches for cross building.
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Jonas Kvinge <jonas@jkvinge.net>
-Date: Wed, 3 Jun 2020 23:42:45 +0200
-Subject: [PATCH 1/2] remove docs from configure.ac: avoid GTK_DOC dependencies
+Date: Mon, 12 Jul 2021 14:08:54 +0200
+Subject: [PATCH 1/1] Define GNUTLS_INTERNAL_BUILD
 
 
-diff --git a/configure.ac b/configure.ac
+diff --git a/lib/includes/gnutls/gnutls.h.in b/lib/includes/gnutls/gnutls.h.in
 index 1111111..2222222 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -1145,17 +1145,6 @@ AC_DEFINE_UNQUOTED([INI_START_COMMENT_PREFIXES], [";#"], [The comment prefixes])
- AC_CONFIG_FILES([guile/pre-inst-guile], [chmod +x guile/pre-inst-guile])
- AC_CONFIG_FILES([
-   Makefile
--  doc/Makefile
--  doc/credentials/Makefile
--  doc/credentials/srp/Makefile
--  doc/credentials/x509/Makefile
--  doc/doxygen/Doxyfile
--  doc/examples/Makefile
--  doc/latex/Makefile
--  doc/manpages/Makefile
--  doc/reference/Makefile
--  doc/reference/version.xml
--  doc/scripts/Makefile
-   extra/Makefile
-   extra/includes/Makefile
-   libdane/Makefile
-
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Jonas Kvinge <jonas@jkvinge.net>
-Date: Wed, 3 Jun 2020 23:43:02 +0200
-Subject: [PATCH 2/2] windows build fix: ws2tcpip.h supplies inet_ntop
-
-
-diff --git a/lib/x509/ip.c b/lib/x509/ip.c
-index 1111111..2222222 100644
---- a/lib/x509/ip.c
-+++ b/lib/x509/ip.c
-@@ -24,7 +24,11 @@
- #include "gnutls_int.h"
- #include "ip.h"
- #include <gnutls/x509.h>
--#include <arpa/inet.h>
-+#ifdef _WIN32
-+# include <ws2tcpip.h>
-+#else
-+# include <arpa/inet.h>
-+#endif
+--- a/lib/includes/gnutls/gnutls.h.in
++++ b/lib/includes/gnutls/gnutls.h.in
+@@ -64,6 +64,8 @@ extern "C" {
+ #define GNUTLS_CIPHER_RIJNDAEL_CBC GNUTLS_CIPHER_AES_128_CBC
+ #define GNUTLS_CIPHER_ARCFOUR GNUTLS_CIPHER_ARCFOUR_128
  
- /*-
-  * _gnutls_mask_to_prefix:
++#define GNUTLS_INTERNAL_BUILD 1
++
+ #if !defined(GNUTLS_INTERNAL_BUILD) && defined(_WIN32)
+ # define _SYM_EXPORT __declspec(dllimport)
+ #else
