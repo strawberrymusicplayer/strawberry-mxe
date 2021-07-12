@@ -37,7 +37,7 @@ define $(PKG)_BUILD
     ln -sf '$(PREFIX)/$(BUILD)/bin/glib-genmarshal'        '$(PREFIX)/$(TARGET)/bin/'
     ln -sf '$(PREFIX)/$(BUILD)/bin/glib-compile-schemas'   '$(PREFIX)/$(TARGET)/bin/'
     ln -sf '$(PREFIX)/$(BUILD)/bin/glib-compile-resources' '$(PREFIX)/$(TARGET)/bin/'
-    cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)'
+    cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)' -Dforce_posix_threads=true
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install
 endef
