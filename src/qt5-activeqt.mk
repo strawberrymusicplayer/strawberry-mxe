@@ -1,15 +1,16 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
-PKG             := qt5winextras
+PKG             := qt5-activeqt
 $(PKG)_WEBSITE  := https://www.qt.io/
-$(PKG)_DESCR    := Qt 5 WinExtras
+$(PKG)_DESCR    := Qt 5 Active Qt
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION   = 5.15.2
-$(PKG)_CHECKSUM := 65b8272005dec00791ab7d81ab266d1e3313a3bbd8e54e546d984cf4c4ab550e
-$(PKG)_SUBDIR   := qtwinextras-everywhere-src-$($(PKG)_VERSION)
-$(PKG)_FILE     := qtwinextras-everywhere-src-$($(PKG)_VERSION).tar.xz
+$(PKG)_VERSION  := 5.15.2
+$(PKG)_CHECKSUM := 868161fee0876d17079cd5bed58d1667bf19ffd0018cbe515129f11510ad2a5c
+$(PKG)_SUBDIR   := qtactiveqt-everywhere-src-$($(PKG)_VERSION)
+$(PKG)_FILE     := qtactiveqt-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/5.15/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc qt5base
+$(PKG)_DEPS     := cc qt5-qtbase
+$(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- https://download.qt.io/official_releases/qt/5.15/ | \
@@ -20,7 +21,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && '$(PREFIX)/$(TARGET)/qt5/bin/qmake' -after 'LIBS_PRIVATE += -lgdi32'
+    cd '$(1)' && '$(PREFIX)/$(TARGET)/qt5/bin/qmake'
     $(MAKE) -C '$(1)' -j '$(JOBS)'
     $(MAKE) -C '$(1)' -j 1 install
 endef

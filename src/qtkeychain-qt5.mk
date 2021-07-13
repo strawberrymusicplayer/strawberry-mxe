@@ -1,13 +1,13 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
-PKG             := qtkeychain
+PKG             := qtkeychain-qt5
 $(PKG)_WEBSITE  := https://github.com/frankosterfeld/qtkeychain
 $(PKG)_DESCR    := QtKeychain
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 0.12.0
 $(PKG)_CHECKSUM := cc547d58c1402f6724d3ff89e4ca83389d9e2bdcfd9ae3d695fcdffa50a625a8
 $(PKG)_GH_CONF  := frankosterfeld/qtkeychain/tags,v
-$(PKG)_DEPS     := cc qt5tools
+$(PKG)_DEPS     := cc qt5-qtbase qt5-qttools
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \

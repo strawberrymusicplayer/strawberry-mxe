@@ -7,7 +7,7 @@ $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := fde631f
 $(PKG)_CHECKSUM := 54d0b386c2a975380afd31e915bb40e9e4fc943139d3d45b44fb2d74c35d8bc5
 $(PKG)_GH_CONF  := davidsansome/qtsparkle/branches/master
-$(PKG)_DEPS     := cc qt6base qt6tools
+$(PKG)_DEPS     := cc qt6-qtbase qt6-qttools
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \

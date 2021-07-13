@@ -2,7 +2,7 @@
 
 PKG            := qt6-conf
 $(PKG)_VERSION  = $(qt6-qtbase_VERSION)
-$(PKG)_DEPS    := qt6base
+$(PKG)_DEPS    := qt6-qtbase
 $(PKG)_TARGETS := $(BUILD) $(MXE_TARGETS)
 
 # ensure conf is also built for a minimal `make qt6base`

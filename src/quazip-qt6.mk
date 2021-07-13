@@ -7,7 +7,7 @@ $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 50ab6b4
 $(PKG)_CHECKSUM := d913c14e2c28bd8ca94df7c4810031bb01f69eb747107c0967031f28f90a5766
 $(PKG)_GH_CONF  := stachenov/quazip/branches/master
-$(PKG)_DEPS     := cc zlib qt6base qt6tools qt6core5compat
+$(PKG)_DEPS     := cc zlib qt6-qtbase qt6-qttools qt6-qtcore5compat
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \

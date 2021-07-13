@@ -8,7 +8,7 @@ $(PKG)_VERSION  := fde631f
 $(PKG)_CHECKSUM := 54d0b386c2a975380afd31e915bb40e9e4fc943139d3d45b44fb2d74c35d8bc5
 $(PKG)_GH_CONF  := davidsansome/qtsparkle/branches/master
 $(PKG)_FILE     := qtsparkle-$($(PKG)_VERSION).tar.gz
-$(PKG)_DEPS     := cc qt5tools
+$(PKG)_DEPS     := cc qt5-qtbase qt5-qttools
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' -DBUILD_WITH_QT5=ON
