@@ -1,0 +1,25 @@
+From 07bf163e5552766ed177a74b8cbd4e936c1c84aa Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Fri, 16 Jul 2021 01:30:04 +0200
+Subject: [PATCH] Use QVariant::fromValue() to fix compile with Qt 6
+
+This works with Qt 4 and 5 too.
+---
+ src/DeviceList.cpp | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/src/DeviceList.cpp b/src/DeviceList.cpp
+index e972318..7b175ad 100644
+--- a/src/DeviceList.cpp
++++ b/src/DeviceList.cpp
+@@ -63,9 +63,7 @@ bool DeviceListPrivate::parse( const QVariant& data )
+     {
+         DevicePtr ptr( new Device( var, this ) );
+         m_devicesList.append( ptr );
+-        QVariant v;
+-        v.setValue<DevicePtr>( ptr );
+-        devList.append( v );
++        devList.append( QVariant::fromValue<DevicePtr>( ptr ) );
+     }
+     m_devices = devList;
+     return true;

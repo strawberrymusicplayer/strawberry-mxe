@@ -1,0 +1,555 @@
+From 1443aaed11e3c365cd202df470d2ab676e8a6b1c Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Fri, 16 Jul 2021 01:40:17 +0200
+Subject: [PATCH] Use QMetaType::canConvert() with Qt 6
+
+QVariant::canConvert() is deprecated in Qt 6.
+---
+ src/AddRemoveResult.cpp   |  8 ++++++++
+ src/Device.cpp            | 11 +++++++++++
+ src/DeviceList.cpp        |  4 ++++
+ src/DeviceSyncResult.cpp  |  4 ++++
+ src/DeviceUpdates.cpp     | 12 ++++++++++++
+ src/Episode.cpp           | 40 +++++++++++++++++++++++++++++++++++++++
+ src/EpisodeAction.cpp     | 32 +++++++++++++++++++++++++++++++
+ src/EpisodeActionList.cpp | 12 ++++++++++++
+ src/EpisodeList.cpp       |  4 ++++
+ src/Podcast.cpp           | 36 +++++++++++++++++++++++++++++++++++
+ src/PodcastList.cpp       |  4 ++++
+ src/Tag.cpp               | 12 ++++++++++++
+ src/TagList.cpp           |  4 ++++
+ src/qjsonwrapper/Json.cpp |  8 ++++++++
+ 14 files changed, 191 insertions(+)
+
+diff --git a/src/AddRemoveResult.cpp b/src/AddRemoveResult.cpp
+index 83c0c60..bba5e96 100644
+--- a/src/AddRemoveResult.cpp
++++ b/src/AddRemoveResult.cpp
+@@ -64,11 +64,19 @@ QList< QPair< QUrl, QUrl > > AddRemoveResultPrivate::updateUrlsList() const
+ 
+ bool AddRemoveResultPrivate::parse( const QVariant& data )
+ {
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert(data.metaType(), QMetaType(QMetaType::QVariantMap ) ) )
++#else
+     if( !data.canConvert( QVariant::Map ) )
++#endif
+         return false;
+     QVariantMap resultMap = data.toMap();
+     QVariant v = resultMap.value( QLatin1String( "timestamp" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert(data.metaType(), QMetaType(QMetaType::ULongLong ) ) )
++#else
+     if( !v.canConvert( QVariant::ULongLong ) )
++#endif
+         return false;
+     m_timestamp = v.toULongLong();
+     m_updateUrls = resultMap.value( QLatin1String( "update_urls" ) );
+diff --git a/src/Device.cpp b/src/Device.cpp
+index 6a2c204..768822f 100644
+--- a/src/Device.cpp
++++ b/src/Device.cpp
+@@ -64,7 +64,11 @@ DevicePrivate::DevicePrivate( const QVariant& var ) : m_id(), m_caption(), m_typ
+ 
+ bool DevicePrivate::parse( const QVariant& var )
+ {
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( QMetaType::canConvert( var.metaType(), QMetaType( QMetaType::QVariantMap ) ) )
++#else
+     if( var.canConvert( QVariant::Map ) )
++#endif
+     {
+         QVariant vid, vcaption, vtype, vsubscriptions;
+         QMap<QString, QVariant> varMap;
+@@ -73,10 +77,17 @@ bool DevicePrivate::parse( const QVariant& var )
+         vcaption = varMap.value( QLatin1String( "caption" ) );
+         vtype = varMap.value( QLatin1String( "type" ) );
+         vsubscriptions = varMap.value( QLatin1String( "subscriptions" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++        if( QMetaType::canConvert( vid.metaType(), QMetaType( QMetaType::QString ) ) &&
++                QMetaType::canConvert( vcaption.metaType(), QMetaType( QMetaType::QString ) ) &&
++                QMetaType::canConvert( vtype.metaType(), QMetaType( QMetaType::QString ) ) &&
++                QMetaType::canConvert( vsubscriptions.metaType(), QMetaType( QMetaType::LongLong ) ) )
++#else
+         if( vid.canConvert( QVariant::String ) &&
+                 vcaption.canConvert( QVariant::String ) &&
+                 vtype.canConvert( QVariant::String ) &&
+                 vsubscriptions.canConvert( QVariant::LongLong ) )
++#endif
+         {
+             m_id = vid.toString();
+             m_caption = vcaption.toString();
+diff --git a/src/DeviceList.cpp b/src/DeviceList.cpp
+index 7b175ad..d1d08f1 100644
+--- a/src/DeviceList.cpp
++++ b/src/DeviceList.cpp
+@@ -54,7 +54,11 @@ void DeviceListPrivate::error( QNetworkReply::NetworkError error )
+ 
+ bool DeviceListPrivate::parse( const QVariant& data )
+ {
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert(data.metaType(), QMetaType( QMetaType::QVariantList ) ) )
++#else
+     if( !data.canConvert( QVariant::List ) )
++#endif
+         return false;
+ 
+     QVariantList varList = data.toList();
+diff --git a/src/DeviceSyncResult.cpp b/src/DeviceSyncResult.cpp
+index 1ee7049..5c49d17 100644
+--- a/src/DeviceSyncResult.cpp
++++ b/src/DeviceSyncResult.cpp
+@@ -75,7 +75,11 @@ QList<QString> DeviceSyncResultPrivate::notSynchronizedList() const
+ 
+ bool DeviceSyncResultPrivate::parse( const QVariant& data )
+ {
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( data.metaType(), QMetaType( QMetaType::QVariantMap ) ) )
++#else
+     if( !data.canConvert( QVariant::Map ) )
++#endif
+         return false;
+     QVariantMap varMap = data.toMap();
+     m_synchronized = varMap.value( QLatin1String( "synchronized" ) );
+diff --git a/src/DeviceUpdates.cpp b/src/DeviceUpdates.cpp
+index 04653c5..4336630 100644
+--- a/src/DeviceUpdates.cpp
++++ b/src/DeviceUpdates.cpp
+@@ -65,7 +65,11 @@ QList< QUrl > DeviceUpdatesPrivate::removeList() const
+     QList<QUrl> ret;
+     foreach( const QVariant & var, updateVarList )
+     {
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++        if( QMetaType::canConvert( var.metaType(), QMetaType( QMetaType::QUrl ) ) )
++#else
+         if( var.canConvert( QVariant::Url ) )
++#endif
+             ret.append( var.toUrl() );
+     }
+     return ret;
+@@ -89,13 +93,21 @@ QList< EpisodePtr > DeviceUpdatesPrivate::updateList() const
+ 
+ bool DeviceUpdatesPrivate::parse( const QVariant& data )
+ {
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( data.metaType(), QMetaType( QMetaType::QVariantMap ) ) )
++#else
+     if( !data.canConvert( QVariant::Map ) )
++#endif
+         return false;
+     QVariantMap varMap = data.toMap();
+     m_add = varMap.value( QLatin1String( "add" ) );
+     m_remove = varMap.value( QLatin1String( "remove" ) );
+     m_update = varMap.value( QLatin1String( "updates" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( varMap.value( QLatin1String( "timestamp" ) ).metaType(), QMetaType( QMetaType::LongLong ) ) )
++#else
+     if( varMap.value( QLatin1String( "timestamp" ) ).canConvert( QVariant::LongLong ) )
++#endif
+         m_timestamp = varMap.value( QLatin1String( "timestamp" ) ).toLongLong();
+     return true;
+ }
+diff --git a/src/Episode.cpp b/src/Episode.cpp
+index 196de32..7ef4c6b 100644
+--- a/src/Episode.cpp
++++ b/src/Episode.cpp
+@@ -43,39 +43,75 @@ EpisodePrivate::EpisodePrivate ( Episode* qq, const QVariant& variant, QObject*
+ 
+ bool EpisodePrivate::parse ( const QVariant& data )
+ {
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( data.metaType(), QMetaType( QMetaType::QVariantMap ) ) )
++#else
+     if ( !data.canConvert ( QVariant::Map ) )
++#endif
+         return false;
+     QVariantMap episodeMap = data.toMap();
+     QVariant s = episodeMap.value ( QLatin1String ( "url" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( s.metaType(), QMetaType( QMetaType::QUrl ) ) )
++#else
+     if ( !s.canConvert ( QVariant::Url ) )
++#endif
+         return false;
+     m_url = s.toUrl();
+     s = episodeMap.value ( QLatin1String ( "title" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( s.metaType(), QMetaType( QMetaType::QString ) ) )
++#else
+     if ( !s.canConvert ( QVariant::String ) )
++#endif
+         return false;
+     m_title = s.toString();
+     s = episodeMap.value ( QLatin1String ( "podcast_url" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( s.metaType(), QMetaType( QMetaType::QUrl ) ) )
++#else
+     if ( !s.canConvert ( QVariant::Url ) )
++#endif
+         return false;
+     m_podcastUrl = s.toUrl();
+     s = episodeMap.value ( QLatin1String ( "podcast_title" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( s.metaType(), QMetaType( QMetaType::QString ) ) )
++#else
+     if ( !s.canConvert ( QVariant::String ) )
++#endif
+         return false;
+     m_podcastTitle = s.toString();
+     s = episodeMap.value ( QLatin1String ( "description" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( s.metaType(), QMetaType( QMetaType::QString ) ) )
++#else
+     if ( !s.canConvert ( QVariant::String ) )
++#endif
+         return false;
+     m_description = s.toString();
+     s = episodeMap.value ( QLatin1String ( "website" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( s.metaType(), QMetaType( QMetaType::QUrl ) ) )
++#else
+     if ( !s.canConvert ( QVariant::Url ) )
++#endif
+         return false;
+     m_website = s.toUrl();
+     s = episodeMap.value ( QLatin1String ( "mygpo_link" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( s.metaType(), QMetaType( QMetaType::QUrl ) ) )
++#else
+     if ( !s.canConvert ( QVariant::Url ) )
++#endif
+         return false;
+     m_mygpoUrl = s.toUrl();
+     s = episodeMap.value ( QLatin1String ( "status" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( s.metaType(), QMetaType( QMetaType::QString ) ) )
++#else
+     if ( s.canConvert ( QVariant::String ) )
++#endif
+     {
+         QString status = s.toString();
+         m_status = Episode::UNKNOWN;
+@@ -101,7 +137,11 @@ bool EpisodePrivate::parse ( const QVariant& data )
+         m_status = Episode::UNKNOWN;
+     }
+     s = episodeMap.value( QLatin1String ( "released" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( s.metaType(), QMetaType( QMetaType::QString ) ) )
++#else
+     if ( s.canConvert( QVariant::String ) )
++#endif
+     {
+         QString date = s.toString();
+         m_released = QDateTime::fromString( date, Qt::ISODate );
+diff --git a/src/EpisodeAction.cpp b/src/EpisodeAction.cpp
+index 95536be..7e57dbf 100644
+--- a/src/EpisodeAction.cpp
++++ b/src/EpisodeAction.cpp
+@@ -47,24 +47,40 @@ EpisodeActionPrivate::~EpisodeActionPrivate()
+ 
+ bool EpisodeActionPrivate::parse( const QVariant& data )
+ {
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( data.metaType(), QMetaType( QMetaType::QVariantMap ) ) )
++#else
+     if( !data.canConvert( QVariant::Map ) )
++#endif
+         return false;
+     QVariantMap episodeActionMap = data.toMap();
+ 
+     QVariant s = episodeActionMap.value( QLatin1String( "podcast" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( s.metaType(), QMetaType( QMetaType::QUrl ) ) )
++#else
+     if( !s.canConvert( QVariant::Url ) )
++#endif
+         return false;
+     m_podcastUrl = s.toUrl();
+ 
+     s = episodeActionMap.value( QLatin1String( "episode" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( s.metaType(), QMetaType( QMetaType::QUrl ) ) )
++#else
+     if( !s.canConvert( QVariant::Url ) )
++#endif
+         return false;
+     m_episodeUrl = s.toUrl();
+ 
+     if( episodeActionMap.contains( QLatin1String( "device" ) ) )
+     {
+         s = episodeActionMap.value( QLatin1String( "device" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( s.metaType(), QMetaType( QMetaType::QString ) ) )
++#else
+         if( !s.canConvert( QVariant::String ) )
++#endif
+             return false;
+         m_deviceName = s.toString();
+     }
+@@ -74,7 +90,11 @@ bool EpisodeActionPrivate::parse( const QVariant& data )
+     }
+ 
+     s = episodeActionMap.value( QLatin1String( "action" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( s.metaType(), QMetaType( QMetaType::QString ) ) )
++#else
+     if( !s.canConvert( QVariant::String ) )
++#endif
+         return false;
+     if( !parseActionType( s.toString() ) )
+         return false;
+@@ -82,7 +102,11 @@ bool EpisodeActionPrivate::parse( const QVariant& data )
+     if( episodeActionMap.contains( QLatin1String( "started" ) ) )
+     {
+         s = episodeActionMap.value( QLatin1String( "started" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( s.metaType(), QMetaType( QMetaType::ULongLong ) ) )
++#else
+         if( !s.canConvert( QVariant::ULongLong ) )
++#endif
+             return false;
+         m_started = s.toULongLong();
+     }
+@@ -94,7 +118,11 @@ bool EpisodeActionPrivate::parse( const QVariant& data )
+     if( episodeActionMap.contains( QLatin1String( "position" ) ) )
+     {
+         s = episodeActionMap.value( QLatin1String( "position" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( s.metaType(), QMetaType( QMetaType::ULongLong ) ) )
++#else
+         if( !s.canConvert( QVariant::ULongLong ) )
++#endif
+             return false;
+         m_position = s.toULongLong();
+     }
+@@ -106,7 +134,11 @@ bool EpisodeActionPrivate::parse( const QVariant& data )
+     if( episodeActionMap.contains( QLatin1String( "total" ) ) )
+     {
+         s = episodeActionMap.value( QLatin1String( "total" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( s.metaType(), QMetaType( QMetaType::ULongLong ) ) )
++#else
+         if( !s.canConvert( QVariant::ULongLong ) )
++#endif
+             return false;
+         m_total = s.toULongLong();
+     }
+diff --git a/src/EpisodeActionList.cpp b/src/EpisodeActionList.cpp
+index 4c221cc..150019c 100644
+--- a/src/EpisodeActionList.cpp
++++ b/src/EpisodeActionList.cpp
+@@ -54,17 +54,29 @@ QVariant EpisodeActionListPrivate::episodeActions() const
+ 
+ bool EpisodeActionListPrivate::parse( const QVariant& data )
+ {
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( data.metaType(), QMetaType( QMetaType::QVariantMap ) ) )
++#else
+     if( !data.canConvert( QVariant::Map ) )
++#endif
+         return false;
+     QVariantMap episodeActionListMap = data.toMap();
+ 
+     QVariant s = episodeActionListMap.value( QLatin1String( "timestamp" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( s.metaType(), QMetaType( QMetaType::ULongLong ) ) )
++#else
+     if( !s.canConvert( QVariant::ULongLong ) )
++#endif
+         return false;
+     m_timestamp = s.toULongLong();
+ 
+     s = episodeActionListMap.value( QLatin1String( "actions" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( s.metaType(), QMetaType( QMetaType::QVariantList ) ) )
++#else
+     if( !s.canConvert( QVariant::List ) )
++#endif
+         return false;
+ 
+     QVariantList varList = s.toList();
+diff --git a/src/EpisodeList.cpp b/src/EpisodeList.cpp
+index 6a9de5d..0b1d000 100644
+--- a/src/EpisodeList.cpp
++++ b/src/EpisodeList.cpp
+@@ -54,7 +54,11 @@ QVariant EpisodeListPrivate::episodes() const
+ 
+ bool EpisodeListPrivate::parse( const QVariant& data )
+ {
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( data.metaType(), QMetaType( QMetaType::QVariantList ) ) )
++#else
+     if( !data.canConvert( QVariant::List ) )
++#endif
+         return false;
+     QVariantList varList = data.toList();
+     QVariantList episodeList;
+diff --git a/src/Podcast.cpp b/src/Podcast.cpp
+index 3ee8545..b02fd13 100644
+--- a/src/Podcast.cpp
++++ b/src/Podcast.cpp
+@@ -141,42 +141,78 @@ QUrl Podcast::mygpoUrl() const
+ 
+ bool PodcastPrivate::parse( const QVariant& data )
+ {
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( data.metaType(), QMetaType( QMetaType::QVariantMap ) ) )
++#else
+     if ( !data.canConvert( QVariant::Map ) )
++#endif
+         return false;
+     QVariantMap podcastMap = data.toMap();
+     QVariant v = podcastMap.value( QLatin1String( "url" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( v.metaType(), QMetaType( QMetaType::QByteArray ) ) )
++#else
+     if ( !v.canConvert( QVariant::ByteArray ) )
++#endif
+         return false;
+     m_url = QUrl::fromEncoded(v.toByteArray(), QUrl::StrictMode);
+     if (!m_url.isValid()) { 
+         return false;
+     }
+     v = podcastMap.value( QLatin1String( "title" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( v.metaType(), QMetaType( QMetaType::QString ) ) )
++#else
+     if ( !v.canConvert( QVariant::String ) )
++#endif
+         return false;
+     m_title = v.toString();
+     v = podcastMap.value( QLatin1String( "description" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( v.metaType(), QMetaType( QMetaType::QString ) ) )
++#else
+     if ( !v.canConvert( QVariant::String ) )
++#endif
+         return false;
+     m_description = v.toString();
+     v = podcastMap.value( QLatin1String( "subscribers" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( v.metaType(), QMetaType( QMetaType::Int ) ) )
++#else
+     if ( !v.canConvert( QVariant::Int ) )
++#endif
+         return false;
+     m_subscribers = v.toUInt();
+     v = podcastMap.value( QLatin1String( "subscribers_last_week" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( v.metaType(), QMetaType( QMetaType::Int ) ) )
++#else
+     if ( !v.canConvert( QVariant::Int ) )
++#endif
+         return false;
+     m_SubscribersLastWeek = v.toUInt();
+     v = podcastMap.value( QLatin1String( "logo_url" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( v.metaType(), QMetaType( QMetaType::QUrl ) ) )
++#else
+     if ( !v.canConvert( QVariant::Url ) )
++#endif
+         return false;
+     m_logoUrl = v.toUrl();
+     v = podcastMap.value( QLatin1String( "website" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( v.metaType(), QMetaType( QMetaType::QUrl ) ) )
++#else
+     if ( !v.canConvert( QVariant::Url ) )
++#endif
+         return false;
+     m_website = v.toUrl();
+     v = podcastMap.value( QLatin1String( "mygpo_link" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( v.metaType(), QMetaType( QMetaType::QUrl ) ) )
++#else
+     if ( !v.canConvert( QVariant::Url ) )
++#endif
+         return false;
+     m_mygpoUrl = v.toUrl();
+     return true;
+diff --git a/src/PodcastList.cpp b/src/PodcastList.cpp
+index fbd3987..dc20313 100644
+--- a/src/PodcastList.cpp
++++ b/src/PodcastList.cpp
+@@ -55,7 +55,11 @@ QVariant PodcastListPrivate::podcasts() const
+ 
+ bool PodcastListPrivate::parse( const QVariant& data )
+ {
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( data.metaType(), QMetaType(QMetaType::QVariantList ) ) )
++#else
+     if( !data.canConvert( QVariant::List ) )
++#endif
+         return false;
+     QVariantList varList = data.toList();
+     QVariantList podcastList;
+diff --git a/src/Tag.cpp b/src/Tag.cpp
+index 035bb7c..8854088 100644
+--- a/src/Tag.cpp
++++ b/src/Tag.cpp
+@@ -41,15 +41,27 @@ uint TagPrivate::usage() const
+ 
+ bool TagPrivate::parse( const QVariant& data )
+ {
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( data.metaType(), QMetaType( QMetaType::QVariantMap ) ) )
++#else
+     if( !data.canConvert( QVariant::Map ) )
++#endif
+         return false;
+     QVariantMap tagMap = data.toMap();
+     QVariant v = tagMap.value( QLatin1String( "tag" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( v.metaType(), QMetaType( QMetaType::QString ) ) )
++#else
+     if( !v.canConvert( QVariant::String ) )
++#endif
+         return false;
+     m_tag = v.toString();
+     v = tagMap.value( QLatin1String( "usage" ) );
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( v.metaType(), QMetaType( QMetaType::UInt ) ) )
++#else
+     if( !v.canConvert( QVariant::UInt ) )
++#endif
+         return false;
+     m_usage = v.toUInt();
+     return true;
+diff --git a/src/TagList.cpp b/src/TagList.cpp
+index 4c19749..1fd06ca 100644
+--- a/src/TagList.cpp
++++ b/src/TagList.cpp
+@@ -54,7 +54,11 @@ QVariant TagListPrivate::tags() const
+ 
+ bool TagListPrivate::parse( const QVariant& data )
+ {
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++    if( !QMetaType::canConvert( data.metaType(), QMetaType( QMetaType::QVariantList ) ) )
++#else
+     if( !data.canConvert( QVariant::List ) )
++#endif
+         return false;
+     QVariantList varList = data.toList();
+     QVariantList tagList;
+diff --git a/src/qjsonwrapper/Json.cpp b/src/qjsonwrapper/Json.cpp
+index d87c2b3..9d7a570 100644
+--- a/src/qjsonwrapper/Json.cpp
++++ b/src/qjsonwrapper/Json.cpp
+@@ -71,9 +71,17 @@ qvariant2qobject( const QVariantMap& variant, QObject* object )
+         if ( property.isValid() )
+         {
+             QVariant value = iter.value();
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++            if ( value.canConvert( property.metaType() ) )
++#else
+             if ( value.canConvert( property.type() ) )
++#endif
+             {
++#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
++                value.convert( property.metaType() );
++#else
+                 value.convert( property.type() );
++#endif
+                 object->setProperty( iter.key().toLatin1(), value );
+             } else if ( QString( QLatin1String("QVariant") ).compare( QLatin1String( property.typeName() ) ) == 0 ) {
+                 object->setProperty( iter.key().toLatin1(), value );
