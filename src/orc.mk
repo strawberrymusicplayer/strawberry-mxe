@@ -8,7 +8,7 @@ $(PKG)_CHECKSUM := a66e3d8f2b7e65178d786a01ef61f2a0a0b4d0b8370de7ce134ba73da4af1
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc meson-conf $(BUILD)~meson
+$(PKG)_DEPS     := cc meson-conf
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://cgit.freedesktop.org/gstreamer/orc/refs/tags' | \

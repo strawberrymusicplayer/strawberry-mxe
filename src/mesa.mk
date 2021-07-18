@@ -8,7 +8,7 @@ $(PKG)_CHECKSUM := 022c7293074aeeced2278c872db4fa693147c70f8595b076cf3f1ef815207
 $(PKG)_SUBDIR   := mesa-$($(PKG)_VERSION)
 $(PKG)_FILE     := mesa-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := ftp://ftp.freedesktop.org/pub/mesa/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc meson-conf $(BUILD)~meson zlib
+$(PKG)_DEPS     := cc meson-conf zlib
 
 define $(PKG)_UPDATE
     $(call GET_LATEST_VERSION, https://archive.mesa3d.org, mesa-)
