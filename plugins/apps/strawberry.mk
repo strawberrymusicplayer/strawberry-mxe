@@ -2,53 +2,57 @@
 
 PKG             := strawberry
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 66c60ac
-$(PKG)_CHECKSUM := 614e3dba128db277fdf481417569cda5386b890d1c170cb6ab7ef6cf1e7877af
+$(PKG)_VERSION  := e0bb79b
+$(PKG)_CHECKSUM := ffdae0b83dac2951a38bf769a24b9a1087c69fb6f6c48361a67d10c5776d41c6
 $(PKG)_GH_CONF  := strawberrymusicplayer/strawberry/branches/master
 $(PKG)_WEBSITE  := https://www.strawberrymusicplayer.org/
-$(PKG)_DEPS     := cc boost protobuf qt5base qt5winextras qt5translations chromaprint gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav taglib libcdio gnutls glib-networking portaudio killproc qtsparkle-qt5
+$(PKG)_DEPS     := cc boost protobuf qt6-qtbase qt6-qttools chromaprint gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav taglib libcdio gnutls glib-networking portaudio killproc qtsparkle-qt6
 
 define $(PKG)_BUILD_SHARED
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
+        -DCMAKE_PREFIX_PATH=$(PREFIX)/$(TARGET)/qt6/lib/cmake \
         -DCMAKE_INSTALL_PREFIX=$(PREFIX)/$(TARGET)/apps/$(PKG) \
         -DCMAKE_BUILD_TYPE=Release \
+        -DBUILD_WITH_QT6=ON \
         -DARCH=$(TARGET) \
         -DENABLE_WIN32_CONSOLE=OFF \
-        -DFORCE_GIT_REVISION="0.8.4-0-g$($(PKG)_VERSION)" \
+        -DFORCE_GIT_REVISION="0.9.3-0-g$($(PKG)_VERSION)" \
         -DENABLE_DBUS=OFF \
         -DENABLE_LIBPULSE=OFF \
         -DENABLE_LIBGPOD=OFF \
-        -DENABLE_IMOBILEDEVICE=OFF \
-        -DENABLE_LIBMTP=OFF \
-        -DENABLE_GSTREAMER=ON \
-        -DENABLE_VLC=OFF
+        -DENABLE_LIBMTP=OFF
     $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS)
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
+
+    $(INSTALL) '$(SOURCE_DIR)/COPYING'                                             '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin'
 
     $(INSTALL) '$(SOURCE_DIR)/dist/windows/strawberry.nsi'                         '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin'
     $(INSTALL) '$(SOURCE_DIR)/dist/windows/Capabilities.nsh'                       '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin'
     $(INSTALL) '$(SOURCE_DIR)/dist/windows/FileAssociation.nsh'                    '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin'
     $(INSTALL) '$(SOURCE_DIR)/dist/windows/strawberry.ico'                         '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin'
 
-    $(INSTALL) '$(PREFIX)/$(TARGET)/bin/killproc.exe'                              '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gst-launch-1.0.exe'                        '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin'
+    $(INSTALL) $(PREFIX)/$(TARGET)/bin/libssl-*.dll                                '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
+    $(INSTALL) $(PREFIX)/$(TARGET)/bin/libcrypto-*.dll                             '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
+    $(INSTALL) '$(PREFIX)/$(TARGET)/bin/sqlite3.exe'                               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
+    $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gst-launch-1.0.exe'                        '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
+    $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gst-discoverer-1.0.exe'                    '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
 
     $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gio-modules'
     $(INSTALL) '$(PREFIX)/$(TARGET)/lib/gio/modules/libgiognutls.dll'              '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gio-modules'
 
     $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/platforms'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/platforms/qwindows.dll'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/platforms'
+    $(INSTALL) '$(PREFIX)/$(TARGET)/qt6/plugins/platforms/qwindows.dll'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/platforms'
 
     $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/sqldrivers'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/sqldrivers/qsqlite.dll'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/sqldrivers'
+    $(INSTALL) '$(PREFIX)/$(TARGET)/qt6/plugins/sqldrivers/qsqlite.dll'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/sqldrivers'
 
     $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/imageformats'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/imageformats/qgif.dll'             '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/imageformats'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/imageformats/qjpeg.dll'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/imageformats'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/imageformats/qico.dll'             '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/imageformats'
+    $(INSTALL) '$(PREFIX)/$(TARGET)/qt6/plugins/imageformats/qgif.dll'             '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/imageformats'
+    $(INSTALL) '$(PREFIX)/$(TARGET)/qt6/plugins/imageformats/qjpeg.dll'            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/imageformats'
+    $(INSTALL) '$(PREFIX)/$(TARGET)/qt6/plugins/imageformats/qico.dll'             '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/imageformats'
 
     $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/styles'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/qt5/plugins/styles/qwindowsvistastyle.dll'     '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/styles'
+    $(INSTALL) '$(PREFIX)/$(TARGET)/qt6/plugins/styles/qwindowsvistastyle.dll'     '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/styles'
 
     $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
     $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gstreamer-1.0/libgstapp.dll'               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gstreamer-plugins'
