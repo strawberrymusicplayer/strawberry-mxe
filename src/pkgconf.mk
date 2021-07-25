@@ -3,8 +3,8 @@
 PKG             := pkgconf
 $(PKG)_WEBSITE  := https://github.com/pkgconf/pkgconf
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.7.4
-$(PKG)_CHECKSUM := 2828dcdef88098748c306281d64a630b4ccd0703b1d92b532c31411e531d3088
+$(PKG)_VERSION  := 1.8.0
+$(PKG)_CHECKSUM := d84a2a338a17e0f68e6a8d6c9caf40d6a2c9580c4ae1d475b338b8d956e483aa
 $(PKG)_GH_CONF  := pkgconf/pkgconf/tags, pkgconf-
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS     := $(BUILD)~$(PKG)
