@@ -4,8 +4,8 @@ PKG             := libgnurx
 $(PKG)_WEBSITE  := https://github.com/jonaski/libgnurx
 $(PKG)_DESCR    := regex functionality from glibc extracted into a separate library
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := a3314c3
-$(PKG)_CHECKSUM := 474046b4abeceb35aa1f1ebe65324d7e06a7105bf2db2ce4aab2df4b21ec12aa
+$(PKG)_VERSION  := a23e3e1
+$(PKG)_CHECKSUM := bdce2246a8755e874b0be90a5bd8cddbc204d6f587e7b10ba9ece07581acc464
 $(PKG)_GH_CONF  := jonaski/libgnurx/branches/master
 $(PKG)_DEPS     := cc
 
