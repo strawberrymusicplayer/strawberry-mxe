@@ -1,37 +1,28 @@
-From ed1d46e0718a1027e014882e97d784e252fced82 Mon Sep 17 00:00:00 2001
+From a83a5ed346d96d2f26ce7563480245dc9a963af3 Mon Sep 17 00:00:00 2001
 From: Jonas Kvinge <jonas@jkvinge.net>
-Date: Fri, 16 Jul 2021 01:47:56 +0200
-Subject: [PATCH] Update CMakeLists.txt files for Qt 6
+Date: Wed, 4 Aug 2021 19:03:32 +0200
+Subject: [PATCH] Add Qt 6 and drop Qt 4 from CMakeLists
 
 ---
- CMakeLists.txt       | 181 ++++++++++++++++++++++++++++++-------------
- src/CMakeLists.txt   |  17 ++--
- tests/CMakeLists.txt |  21 ++---
- 3 files changed, 147 insertions(+), 72 deletions(-)
+ CMakeLists.txt       | 157 ++++++++++++++++++++++++++-----------------
+ src/CMakeLists.txt   |  13 ++--
+ tests/CMakeLists.txt |  28 ++++----
+ 3 files changed, 111 insertions(+), 87 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index fa4b0cb..507cda0 100644
+index 1a8c8e3..9cfc5c8 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -1,36 +1,79 @@
--cmake_minimum_required( VERSION 2.8.9 FATAL_ERROR )
-+cmake_minimum_required( VERSION 2.8.12 FATAL_ERROR )
- 
+@@ -3,48 +3,99 @@ cmake_minimum_required( VERSION 3.0 FATAL_ERROR )
  project( libmygpo-qt )
  
  set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 -set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII" )
  
 -option(BUILD_WITH_QT4 "Build libmygpo-qt with Qt4" OFF)
+-option(MYGPO_BUILD_TESTS "Build all unit tests" ON)
 +include(CheckCXXCompilerFlag)
- 
--if( NOT BUILD_WITH_QT4 )
--    if( MYGPO_BUILD_TESTS )
--        find_package(Qt5 REQUIRED COMPONENTS Core Network Test CONFIG)
--    else()
--        find_package(Qt5 REQUIRED COMPONENTS Core Network CONFIG)
--    endif()
--    set(MYGPO_QT_VERSION_SUFFIX 5)
++
 +list(APPEND COMPILE_OPTIONS
 +  -Wall
 +  -Wextra
@@ -64,10 +55,7 @@ index fa4b0cb..507cda0 100644
 +if ( NOT WIN32 )
 +  list(APPEND COMPILE_OPTIONS -fvisibility=hidden )
 +endif()
- 
--    macro(qt_wrap_cpp)
--        qt5_wrap_cpp(${ARGN})
--    endmacro()
++
 +if (CMAKE_COMPILER_IS_GNUCXX)
 +  list(APPEND COMPILE_OPTIONS
 +    -ggdb3
@@ -78,7 +66,51 @@ index fa4b0cb..507cda0 100644
 +    list(APPEND COMPILE_OPTIONS -Wlogical-op )
 +  endif()
 +endif (CMAKE_COMPILER_IS_GNUCXX)
++
++add_compile_options(${COMPILE_OPTIONS})
++
++add_definitions(-DQT_STRICT_ITERATOR -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII)
++
++option( MYGPO_QT_MAJOR_VERSION "Qt version to use (5 or 6)" )
++option( BUILD_WITH_QT5 "Build libmygpo-qt with Qt 5" OFF )
++option( BUILD_WITH_QT6 "Build libmygpo-qt with Qt 6" OFF )
++option( MYGPO_BUILD_TESTS "Build all unit tests" ON )
++
++set(QT_COMPONENTS Core Network)
++if(MYGPO_BUILD_TESTS)
++    list(APPEND QT_COMPONENTS Test)
++endif()
  
+-if( NOT BUILD_WITH_QT4 )
+-    if( MYGPO_BUILD_TESTS )
+-        find_package(Qt5 REQUIRED COMPONENTS Core Network Test CONFIG)
++if( BUILD_WITH_QT6 OR MYGPO_QT_MAJOR_VERSION EQUAL 6 )
++    set( MYGPO_QT_MAJOR_VERSION 6 CACHE STRING "" FORCE )
++    set( BUILD_WITH_QT6 ON CACHE BOOL "" FORCE )
++elseif( BUILD_WITH_QT5 OR MYGPO_QT_MAJOR_VERSION EQUAL 5 )
++    set( MYGPO_QT_MAJOR_VERSION 5 CACHE STRING "" FORCE )
++    set( BUILD_WITH_QT5 ON CACHE BOOL "" FORCE )
++    set( QT_MIN_VERSION 5.2 )
++ else()
++    # Automatically detect Qt version.
++    find_package( QT NAMES Qt6 Qt5 COMPONENTS ${QT_COMPONENTS} REQUIRED )
++    if( QT_FOUND AND QT_VERSION_MAJOR EQUAL 6 )
++        set( BUILD_WITH_QT6 ON CACHE BOOL "" FORCE )
++        set( MYGPO_QT_MAJOR_VERSION 6 CACHE STRING "" FORCE )
++    elseif (QT_FOUND AND QT_VERSION_MAJOR EQUAL 5 )
++        set( BUILD_WITH_QT5 ON CACHE BOOL "" FORCE )
++        set( MYGPO_QT_MAJOR_VERSION 5 CACHE STRING "" FORCE )
++        set( QT_MIN_VERSION 5.2 )
+     else()
+-        find_package(Qt5 REQUIRED COMPONENTS Core Network CONFIG)
++        message( FATAL_ERROR "Could not find a suitable Qt version." )
+     endif()
+-    set(MYGPO_QT_VERSION_SUFFIX 5)
+-
+-    macro(qt_wrap_cpp)
+-        qt5_wrap_cpp(${ARGN})
+-    endmacro()
+-
 -    # pkg-config names of QtCore and QtNetwork are Qt5Core and Qt5Network for
 -    # Qt5
 -    set(MYGPO_QT_MAJOR_VERSION "5")
@@ -90,96 +122,33 @@ index fa4b0cb..507cda0 100644
 -        find_package( Qt4 COMPONENTS QtCore QtNetwork QtTest REQUIRED )
 -    else( MYGPO_BUILD_TESTS )
 -        find_package( Qt4 COMPONENTS QtCore QtNetwork REQUIRED )
-+add_compile_options(${COMPILE_OPTIONS})
-+
-+add_definitions(-DQT_STRICT_ITERATOR -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII)
-+
-+option( MYGPO_QT_MAJOR_VERSION "Qt version to use (4, 5 or 6)" )
-+option( BUILD_WITH_QT4 "Build libmygpo-qt with Qt 4" OFF )
-+option( BUILD_WITH_QT5 "Build libmygpo-qt with Qt 5" OFF )
-+option( BUILD_WITH_QT6 "Build libmygpo-qt with Qt 6" OFF )
-+option( MYGPO_BUILD_TESTS "Build all unit tests" ON )
-+
-+if( BUILD_WITH_QT4 OR MYGPO_QT_MAJOR_VERSION EQUAL 4 )
-+
-+    message(STATUS "Qt 4 Support is deprecated, building with Qt 4 is no longer officially supported")
-+
-+    set( BUILD_WITH_QT4 ON CACHE BOOL "" FORCE )
-+    set( MYGPO_QT_MAJOR_VERSION "" CACHE STRING "" FORCE )
-+
-+    set(QT_COMPONENTS QtCore QtNetwork)
-+    if(MYGPO_BUILD_TESTS)
-+      list(APPEND QT_COMPONENTS QtTest)
-     endif()
-+
-+    find_package( Qt4 COMPONENTS ${QT_COMPONENTS} REQUIRED )
-+
-     set( QT_DONT_USE_QTGUI TRUE )
-     include( ${QT_USE_FILE} )
+-    endif()
+-    set( QT_DONT_USE_QTGUI TRUE )
+-    include( ${QT_USE_FILE} )
++endif()
  
-@@ -38,11 +81,59 @@ else()
-         qt4_wrap_cpp(${ARGN})
-     endmacro()
+-    macro(qt_wrap_cpp)
+-        qt4_wrap_cpp(${ARGN})
+-    endmacro()
++if( BUILD_WITH_QT5 AND Qt5Core_VERSION VERSION_LESS 5.15.0 )
++   macro(qt_wrap_cpp)
++       qt5_wrap_cpp(${ARGN})
++   endmacro()
++endif()
  
 -    set(MYGPO_QT_MAJOR_VERSION "")
-     set(MYGPO_QT4_QJSON_DEP "Requires.private: QJson")
+-    set(MYGPO_QT4_QJSON_DEP "Requires.private: QJson")
++find_package( Qt${MYGPO_QT_MAJOR_VERSION} ${QT_MIN_VERSION} REQUIRED COMPONENTS ${QT_COMPONENTS} )
  
 -    # QJson is only required for Qt4
-+    # QJson is only required for Qt 4
-     find_package(QJSON REQUIRED)
-+
-+    set( MYGPO_QT_VERSION_SUFFIX ${MYGPO_QT_MAJOR_VERSION} )
-+
-+else()
-+
-+    set(QT_COMPONENTS Core Network)
-+    if(MYGPO_BUILD_TESTS)
-+      list(APPEND QT_COMPONENTS Test)
-+    endif()
-+
-+    if( BUILD_WITH_QT6 OR MYGPO_QT_MAJOR_VERSION EQUAL 6 )
-+      set( MYGPO_QT_MAJOR_VERSION 6 CACHE STRING "" FORCE )
-+      set( BUILD_WITH_QT6 ON CACHE BOOL "" FORCE )
-+    elseif( BUILD_WITH_QT5 OR MYGPO_QT_MAJOR_VERSION EQUAL 5 )
-+      set( MYGPO_QT_MAJOR_VERSION 5 CACHE STRING "" FORCE )
-+      set( BUILD_WITH_QT5 ON CACHE BOOL "" FORCE )
-+      set( QT_MIN_VERSION 5.2 )
-+    else()
-+      # Automatically detect Qt version.
-+      find_package( QT NAMES Qt6 Qt5 COMPONENTS ${QT_COMPONENTS} REQUIRED )
-+      if( QT_FOUND AND QT_VERSION_MAJOR EQUAL 6 )
-+        set( BUILD_WITH_QT6 ON CACHE BOOL "" FORCE )
-+        set( MYGPO_QT_MAJOR_VERSION 6 CACHE STRING "" FORCE )
-+      elseif (QT_FOUND AND QT_VERSION_MAJOR EQUAL 5 )
-+        set( BUILD_WITH_QT5 ON CACHE BOOL "" FORCE )
-+        set( MYGPO_QT_MAJOR_VERSION 5 CACHE STRING "" FORCE )
-+        set( QT_MIN_VERSION 5.2 )
-+      else()
-+        message( FATAL_ERROR "Qt 5 and 6 was not found. Configure with -DBUILD_WITH_QT4=ON to build with Qt 4." )
-+      endif()
-+    endif()
-+
-+    if( BUILD_WITH_QT5 )
-+      macro(qt_wrap_cpp)
-+        qt5_wrap_cpp(${ARGN})
-+      endmacro()
-+    endif()
-+
-+    if( BUILD_WITH_QT6 )
-+      macro(qt_wrap_cpp)
-+        qt6_wrap_cpp(${ARGN})
-+      endmacro()
-+    endif()
-+
-+    find_package( Qt${MYGPO_QT_MAJOR_VERSION} ${QT_MIN_VERSION} REQUIRED COMPONENTS ${QT_COMPONENTS} )
-+
-+    set( MYGPO_QT_VERSION_SUFFIX ${MYGPO_QT_MAJOR_VERSION} )
-+    set( QT_DEFAULT_MAJOR_VERSION ${MYGPO_QT_MAJOR_VERSION} )
-+
- endif()
+-    find_package(QJSON REQUIRED)
+-endif()
++set( MYGPO_QT_VERSION_SUFFIX ${MYGPO_QT_MAJOR_VERSION} )
++set( QT_DEFAULT_MAJOR_VERSION ${MYGPO_QT_MAJOR_VERSION} )
  
  # Don't use absolute path in Mygpo-qtTargets-$buildType.cmake
-@@ -59,26 +150,6 @@ set( MYGPO_QT_SONAME "${MYGPO_QT_VERSION_MAJOR}")
+ # (This will have no effect with CMake < 2.8)
+@@ -60,24 +111,6 @@ set( MYGPO_QT_SONAME "${MYGPO_QT_VERSION_MAJOR}")
  #Configure Version.h.in with the actual version number
  configure_file( src/Version.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/Version.h )
  
@@ -201,12 +170,10 @@ index fa4b0cb..507cda0 100644
 -    endif()
 -endif(CMAKE_COMPILER_IS_GNUCXX)
 -
--option(MYGPO_BUILD_TESTS "Build all unit tests" ON)
--
  if(MYGPO_BUILD_TESTS)
      INCLUDE(CTest)
      enable_testing()
-@@ -117,24 +188,24 @@ if(DOXYGEN_FOUND)
+@@ -116,24 +149,24 @@ if(DOXYGEN_FOUND)
  endif(DOXYGEN_FOUND)
  
  # make uninstall support
@@ -241,7 +208,7 @@ index fa4b0cb..507cda0 100644
  set(MYGPO_QT_TARGET_NAME mygpo-qt${MYGPO_QT_VERSION_SUFFIX} CACHE INTERNAL "" FORCE )
  
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 253e81e..a5d2f0f 100644
+index 253e81e..95a9c15 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
 @@ -1,6 +1,3 @@
@@ -251,7 +218,7 @@ index 253e81e..a5d2f0f 100644
  set ( LIBMYGPO_QT_SRC
          Config.cpp
          DeviceSyncResult.cpp
-@@ -75,16 +72,22 @@ set ( LIBMYGPO_QT_INSTALL_H
+@@ -75,17 +72,15 @@ set ( LIBMYGPO_QT_INSTALL_H
          AddRemoveResult.h
  )
  
@@ -264,25 +231,20 @@ index 253e81e..a5d2f0f 100644
  
 -if( NOT BUILD_WITH_QT4 )
 -    target_link_libraries( ${MYGPO_QT_TARGET_NAME} Qt5::Core Qt5::Network)
-+if(QJSON_FOUND)
-+  target_include_directories( ${MYGPO_QT_TARGET_NAME} SYSTEM PRIVATE ${QJSON_INCLUDE_DIR} )
-+endif(QJSON_FOUND)
-+
+-else()
+-    target_link_libraries( ${MYGPO_QT_TARGET_NAME} ${QT_QTCORE_LIBRARY} ${QT_QTNETWORK_LIBRARY} ${QJSON_LIBRARIES})
+-endif()
 +target_include_directories( ${MYGPO_QT_TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} )
 +
-+if( BUILD_WITH_QT4 )
-+    target_link_libraries( ${MYGPO_QT_TARGET_NAME} PRIVATE ${QT_QTCORE_LIBRARY} ${QT_QTNETWORK_LIBRARY} ${QJSON_LIBRARIES})
- else()
--    target_link_libraries( ${MYGPO_QT_TARGET_NAME} ${QT_QTCORE_LIBRARY} ${QT_QTNETWORK_LIBRARY} ${QJSON_LIBRARIES})
-+    target_link_libraries( ${MYGPO_QT_TARGET_NAME} PRIVATE Qt${MYGPO_QT_VERSION_SUFFIX}::Core Qt${MYGPO_QT_VERSION_SUFFIX}::Network)
- endif()
++target_link_libraries( ${MYGPO_QT_TARGET_NAME} PRIVATE Qt${MYGPO_QT_VERSION_SUFFIX}::Core Qt${MYGPO_QT_VERSION_SUFFIX}::Network)
  
  install( TARGETS ${MYGPO_QT_TARGET_NAME} EXPORT ${MYGPO_QT_TARGET_NAME}Export DESTINATION ${LIB_INSTALL_DIR} )
+ 
 diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
-index 4f77158..c10d9b2 100644
+index 4f77158..4bed6d7 100644
 --- a/tests/CMakeLists.txt
 +++ b/tests/CMakeLists.txt
-@@ -7,35 +7,36 @@ remove_definitions(-DQT_NO_CAST_TO_ASCII)
+@@ -7,35 +7,31 @@ remove_definitions(-DQT_NO_CAST_TO_ASCII)
  
  set ( TESTOBJECTS_SRCDIR ${CMAKE_CURRENT_SOURCE_DIR}/../src )
  
@@ -290,20 +252,21 @@ index 4f77158..c10d9b2 100644
 -
  # UrlBuilder library
  add_library( UrlBuilder ${TESTOBJECTS_SRCDIR}/UrlBuilder.cpp ${TESTOBJECTS_SRCDIR}/Config.cpp )
-+target_include_directories( UrlBuilder PRIVATE ${QJSON_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/../src ${TESTOBJECTS_SRCDIR} )
- if( NOT BUILD_WITH_QT4 )
+-if( NOT BUILD_WITH_QT4 )
 -    target_link_libraries( UrlBuilder Qt5::Core )
-+    target_link_libraries( UrlBuilder PRIVATE Qt${MYGPO_QT_VERSION_SUFFIX}::Core )
- endif()
+-endif()
++target_include_directories( UrlBuilder PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/../src ${TESTOBJECTS_SRCDIR} )
++target_link_libraries( UrlBuilder PRIVATE Qt${MYGPO_QT_VERSION_SUFFIX}::Core )
++
  # JSONCreator library
 -QT_WRAP_CPP(LIBMYGPO_QT_MOC_SRC ${TESTOBJECTS_SRCDIR}/EpisodeAction.h ${TESTOBJECTS_SRCDIR}/EpisodeAction_p.h )
 +qt_wrap_cpp(LIBMYGPO_QT_MOC_SRC ${TESTOBJECTS_SRCDIR}/EpisodeAction.h ${TESTOBJECTS_SRCDIR}/EpisodeAction_p.h )
  add_library( JsonCreator ${TESTOBJECTS_SRCDIR}/JsonCreator.cpp ${TESTOBJECTS_SRCDIR}/EpisodeAction.cpp ${TESTOBJECTS_SRCDIR}/qjsonwrapper/Json.cpp ${LIBMYGPO_QT_MOC_SRC})
-+target_include_directories( JsonCreator PRIVATE ${QJSON_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/../src ${TESTOBJECTS_SRCDIR} )
- if( NOT BUILD_WITH_QT4 )
+-if( NOT BUILD_WITH_QT4 )
 -    target_link_libraries( JsonCreator Qt5::Core Qt5::Network )
-+    target_link_libraries( JsonCreator PRIVATE Qt${MYGPO_QT_VERSION_SUFFIX}::Core Qt${MYGPO_QT_VERSION_SUFFIX}::Network )
- endif()
+-endif()
++target_include_directories( JsonCreator PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/../src ${TESTOBJECTS_SRCDIR} )
++target_link_libraries( JsonCreator PRIVATE Qt${MYGPO_QT_VERSION_SUFFIX}::Core Qt${MYGPO_QT_VERSION_SUFFIX}::Network )
  
  set( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR} )
  
@@ -313,13 +276,13 @@ index 4f77158..c10d9b2 100644
 +    qt_wrap_cpp(${_name}_MOC_SRC ${_name}.h)
      add_executable(${_name} ${_source} ${${_name}_MOC_SRC})
 -    target_link_libraries(${_name} ${QT_QTCORE_LIBRARY} ${QT_QTTEST_LIBRARY} ${QT_QTNETWORK_LIBRARY})
-+    target_include_directories( ${_name} PRIVATE ${QJSON_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/../src ${TESTOBJECTS_SRCDIR} )
++    target_include_directories( ${_name} PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/../src ${TESTOBJECTS_SRCDIR} )
 +    target_link_libraries(${_name} PRIVATE ${QT_QTCORE_LIBRARY} ${QT_QTTEST_LIBRARY} ${QT_QTNETWORK_LIBRARY})
      add_test(${_name}-test ${EXECUTABLE_OUTPUT_PATH}/${_name})
-     if( NOT BUILD_WITH_QT4 )
+-    if( NOT BUILD_WITH_QT4 )
 -        target_link_libraries(${_name} Qt5::Network Qt5::Test)
-+        target_link_libraries(${_name} PRIVATE Qt${MYGPO_QT_VERSION_SUFFIX}::Network Qt${MYGPO_QT_VERSION_SUFFIX}::Test)
-     endif()
+-    endif()
++    target_link_libraries(${_name} PRIVATE Qt${MYGPO_QT_VERSION_SUFFIX}::Network Qt${MYGPO_QT_VERSION_SUFFIX}::Test)
  endmacro(add_libmygpo_test)
  
  add_libmygpo_test( UrlBuilderTest.cpp )
@@ -328,4 +291,4 @@ index 4f77158..c10d9b2 100644
  
  add_libmygpo_test( JsonCreatorTest.cpp )
 -target_link_libraries( JsonCreatorTest JsonCreator ${QJSON_LIBRARIES} )
-+target_link_libraries( JsonCreatorTest PRIVATE JsonCreator ${QJSON_LIBRARIES} )
++target_link_libraries( JsonCreatorTest PRIVATE JsonCreator )
