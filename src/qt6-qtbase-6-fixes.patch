@@ -1,0 +1,41 @@
+This file is part of MXE. See LICENSE.md for licensing information.
+
+Contains ad hoc patches for cross building.
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Sun, 8 Aug 2021 02:04:32 +0200
+Subject: [PATCH 1/1] Fix openSSL linking
+
+
+diff --git a/cmake/FindWrapOpenSSL.cmake b/cmake/FindWrapOpenSSL.cmake
+index 1111111..2222222 100644
+--- a/cmake/FindWrapOpenSSL.cmake
++++ b/cmake/FindWrapOpenSSL.cmake
+@@ -18,7 +18,7 @@ if(OpenSSL_FOUND)
+         else()
+             set(writableLib OpenSSL::Crypto)
+         endif()
+-        set_property(TARGET ${writableLib} APPEND PROPERTY INTERFACE_LINK_LIBRARIES Ws2_32 Crypt32)
++        set_property(TARGET ${writableLib} APPEND PROPERTY INTERFACE_LINK_LIBRARIES ws2_32 crypt32)
+         unset(libType)
+         unset(writableLib)
+     endif()
+diff --git a/src/network/configure.json b/src/network/configure.json
+index 1111111..2222222 100644
+--- a/src/network/configure.json
++++ b/src/network/configure.json
+@@ -89,11 +89,11 @@
+             "sources": [
+                 { "type": "openssl" },
+                 {
+-                    "libs": "-lssleay32 -llibeay32 -lUser32 -lWs2_32 -lAdvapi32 -lGdi32",
++                    "libs": "-lssleay32 -llibeay32 -lUser32 -lws2_32 -lAdvapi32 -lGdi32",
+                     "condition": "config.win32"
+                 },
+                 {
+-                    "libs": "-llibssl -llibcrypto -lUser32 -lWs2_32 -lAdvapi32 -lCrypt32",
++                    "libs": "-llibssl -llibcrypto -lUser32 -lws2_32 -lAdvapi32 -lcrypt32",
+                     "condition": "config.msvc"
+                 },
+                 {

@@ -25,7 +25,6 @@ endef
 define $(PKG)_BUILD
     mkdir -p '$(PREFIX)/$(TARGET)/qt6/bin/'
     cp '$(PREFIX)/$(BUILD)/qt6/libexec/qvkgen' '$(PREFIX)/$(TARGET)/qt6/bin/qvkgen.exe'
-    OPENSSL_LIBS="`'$(TARGET)-pkg-config' --libs-only-l openssl`" \
     PKG_CONFIG="${TARGET}-pkg-config" \
     PKG_CONFIG_SYSROOT_DIR="/" \
     PKG_CONFIG_LIBDIR="$(PREFIX)/$(TARGET)/lib/pkgconfig" \
@@ -51,6 +50,7 @@ define $(PKG)_BUILD
         -DFEATURE_accessibility=ON \
         -DFEATURE_fontconfig=OFF \
         -DFEATURE_openssl=ON \
+        -DFEATURE_openssl_linked=ON \
         -DFEATURE_opengl=ON \
         -DFEATURE_opengl_dynamic=ON \
         -DFEATURE_use_gold_linker_alias=OFF \
