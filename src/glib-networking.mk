@@ -15,6 +15,7 @@ define $(PKG)_UPDATE
     $(call MXE_GET_GH_TAGS,GNOME/glib-networking) | \
     grep -v '\([0-9]\+\.\)\{2\}9[0-9]' | \
     grep -v 'alpha' |
+    grep -v 'beta' |
     $(SORT) -Vr | \
     head -1
 endef
