@@ -6,7 +6,7 @@ $(PKG)_DESCR    := MMA-Win32
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 2d1c576
 $(PKG)_CHECKSUM := b9b7a4afdf19644b761bd66a7a0fba5cea4bdf2cba180bd9323a6029f134ccbe
-$(PKG)_GH_CONF  := witwall/mman-win32/branches/master
+$(PKG)_GH_CONF  := alitrack/mman-win32/branches/master
 $(PKG)_DEPS     := cc
 
 define $(PKG)_BUILD
