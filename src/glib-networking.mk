@@ -16,6 +16,7 @@ define $(PKG)_UPDATE
     grep -v '\([0-9]\+\.\)\{2\}9[0-9]' | \
     grep -v 'alpha' |
     grep -v 'beta' |
+    grep -v '\.rc' |
     $(SORT) -Vr | \
     head -1
 endef
