@@ -2,8 +2,49 @@ name: C/C++ CI
 on: [push, pull_request]
 
 jobs:
-  build:
-    name: Build MXE
+
+  build-i686-shared:
+    name: Build MinGW i686 Shared
+    runs-on: ubuntu-latest
+    container: opensuse/tumbleweed
+    steps:
+      - uses: master/checkout@v1.2.0
+      - name: Update packages
+        run: zypper -n --gpg-auto-import-keys ref
+      - name: Upgrade packages
+        run: zypper -n --gpg-auto-import-keys dup
+      - name: Install openSUSE dependencies
+        run: zypper -n --gpg-auto-import-keys install glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc-c++ shadow git make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool which patch wget curl gperf tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip gettext-tools gtk-doc ruby scons bison flex diffutils orc linux-glibc-devel glibc-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel python-base python3-base python3-setuptools python3-Mako
+      - name: Update settings.mk
+        shell: bash
+        run: sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := i686-w64-mingw32.shared/g' settings.mk
+      - name: Compile
+        shell: bash
+        run: make -j4
+
+  build-x86_64-shared:
+    name: Build MinGW x86_64 shared
+    runs-on: ubuntu-latest
+    container: opensuse/tumbleweed
+    steps:
+      - uses: master/checkout@v1.2.0
+      - name: Update packages
+        run: zypper -n --gpg-auto-import-keys ref
+      - name: Upgrade packages
+        run: zypper -n --gpg-auto-import-keys dup
+      - name: Install openSUSE dependencies
+        run: zypper -n --gpg-auto-import-keys install glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc-c++ shadow git make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool which patch wget curl gperf tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip gettext-tools gtk-doc ruby scons bison flex diffutils orc linux-glibc-devel glibc-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel python-base python3-base python3-setuptools python3-Mako
+      - name: Update settings.mk
+        shell: bash
+        run: sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := x86_64-w64-mingw32.shared/g' settings.mk
+      - name: Compile
+        shell: bash
+        run: make -j4
+
+
+  build-docker-i686:
+    name: Build MXE Docker i686
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
 
@@ -14,15 +55,39 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       - name: Login to DockerHub
-        if: github.ref == 'refs/heads/master'
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Push to DockerHub
-        if: github.ref == 'refs/heads/master'
         uses: docker/build-push-action@v2
         with:
+          file: ./dockerfiles/i686-w64-mingw32-shared.Dockerfile
           push: true
-          tags: jonaski/strawberry-mxe2:latest
+          tags: jonaski/strawberry-mxe-i686:latest
+
+  build-docker-x86_64:
+    name: Build MXE Docker x86_64
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v1.2.0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Push to DockerHub
+        uses: docker/build-push-action@v2
+        with:
+          file: ./dockerfiles/x86_64-w64-mingw32-shared.Dockerfile
+          push: true
+          tags: jonaski/strawberry-mxe-x86_64:latest
