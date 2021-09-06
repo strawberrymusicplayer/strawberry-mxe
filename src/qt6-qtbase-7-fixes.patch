@@ -1,0 +1,81 @@
+From ff2e145a9db35e2e1d1219b533efe642429e9b23 Mon Sep 17 00:00:00 2001
+From: Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
+Date: Sat, 7 Nov 2020 01:15:34 +0100
+Subject: [PATCH] QObject: cleanup the orphaned connection lists on destruction
+
+When a signal/slot connection is broken, it gets added to the
+sender's list of "orphaned connections", to clean up later.
+This cleanup happens when the sender gets destroyed or as soon as
+it emits any signal.
+
+This may cause soft memory leaks in case receivers get destroyed,
+and the sender is a long living object and doesn't emit signals
+for a while (e.g. QThread).
+
+For some reason, an explicit disconnection cleans up the list
+(either by using the QMetaObject::Connection object, or in case
+of string-based connect, using a string-based disconnect). This
+raises lots of doubts about why having this list in the first
+place.
+
+Fix the soft-leak by cleaning up the orphaned connection list when
+destroying a receiver.
+
+Note: I still believe that we shouldn't have any "orphaned"
+connection list, and rather cleanup on disconnect/deletion
+(otherwise, emitting a signal may cause a CPU spike because it
+triggers a cleanup).  If we allow for any "impredictability" during
+signal activation we're just admitting that signals/slots aren't
+suitable for e.g. low-latency codepaths. That's why I'm not marking
+the problem as fixed.
+
+Original-patch-by: Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
+Task-number: QTBUG-88248
+Task-number: QTBUG-87774
+Change-Id: Id25f67a45dff49f740132a44d36e88740eb12070
+Reviewed-by: Thiago Macieira <thiago.macieira@intel.com>
+Reviewed-by: Qt CI Bot <qt_ci_bot@qt-project.org>
+(cherry picked from commit c2839843f23fb5c289175cb9577981d48dd273fc)
+Reviewed-by: Lars Knoll <lars.knoll@qt.io>
+---
+ src/corelib/kernel/qobject.cpp | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/src/corelib/kernel/qobject.cpp b/src/corelib/kernel/qobject.cpp
+index 326fba5be26..8870cae8712 100644
+--- a/src/corelib/kernel/qobject.cpp
++++ b/src/corelib/kernel/qobject.cpp
+@@ -1070,13 +1070,28 @@ QObject::~QObject()
+             }
+ 
+             senderData->removeConnection(node);
++            /*
++              When we unlock, another thread has the chance to delete/modify sender data.
++              Thus we need to call cleanOrphanedConnections before unlocking. We use the
++              variant of the function which assumes that the lock is already held to avoid
++              a deadlock.
++              We need to hold m, the sender lock. Considering that we might execute arbitrary user
++              code, we should already release the signalSlotMutex here â unless they are the same.
++            */
++            const bool locksAreTheSame = signalSlotMutex == m;
++            if (!locksAreTheSame)
++                locker.unlock();
++            senderData->cleanOrphanedConnections(
++                        sender,
++                        QObjectPrivate::ConnectionData::AlreadyLockedAndTemporarilyReleasingLock
++                        );
+             if (needToUnlock)
+                 m->unlock();
+ 
+-            locker.unlock();
++            if (locksAreTheSame) // otherwise already unlocked
++                locker.unlock();
+             if (slotObj)
+                 slotObj->destroyIfLastRef();
+-            senderData->cleanOrphanedConnections(sender);
+             locker.relock();
+         }
+ 
+-- 
+2.16.3
+
