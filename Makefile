@@ -19,12 +19,9 @@ DEFAULT_MAX_JOBS   := 6
 PRINTF_COL_1_WIDTH := 13
 DUMMY_PROXY        := 192.0.2.0
 SOURCEFORGE_MIRROR := downloads.sourceforge.net
-MXE_MIRROR         := https://mirror.mxe.cc/pkg
-PKG_MIRROR         := https://mxe-pkg.s3.amazonaws.com
-PKG_CDN            := http://d1yihgixbnrglp.cloudfront.net
 PKG_JKVINGE        := https://files.jkvinge.net/packages/strawberry-dependencies
 # reorder as required, ensuring final one is a http fallback
-MIRROR_SITES       := PKG_JKVINGE MXE_MIRROR PKG_MIRROR PKG_CDN
+MIRROR_SITES       := PKG_JKVINGE
 
 PWD        := $(shell pwd)
 SHELL      := bash
