@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     container: opensuse/tumbleweed
     steps:
-      - uses: master/checkout@v1.2.0
+      - uses: actions/checkout@v1.2.0
       - name: Update packages
         run: zypper -n --gpg-auto-import-keys ref
       - name: Upgrade packages
@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     container: opensuse/tumbleweed
     steps:
-      - uses: master/checkout@v1.2.0
+      - uses: actions/checkout@v1.2.0
       - name: Update packages
         run: zypper -n --gpg-auto-import-keys ref
       - name: Upgrade packages
