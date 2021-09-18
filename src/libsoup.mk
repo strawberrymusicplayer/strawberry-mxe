@@ -16,6 +16,7 @@ define $(PKG)_UPDATE
     grep -v '\([0-9]\+\.\)\{2\}9[0-9]' | \
     $(SORT) -Vr | \
     grep -v '2.99.' | \
+    grep -v '3.0.' | \
     head -1
 endef
 
