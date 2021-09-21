@@ -1,9 +1,10 @@
-FROM opensuse/tumbleweed
+FROM opensuse/leap:15.3
 
-RUN zypper -n ar -c -f -n 'repo-nsis' https://download.opensuse.org/repositories/windows:/mingw:/win32/openSUSE_Tumbleweed/ repo-nsis
+RUN zypper -n ar -c -f -n 'repo-devel-tools-building' https://download.opensuse.org/repositories/devel:/tools:/building/openSUSE_Leap_15.3/ repo-devel-tools-building
+RUN zypper -n ar -c -f -n 'repo-nsis' https://download.opensuse.org/repositories/windows:/mingw:/win32/openSUSE_Leap_15.3/ repo-nsis
 
 RUN zypper -n --gpg-auto-import-keys ref
-RUN zypper -n --gpg-auto-import-keys dup -l -y
+RUN zypper -n --gpg-auto-import-keys up -l -y
 
 RUN zypper -n --gpg-auto-import-keys install \
     glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc-c++ \
