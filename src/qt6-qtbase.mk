@@ -4,20 +4,19 @@ PKG             := qt6-qtbase
 $(PKG)_WEBSITE  := https://www.qt.io/
 $(PKG)_DESCR    := Qt 6 Base
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 6.1.3
-$(PKG)_CHECKSUM := 1e9abb2ea4daa0fd11f46fc871d9e896b916e1b7130fed74c83d66221bb4fe78
+$(PKG)_VERSION  := 6.2.0
+$(PKG)_CHECKSUM := fdfff0716d093bcb6bcd53746ce1d3c9701a6bf3326d47813866d43949b47769
 $(PKG)_FILE     := qtbase-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_SUBDIR   := qtbase-everywhere-src-$($(PKG)_VERSION)
-$(PKG)_URL      := https://download.qt.io/official_releases/qt/6.1/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
+$(PKG)_URL      := https://download.qt.io/official_releases/qt/6.2/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS     := cc openssl pcre2 fontconfig freetype harfbuzz glib jpeg libpng zlib zstd sqlite mesa $(BUILD)~$(PKG) $(BUILD)~qt6-qttools
 $(PKG)_DEPS_$(BUILD) :=
 $(PKG)_OO_DEPS_$(BUILD) += qt6-conf ninja
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- https://download.qt.io/official_releases/qt/6.1/ | \
-    $(SED) -n 's,.*href="\(6\.1\.[^/]*\)/".*,\1,p' | \
-    grep -iv -- '-rc' | \
+    $(WGET) -q -O- https://download.qt.io/official_releases/qt/6.2/ | \
+    $(SED) -n 's,.*href="\(6\.2\.[^/]*\)/".*,\1,p' | \
     sort |
     tail -1
 endef
@@ -62,6 +61,8 @@ define $(PKG)_BUILD
         -DFEATURE_sql_sqlite=ON \
         -DFEATURE_sql_odbc=ON \
         -DFEATURE_pcre2=ON \
+        -DFEATURE_libjpeg=ON \
+        -DFEATURE_libpng=ON \
         -DFEATURE_style_windows=ON \
         -DFEATURE_style_windowsvista=ON \
         -DINPUT_sqlite=system \

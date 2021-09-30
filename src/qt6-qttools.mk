@@ -4,26 +4,25 @@ PKG             := qt6-qttools
 $(PKG)_WEBSITE  := https://www.qt.io/
 $(PKG)_DESCR    := Qt 6 Tools
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 6.1.3
-$(PKG)_CHECKSUM := 29c1e305752791070f5dee2182ba9a44a489a1217911ceafca063f1007e6fb38
+$(PKG)_VERSION  := 6.2.0
+$(PKG)_CHECKSUM := a903d005f8ab39545aed88a13b04f13ddbbe073da7007203a91fb8b42b890057
 $(PKG)_FILE     := qttools-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_SUBDIR   := qttools-everywhere-src-$($(PKG)_VERSION)
-$(PKG)_URL      := https://download.qt.io/official_releases/qt/6.1/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
+$(PKG)_URL      := https://download.qt.io/official_releases/qt/6.2/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS     := cc qt6-qtbase $(BUILD)~$(PKG)
 $(PKG)_DEPS_$(BUILD) := qt6-qtbase
 $(PKG)_OO_DEPS_$(BUILD) += qt6-conf ninja
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- https://download.qt.io/official_releases/qt/6.1/ | \
-    $(SED) -n 's,.*href="\(6\.1\.[^/]*\)/".*,\1,p' | \
-    grep -iv -- '-rc' | \
+    $(WGET) -q -O- https://download.qt.io/official_releases/qt/6.2/ | \
+    $(SED) -n 's,.*href="\(6\.2\.[^/]*\)/".*,\1,p' | \
     sort |
     tail -1
 endef
 
 define $(PKG)_BUILD
-    $(QT6_CMAKE) -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' -DQT_BUILD_TOOLS_WHEN_CROSSCOMPILING=ON
+    $(QT6_CMAKE) -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' -DQT_BUILD_TOOLS_WHEN_CROSSCOMPILING=ON -DFEATURE_assistant=OFF
     cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
     cmake --install '$(BUILD_DIR)'
 
