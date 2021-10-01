@@ -21,9 +21,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && CHOST='$(TARGET)' ./configure \
-        --prefix='$(PREFIX)/$(TARGET)' \
-        --static
+    cd '$(1)' && CHOST='$(TARGET)' ./configure --prefix='$(PREFIX)/$(TARGET)' --static
     $(MAKE) -C '$(1)' -j '$(JOBS)' install
 endef
 

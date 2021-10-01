@@ -6,15 +6,29 @@ jobs:
   build-i686-shared:
     name: Build MinGW i686 Shared
     runs-on: ubuntu-latest
-    container: opensuse/tumbleweed
+    container: opensuse/leap:15.3
     steps:
       - uses: actions/checkout@v1.2.0
       - name: Update packages
         run: zypper -n --gpg-auto-import-keys ref
       - name: Upgrade packages
-        run: zypper -n --gpg-auto-import-keys dup
+        run: zypper -n --gpg-auto-import-keys up -l -y
       - name: Install openSUSE dependencies
-        run: zypper -n --gpg-auto-import-keys install glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc-c++ shadow git make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool which patch wget curl gperf tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip gettext-tools gtk-doc ruby scons bison flex diffutils orc linux-glibc-devel glibc-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel python-base python3-base python3-setuptools python3-Mako
+        run: zypper -n --gpg-auto-import-keys install glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc10 gcc10-c++ shadow which patch gperf wget curl git diffutils make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip gtk-doc gettext-tools scons bison flex ruby orc linux-glibc-devel glibc-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel python3-base python3-Mako
+      - name: update-alternatives
+        run: |
+          update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 50
+          update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-10 50
+          update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 50
+          update-alternatives --set cc /usr/bin/gcc-10
+          update-alternatives --set gcc /usr/bin/gcc-10
+          update-alternatives --set g++ /usr/bin/g++-10
+      - name: gcc version
+        run: |
+          gcc -v
+          g++ -v
+      - name: Link python 3
+        run: ln -s /usr/bin/python3 /usr/bin/python
       - name: Update settings.mk
         shell: bash
         run: sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := i686-w64-mingw32.shared/g' settings.mk
@@ -25,15 +39,29 @@ jobs:
   build-x86_64-shared:
     name: Build MinGW x86_64 shared
     runs-on: ubuntu-latest
-    container: opensuse/tumbleweed
+    container: opensuse/leap:15.3
     steps:
       - uses: actions/checkout@v1.2.0
       - name: Update packages
         run: zypper -n --gpg-auto-import-keys ref
       - name: Upgrade packages
-        run: zypper -n --gpg-auto-import-keys dup
+        run: zypper -n --gpg-auto-import-keys up -l -y
       - name: Install openSUSE dependencies
-        run: zypper -n --gpg-auto-import-keys install glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc-c++ shadow git make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool which patch wget curl gperf tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip gettext-tools gtk-doc ruby scons bison flex diffutils orc linux-glibc-devel glibc-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel python-base python3-base python3-setuptools python3-Mako
+        run: zypper -n --gpg-auto-import-keys install glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc10 gcc10-c++ shadow which patch gperf wget curl git diffutils make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip gtk-doc gettext-tools scons bison flex ruby orc linux-glibc-devel glibc-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel python3-base python3-Mako
+      - name: update-alternatives
+        run: |
+          update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 50
+          update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-10 50
+          update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 50
+          update-alternatives --set cc /usr/bin/gcc-10
+          update-alternatives --set gcc /usr/bin/gcc-10
+          update-alternatives --set g++ /usr/bin/g++-10
+      - name: gcc version
+        run: |
+          gcc -v
+          g++ -v
+      - name: Link python 3
+        run: ln -s /usr/bin/python3 /usr/bin/python
       - name: Update settings.mk
         shell: bash
         run: sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := x86_64-w64-mingw32.shared/g' settings.mk
