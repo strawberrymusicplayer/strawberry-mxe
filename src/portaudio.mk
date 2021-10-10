@@ -34,8 +34,7 @@ define $(PKG)_BUILD
     $(MAKE) -C '$(1)' -j '$(JOBS)' $(if $(BUILD_STATIC),SHARED_FLAGS=) TESTS=
     $(MAKE) -C '$(1)' -j 1 install
 
-    '$(TARGET)-gcc' \
-        -W -Wall -Werror -ansi -pedantic \
+    '$(TARGET)-gcc' -W -Wall -Werror -ansi -pedantic \
         '$(TEST_FILE)' -o '$(PREFIX)/$(TARGET)/bin/test-portaudio.exe' \
         `'$(TARGET)-pkg-config' portaudio-2.0 --cflags --libs`
 endef

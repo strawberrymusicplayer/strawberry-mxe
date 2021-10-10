@@ -19,9 +19,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_CONFIGURE
-    cd '$(1)' && ./configure \
-        $(MXE_CONFIGURE_OPTS) \
-        --with-gpg-error-prefix='$(PREFIX)/$(TARGET)'
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --with-gpg-error-prefix='$(PREFIX)/$(TARGET)'
 endef
 
 define $(PKG)_MAKE
@@ -39,10 +37,7 @@ define $(PKG)_MAKE
      ) \
      > '$(PREFIX)/$(TARGET)/lib/pkgconfig/$(PKG).pc'
 
-    '$(TARGET)-gcc' \
-        -W -Wall -Werror -ansi -pedantic \
-        '$(TEST_FILE)' -o '$(PREFIX)/$(TARGET)/bin/test-libgcrypt.exe' \
-        `$(TARGET)-pkg-config libgcrypt --cflags --libs`
+    '$(TARGET)-gcc' -W -Wall -Werror -ansi -pedantic '$(TEST_FILE)' -o '$(PREFIX)/$(TARGET)/bin/test-libgcrypt.exe' `$(TARGET)-pkg-config libgcrypt --cflags --libs`
 endef
 
 define $(PKG)_BUILD

@@ -22,13 +22,8 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && ./configure \
-        $(MXE_CONFIGURE_OPTS)
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS)
     $(MAKE) -C '$(1)' -j '$(JOBS)' install bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
     ln -sf '$(PREFIX)/$(TARGET)/bin/libpng-config' '$(PREFIX)/bin/$(TARGET)-libpng-config'
-
-    '$(TARGET)-gcc' \
-        -W -Wall -Werror -std=c99 -pedantic \
-        '$(TEST_FILE)' -o '$(PREFIX)/$(TARGET)/bin/test-libpng.exe' \
-        `'$(PREFIX)/$(TARGET)/bin/libpng-config' --static --cflags --libs`
+    '$(TARGET)-gcc' -W -Wall -Werror -std=c99 -pedantic '$(TEST_FILE)' -o '$(PREFIX)/$(TARGET)/bin/test-libpng.exe' `'$(PREFIX)/$(TARGET)/bin/libpng-config' --static --cflags --libs`
 endef

@@ -22,9 +22,7 @@ endef
 
 define $(PKG)_BUILD
     $(SED) -i 's, sed , $(SED) ,g' '$(1)/windows/windres-options'
-    cd '$(1)' && ./configure \
-        $(MXE_CONFIGURE_OPTS) \
-        --disable-nls
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --disable-nls
     $(MAKE) -C '$(1)/libcharset' -j '$(JOBS)' install
     $(MAKE) -C '$(1)/lib'        -j '$(JOBS)' install
     $(INSTALL) -d '$(PREFIX)/$(TARGET)/include'
@@ -36,8 +34,7 @@ endef
 
 define $(PKG)_BUILD_NATIVE
     # build and install the library
-    cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
-        $(MXE_CONFIGURE_OPTS)
+    cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure $(MXE_CONFIGURE_OPTS)
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' $(MXE_DISABLE_DOCS)
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install $(MXE_DISABLE_DOCS)
 endef
@@ -45,17 +42,13 @@ endef
 define $(PKG)_BUILD_DARWIN
     # required for glib but causes issues with other packages
     # (e.g. gcc) so use different prefix
-    cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
-        $(MXE_CONFIGURE_OPTS) \
-        --prefix='$(PREFIX)/$(TARGET).gnu'
+    cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure $(MXE_CONFIGURE_OPTS) --prefix='$(PREFIX)/$(TARGET).gnu'
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' $(MXE_DISABLE_DOCS)
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install $(MXE_DISABLE_DOCS)
 endef
 
 define $(PKG)_BUILD_$(BUILD)
-    $(if $(findstring darwin, $(BUILD)), \
-        $($(PKG)_BUILD_DARWIN), \
-        $($(PKG)_BUILD_NATIVE))
+    $(if $(findstring darwin, $(BUILD)), $($(PKG)_BUILD_DARWIN), $($(PKG)_BUILD_NATIVE))
 
     # charset.alias is redundant on mingw and modern glibc systems
     rm -f '$(PREFIX)/$(TARGET)/lib/charset.alias'

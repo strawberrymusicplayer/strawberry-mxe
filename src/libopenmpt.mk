@@ -20,7 +20,7 @@ endef
 
 define $(PKG)_BUILD
     cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) \
-			     --disable-openmpt123 \
+                             --disable-openmpt123 \
                              --disable-examples \
                              --disable-tests \
                              --without-mpg123

@@ -17,8 +17,7 @@ $(PKG)_DEPS_$(BUILD) :=
 define $(PKG)_BUILD
     # link to native yasm compiler on cross builds - it isn't
     # target-specific but makes it easier to detect our version
-    $(if $(BUILD_CROSS),
-        ln -sf '$(PREFIX)/$(BUILD)/bin/yasm' '$(PREFIX)/bin/$(TARGET)-yasm')
+    $(if $(BUILD_CROSS), ln -sf '$(PREFIX)/$(BUILD)/bin/yasm' '$(PREFIX)/bin/$(TARGET)-yasm')
 
     # yasm is always static
     # build libyasm and tools

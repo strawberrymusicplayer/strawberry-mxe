@@ -19,8 +19,7 @@ endef
 
 define $(PKG)_BUILD
     # build and install the library
-    cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
-        $(MXE_CONFIGURE_OPTS)
+    cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure $(MXE_CONFIGURE_OPTS)
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' $(MXE_DISABLE_CRUFT)
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install $(MXE_DISABLE_CRUFT)
 
@@ -35,8 +34,5 @@ define $(PKG)_BUILD
     # TODO create pc files for iconv and unistring.
 
     # compile test
-    '$(TARGET)-gcc' \
-        -W -Wall -Werror -ansi -pedantic \
-        '$(TEST_FILE)' -o '$(PREFIX)/$(TARGET)/bin/test-$(PKG).exe' \
-        `'$(TARGET)-pkg-config' $(PKG) --cflags --libs`
+    '$(TARGET)-gcc' -W -Wall -Werror -ansi -pedantic '$(TEST_FILE)' -o '$(PREFIX)/$(TARGET)/bin/test-$(PKG).exe' `'$(TARGET)-pkg-config' $(PKG) --cflags --libs`
 endef

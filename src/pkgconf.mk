@@ -43,8 +43,7 @@ endef
 
 define $(PKG)_BUILD_$(BUILD)
     cd '$(SOURCE_DIR)' && ./autogen.sh
-    cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
-        --prefix='$(PREFIX)/$(TARGET)'
+    cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure --prefix='$(PREFIX)/$(TARGET)'
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 endef

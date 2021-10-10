@@ -19,20 +19,16 @@ define $(PKG)_BUILD
     ) > '$(PREFIX)/$(TARGET)/lib/pkgconfig/pthreads.pc'
 
     # test pkg-config and libgomp
-    '$(TARGET)-gcc' \
-        -W -Wall -Werror -ansi -pedantic \
+    '$(TARGET)-gcc' -W -Wall -Werror -ansi -pedantic \
         '$(TOP_DIR)/src/$(PKG)-test.c' -o '$(PREFIX)/$(TARGET)/bin/test-$(PKG).exe' \
         `'$(TARGET)-pkg-config' --libs pthreads`
 
-    '$(TARGET)-gcc' \
-        -W -Wall -Werror -ansi -pedantic \
+    '$(TARGET)-gcc' -W -Wall -Werror -ansi -pedantic \
         '$(TOP_DIR)/src/$(PKG)-libgomp-test.c' -o '$(PREFIX)/$(TARGET)/bin/test-$(PKG)-libgomp.exe' \
         -fopenmp
 
     # test cmake
     mkdir '$(1).test-cmake'
-    cd '$(1).test-cmake' && '$(TARGET)-cmake' \
-        -DPKG=$(PKG) \
-        '$(PWD)/src/cmake/test'
+    cd '$(1).test-cmake' && '$(TARGET)-cmake' -DPKG=$(PKG) '$(PWD)/src/cmake/test'
     $(MAKE) -C '$(1).test-cmake' -j 1 install
 endef

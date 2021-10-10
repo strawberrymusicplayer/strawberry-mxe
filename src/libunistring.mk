@@ -18,9 +18,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && ./configure \
-        $(MXE_CONFIGURE_OPTS) \
-        --enable-threads=$(MXE_GCC_THREADS)
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --enable-threads=$(MXE_GCC_THREADS)
     $(MAKE) -C '$(1)' -j '$(JOBS)'
     $(MAKE) -C '$(1)' -j 1 install
 endef

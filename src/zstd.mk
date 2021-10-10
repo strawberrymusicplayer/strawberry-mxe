@@ -19,8 +19,7 @@ define $(PKG)_BUILD
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 
     # compile test
-    '$(TARGET)-gcc' \
-        -W -Wall -Werror -ansi -pedantic \
+    '$(TARGET)-gcc' -W -Wall -Werror -ansi -pedantic \
         '$(TEST_FILE)' -o '$(PREFIX)/$(TARGET)/bin/test-$(PKG).exe' \
         `'$(TARGET)-pkg-config' lib$(PKG) --cflags --libs`
 endef

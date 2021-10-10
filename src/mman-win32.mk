@@ -11,12 +11,8 @@ $(PKG)_DEPS     := cc
 
 define $(PKG)_BUILD
     # build and install the library
-    cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
-        -DBUILD_TESTS=OFF
+    cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' -DBUILD_TESTS=OFF
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
-
-    '$(TARGET)-gcc' -W -Wall \
-        '$(1)/test.c' -o '$(PREFIX)/$(TARGET)/bin/test-$(PKG).exe' \
-        -lmman
+    '$(TARGET)-gcc' -W -Wall '$(1)/test.c' -o '$(PREFIX)/$(TARGET)/bin/test-$(PKG).exe' -lmman
 endef
