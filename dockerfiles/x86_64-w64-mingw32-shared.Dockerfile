@@ -24,6 +24,7 @@ RUN update-alternatives --set cc /usr/bin/gcc-10
 RUN update-alternatives --set c++ /usr/bin/g++-10
 RUN update-alternatives --set gcc /usr/bin/gcc-10
 RUN update-alternatives --set g++ /usr/bin/g++-10
+
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
 RUN mkdir -p /tmp/lockedlist && wget https://nsis.sourceforge.io/mediawiki/images/d/d3/LockedList.zip --directory-prefix=/tmp/lockedlist

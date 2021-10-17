@@ -16,10 +16,12 @@ RUN zypper -n --gpg-auto-import-keys install \
     python3-base python3-Mako \
     mingw32-cross-nsis
 
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 50
 RUN update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-10 50
+RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-10 50
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 50
 RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 50
 RUN update-alternatives --set cc /usr/bin/gcc-10
+RUN update-alternatives --set c++ /usr/bin/g++-10
 RUN update-alternatives --set gcc /usr/bin/gcc-10
 RUN update-alternatives --set g++ /usr/bin/g++-10
 
