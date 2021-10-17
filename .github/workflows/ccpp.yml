@@ -19,10 +19,12 @@ jobs:
         run: zypper -n --gpg-auto-import-keys install glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc10 gcc10-c++ shadow which patch gperf wget curl git diffutils make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip gtk-doc gettext-tools scons bison flex ruby orc linux-glibc-devel glibc-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel python3-base python3-Mako
       - name: update-alternatives
         run: |
-          update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 50
           update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-10 50
+          update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-10 50
+          update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 50
           update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 50
           update-alternatives --set cc /usr/bin/gcc-10
+          update-alternatives --set c++ /usr/bin/g++-10
           update-alternatives --set gcc /usr/bin/gcc-10
           update-alternatives --set g++ /usr/bin/g++-10
       - name: gcc version
@@ -54,10 +56,12 @@ jobs:
         run: zypper -n --gpg-auto-import-keys install glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc10 gcc10-c++ shadow which patch gperf wget curl git diffutils make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip gtk-doc gettext-tools scons bison flex ruby orc linux-glibc-devel glibc-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel python3-base python3-Mako
       - name: update-alternatives
         run: |
-          update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 50
           update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-10 50
+          update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-10 50
+          update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 50
           update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 50
           update-alternatives --set cc /usr/bin/gcc-10
+          update-alternatives --set c++ /usr/bin/g++-10
           update-alternatives --set gcc /usr/bin/gcc-10
           update-alternatives --set g++ /usr/bin/g++-10
       - name: gcc version
