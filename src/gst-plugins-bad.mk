@@ -8,7 +8,7 @@ $(PKG)_CHECKSUM := a164923b94f0d08578a6fcaeaac6e0c05da788a46903a1086870e9ca45ad6
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc gstreamer gst-plugins-base gst-plugins-good libgcrypt opus faad2 faac libmpcdec chromaprint libopenmpt
+$(PKG)_DEPS     := cc gstreamer gst-plugins-base gst-plugins-good libgcrypt libxml2 opus faad2 faac libmpcdec chromaprint libopenmpt
 
 $(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-bad/refs,$(gstreamer_UPDATE))
 
@@ -95,7 +95,7 @@ define $(PKG)_BUILD
         -Dcurl=disabled \
         -Dcurl-ssh2=disabled \
         -Dd3dvideosink=disabled \
-        -Ddash=disabled \
+        -Ddash=enabled \
         -Ddc1394=disabled \
         -Ddecklink=disabled \
         -Ddirectfb=disabled \
