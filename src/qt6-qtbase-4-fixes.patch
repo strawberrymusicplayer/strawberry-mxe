@@ -1,0 +1,37 @@
+This file is part of MXE. See LICENSE.md for licensing information.
+
+Contains ad hoc patches for cross building.
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Wed, 27 Oct 2021 21:21:39 +0200
+Subject: [PATCH 1/1] Revert: Reduce the width of a hfw-widget if scrollbar
+ would be flipping
+
+
+diff --git a/src/widgets/widgets/qscrollarea.cpp b/src/widgets/widgets/qscrollarea.cpp
+index 1111111..2222222 100644
+--- a/src/widgets/widgets/qscrollarea.cpp
++++ b/src/widgets/widgets/qscrollarea.cpp
+@@ -196,20 +196,7 @@ void QScrollAreaPrivate::updateScrollBars()
+     if (resizable) {
+         if ((widget->layout() ? widget->layout()->hasHeightForWidth() : widget->sizePolicy().hasHeightForWidth())) {
+             QSize p_hfw = p.expandedTo(min).boundedTo(max);
+-            int h = widget->heightForWidth(p_hfw.width());
+-            // If the height we calculated requires a vertical scrollbar,
+-            // then we need to constrain the width and calculate the height again,
+-            // otherwise we end up flipping the scrollbar on and off all the time.
+-            if (vbarpolicy == Qt::ScrollBarAsNeeded) {
+-                int vbarWidth = vbar->sizeHint().width();
+-                QSize m_hfw = m.expandedTo(min).boundedTo(max);
+-                while (h > m.height() && vbarWidth) {
+-                    --vbarWidth;
+-                    --m_hfw.rwidth();
+-                    h = widget->heightForWidth(m_hfw.width());
+-                }
+-                max = QSize(m_hfw.width(), qMax(m_hfw.height(), h));
+-            }
++            int h = widget->heightForWidth( p_hfw.width() );
+             min = QSize(p_hfw.width(), qMax(p_hfw.height(), h));
+         }
+     }
