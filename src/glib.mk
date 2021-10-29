@@ -4,12 +4,12 @@ PKG             := glib
 $(PKG)_WEBSITE  := https://gtk.org/
 $(PKG)_DESCR    := GLib
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.70.0
-$(PKG)_CHECKSUM := 417b5c9ef8ee6f1f7dd7f0f298beb6326d495fc9b56ea302d12d574df6e6c62e
+$(PKG)_VERSION  := 2.70.1
+$(PKG)_CHECKSUM := f9b7bce7f51753a1f43853bbcaca8bf09e15e994268e29cfd7a76f65636263c0
 $(PKG)_SUBDIR   := glib-$($(PKG)_VERSION)
-$(PKG)_FILE     := glib-$($(PKG)_VERSION).tar.bz2
-#$(PKG)_URL      := https://download.gnome.org/sources/glib/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
-$(PKG)_URL      := https://gitlab.gnome.org/GNOME/glib/-/archive/$($(PKG)_VERSION)/$($(PKG)_FILE)
+$(PKG)_FILE     := glib-$($(PKG)_VERSION).tar.xz
+$(PKG)_URL      := https://download.gnome.org/sources/glib/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
+$(PKG)_URL_2    := https://gitlab.gnome.org/GNOME/glib/-/archive/$($(PKG)_VERSION)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc meson-conf dbus gettext libffi libiconv pcre zlib $(BUILD)~$(PKG)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
