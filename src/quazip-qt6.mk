@@ -4,8 +4,8 @@ PKG             := quazip-qt6
 $(PKG)_WEBSITE  := https://github.com/stachenov/quazip
 $(PKG)_DESCR    := QuaZip Qt 6
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 01b984e
-$(PKG)_CHECKSUM := ae50d58bba2522bd9a17af57382f81567521a581d412b09dfc168b45550bf082
+$(PKG)_VERSION  := 02aa5ae
+$(PKG)_CHECKSUM := 0797695a4daadee18420c6ff33eb797202cf07cfe1cad9b614b77f055a37b3dc
 $(PKG)_GH_CONF  := stachenov/quazip/branches/master
 $(PKG)_DEPS     := cc zlib qt6-qtbase qt6-qttools qt6-qtcore5compat
 
