@@ -16,7 +16,6 @@ define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)' \
         -Dexamples=disabled \
         -Dtests=disabled \
-        -Dgtk_doc=disabled \
         -Dorc=enabled \
         -Dalpha=disabled \
         -Dapetag=enabled \
@@ -68,7 +67,6 @@ define $(PKG)_BUILD
         -Ddv=disabled \
         -Ddv1394=disabled \
         -Dflac=enabled \
-        -Dgdk_pixbuf=disabled \
         -Dgtk3=disabled \
         -Djack=disabled \
         -Djpeg=disabled \
