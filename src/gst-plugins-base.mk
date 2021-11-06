@@ -17,7 +17,6 @@ define $(PKG)_BUILD
         -Dexamples=disabled \
         -Dtests=disabled \
         -Dtools=enabled \
-        -Dgtk_doc=disabled \
         -Dorc=enabled \
         -Dadder=enabled \
         -Dapp=enabled \
