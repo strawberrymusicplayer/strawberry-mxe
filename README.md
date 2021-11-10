@@ -12,7 +12,7 @@ See [MXE](https://github.com/mxe/mxe) for the official and full version.
 
 Some of the libraries here are:
 
-  * GCC 10
+  * GCC 11
   * pthreads
   * Boost
   * CMake
@@ -23,7 +23,7 @@ Some of the libraries here are:
   * OpenSSL
   * SQLite
   * FFTW
-  * Qt 5 and 6
+  * Qt 6
   * TagLib
   * Chromaprint
   * Google Test
@@ -34,5 +34,5 @@ Differences from the official repositories:
 
   * Most of the packages here are on the latest version
   * Up-to-date core packages, GLib, libsoup and pango.
-  * Qt 5 and 6 has only SQL support for sqlite.
+  * Qt 6 has only SQL support for sqlite.
   * GStreamer has only audio specific plugins.
