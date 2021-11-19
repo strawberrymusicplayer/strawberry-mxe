@@ -1,22 +1,19 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := ccache
-$(PKG)_WEBSITE  := https://ccache.samba.org
+$(PKG)_WEBSITE  := https://github.com/ccache/ccache
 $(PKG)_DESCR    := ccache – a fast compiler cache
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 3.6
-$(PKG)_CHECKSUM := a6b129576328fcefad00cb72035bc87bc98b6a76aec0f4b59bed76d67a399b1f
+$(PKG)_VERSION  := 4.5.1
+$(PKG)_CHECKSUM := 51186ebe0326365f4e6131e1caa8911de7da4aa6718efc00680322d63a759517
+$(PKG)_GH_CONF  := ccache/ccache/releases/latest, v
 $(PKG)_SUBDIR   := ccache-$($(PKG)_VERSION)
 $(PKG)_FILE     := ccache-$($(PKG)_VERSION).tar.xz
-$(PKG)_URL      := https://www.samba.org/ftp/ccache/ccache-$($(PKG)_VERSION).tar.xz
+$(PKG)_URL      := https://github.com/ccache/ccache/releases/download/v$($(PKG)_VERSION)/ccache-$($(PKG)_VERSION).tar.xz
 $(PKG)_DEPS     := $(BUILD)~$(PKG)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
 $(PKG)_DEPS_$(BUILD) :=
-
-define $(PKG)_UPDATE
-    $(call GET_LATEST_VERSION, https://www.samba.org/ftp/ccache)
-endef
 
 BOOTSTRAP_PKGS += ccache
 
@@ -28,13 +25,7 @@ define $(PKG)_BUILD_$(BUILD)
     # remove any previous symlinks
     rm -fv '$(PREFIX)/$(BUILD)/bin/$(BUILD_CC)' '$(PREFIX)/$(BUILD)/bin/$(BUILD_CXX)'
 
-    # minimal reqs build with bundled zlib
-    cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
-        $(MXE_CONFIGURE_OPTS) \
-        --with-bundled-zlib \
-        --disable-man \
-        --prefix='$(MXE_CCACHE_DIR)' \
-        --sysconfdir='$(dir $($(PKG)_SYS_CONF))'
+    cmake -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' -DCMAKE_INSTALL_PREFIX='$(PREFIX)/$(TARGET)' -DZSTD_FROM_INTERNET=OFF -DREDIS_STORAGE_BACKEND=OFF
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' $(MXE_DISABLE_DOCS)
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install $(MXE_DISABLE_DOCS)
 
