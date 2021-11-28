@@ -4,12 +4,12 @@ PKG             := pango
 $(PKG)_WEBSITE  := https://www.pango.org/
 $(PKG)_DESCR    := Pango
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.49.3
-$(PKG)_CHECKSUM := 45c403b89910a121ad8eb6d57b5be1d8f19499d39b686435dc6f29b106d2be93
+$(PKG)_VERSION  := 1.49.4
+$(PKG)_CHECKSUM := 1fda6c03161bd1eacfdc349244d26828c586d25bfc600b9cfe2494902fdf56cf
 $(PKG)_SUBDIR   := pango-$($(PKG)_VERSION)
 $(PKG)_FILE     := pango-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/pango/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc glib fontconfig freetype cairo harfbuzz fribidi $(BUILD)~ninja
+$(PKG)_DEPS     := cc glib fontconfig freetype cairo harfbuzz fribidi json-glib $(BUILD)~ninja
 
 define $(PKG)_UPDATE
     $(call MXE_GET_GH_TAGS,GNOME/pango) | \
