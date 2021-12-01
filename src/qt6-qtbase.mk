@@ -4,8 +4,8 @@ PKG             := qt6-qtbase
 $(PKG)_WEBSITE  := https://www.qt.io/
 $(PKG)_DESCR    := Qt 6 Base
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 6.2.1
-$(PKG)_CHECKSUM := 2c5f07b5c3ea27d3fc1a46686ea3fb6724f94dddf1fb007de3eb0bdb87429079
+$(PKG)_VERSION  := 6.2.2
+$(PKG)_CHECKSUM := 85ab9180180c2eaf84cd11ae4c6d5a6a69f2f8fd7260aaccfd91a3e7e7232c1a
 $(PKG)_FILE     := qtbase-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_SUBDIR   := qtbase-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/6.2/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
@@ -84,7 +84,7 @@ define $(PKG)_BUILD_$(BUILD)
         -release \
         -opensource \
         -confirm-license \
-        -no-{eventfd,glib,icu,openssl,opengl,dbus} \
+        -no-{eventfd,glib,icu,openssl,opengl,dbus,harfbuzz,xcb-xlib,xcb,xkbcommon} \
         -no-sql-{db2,ibase,mysql,oci,odbc,psql,sqlite} \
         -no-use-gold-linker \
         -nomake examples \
