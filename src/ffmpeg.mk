@@ -10,9 +10,8 @@ $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_URL      := https://ffmpeg.org/releases/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc yasm zlib bzip2 gnutls wavpack vorbis opus speex lame libcdio
 
-# DO NOT ADD fdk-aac OR openssl SUPPORT.
-# Although they are free softwares, their licenses are not compatible with
-# the GPL, and we'd like to enable GPL in our default ffmpeg build.
+# DO NOT ADD fdk-aac.
+# Although it is free software, the license is not compatible with the GPL, and we'd like to enable GPL in our default ffmpeg build.
 # See docs/index.html#potential-legal-issues
 
 define $(PKG)_UPDATE
