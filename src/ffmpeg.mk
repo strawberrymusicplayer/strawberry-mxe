@@ -14,10 +14,13 @@ $(PKG)_DEPS     := cc yasm zlib bzip2 gnutls wavpack vorbis opus speex lame libc
 # Although it is free software, the license is not compatible with the GPL, and we'd like to enable GPL in our default ffmpeg build.
 # See docs/index.html#potential-legal-issues
 
+# GStreamer is currently not compatible with ffmpeg 5.
+
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://ffmpeg.org/releases/' | \
     $(SED) -n 's,.*ffmpeg-\([0-9][^>]*\)\.tar.*,\1,p' | \
     grep -v 'alpha\|beta\|rc\|git' | \
+    grep -v '^5\..*' | \
     $(SORT) -Vr | \
     head -1
 endef
