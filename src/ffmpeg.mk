@@ -3,8 +3,8 @@
 PKG             := ffmpeg
 $(PKG)_WEBSITE  := https://ffmpeg.org/
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 4.4.1
-$(PKG)_CHECKSUM := 8fc9f20ac5ed95115a9e285647add0eedd5cc1a98a039ada14c132452f98ac42
+$(PKG)_VERSION  := 5.0
+$(PKG)_CHECKSUM := c0130b8db2c763430fd1c6905288d61bc44ee0548ad5fcd2dfd650b88432bed9
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_URL      := https://ffmpeg.org/releases/$($(PKG)_FILE)
@@ -14,13 +14,10 @@ $(PKG)_DEPS     := cc yasm zlib bzip2 gnutls wavpack vorbis opus speex lame libc
 # Although it is free software, the license is not compatible with the GPL, and we'd like to enable GPL in our default ffmpeg build.
 # See docs/index.html#potential-legal-issues
 
-# GStreamer is currently not compatible with ffmpeg 5.
-
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://ffmpeg.org/releases/' | \
     $(SED) -n 's,.*ffmpeg-\([0-9][^>]*\)\.tar.*,\1,p' | \
     grep -v 'alpha\|beta\|rc\|git' | \
-    grep -v '^5\..*' | \
     $(SORT) -Vr | \
     head -1
 endef
