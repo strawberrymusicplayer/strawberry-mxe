@@ -1,12 +1,12 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := jasper
-$(PKG)_WEBSITE  := https://www.ece.uvic.ca/~mdadams/jasper/
-$(PKG)_DESCR    := JasPer
+$(PKG)_WEBSITE  := https://ece.engr.uvic.ca/~frodo/jasper/
+$(PKG)_DESCR    := JasPer Image Coding Toolkit
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 3.0.0-unstable3
-$(PKG)_CHECKSUM := 9ed8cf7c81df885e25e339a402aea953041a7996cdadf2e806bb951584c12fd4
-$(PKG)_GH_CONF  := mdadams/jasper/tags, version-
+$(PKG)_VERSION  := 2.0.33
+$(PKG)_CHECKSUM := 38b8f74565ee9e7fec44657e69adb5c9b2a966ca5947ced5717cde18a7d2eca6
+$(PKG)_GH_CONF  := jasper-software/jasper/releases, version-
 $(PKG)_DEPS     := cc jpeg
 
 define $(PKG)_BUILD
