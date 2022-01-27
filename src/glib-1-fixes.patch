@@ -4,7 +4,7 @@ Contains ad hoc patches for cross building.
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Jonas Kvinge <jonas@jkvinge.net>
-Date: Mon, 12 Jul 2021 12:47:29 +0200
+Date: Thu, 27 Jan 2022 20:28:10 +0100
 Subject: [PATCH 1/1] Revert: Use SHGetKnownFolderPath() on Windows
 
 
@@ -12,7 +12,7 @@ diff --git a/glib/gutils.c b/glib/gutils.c
 index 1111111..2222222 100644
 --- a/glib/gutils.c
 +++ b/glib/gutils.c
-@@ -558,20 +558,23 @@ static  gchar  **g_user_special_dirs = NULL;
+@@ -526,20 +526,23 @@ static  gchar  **g_user_special_dirs = NULL;
  #ifdef G_OS_WIN32
  
  static gchar *
@@ -47,7 +47,7 @@ index 1111111..2222222 100644
  }
  
  static char *
-@@ -821,7 +824,7 @@ g_build_home_dir (void)
+@@ -792,7 +795,7 @@ g_build_home_dir (void)
      }
  
    if (home_dir == NULL)
@@ -56,7 +56,7 @@ index 1111111..2222222 100644
  
    if (home_dir == NULL)
      home_dir = get_windows_directory_root ();
-@@ -1711,7 +1714,7 @@ g_build_user_data_dir (void)
+@@ -1760,7 +1763,7 @@ g_build_user_data_dir (void)
      data_dir = g_strdup (data_dir_env);
  #ifdef G_OS_WIN32
    else
@@ -65,7 +65,7 @@ index 1111111..2222222 100644
  #endif
    if (!data_dir || !data_dir[0])
      {
-@@ -1737,7 +1740,7 @@ g_build_user_data_dir (void)
+@@ -1786,7 +1789,7 @@ g_build_user_data_dir (void)
   * On Windows it follows XDG Base Directory Specification if `XDG_DATA_HOME`
   * is defined. If `XDG_DATA_HOME` is undefined, the folder to use for local (as
   * opposed to roaming) application data is used instead. See the
@@ -74,7 +74,7 @@ index 1111111..2222222 100644
   * Note that in this case on Windows it will be the same
   * as what g_get_user_config_dir() returns.
   *
-@@ -1775,7 +1778,7 @@ g_build_user_config_dir (void)
+@@ -1824,7 +1827,7 @@ g_build_user_config_dir (void)
      config_dir = g_strdup (config_dir_env);
  #ifdef G_OS_WIN32
    else
@@ -83,7 +83,7 @@ index 1111111..2222222 100644
  #endif
    if (!config_dir || !config_dir[0])
      {
-@@ -1801,7 +1804,7 @@ g_build_user_config_dir (void)
+@@ -1850,7 +1853,7 @@ g_build_user_config_dir (void)
   * On Windows it follows XDG Base Directory Specification if `XDG_CONFIG_HOME` is defined.
   * If `XDG_CONFIG_HOME` is undefined, the folder to use for local (as opposed
   * to roaming) application data is used instead. See the
@@ -92,7 +92,7 @@ index 1111111..2222222 100644
   * Note that in this case on Windows it will be  the same
   * as what g_get_user_data_dir() returns.
   *
-@@ -1838,7 +1841,7 @@ g_build_user_cache_dir (void)
+@@ -1887,7 +1890,7 @@ g_build_user_cache_dir (void)
      cache_dir = g_strdup (cache_dir_env);
  #ifdef G_OS_WIN32
    else
@@ -101,7 +101,7 @@ index 1111111..2222222 100644
  #endif
    if (!cache_dir || !cache_dir[0])
      {
-@@ -1865,7 +1868,7 @@ g_build_user_cache_dir (void)
+@@ -1914,7 +1917,7 @@ g_build_user_cache_dir (void)
   * If `XDG_CACHE_HOME` is undefined, the directory that serves as a common
   * repository for temporary Internet files is used instead. A typical path is
   * `C:\Documents and Settings\username\Local Settings\Temporary Internet Files`.
@@ -110,7 +110,16 @@ index 1111111..2222222 100644
   *
   * The return value is cached and modifying it at runtime is not supported, as
   * it’s not thread-safe to modify environment variables at runtime.
-@@ -1972,22 +1975,69 @@ load_user_special_dirs (void)
+@@ -1949,7 +1952,7 @@ g_build_user_state_dir (void)
+     state_dir = g_strdup (state_dir_env);
+ #ifdef G_OS_WIN32
+   else
+-    state_dir = get_special_folder (&FOLDERID_LocalAppData);
++    state_dir = get_special_folder (CSIDL_LOCAL_APPDATA);
+ #endif
+   if (!state_dir || !state_dir[0])
+     {
+@@ -2094,22 +2097,69 @@ load_user_special_dirs (void)
  static void
  load_user_special_dirs (void)
  {
@@ -128,18 +137,18 @@ index 1111111..2222222 100644
 +    { 0xDFDF76A2, 0xC82A, 0x4D63, { 0x90, 0x6A, 0x56, 0x44, 0xAC, 0x45, 0x73, 0x85 } };
 +
 +  wchar_t *wcp;
-+
-+  p_SHGetKnownFolderPath = (t_SHGetKnownFolderPath) GetProcAddress (GetModuleHandleW (L"shell32.dll"),
-+								    "SHGetKnownFolderPath");
  
 -  g_user_special_dirs[G_USER_DIRECTORY_DOWNLOAD] = get_special_folder (&FOLDERID_Downloads);
 -  if (g_user_special_dirs[G_USER_DIRECTORY_DOWNLOAD] == NULL)
 -    g_user_special_dirs[G_USER_DIRECTORY_DOWNLOAD] = get_special_folder (&FOLDERID_Desktop);
-+  g_user_special_dirs[G_USER_DIRECTORY_DESKTOP] = get_special_folder (CSIDL_DESKTOPDIRECTORY);
-+  g_user_special_dirs[G_USER_DIRECTORY_DOCUMENTS] = get_special_folder (CSIDL_PERSONAL);
++  p_SHGetKnownFolderPath = (t_SHGetKnownFolderPath) GetProcAddress (GetModuleHandleW (L"shell32.dll"),
++								    "SHGetKnownFolderPath");
  
 -  g_user_special_dirs[G_USER_DIRECTORY_MUSIC] = get_special_folder (&FOLDERID_Music);
 -  g_user_special_dirs[G_USER_DIRECTORY_PICTURES] = get_special_folder (&FOLDERID_Pictures);
++  g_user_special_dirs[G_USER_DIRECTORY_DESKTOP] = get_special_folder (CSIDL_DESKTOPDIRECTORY);
++  g_user_special_dirs[G_USER_DIRECTORY_DOCUMENTS] = get_special_folder (CSIDL_PERSONAL);
++
 +  if (p_SHGetKnownFolderPath == NULL)
 +    {
 +      g_user_special_dirs[G_USER_DIRECTORY_DOWNLOAD] = get_special_folder (CSIDL_DESKTOPDIRECTORY);
@@ -192,7 +201,7 @@ index 1111111..2222222 100644
  }
  
  #else /* default is unix */
-@@ -2339,12 +2389,12 @@ g_win32_get_system_data_dirs_for_module_real (void (*address_of_function)(void))
+@@ -2461,12 +2511,12 @@ g_win32_get_system_data_dirs_for_module_real (void (*address_of_function)(void))
    data_dirs = g_array_new (TRUE, TRUE, sizeof (char *));
  
    /* Documents and Settings\All Users\Application Data */
@@ -207,7 +216,7 @@ index 1111111..2222222 100644
    if (p)
      g_array_append_val (data_dirs, p);
  	
-@@ -2491,8 +2541,8 @@ g_build_system_data_dirs (void)
+@@ -2613,8 +2663,8 @@ g_build_system_data_dirs (void)
   * the first elements in the list are the Application Data
   * and Documents folders for All Users. (These can be determined only
   * on Windows 2000 or later and are not present in the list on other
@@ -218,7 +227,7 @@ index 1111111..2222222 100644
   *
   * Then follows the "share" subfolder in the installation folder for
   * the package containing the DLL that calls this function, if it can
-@@ -2547,7 +2597,7 @@ g_build_system_config_dirs (void)
+@@ -2669,7 +2719,7 @@ g_build_system_config_dirs (void)
      }
    else
      {
@@ -227,7 +236,7 @@ index 1111111..2222222 100644
  
        if (special_conf_dirs)
          conf_dir_vector = g_strsplit (special_conf_dirs, G_SEARCHPATH_SEPARATOR_S, 0);
-@@ -2585,7 +2635,7 @@ g_build_system_config_dirs (void)
+@@ -2707,7 +2757,7 @@ g_build_system_config_dirs (void)
   * This folder is used for application data
   * that is not user specific. For example, an application can store
   * a spell-check dictionary, a database of clip art, or a log file in the
