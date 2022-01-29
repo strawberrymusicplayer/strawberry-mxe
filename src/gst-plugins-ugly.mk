@@ -3,8 +3,8 @@
 PKG             := gst-plugins-ugly
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/modules/gst-plugins-ugly.html
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.18.6
-$(PKG)_CHECKSUM := 4969c409cb6a88317d2108b8577108e18623b2333d7b587ae3f39459c70e3a7f
+$(PKG)_VERSION  := 1.20.0
+$(PKG)_CHECKSUM := 4e8dcb5d26552f0a4937f6bc6279bd9070f55ca6ae0eaa32d72d264c44001c2e
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
@@ -15,6 +15,7 @@ $(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-ugly/refs,$(gstreamer_UPDATE)
 define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)' \
         -Dtests=disabled \
+        -Dgpl=enabled \
         -Dorc=enabled \
         -Dasfdemux=enabled \
         -Ddvdlpcmdec=disabled \

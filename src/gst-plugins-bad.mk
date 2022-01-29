@@ -3,8 +3,8 @@
 PKG             := gst-plugins-bad
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/modules/gst-plugins-bad.html
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.18.6
-$(PKG)_CHECKSUM := 0b1b50ac6311f0c510248b6cd64d6d3c94369344828baa602db85ded5bc70ec9
+$(PKG)_VERSION  := 1.20.0
+$(PKG)_CHECKSUM := 015b8d4d9a395ebf444d40876867a2034dd3304b3ad48bc3a0dd0c1ee71dc11d
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
@@ -17,6 +17,7 @@ define $(PKG)_BUILD
         -Dexamples=disabled \
         -Dtests=disabled \
         -Dexamples=disabled \
+        -Dgpl=enabled \
         -Dorc=enabled \
         -Daccurip=disabled \
         -Dadpcmdec=disabled \
@@ -114,7 +115,6 @@ define $(PKG)_BUILD
         -Dkms=disabled \
         -Dladspa=disabled \
         -Dlibde265=disabled \
-        -Dlibmms=disabled \
         -Dlv2=disabled \
         -Dmodplug=disabled \
         -Dmpeg2enc=disabled \
@@ -122,7 +122,6 @@ define $(PKG)_BUILD
         -Dmsdk=disabled \
         -Dmusepack=auto \
         -Dneon=disabled \
-        -Dofa=disabled \
         -Dopenal=disabled \
         -Dopenexr=disabled \
         -Dopenh264=disabled \
