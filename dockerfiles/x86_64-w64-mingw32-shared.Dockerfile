@@ -7,7 +7,7 @@ RUN zypper -n --gpg-auto-import-keys ref
 RUN zypper -n --gpg-auto-import-keys up -l -y
 
 RUN zypper -n --gpg-auto-import-keys install \
-    glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc10 gcc10-c++ \
+    glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc11 gcc11-c++ \
     shadow which patch gperf wget curl git diffutils \
     make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool \
     tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip \
@@ -16,14 +16,14 @@ RUN zypper -n --gpg-auto-import-keys install \
     python3-base python3-Mako \
     mingw32-cross-nsis
 
-RUN update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-10 50
-RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-10 50
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 50
-RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 50
-RUN update-alternatives --set cc /usr/bin/gcc-10
-RUN update-alternatives --set c++ /usr/bin/g++-10
-RUN update-alternatives --set gcc /usr/bin/gcc-10
-RUN update-alternatives --set g++ /usr/bin/g++-10
+RUN update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-11 50
+RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-11 50
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 50
+RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 50
+RUN update-alternatives --set cc /usr/bin/gcc-11
+RUN update-alternatives --set c++ /usr/bin/g++-11
+RUN update-alternatives --set gcc /usr/bin/gcc-11
+RUN update-alternatives --set g++ /usr/bin/g++-11
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
