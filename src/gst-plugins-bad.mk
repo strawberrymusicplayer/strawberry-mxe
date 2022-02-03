@@ -3,8 +3,8 @@
 PKG             := gst-plugins-bad
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/modules/gst-plugins-bad.html
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.18.5
-$(PKG)_CHECKSUM := a164923b94f0d08578a6fcaeaac6e0c05da788a46903a1086870e9ca45ad678e
+$(PKG)_VERSION  := 1.18.6
+$(PKG)_CHECKSUM := 0b1b50ac6311f0c510248b6cd64d6d3c94369344828baa602db85ded5bc70ec9
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
