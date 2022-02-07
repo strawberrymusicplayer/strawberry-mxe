@@ -4,8 +4,8 @@ PKG             := harfbuzz
 $(PKG)_WEBSITE  := https://wiki.freedesktop.org/www/Software/HarfBuzz/
 $(PKG)_DESCR    := HarfBuzz
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 3.3.1
-$(PKG)_CHECKSUM := 45aca6428d718e08872ad37647081c1b85c5b349c8419af84c04da17cf14b570
+$(PKG)_VERSION  := 3.3.2
+$(PKG)_CHECKSUM := 49df72f1a534ccbd0c99aec198b24185d37541127dccff49300ee65a3c05e637
 $(PKG)_GH_CONF  := harfbuzz/harfbuzz/releases
 $(PKG)_DEPS     := cc cairo freetype-bootstrap glib icu4c
 
