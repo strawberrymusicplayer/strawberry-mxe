@@ -27,6 +27,10 @@ RUN update-alternatives --set g++ /usr/bin/g++-11
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
+# Patch meson
+RUN cd /tmp && wget https://patch-diff.githubusercontent.com/raw/mesonbuild/meson/pull/9841.patch
+RUN cd /usr/lib/python3.6/site-packages && patch -p1 < /tmp/9841.patch
+
 RUN mkdir -p /tmp/lockedlist && wget https://nsis.sourceforge.io/mediawiki/images/d/d3/LockedList.zip --directory-prefix=/tmp/lockedlist
 RUN cd /tmp/lockedlist && unzip /tmp/lockedlist/LockedList.zip
 RUN cp /tmp/lockedlist/Plugins/x86-unicode/LockedList.dll /usr/share/nsis/Plugins/x86-unicode/

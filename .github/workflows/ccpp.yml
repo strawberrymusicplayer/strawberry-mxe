@@ -33,6 +33,12 @@ jobs:
           g++ -v
       - name: Link python 3
         run: ln -s /usr/bin/python3 /usr/bin/python
+      - name: Patch meson
+        run: |
+          cd /tmp
+          wget https://patch-diff.githubusercontent.com/raw/mesonbuild/meson/pull/9841.patch
+          cd /usr/lib/python3.6/site-packages
+          patch -p1 < /tmp/9841.patch
       - name: Update settings.mk
         shell: bash
         run: sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := i686-w64-mingw32.shared/g' settings.mk
@@ -70,6 +76,12 @@ jobs:
           g++ -v
       - name: Link python 3
         run: ln -s /usr/bin/python3 /usr/bin/python
+      - name: Patch meson
+        run: |
+          cd /tmp
+          wget https://patch-diff.githubusercontent.com/raw/mesonbuild/meson/pull/9841.patch
+          cd /usr/lib/python3.6/site-packages
+          patch -p1 < /tmp/9841.patch
       - name: Update settings.mk
         shell: bash
         run: sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := x86_64-w64-mingw32.shared/g' settings.mk
