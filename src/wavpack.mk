@@ -19,10 +19,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && ./configure \
-         $(MXE_CONFIGURE_OPTS) \
-        --without-iconv \
-        CFLAGS="-DWIN32"
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --without-iconv CFLAGS="$(CFLAGS) -DWIN32"
     $(MAKE) -C '$(1)' -j '$(JOBS)' SUBDIRS="src include"
     $(MAKE) -C '$(1)' -j 1 install SUBDIRS="src include"
 endef

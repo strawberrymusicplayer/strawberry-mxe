@@ -85,8 +85,7 @@ define $(PKG)_BUILD_mingw-w64
 
     # build posix threads
     mkdir '$(BUILD_DIR).pthreads'
-    cd '$(BUILD_DIR).pthreads' && '$(BUILD_DIR)/$(mingw-w64_SUBDIR)/mingw-w64-libraries/winpthreads/configure' \
-        $(MXE_CONFIGURE_OPTS)
+    cd '$(BUILD_DIR).pthreads' && '$(BUILD_DIR)/$(mingw-w64_SUBDIR)/mingw-w64-libraries/winpthreads/configure' $(MXE_CONFIGURE_OPTS)
     $(MAKE) -C '$(BUILD_DIR).pthreads' -j '$(JOBS)' || $(MAKE) -C '$(BUILD_DIR).pthreads' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR).pthreads' -j 1 $(INSTALL_STRIP_TOOLCHAIN)
 
@@ -111,10 +110,7 @@ define $(PKG)_POST_BUILD
     # - ignore rm failure as parallel build may have cleaned up, but
     #   don't wildcard all libs so future additions will be detected
     $(and $(BUILD_SHARED),
-    $(MAKE) -C '$(BUILD_DIR)/$(TARGET)/libgcc' -j 1 \
-        toolexecdir='$(PREFIX)/$(TARGET)/bin' \
-        SHLIB_SLIBDIR_QUAL= \
-        install-shared
+    $(MAKE) -C '$(BUILD_DIR)/$(TARGET)/libgcc' -j 1 toolexecdir='$(PREFIX)/$(TARGET)/bin' SHLIB_SLIBDIR_QUAL= install-shared
     mv  -v '$(PREFIX)/lib/gcc/$(TARGET)/$($(PKG)_VERSION)/'*.dll '$(PREFIX)/$(TARGET)/bin/'
     -rm -v '$(PREFIX)/lib/gcc/$(TARGET)/'libgcc_s*.dll
     -rm -v '$(PREFIX)/lib/gcc/$(TARGET)/lib/'libgcc_s*.a
