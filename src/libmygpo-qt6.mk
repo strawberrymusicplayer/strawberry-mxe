@@ -4,8 +4,8 @@ PKG             := libmygpo-qt6
 $(PKG)_WEBSITE  := https://github.com/gpodder/libmygpo-qt
 $(PKG)_DESCR    := libmygpo Qt 6
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := b1120ec
-$(PKG)_CHECKSUM := 47c9b250d9f7fbd0453ee90d06c66773522753b6c3740f836a3e7d215224a6c9
+$(PKG)_VERSION  := 21e18a7
+$(PKG)_CHECKSUM := de69ee4c9ef17f031d9d6a91b2496ada79cc5886e4d64eea808890ee345cf018
 $(PKG)_GH_CONF  := gpodder/libmygpo-qt/branches/master
 $(PKG)_DEPS     := cc qt6-qtbase qt6-qttools
 
