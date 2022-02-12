@@ -28,7 +28,7 @@ endef
 define $(PKG)_BUILD_COMMON
 
     rm -fv $(shell echo "$(PREFIX)/$(TARGET)"/{bin,lib}/{lib,libs,}icu'*'.{a,dll,dll.a})
-    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/source/configure' $(MXE_CONFIGURE_OPTS) --with-cross-build='$(PREFIX)/$(BUILD)/$(PKG)' --enable-icu-config=no SHELL=$(SHELL) $($(PKG)_CONFIGURE_OPTS)
+    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/source/configure' $(MXE_CONFIGURE_OPTS) --with-cross-build='$(PREFIX)/$(BUILD)/$(PKG)' --enable-icu-config=no SHELL=$(SHELL) LIBS='-lstdc++' $($(PKG)_CONFIGURE_OPTS)
 
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' VERBOSE=1 SO_TARGET_VERSION_SUFFIX=
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install VERBOSE=1 SO_TARGET_VERSION_SUFFIX=
