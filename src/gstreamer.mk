@@ -8,7 +8,7 @@ $(PKG)_CHECKSUM := edf4bffff85591d4fff7b21bb9ed7f0feabc123ac4a4eff29e73cbce454f9
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc glib pthreads orc
+$(PKG)_DEPS     := cc glib pthreads orc dlfcn-win32
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://cgit.freedesktop.org/gstreamer/gstreamer/refs/tags' | \
