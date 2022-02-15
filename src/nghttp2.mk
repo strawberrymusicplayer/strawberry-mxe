@@ -7,7 +7,7 @@ $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.46.0
 $(PKG)_CHECKSUM := 0875a638d319cd28b06dcc410e6dc2add1a52f7cab6f62b26025c448f8ae8f43
 $(PKG)_GH_CONF  := nghttp2/nghttp2/tags, v
-$(PKG)_DEPS     := cc
+$(PKG)_DEPS     := cc openssl zlib libxml2 cares
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)'
