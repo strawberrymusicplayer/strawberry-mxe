@@ -16,6 +16,15 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS)
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) \
+        --disable-silent-rules \
+        --disable-rpath \
+        --without-cd-drive \
+        --without-cd-info \
+        --without-cd-read \
+        --without-cdda-player \
+        --without-iso-info \
+        --without-iso-read \
+        --enable-rock
     $(MAKE) -C '$(1)' -j 1 install
 endef
