@@ -65,6 +65,7 @@ define $(PKG)_BUILD
         -DFEATURE_libpng=ON \
         -DFEATURE_style_windows=ON \
         -DFEATURE_style_windowsvista=ON \
+        -DFEATURE_system_zlib=ON \
         -DINPUT_sqlite=system \
         -DINPUT_libpng=system \
         -DINPUT_libjpeg=system \
