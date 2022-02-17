@@ -48,6 +48,8 @@ define $(PKG)_BUILD
         -DFEATURE_pkg_config=ON \
         -DFEATURE_accessibility=ON \
         -DFEATURE_fontconfig=OFF \
+        -DFEATURE_harfbuzz=ON \
+        -DFEATURE_pcre2=ON \
         -DFEATURE_openssl=ON \
         -DFEATURE_openssl_linked=ON \
         -DFEATURE_opengl=ON \
@@ -60,18 +62,17 @@ define $(PKG)_BUILD
         -DFEATURE_sql=ON \
         -DFEATURE_sql_sqlite=ON \
         -DFEATURE_sql_odbc=ON \
-        -DFEATURE_pcre2=ON \
-        -DFEATURE_libjpeg=ON \
-        -DFEATURE_libpng=ON \
+        -DFEATURE_jpeg=ON \
+        -DFEATURE_png=ON \
+        -DFEATURE_gif=ON \
         -DFEATURE_style_windows=ON \
         -DFEATURE_style_windowsvista=ON \
         -DFEATURE_system_zlib=ON \
-        -DINPUT_sqlite=system \
-        -DINPUT_libpng=system \
-        -DINPUT_libjpeg=system \
-        -DINPUT_freetype=system \
-        -DINPUT_pcre=system \
-        -DINPUT_harfbuzz=system
+        -DFEATURE_system_png=ON \
+        -DFEATURE_system_jpeg=ON \
+        -DFEATURE_system_pcre2=ON \
+        -DFEATURE_system_harfbuzz=ON \
+        -DFEATURE_system_sqlite=ON
 
     cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
     cmake --install '$(BUILD_DIR)'
