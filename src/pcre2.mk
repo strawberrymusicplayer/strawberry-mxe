@@ -4,19 +4,13 @@ PKG             := pcre2
 $(PKG)_WEBSITE  := https://www.pcre.org/
 $(PKG)_DESCR    := Perl Compatible Regular Expressions Library
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 10.37
-$(PKG)_CHECKSUM := 4d95a96e8b80529893b4562be12648d798b957b1ba1aae39606bbc2ab956d270
+$(PKG)_VERSION  := 10.39
+$(PKG)_CHECKSUM := 0f03caf57f81d9ff362ac28cd389c055ec2bf0678d277349a1a4bee00ad6d440
+$(PKG)_GH_CONF  := PhilipHazel/pcre2/releases/latest, pcre2-
 $(PKG)_SUBDIR   := pcre2-$($(PKG)_VERSION)
 $(PKG)_FILE     := pcre2-$($(PKG)_VERSION).tar.bz2
-$(PKG)_URL      := https://ftp.pcre.org/pub/pcre/$($(PKG)_FILE)
-$(PKG)_URL_2    := https://$(SOURCEFORGE_MIRROR)/project/pcre/pcre2/$($(PKG)_VERSION)/$($(PKG)_FILE)
+$(PKG)_URL      := https://github.com/PhilipHazel/pcre2/releases/download/$(PKG)-$($(PKG)_VERSION)/$(PKG)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_DEPS     := cc
-
-define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://ftp.pcre.org/pub/pcre/' | \
-    $(SED) -n 's,.*pcre2-\([0-9]\+\)\(\.[0-9]\+\)*\.zip.*,\1\2,p' | \
-    tail -1
-endef
 
 define $(PKG)_BUILD_SHARED
     cd '$(1)' && ./configure \
