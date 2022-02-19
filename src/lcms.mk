@@ -2,6 +2,7 @@
 
 PKG             := lcms
 $(PKG)_WEBSITE  := http://www.littlecms.com/
+$(PKG)_DESCR    := Little cms color engine
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 2.13
 $(PKG)_CHECKSUM := 0c67a5cc144029cfa34647a52809ec399aae488db4258a6a66fba318474a070f
@@ -17,10 +18,6 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && ./configure \
-        $(MXE_CONFIGURE_OPTS) \
-        --with-jpeg \
-        --with-tiff \
-        --with-zlib
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --with-zlib --with-jpeg --with-tiff
     $(MAKE) -C '$(1)' -j '$(JOBS)' install bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS= man_MANS=
 endef

@@ -2,6 +2,7 @@
 
 PKG             := lame
 $(PKG)_WEBSITE  := https://lame.sourceforge.io/
+$(PKG)_DESCR    := High quality MPEG Audio Layer III (MP3) encoder
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 3.100
 $(PKG)_CHECKSUM := ddfe36cab873794038ae2c1210557ad34857a4b6bdc515785d1da9e175b1da1e
@@ -22,10 +23,7 @@ endef
 
 define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && autoreconf -fi -I'$(PREFIX)/$(BUILD)/share/aclocal'
-    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
-        $(MXE_CONFIGURE_OPTS) \
-        --disable-frontend \
-        --disable-gtktest
+    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' $(MXE_CONFIGURE_OPTS) --disable-rpath --disable-frontend --disable-gtktest
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 endef

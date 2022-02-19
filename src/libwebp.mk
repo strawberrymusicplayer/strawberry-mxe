@@ -2,6 +2,7 @@
 
 PKG             := libwebp
 $(PKG)_WEBSITE  := https://developers.google.com/speed/webp/
+$(PKG)_DESCR    := WebP is a modern image format that provides superior lossless and lossy compression for images on the web
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.2.2
 $(PKG)_CHECKSUM := 7656532f837af5f4cec3ff6bafe552c044dc39bf453587bd5b77450802f4aee6

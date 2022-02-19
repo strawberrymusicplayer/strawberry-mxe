@@ -1,7 +1,8 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := libgcrypt
-$(PKG)_WEBSITE  := https://directory.fsf.org/wiki/Libgcrypt
+$(PKG)_WEBSITE  := https://gnupg.org/software/libgcrypt/
+$(PKG)_DESCR    := libgcrypt is a general purpose cryptographic library originally based on code from GnuPG
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.10.0
 $(PKG)_CHECKSUM := 6a00f5c05caa4c4acc120c46b63857da0d4ff61dc4b4b03933fa8d46013fae81
@@ -19,7 +20,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_CONFIGURE
-    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --with-gpg-error-prefix='$(PREFIX)/$(TARGET)'
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --disable-doc --with-gpg-error-prefix='$(PREFIX)/$(TARGET)'
 endef
 
 define $(PKG)_MAKE
@@ -47,8 +48,6 @@ endef
 
 define $(PKG)_BUILD_x86_64-w64-mingw32
     cd '$(1)' && autoreconf -fi
-    $($(PKG)_CONFIGURE) \
-        ac_cv_sys_symbol_underscore=no \
-        --disable-padlock-support
+    $($(PKG)_CONFIGURE) ac_cv_sys_symbol_underscore=no --disable-padlock-support
     $($(PKG)_MAKE)
 endef

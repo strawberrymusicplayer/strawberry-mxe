@@ -2,6 +2,7 @@
 
 PKG             := gst-libav
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/modules/gst-libav.html
+$(PKG)_DESCR    := Open Source Multimedia Framework
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.20.0
 $(PKG)_CHECKSUM := 5eee5ed8d5082a31b500448e41535c722ee30cd5f8224f32982bbaba2eedef17

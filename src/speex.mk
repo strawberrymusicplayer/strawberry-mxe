@@ -2,7 +2,7 @@
 
 PKG             := speex
 $(PKG)_WEBSITE  := https://speex.org/
-$(PKG)_DESCR    := Speex
+$(PKG)_DESCR    := Speex: A Free Codec For Free Speech
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.2.0
 $(PKG)_CHECKSUM := eaae8af0ac742dc7d542c9439ac72f1f385ce838392dc849cae4536af9210094
@@ -19,7 +19,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --disable-oggtest
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS)
     $(MAKE) -C '$(1)' -j '$(JOBS)' bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS= man_MANS= doc_DATA=
     $(MAKE) -C '$(1)' -j 1 install bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS= man_MANS= doc_DATA=
 endef

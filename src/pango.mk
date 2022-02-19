@@ -1,8 +1,8 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := pango
-$(PKG)_WEBSITE  := https://www.pango.org/
-$(PKG)_DESCR    := Pango
+$(PKG)_WEBSITE  := https://pango.gnome.org/
+$(PKG)_DESCR    := Library for laying out and rendering of text
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.50.4
 $(PKG)_CHECKSUM := f4ad63e87dc2b145300542a4fb004d07a9f91b34152fae0ddbe50ecdd851c162

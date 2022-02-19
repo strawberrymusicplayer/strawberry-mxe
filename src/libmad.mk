@@ -2,6 +2,7 @@
 
 PKG             := libmad
 $(PKG)_WEBSITE  := https://www.underbit.com/products/mad/
+$(PKG)_DESCR    := MAD: MPEG Audio Decoder
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 0.15.1b
 $(PKG)_CHECKSUM := bbfac3ed6bfbc2823d3775ebb931087371e142bb0e9bb1bee51a76a6e0078690

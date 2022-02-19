@@ -1,8 +1,8 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := glib-networking
-$(PKG)_WEBSITE  := https://www.gnome.org
-$(PKG)_DESCR    := Network-related GIO modules for glib
+$(PKG)_WEBSITE  := https://gitlab.gnome.org/GNOME/glib-networking
+$(PKG)_DESCR    := Network extensions for GLib
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 2.70.1
 $(PKG)_CHECKSUM := 2a16bfc2d271ccd3266e3fb462bc8a4103c02e81bbb339aa92d6fb060592d7bc

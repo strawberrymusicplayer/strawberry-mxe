@@ -2,6 +2,7 @@
 
 PKG             := file
 $(PKG)_WEBSITE  := https://www.darwinsys.com/file/
+$(PKG)_DESCR    := Free File Command and Magic Library
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 5.41
 $(PKG)_CHECKSUM := 13e532c7b364f7d57e23dfeea3147103150cb90593a57af86c10e4f6e411603f

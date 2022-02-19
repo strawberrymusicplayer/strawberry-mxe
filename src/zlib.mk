@@ -2,6 +2,7 @@
 
 PKG             := zlib
 $(PKG)_WEBSITE  := https://zlib.net/
+$(PKG)_DESCR    := A Massively Spiffy Yet Delicately Unobtrusive Compression Library
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.2.11
 $(PKG)_CHECKSUM := 4ff941449631ace0d4d203e3483be9dbc9da454084111f97ea0a2114e19bf066

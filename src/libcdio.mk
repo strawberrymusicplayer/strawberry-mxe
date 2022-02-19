@@ -2,7 +2,7 @@
 
 PKG             := libcdio
 $(PKG)_WEBSITE  := https://www.gnu.org/software/libcdio/
-$(PKG)_DESCR    := Libcdio
+$(PKG)_DESCR    := GNU Compact Disc Input and Control Library
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 2.1.0
 $(PKG)_CHECKSUM := 8550e9589dbd594bfac93b81ecf129b1dc9d0d51e90f9696f1b2f9b2af32712b

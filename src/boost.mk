@@ -98,8 +98,7 @@ define $(PKG)_BUILD
       ln -sf "$${lib}" "$(PREFIX)/$(TARGET)/lib/$${newlib}"; \
     fi; \
     done
-    $(if $(BUILD_SHARED), \
-        mv -fv '$(PREFIX)/$(TARGET)/lib/'libboost_*.dll '$(PREFIX)/$(TARGET)/bin/')
+    $(if $(BUILD_SHARED), mv -fv '$(PREFIX)/$(TARGET)/lib/'libboost_*.dll '$(PREFIX)/$(TARGET)/bin/')
 
     # setup cmake toolchain
     mkdir -p '$(CMAKE_TOOLCHAIN_DIR)'

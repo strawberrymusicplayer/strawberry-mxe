@@ -2,7 +2,7 @@
 
 PKG             := sqlite
 $(PKG)_WEBSITE  := https://www.sqlite.org/
-$(PKG)_DESCR    := SQLite
+$(PKG)_DESCR    := SQLite database engine
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 3370200
 $(PKG)_CHECKSUM := 4089a8d9b467537b3f246f217b84cd76e00b1d1a971fe5aca1e30e230e46b2d8
@@ -18,10 +18,6 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && ./configure \
-        $(MXE_CONFIGURE_OPTS) \
-        --disable-readline \
-        --enable-threadsafe \
-        CFLAGS="-Os -DSQLITE_ENABLE_COLUMN_METADATA"
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --disable-readline --enable-threadsafe CFLAGS="-Os -DSQLITE_ENABLE_COLUMN_METADATA"
     $(MAKE) -C '$(1)' -j 1 install
 endef

@@ -1,8 +1,8 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := expat
-$(PKG)_WEBSITE  := https://github.com/libexpat/libexpat
-$(PKG)_DESCR    := Expat XML Parser
+$(PKG)_WEBSITE  := https://libexpat.github.io/
+$(PKG)_DESCR    := a stream-oriented XML parser library written in C
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 2.4.5
 $(PKG)_CHECKSUM := fbb430f964c7a2db2626452b6769e6a8d5d23593a453ccbc21701b74deabedff
@@ -18,7 +18,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure $(MXE_CONFIGURE_OPTS) --without-docbook
+    cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure $(MXE_CONFIGURE_OPTS) --without-examples --without-tests --without-docbook
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 endef

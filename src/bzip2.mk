@@ -1,7 +1,8 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := bzip2
-$(PKG)_WEBSITE  := https://en.wikipedia.org/wiki/Bzip2
+$(PKG)_WEBSITE  := https://www.sourceware.org/bzip2/
+$(PKG)_DESCR    := freely available, patent free, high-quality data compressor
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.0.6
 $(PKG)_CHECKSUM := a2848f34fcd5d6cf47def00461fcb528a0484d8edef8208d6d2e2909dc61d9cd
@@ -19,11 +20,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD_COMMON
-    $(MAKE) -C '$(1)' -j '$(JOBS)' libbz2.a \
-        PREFIX='$(PREFIX)/$(TARGET)' \
-        CC='$(TARGET)-gcc' \
-        AR='$(TARGET)-ar' \
-        RANLIB='$(TARGET)-ranlib'
+    $(MAKE) -C '$(1)' -j '$(JOBS)' libbz2.a PREFIX='$(PREFIX)/$(TARGET)' CC='$(TARGET)-gcc' AR='$(TARGET)-ar' RANLIB='$(TARGET)-ranlib'
     $(INSTALL) -d '$(PREFIX)/$(TARGET)/lib'
     $(INSTALL) -d '$(PREFIX)/$(TARGET)/include'
     $(INSTALL) -m644 '$(1)/bzlib.h' '$(PREFIX)/$(TARGET)/include/'
@@ -36,7 +33,5 @@ endef
 
 define $(PKG)_BUILD_SHARED
     $($(PKG)_BUILD_COMMON)
-    '$(TARGET)-gcc' '$(1)'/*.o -shared \
-        -o '$(PREFIX)/$(TARGET)/bin/libbz2.dll' -Xlinker \
-        --out-implib -Xlinker '$(PREFIX)/$(TARGET)/lib/libbz2.dll.a'
+    '$(TARGET)-gcc' '$(1)'/*.o -shared -o '$(PREFIX)/$(TARGET)/bin/libbz2.dll' -Xlinker --out-implib -Xlinker '$(PREFIX)/$(TARGET)/lib/libbz2.dll.a'
 endef

@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := c0bada4bebfc707961111bdb5ff6bbe337f5d71e837e8278f2e362a909eb9
 $(PKG)_SUBDIR   := libopenmpt-$($(PKG)_VERSION)+release.autotools
 $(PKG)_FILE     := libopenmpt-$($(PKG)_VERSION)+release.autotools.tar.gz
 $(PKG)_URL      := https://lib.openmpt.org/files/libopenmpt/src/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc zlib flac ogg vorbis portaudio
+$(PKG)_DEPS     := cc zlib libflac libogg libvorbis portaudio
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://lib.openmpt.org/files/libopenmpt/src/' | \
@@ -19,11 +19,14 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) \
-                             --disable-openmpt123 \
-                             --disable-examples \
-                             --disable-tests \
-                             --without-mpg123
+    cd '$(1)' && ./configure \
+        $(MXE_CONFIGURE_OPTS) \
+        --disable-doxygen-doc \
+        --disable-doxygen-html \
+        --disable-examples \
+        --disable-tests \
+        --disable-openmpt123 \
+        --without-mpg123
     $(MAKE) -C '$(1)' -j '$(JOBS)' bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
     $(MAKE) -C '$(1)' -j 1 install bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
 endef

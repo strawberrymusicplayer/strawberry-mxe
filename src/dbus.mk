@@ -2,6 +2,7 @@
 
 PKG             := dbus
 $(PKG)_WEBSITE  := https://dbus.freedesktop.org/
+$(PKG)_DESCR    := D-Bus is a message bus system
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.13.20
 $(PKG)_CHECKSUM := a9c4b7bad9f49ffa4f199a12aedcdad5d5dcef875d794829fd1378153e072963

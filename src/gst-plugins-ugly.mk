@@ -2,6 +2,7 @@
 
 PKG             := gst-plugins-ugly
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/modules/gst-plugins-ugly.html
+$(PKG)_DESCR    := Open Source Multimedia Framework
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.20.0
 $(PKG)_CHECKSUM := 4e8dcb5d26552f0a4937f6bc6279bd9070f55ca6ae0eaa32d72d264c44001c2e

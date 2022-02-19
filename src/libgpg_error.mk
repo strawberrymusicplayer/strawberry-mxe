@@ -21,7 +21,7 @@ endef
 define $(PKG)_BUILD
     cd '$(SOURCE_DIR)/src/syscfg' && ln -s lock-obj-pub.mingw32.h lock-obj-pub.mingw32.$(call merge,.,$(call rest,$(call split,.,$(TARGET)))).h
     cd '$(SOURCE_DIR)' && autoreconf -fi
-    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' $(MXE_CONFIGURE_OPTS) --disable-nls --disable-languages
+    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' $(MXE_CONFIGURE_OPTS) --disable-doc --disable-tests --disable-rpath --disable-nls --disable-languages
     $(SED) -i 's/host_os = mingw32.*/host_os = mingw32/' '$(BUILD_DIR)/src/Makefile'
     $(MAKE) -C '$(BUILD_DIR)/src' -j '$(JOBS)' bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
     $(SED) -i 's/-lgpg-error/-lgpg-error -lintl -liconv -lws2_32/;' '$(BUILD_DIR)/src/gpg-error-config'

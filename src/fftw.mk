@@ -2,6 +2,7 @@
 
 PKG             := fftw
 $(PKG)_WEBSITE  := http://www.fftw.org/
+$(PKG)_DESCR    := FFTW is a C subroutine library for computing the discrete Fourier transform (DFT)
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 3.3.10
 $(PKG)_CHECKSUM := 56c932549852cddcfafdab3820b0200c7742675be92179e59e6215b340e26467
@@ -19,26 +20,15 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && ./configure \
-        $(MXE_CONFIGURE_OPTS) \
-        --enable-threads \
-        --with-combined-threads
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --enable-threads --with-combined-threads --disable-doc
     $(MAKE) -C '$(1)' -j '$(JOBS)' bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
     $(MAKE) -C '$(1)' -j 1 install bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
 
-    cd '$(1)' && ./configure \
-        $(MXE_CONFIGURE_OPTS) \
-        --enable-threads \
-        --with-combined-threads \
-        --enable-long-double
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --enable-threads --with-combined-threads --enable-long-double --disable-doc
     $(MAKE) -C '$(1)' -j '$(JOBS)' bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
     $(MAKE) -C '$(1)' -j 1 install bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
 
-    cd '$(1)' && ./configure \
-        $(MXE_CONFIGURE_OPTS) \
-        --enable-threads \
-        --with-combined-threads \
-        --enable-float
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --enable-threads --with-combined-threads --enable-float --disable-doc
     $(MAKE) -C '$(1)' -j '$(JOBS)' bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
     $(MAKE) -C '$(1)' -j 1 install bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
 endef

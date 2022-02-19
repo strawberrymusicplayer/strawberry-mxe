@@ -2,7 +2,7 @@
 
 PKG             := libtasn1
 $(PKG)_WEBSITE  := https://www.gnu.org/software/libtasn1/
-$(PKG)_DESCR    := GnuTLS
+$(PKG)_DESCR    := ASN.1 library
 $(PKG)_VERSION  := 4.18.0
 $(PKG)_CHECKSUM := 4365c154953563d64c67a024b607d1ee75c6db76e0d0f65709ea80a334cd1898
 $(PKG)_SUBDIR   := libtasn1-$($(PKG)_VERSION)
@@ -18,6 +18,6 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS)
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --disable-doc
     $(MAKE) -C '$(1)' -j '$(JOBS)' install
 endef

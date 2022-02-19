@@ -2,6 +2,7 @@
 
 PKG             := libssh2
 $(PKG)_WEBSITE  := https://libssh2.org/
+$(PKG)_DESCR    := libssh2 is a client-side C library implementing the SSH2 protocol
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.10.0
 $(PKG)_CHECKSUM := 2d64e90f3ded394b91d3a2e774ca203a4179f69aebee03003e5a6fa621e41d51
@@ -20,6 +21,7 @@ endef
 define $(PKG)_BUILD
     cd '$(1)' && ./configure \
         $(MXE_CONFIGURE_OPTS) \
+        --disable-rpath \
         --disable-examples-build \
         --with-crypto=libgcrypt \
         LIBS="`$(PREFIX)/$(TARGET)/bin/libgcrypt-config --libs`" \

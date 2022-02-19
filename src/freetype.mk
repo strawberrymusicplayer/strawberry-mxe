@@ -2,6 +2,7 @@
 
 PKG             := freetype
 $(PKG)_WEBSITE  := https://www.freetype.org/
+$(PKG)_DESCR    := FreeType is a freely available software library to render fonts
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 2.11.1
 $(PKG)_CHECKSUM := 3333ae7cfda88429c97a7ae63b7d01ab398076c3b67182e960e5684050f2c5c8
@@ -33,8 +34,6 @@ endef
 define $(PKG)_BUILD
     # alias libharfbuzz and libfreetype to satisfy circular dependence
     # libfreetype should already have been created by freetype-bootstrap.mk
-    $(if $(BUILD_STATIC),\
-        ln -sf libharfbuzz.a '$(PREFIX)/$(TARGET)/lib/libharfbuzz_too.a' \
-        && ln -sf libfreetype.a '$(PREFIX)/$(TARGET)/lib/libfreetype_too.a',)
+    $(if $(BUILD_STATIC), ln -sf libharfbuzz.a '$(PREFIX)/$(TARGET)/lib/libharfbuzz_too.a' && ln -sf libfreetype.a '$(PREFIX)/$(TARGET)/lib/libfreetype_too.a',)
     $($(PKG)_BUILD_COMMON)
 endef

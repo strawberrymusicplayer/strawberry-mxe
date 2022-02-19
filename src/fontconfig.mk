@@ -2,6 +2,7 @@
 
 PKG             := fontconfig
 $(PKG)_WEBSITE  := https://fontconfig.org/
+$(PKG)_DESCR    := Fontconfig is a library for configuring and customizing font access
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 2.13.1
 $(PKG)_CHECKSUM := f655dd2a986d7aa97e052261b36aa67b0a64989496361eca8d604e6414006741
@@ -19,11 +20,7 @@ endef
 
 define $(PKG)_BUILD
     cd '$(1)' && autoreconf -fi
-    cd '$(1)' && ./configure \
-        $(MXE_CONFIGURE_OPTS) \
-        --with-arch='$(TARGET)' \
-        --with-expat='$(PREFIX)/$(TARGET)' \
-        --disable-docs
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --with-arch='$(TARGET)' --with-expat='$(PREFIX)/$(TARGET)' --disable-rpath --disable-docs
     $(MAKE) -C '$(1)' -j '$(JOBS)' bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
     $(MAKE) -C '$(1)' -j 1 install bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
 endef

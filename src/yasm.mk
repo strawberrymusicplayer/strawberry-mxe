@@ -15,16 +15,12 @@ $(PKG)_DEPS     := cc $(BUILD)~$(PKG)
 $(PKG)_DEPS_$(BUILD) :=
 
 define $(PKG)_BUILD
-    # link to native yasm compiler on cross builds - it isn't
-    # target-specific but makes it easier to detect our version
+    # Link to native yasm compiler on cross builds - it isn't target-specific but makes it easier to detect our version
     $(if $(BUILD_CROSS), ln -sf '$(PREFIX)/$(BUILD)/bin/yasm' '$(PREFIX)/bin/$(TARGET)-yasm')
 
     # yasm is always static
     # build libyasm and tools
-    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
-        $(MXE_CONFIGURE_OPTS) \
-        --disable-nls \
-        --disable-python
+    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' $(MXE_CONFIGURE_OPTS) --disable-rpath --disable-nls --disable-python
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 endef

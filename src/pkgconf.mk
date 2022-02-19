@@ -2,6 +2,7 @@
 
 PKG             := pkgconf
 $(PKG)_WEBSITE  := https://github.com/pkgconf/pkgconf
+$(PKG)_DESCR    := Package compiler and linker metadata toolkit
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.8.0
 $(PKG)_CHECKSUM := d84a2a338a17e0f68e6a8d6c9caf40d6a2c9580c4ae1d475b338b8d956e483aa

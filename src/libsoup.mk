@@ -20,13 +20,13 @@ endef
 
 define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && $(TARGET)-meson \
-                                -Dtests=false \
-                                -Dvapi=disabled \
-                                -Dgssapi=disabled \
-                                -Dintrospection=disabled \
-                                -Dtests=false \
-                                -Dsysprof=disabled \
-                                '$(BUILD_DIR)'
+        -Dtests=false \
+        -Dvapi=disabled \
+        -Dgssapi=disabled \
+        -Dintrospection=disabled \
+        -Dtests=false \
+        -Dsysprof=disabled \
+        '$(BUILD_DIR)'
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install
 endef

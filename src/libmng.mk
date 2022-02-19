@@ -2,6 +2,7 @@
 
 PKG             := libmng
 $(PKG)_WEBSITE  := https://www.libmng.com/
+$(PKG)_DESCR    := The MNG reference library
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 2.0.3
 $(PKG)_CHECKSUM := 4a462fdd48d4bc82c1d7a21106c8a18b62f8cc0042454323058e6da0dbb57dd3

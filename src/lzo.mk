@@ -2,6 +2,7 @@
 
 PKG             := lzo
 $(PKG)_WEBSITE  := https://www.oberhumer.com/opensource/lzo/
+$(PKG)_DESCR    := LZO is a portable lossless data compression library written in ANSI C
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 2.10
 $(PKG)_CHECKSUM := c0f892943208266f9b6543b3ae308fab6284c5c90e627931446fb49b4221a072

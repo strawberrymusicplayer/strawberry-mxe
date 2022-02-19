@@ -1,7 +1,8 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := faac
-$(PKG)_WEBSITE  := https://www.audiocoding.com/
+$(PKG)_WEBSITE  := http://sourceforge.net/projects/faac/
+$(PKG)_DESCR    := Freeware Advanced Audio Coder
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.30
 $(PKG)_CHECKSUM := adc387ce588cca16d98c03b6ec1e58f0ffd9fc6eadb00e254157d6b16203b2d2
@@ -18,11 +19,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && libtoolize --force
-    cd '$(1)' && aclocal
-    cd '$(1)' && autoheader
-    cd '$(1)' && automake --force-missing --add-missing
-    cd '$(1)' && autoconf
+    cd '$(1)' && ./bootstrap
     cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS)
     $(MAKE) -C '$(1)' -j '$(JOBS)' LDFLAGS='-no-undefined'
     $(MAKE) -C '$(1)' -j 1 install LDFLAGS='-no-undefined'

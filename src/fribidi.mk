@@ -2,7 +2,7 @@
 
 PKG             := fribidi
 $(PKG)_WEBSITE  := https://fribidi.org/
-$(PKG)_DESCR    := FriBidi
+$(PKG)_DESCR    := GNU FriBidi is an implementation of the Unicode Bidirectional Algorithm (bidi)
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.0.11
 $(PKG)_CHECKSUM := 0e6d631c184e1012fb3ae86e80adabf26e46b4ffee2332e679eb308edd337398

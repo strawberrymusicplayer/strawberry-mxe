@@ -2,6 +2,7 @@
 
 PKG             := libffi
 $(PKG)_WEBSITE  := https://sourceware.org/libffi/
+$(PKG)_DESCR    := A Portable Foreign Function Interface Library
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 3.4.2
 $(PKG)_CHECKSUM := 540fb721619a6aba3bdeef7d940d8e9e0e6d2c193595bc243241b77ff9e93620
@@ -16,7 +17,7 @@ $(PKG)_DEPS_$(BUILD) :=
 
 define $(PKG)_BUILD
     # build and install the library
-    cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure $(MXE_CONFIGURE_OPTS)
+    cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure $(MXE_CONFIGURE_OPTS) --disable-docs
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 

@@ -2,7 +2,7 @@
 
 PKG             := json-glib
 $(PKG)_WEBSITE  := https://gitlab.gnome.org/GNOME/json-glib
-$(PKG)_DESCR    := json-glib
+$(PKG)_DESCR    := JSON-GLib implements a full JSON parser and generator using GLib and GObject, and integrates JSON with GLib data types.
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.6.6
 $(PKG)_CHECKSUM := 96ec98be7a91f6dde33636720e3da2ff6ecbb90e76ccaa49497f31a6855a490e

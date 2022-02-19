@@ -2,6 +2,7 @@
 
 PKG             := cmake
 $(PKG)_WEBSITE  := https://www.cmake.org/
+$(PKG)_DESCR    := CMake is an open-source, cross-platform family of tools designed to build, test and package software
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 3.22.2
 $(PKG)_CHECKSUM := 3c1c478b9650b107d452c5bd545c72e2fad4e37c09b89a1984b9a2f46df6aced
@@ -19,10 +20,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD_$(BUILD)
-    cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
-        --prefix='$(PREFIX)/$(TARGET)' \
-        --parallel='$(JOBS)' \
-        $(PKG_CONFIGURE_OPTS)
+    cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure --prefix='$(PREFIX)/$(TARGET)' --parallel='$(JOBS)' $(PKG_CONFIGURE_OPTS)
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 endef

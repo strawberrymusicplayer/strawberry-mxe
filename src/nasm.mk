@@ -19,7 +19,6 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD_$(BUILD)
-    # build nasm compiler
     cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' $(MXE_CONFIGURE_OPTS)
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install

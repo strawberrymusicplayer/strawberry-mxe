@@ -1,8 +1,8 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := glib
-$(PKG)_WEBSITE  := https://gtk.org/
-$(PKG)_DESCR    := GLib
+$(PKG)_WEBSITE  := https://docs.gtk.org/glib/
+$(PKG)_DESCR    := GLib general-purpose, portable utility library
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 2.71.2
 $(PKG)_CHECKSUM := df705876750b952eb282a8cf15dbd77dc609152a366974b4925a92b244fe63e1
@@ -23,10 +23,11 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD_$(BUILD)
-    cd '$(SOURCE_DIR)' && meson --prefix='$(PREFIX)/$(TARGET)' \
-                                --buildtype=release \
-                                --pkg-config-path='$(PREFIX)/$(TARGET)/bin/pkgconf' \
-                                '$(BUILD_DIR)'
+    cd '$(SOURCE_DIR)' && meson \
+        --prefix='$(PREFIX)/$(TARGET)' \
+        --buildtype=release \
+        --pkg-config-path='$(PREFIX)/$(TARGET)/bin/pkgconf' \
+        '$(BUILD_DIR)'
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install
 endef

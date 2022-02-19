@@ -2,13 +2,14 @@
 
 PKG             := gst-plugins-bad
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/modules/gst-plugins-bad.html
+$(PKG)_DESCR    := Open Source Multimedia Framework
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.20.0
 $(PKG)_CHECKSUM := 015b8d4d9a395ebf444d40876867a2034dd3304b3ad48bc3a0dd0c1ee71dc11d
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc gstreamer gst-plugins-base gst-plugins-good libgcrypt libxml2 opus faad2 faac libmpcdec chromaprint libopenmpt
+$(PKG)_DEPS     := cc gstreamer gst-plugins-base gst-plugins-good libgcrypt libxml2 libopus faad2 faac libmpcdec chromaprint libopenmpt
 
 $(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-bad/refs,$(gstreamer_UPDATE))
 

@@ -2,6 +2,7 @@
 
 PKG             := orc
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/projects/orc.html
+$(PKG)_DESCR    := ORC Acceleration
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 0.4.32
 $(PKG)_CHECKSUM := a66e3d8f2b7e65178d786a01ef61f2a0a0b4d0b8370de7ce134ba73da4af18f0

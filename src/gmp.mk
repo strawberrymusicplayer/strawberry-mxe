@@ -2,7 +2,7 @@
 
 PKG             := gmp
 $(PKG)_WEBSITE  := https://gmplib.org/
-$(PKG)_DESCR    := GMP
+$(PKG)_DESCR    := The GNU Multiple Precision Arithmetic Library
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 6.2.1
 $(PKG)_CHECKSUM := fd4829912cddd12f84181c3451cc752be224643e87fac497b69edddadc49b4f2
@@ -23,10 +23,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && CC_FOR_BUILD=$(BUILD_CC) ./configure \
-        $(MXE_CONFIGURE_OPTS) \
-        --enable-cxx \
-        --without-readline
+    cd '$(1)' && CC_FOR_BUILD=$(BUILD_CC) ./configure $(MXE_CONFIGURE_OPTS) --enable-cxx --without-readline
     $(MAKE) -C '$(1)' -j '$(JOBS)'
     $(MAKE) -C '$(1)' -j 1 install
 

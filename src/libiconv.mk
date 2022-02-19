@@ -2,6 +2,7 @@
 
 PKG             := libiconv
 $(PKG)_WEBSITE  := https://www.gnu.org/software/libiconv/
+$(PKG)_DESCR    := libiconv
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.16
 $(PKG)_CHECKSUM := e6a1b1b589654277ee790cce3734f07876ac4ccfaecbee8afa0b649cf529cc04
@@ -22,7 +23,7 @@ endef
 
 define $(PKG)_BUILD
     $(SED) -i 's, sed , $(SED) ,g' '$(1)/windows/windres-options'
-    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --disable-nls
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --disable-rpath --disable-nls
     $(MAKE) -C '$(1)/libcharset' -j '$(JOBS)' install
     $(MAKE) -C '$(1)/lib'        -j '$(JOBS)' install
     $(INSTALL) -d '$(PREFIX)/$(TARGET)/include'

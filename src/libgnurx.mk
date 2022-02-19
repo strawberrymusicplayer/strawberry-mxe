@@ -11,5 +11,5 @@ $(PKG)_DEPS     := cc
 
 define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && ./configure --host='$(TARGET)' --prefix='$(PREFIX)/$(TARGET)'
-    $(MAKE) -C '$(SOURCE_DIR)' -j '$(JOBS)' $(if $(BUILD_STATIC),install-static,install-shared) TARGET=$(TARGET) bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
+    $(MAKE) -C '$(SOURCE_DIR)' -j '$(JOBS)' $(if $(BUILD_STATIC), install-static, install-shared) TARGET=$(TARGET) bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
 endef

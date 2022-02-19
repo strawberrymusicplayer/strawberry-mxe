@@ -2,7 +2,7 @@
 
 PKG             := pcre
 $(PKG)_WEBSITE  := https://www.pcre.org/
-$(PKG)_DESCR    := PCRE
+$(PKG)_DESCR    := Perl Compatible Regular Expressions Library
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 8.45
 $(PKG)_CHECKSUM := 4dae6fdcd2bb0bb6c37b5f97c33c2be954da743985369cddac3546e3218bffb8
@@ -21,8 +21,9 @@ endef
 define $(PKG)_BUILD_SHARED
     cd '$(1)' && ./configure \
         $(MXE_CONFIGURE_OPTS) \
-        --enable-pcre16 \
         --enable-utf \
+        --enable-pcre16 \
+        --enable-pcre32 \
         --enable-unicode-properties \
         --enable-cpp \
         --disable-pcregrep-libz \

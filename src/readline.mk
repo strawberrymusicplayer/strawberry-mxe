@@ -2,7 +2,7 @@
 
 PKG             := readline
 $(PKG)_WEBSITE  := https://tiswww.case.edu/php/chet/readline/rltop.html
-$(PKG)_DESCR    := Readline
+$(PKG)_DESCR    := GNU Readline library
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 8.1
 $(PKG)_CHECKSUM := f8ceb4ee131e3232226a17f51b164afc46cd0b9e6cef344be87c65962cb82b02
@@ -19,11 +19,6 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && bash_cv_wcwidth_broken=no \
-        ./configure \
-        $(MXE_CONFIGURE_OPTS) \
-        --enable-multibyte \
-        --without-purify \
-        --without-curses
+    cd '$(1)' && bash_cv_wcwidth_broken=no ./configure $(MXE_CONFIGURE_OPTS) --disable-install-examples --without-curses --enable-multibyte
     $(MAKE) -C '$(1)' -j '$(JOBS)' install
 endef

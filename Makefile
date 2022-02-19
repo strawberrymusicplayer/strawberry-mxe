@@ -109,23 +109,11 @@ repeat = $(subst x,$(1),$(subst $(space),,$(call int_encode,$(2))))
 
 PLUGIN_HEADER = $(info $(shell printf '%-$(PRINTF_COL_1_WIDTH)s %s\n' [plugin] $(dir $(lastword $(MAKEFILE_LIST)))))
 
-MXE_DISABLE_DOC_OPTS = \
-    ac_cv_prog_HAVE_DOXYGEN="false" \
-    --enable-doc=no \
-    --enable-gtk-doc=no \
-    --enable-gtk-doc-html=no \
-    --enable-gtk-doc-pdf=no \
-    --{docdir,infodir,mandir,with-html-dir}='$(BUILD_DIR).sink' \
-    --disable-doxygen
-
 MXE_CONFIGURE_OPTS = \
     --host='$(TARGET)' \
     --build='$(BUILD)' \
     --prefix='$(PREFIX)/$(TARGET)' \
-    $(if $(BUILD_STATIC), \
-        --enable-static --disable-shared , \
-        --disable-static --enable-shared ) \
-    $(MXE_DISABLE_DOC_OPTS)
+    $(if $(BUILD_STATIC), --enable-static --disable-shared , --disable-static --enable-shared )
 
 PKG_CONFIGURE_OPTS = \
     $(_$(PKG)_CONFIGURE_OPTS) \

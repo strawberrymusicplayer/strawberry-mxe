@@ -2,6 +2,7 @@
 
 PKG             := gdb
 $(PKG)_WEBSITE  := https://www.gnu.org/software/gdb/
+$(PKG)_DESCR    := GDB: The GNU Project Debugger
 $(PKG)_VERSION  := 11.2
 $(PKG)_CHECKSUM := 1497c36a71881b8671a9a84a0ee40faab788ca30d7ba19d8463c3cc787152e32
 $(PKG)_SUBDIR   := gdb-$($(PKG)_VERSION)
@@ -22,13 +23,10 @@ define $(PKG)_BUILD
         --host='$(TARGET)' \
         --build='$(BUILD)' \
         --prefix='$(PREFIX)/$(TARGET)' \
-        $(MXE_DISABLE_DOC_OPTS) \
-        --with-system-readline \
-        --disable-gdbtk \
-        --disable-tui \
         host_configargs="LIBS=\"`$(TARGET)-pkg-config --libs dlfcn` -lmman\"" \
         LDFLAGS='-Wl,--allow-multiple-definition'
 
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' CFLAGS='-D_WIN32_WINNT=0x0600'
-    $(INSTALL) -m755 '$(BUILD_DIR)/gdb/gdb.exe'                 '$(PREFIX)/$(TARGET)/bin/'
+    $(INSTALL) -m755 '$(BUILD_DIR)/gdb/gdb.exe' '$(PREFIX)/$(TARGET)/bin/'
+
 endef

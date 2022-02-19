@@ -2,7 +2,7 @@
 
 PKG             := gcc
 $(PKG)_WEBSITE  := https://gcc.gnu.org/
-$(PKG)_DESCR    := GCC
+$(PKG)_DESCR    := GCC, the GNU Compiler Collection
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 11.2.0
 $(PKG)_CHECKSUM := d08edc536b54c372a1010ff6619dd274c0f1603aa49212ba20f7aa2cda36fa8b
@@ -22,7 +22,6 @@ endef
 define $(PKG)_CONFIGURE
     # configure gcc
     cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
-        $(MXE_DISABLE_DOC_OPTS) \
         --target='$(TARGET)' \
         --build='$(BUILD)' \
         --prefix='$(PREFIX)' \

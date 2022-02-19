@@ -2,7 +2,7 @@
 
 PKG             := gnutls
 $(PKG)_WEBSITE  := https://www.gnu.org/software/gnutls/
-$(PKG)_DESCR    := GnuTLS
+$(PKG)_DESCR    := The GnuTLS Transport Layer Security Library
 $(PKG)_VERSION  := 3.7.3
 $(PKG)_CHECKSUM := fc59c43bc31ab20a6977ff083029277a31935b8355ce387b634fa433f8f6c49a
 $(PKG)_SUBDIR   := gnutls-$($(PKG)_VERSION)
@@ -26,13 +26,9 @@ define $(PKG)_BUILD
         --disable-guile \
         --disable-doc \
         --disable-tests \
-        --enable-local-libopts \
         --without-p11-kit \
         --disable-silent-rules
     $(MAKE) -C '$(1)' -j '$(JOBS)' install
 
-    '$(TARGET)-gcc' \
-        -W -Wall -Werror -ansi -pedantic \
-        '$(TEST_FILE)' -o '$(PREFIX)/$(TARGET)/bin/test-gnutls.exe' \
-        `'$(TARGET)-pkg-config' gnutls --cflags --libs`
+    '$(TARGET)-gcc' -W -Wall -Werror -ansi -pedantic '$(TEST_FILE)' -o '$(PREFIX)/$(TARGET)/bin/test-gnutls.exe' `'$(TARGET)-pkg-config' gnutls --cflags --libs`
 endef

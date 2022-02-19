@@ -2,7 +2,7 @@
 
 PKG             := tiff
 $(PKG)_WEBSITE  := http://simplesystems.org/libtiff/
-$(PKG)_DESCR    := LibTIFF
+$(PKG)_DESCR    := TIFF Library and Utilities
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 4.3.0
 $(PKG)_CHECKSUM := 0e46e5acb087ce7d1ac53cf4f56a09b221537fc86dfc5daaad1c2e89e1b37ac8
@@ -18,6 +18,6 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --without-x
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --disable-rpath --without-x
     $(MAKE) -C '$(1)' -j '$(JOBS)' install $(MXE_DISABLE_CRUFT)
 endef

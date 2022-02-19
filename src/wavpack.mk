@@ -2,7 +2,7 @@
 
 PKG             := wavpack
 $(PKG)_WEBSITE  := http://www.wavpack.com/
-$(PKG)_DESCR    := WavPack
+$(PKG)_DESCR    := WavPack - Hybrid Lossless Audio Compression
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 5.4.0
 $(PKG)_CHECKSUM := 0716a6dcf9a72d61005e1b09bbbd61aaf49837cb4e4a351992a6daed16cac034
@@ -19,7 +19,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --without-iconv CFLAGS="$(CFLAGS) -DWIN32"
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --disable-rpath --disable-tests --disable-apps --without-iconv CFLAGS="$(CFLAGS) -DWIN32"
     $(MAKE) -C '$(1)' -j '$(JOBS)' SUBDIRS="src include"
     $(MAKE) -C '$(1)' -j 1 install SUBDIRS="src include"
 endef
