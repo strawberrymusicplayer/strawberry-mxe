@@ -22,7 +22,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' $(MXE_CONFIGURE_OPTS) --disable-documentation $(if $(call seq,darwin,$(OS_SHORT_NAME)),gmp_cv_prog_exeext_for_build='')
+    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' $(MXE_CONFIGURE_OPTS) --disable-documentation
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' SUBDIRS=
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install SUBDIRS=
 endef
