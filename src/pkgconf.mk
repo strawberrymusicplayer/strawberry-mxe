@@ -14,7 +14,7 @@ $(PKG)_DEPS_$(BUILD) := libtool
 define $(PKG)_BUILD
     # create pkg-config script
     (echo '#!/bin/sh'; \
-     echo 'PKG_CONFIG_PATH="$(PREFIX)/$(TARGET)/qt5/lib/pkgconfig":"$$PKG_CONFIG_PATH_$(subst .,_,$(subst -,_,$(TARGET)))" \
+     echo 'PKG_CONFIG_PATH="$(PREFIX)/$(TARGET)/qt6/lib/pkgconfig":"$$PKG_CONFIG_PATH_$(subst .,_,$(subst -,_,$(TARGET)))" \
            PKG_CONFIG_SYSROOT_DIR= \
            PKG_CONFIG_LIBDIR="$(PREFIX)/$(TARGET)/lib/pkgconfig" \
            PKG_CONFIG_SYSTEM_INCLUDE_PATH="$(PREFIX)/$(TARGET)/include" \
