@@ -51,7 +51,7 @@ define $(PKG)_BUILD
         -DFEATURE_harfbuzz=ON \
         -DFEATURE_pcre2=ON \
         -DFEATURE_openssl=ON \
-        -DFEATURE_openssl_linked=ON \
+        $(if $(BUILD_SHARED), -DFEATURE_openssl_linked=ON) \
         -DFEATURE_opengl=ON \
         -DFEATURE_opengl_dynamic=ON \
         -DFEATURE_use_gold_linker_alias=OFF \
