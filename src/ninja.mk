@@ -14,7 +14,10 @@ $(PKG)_DEPS     := cmake
 $(PKG)_TARGETS  := $(BUILD)
 
 define $(PKG)_BUILD
-    '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' -DCMAKE_INSTALL_PREFIX='$(PREFIX)/$(TARGET)' -DBUILD_TESTING=OFF
+    '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
+        -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
+        -DCMAKE_INSTALL_PREFIX='$(PREFIX)/$(TARGET)' \
+        -DBUILD_TESTING=OFF
     '$(TARGET)-cmake' --build '$(BUILD_DIR)' -j '$(JOBS)'
     '$(TARGET)-cmake' --install '$(BUILD_DIR)'
 endef

@@ -10,7 +10,7 @@ $(PKG)_GH_CONF  := fribidi/fribidi/releases, v
 $(PKG)_DEPS     := cc meson-conf $(BUILD)~ninja
 
 define $(PKG)_BUILD
-    cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)' -Ddocs=false -Ddeprecated=false
+    cd '$(SOURCE_DIR)' && '$(TARGET)-meson' --buildtype='$(MESON_BUILD_TYPE)' -Ddocs=false -Ddeprecated=false '$(BUILD_DIR)'
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install
 endef

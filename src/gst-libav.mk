@@ -14,7 +14,7 @@ $(PKG)_DEPS     := cc ffmpeg gstreamer gst-plugins-base gst-plugins-good gst-plu
 $(PKG)_UPDATE = $(subst gstreamer/refs,gst-libav/refs,$(gstreamer_UPDATE))
 
 define $(PKG)_BUILD
-    cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)'
+    cd '$(SOURCE_DIR)' && '$(TARGET)-meson' --buildtype='$(MESON_BUILD_TYPE)' '$(BUILD_DIR)'
 
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install

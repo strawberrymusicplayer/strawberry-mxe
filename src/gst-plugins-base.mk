@@ -14,7 +14,8 @@ $(PKG)_DEPS     := cc glib gstreamer libogg libopus libvorbis pango dlfcn-win32
 $(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-base/refs,$(gstreamer_UPDATE))
 
 define $(PKG)_BUILD
-    cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)' \
+    cd '$(SOURCE_DIR)' && '$(TARGET)-meson' \
+        --buildtype='$(MESON_BUILD_TYPE)' \
         -Dexamples=disabled \
         -Dtests=disabled \
         -Dtools=enabled \
@@ -56,7 +57,8 @@ define $(PKG)_BUILD
         -Dgl=disabled \
         -Dgl-graphene=disabled \
         -Dgl-jpeg=disabled \
-        -Dgl-png=disabled
+        -Dgl-png=disabled \
+        '$(BUILD_DIR)'
 
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install

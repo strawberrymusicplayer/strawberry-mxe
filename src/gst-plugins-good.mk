@@ -14,7 +14,8 @@ $(PKG)_DEPS     := cc glib libflac speex wavpack lame libsoup taglib gstreamer g
 $(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-good/refs,$(gstreamer_UPDATE))
 
 define $(PKG)_BUILD
-    cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)' \
+    cd '$(SOURCE_DIR)' && '$(TARGET)-meson' \
+        --buildtype='$(MESON_BUILD_TYPE)' \
         -Dexamples=disabled \
         -Dtests=disabled \
         -Dorc=enabled \
@@ -92,7 +93,8 @@ define $(PKG)_BUILD
         -Dximagesrc=disabled \
         -Dv4l2=disabled \
         -Dv4l2-libv4l2=disabled \
-        -Dv4l2-gudev=disabled
+        -Dv4l2-gudev=disabled \
+        '$(BUILD_DIR)'
 
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install

@@ -25,7 +25,7 @@ endef
 define $(PKG)_BUILD_$(BUILD)
     cd '$(SOURCE_DIR)' && meson \
         --prefix='$(PREFIX)/$(TARGET)' \
-        --buildtype=release \
+        --buildtype='$(MESON_BUILD_TYPE)' \
         --pkg-config-path='$(PREFIX)/$(TARGET)/bin/pkgconf' \
         '$(BUILD_DIR)'
     cd '$(BUILD_DIR)' && ninja
@@ -38,7 +38,7 @@ define $(PKG)_BUILD
     ln -sf '$(PREFIX)/$(BUILD)/bin/glib-genmarshal'        '$(PREFIX)/$(TARGET)/bin/'
     ln -sf '$(PREFIX)/$(BUILD)/bin/glib-compile-schemas'   '$(PREFIX)/$(TARGET)/bin/'
     ln -sf '$(PREFIX)/$(BUILD)/bin/glib-compile-resources' '$(PREFIX)/$(TARGET)/bin/'
-    cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)' -Dforce_posix_threads=true
+    cd '$(SOURCE_DIR)' && '$(TARGET)-meson' --buildtype='$(MESON_BUILD_TYPE)' -Dforce_posix_threads=true '$(BUILD_DIR)'
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install
 endef

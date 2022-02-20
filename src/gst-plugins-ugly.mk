@@ -14,7 +14,8 @@ $(PKG)_DEPS     := cc gstreamer gst-plugins-base gst-plugins-good gst-plugins-ba
 $(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-ugly/refs,$(gstreamer_UPDATE))
 
 define $(PKG)_BUILD
-    cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)' \
+    cd '$(SOURCE_DIR)' && '$(TARGET)-meson' \
+        --buildtype='$(MESON_BUILD_TYPE)' \
         -Dtests=disabled \
         -Dgpl=enabled \
         -Dorc=enabled \
@@ -30,7 +31,8 @@ define $(PKG)_BUILD
         -Ddvdread=disabled \
         -Dmpeg2dec=disabled \
         -Dsidplay=disabled \
-        -Dx264=disabled
+        -Dx264=disabled \
+        '$(BUILD_DIR)'
 
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install

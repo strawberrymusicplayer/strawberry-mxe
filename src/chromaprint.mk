@@ -12,6 +12,7 @@ $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
 $(PKG)_DEPS     := cc ffmpeg
 
 define $(PKG)_BUILD
-    cd '$(1)' && '$(TARGET)-cmake' -DBUILD_TESTS=OFF
-    $(MAKE) -C '$(1)' -j 1 install
+    cd '$(BUILD_DIR)' && '$(TARGET)-cmake' -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' -DBUILD_TESTS=OFF '$(SOURCE_DIR)'
+    $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
+    $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 endef

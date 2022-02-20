@@ -14,7 +14,8 @@ $(PKG)_DEPS     := cc gstreamer gst-plugins-base gst-plugins-good libgcrypt libx
 $(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-bad/refs,$(gstreamer_UPDATE))
 
 define $(PKG)_BUILD
-    cd '$(SOURCE_DIR)' && $(TARGET)-meson '$(BUILD_DIR)' \
+    cd '$(SOURCE_DIR)' && '$(TARGET)-meson' \
+        --buildtype='$(MESON_BUILD_TYPE)' \
         -Dexamples=disabled \
         -Dtests=disabled \
         -Dexamples=disabled \
@@ -161,7 +162,8 @@ define $(PKG)_BUILD
         -Dzbar=disabled \
         -Dwpe=disabled \
         -Dhls=disabled \
-        -Dhls-crypto=libgcrypt
+        -Dhls-crypto=libgcrypt \
+        '$(BUILD_DIR)'
 
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install

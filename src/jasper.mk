@@ -10,7 +10,8 @@ $(PKG)_GH_CONF  := jasper-software/jasper/releases, version-
 $(PKG)_DEPS     := cc jpeg
 
 define $(PKG)_BUILD
-    cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
+    cd '$(BUILD_DIR)' && $(TARGET)-cmake \
+	-DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
         -DJAS_ENABLE_SHARED=$(CMAKE_SHARED_BOOL) \
         -DJAS_ENABLE_LIBJPEG=ON \
         -DJAS_ENABLE_OPENGL=OFF \
@@ -18,7 +19,8 @@ define $(PKG)_BUILD
         -DJAS_ENABLE_DOC=OFF \
         -DJAS_ENABLE_PROGRAMS=OFF \
         -DJAS_ENABLE_LIBHEIF=OFF \
-        -DJAS_STDC_VERSION=201710L
+        -DJAS_STDC_VERSION=201710L \
+        '$(SOURCE_DIR)'
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 endef

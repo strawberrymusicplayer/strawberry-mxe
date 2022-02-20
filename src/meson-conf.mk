@@ -17,6 +17,7 @@ define $(PKG)_BUILD
         -DPREFIX=$(PREFIX) \
         -DTARGET=$(TARGET) \
         -DBUILD=$(BUILD) \
+        -DBUILD_TYPE=$(MXE_BUILD_TYPE) \
         -DCPU_FAMILY=$(strip \
              $(if $(findstring x86_64,$(TARGET)),x86_64,\
              $(if $(findstring i686,$(TARGET)),x86))) \
@@ -32,6 +33,7 @@ define $(PKG)_BUILD
         -DPREFIX=$(PREFIX) \
         -DTARGET=$(TARGET) \
         -DBUILD=$(BUILD) \
+        -DBUILD_TYPE=$(MXE_BUILD_TYPE) \
         -DMESON_CROSS_FILE='$(PREFIX)/$(TARGET)/share/meson/mxe-crossfile.meson' \
         -DINPUT='$(PWD)/src/meson/conf/target-meson.in' \
         -DOUTPUT='$(PREFIX)/bin/$(TARGET)-meson'

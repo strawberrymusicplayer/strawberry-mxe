@@ -22,6 +22,7 @@ define $(PKG)_BUILD
         -DCMAKE_VERSION=$(cmake_VERSION) \
         -DCMAKE_SHARED_BOOL=$(CMAKE_SHARED_BOOL) \
         -DCMAKE_STATIC_BOOL=$(CMAKE_STATIC_BOOL) \
+        -DCMAKE_BUILD_TYPE=$(MXE_BUILD_TYPE) \
         -DLIBTYPE=$(if $(BUILD_SHARED),SHARED,STATIC) \
         -DPROCESSOR=$(PROCESSOR) \
         -DPREFIX=$(PREFIX) \
@@ -39,6 +40,7 @@ define $(PKG)_BUILD
         -DBUILD=$(BUILD) \
         -DCMAKE_TOOLCHAIN_FILE='$(CMAKE_TOOLCHAIN_FILE)' \
         -DCMAKE_RUNRESULT_FILE='$(CMAKE_RUNRESULT_FILE)' \
+        -DCMAKE_BUILD_TYPE=$(MXE_BUILD_TYPE) \
         -DINPUT='$(PWD)/src/cmake/conf/target-cmake.in' \
         -DOUTPUT='$(PREFIX)/bin/$(TARGET)-cmake'
     chmod 0755 '$(PREFIX)/bin/$(TARGET)-cmake'

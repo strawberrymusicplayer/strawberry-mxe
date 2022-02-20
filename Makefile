@@ -10,9 +10,9 @@ include $(EXT_DIR)/gmsl
 
 MXE_TRIPLETS       := i686-w64-mingw32 x86_64-w64-mingw32
 MXE_LIB_TYPES      := static shared
-MXE_TARGET_LIST    := $(strip $(foreach TRIPLET,$(MXE_TRIPLETS),\
-                          $(addprefix $(TRIPLET).,$(MXE_LIB_TYPES))))
-MXE_TARGETS        := i686-w64-mingw32.static
+MXE_TARGET_LIST    := $(strip $(foreach TRIPLET,$(MXE_TRIPLETS), $(addprefix $(TRIPLET).,$(MXE_LIB_TYPES))))
+MXE_TARGETS        := x86_64-w64-mingw32.shared
+MXE_BUILD_TYPE     := Release
 .DEFAULT_GOAL      := all-filtered
 
 DEFAULT_MAX_JOBS   := 6
@@ -27,6 +27,8 @@ PWD        := $(shell pwd)
 SHELL      := bash
 
 MXE_TMP := $(PWD)
+
+MESON_BUILD_TYPE := $(shell echo '$(strip $(MXE_BUILD_TYPE))' | tr '[:upper:]' '[:lower:]')
 
 ORIG_PATH  := $(call merge,:,$(filter-out $(PREFIX)/$(BUILD)/bin $(PREFIX)/bin,$(call split,:,$(PATH))))
 BUILD_CC   := $(shell (gcc --help >/dev/null 2>&1 && echo gcc) || (clang --help >/dev/null 2>&1 && echo clang))
@@ -46,31 +48,32 @@ WGET_TOOL   = wget
 WGET        = $(WGET_TOOL) --user-agent='$(or $($(1)_UA),$(DEFAULT_UA))' -t 2 --timeout=10
 
 REQUIREMENTS := \
+    $(BUILD_CC) \
+    $(BUILD_CXX) \
+    $(LIBTOOL) \
+    $(LIBTOOLIZE) \
+    $(MAKE) \
+    $(OPENSSL) \
+    $(PATCH) \
+    $(PYTHON) \
+    $(SED) \
+    $(SORT) \
     7za \
     autoconf \
     automake \
     autopoint \
     bash \
     bison \
-    $(BUILD_CC) \
-    $(BUILD_CXX) \
     bzip2 \
+    cmake \
     flex \
     gdk-pixbuf-csource \
     gperf \
     intltoolize \
-    $(LIBTOOL) \
-    $(LIBTOOLIZE) \
     lzip \
-    $(MAKE) \
     meson \
-    $(OPENSSL) \
-    $(PATCH) \
     perl \
-    $(PYTHON) \
     ruby \
-    $(SED) \
-    $(SORT) \
     unzip \
     wget \
     xz
@@ -120,8 +123,7 @@ PKG_CONFIGURE_OPTS = \
     $($(PKG)_CONFIGURE_OPTS)
 
 # GCC threads and exceptions
-MXE_GCC_THREADS = \
-    $(if $(findstring win32,$(or $(TARGET),$(1))),win32,posix)
+MXE_GCC_THREADS = $(if $(findstring win32,$(or $(TARGET),$(1))),win32,posix)
 
 # allowed exception handling for targets
 # default (first item) and alternate, revisit if gcc/mingw-w64 change defaults
@@ -840,11 +842,9 @@ $(foreach TARGET,$(MXE_TARGETS), \
         $(eval $(call PKG_TARGET_RULE,$(PKG),$(call TMP_DIR,$(PKG)-$(TARGET)),$(TARGET)))))
 
 # convenience set-like functions for unique lists
-SET_APPEND = \
-    $(eval $(1) := $(sort $($(1)) $(2)))
+SET_APPEND = $(eval $(1) := $(sort $($(1)) $(2)))
 
-SET_CLEAR = \
-    $(eval $(1) := )
+SET_CLEAR = $(eval $(1) := )
 
 # WALK functions accept a list of pkgs and/or wildcards
 # use PKG_ALL_DEPS and strip target prefixes to get
