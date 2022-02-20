@@ -4,12 +4,12 @@ PKG             := libxml2
 $(PKG)_WEBSITE  := http://www.xmlsoft.org/
 $(PKG)_DESCR    := The XML C parser and toolkit of Gnome
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.9.12
-$(PKG)_CHECKSUM := c8d6681e38c56f172892c85ddc0852e1fd4b53b4209e7f4ebf17f7e2eae71d92
-$(PKG)_SUBDIR   := libxml2-$($(PKG)_VERSION)
-$(PKG)_FILE     := libxml2-$($(PKG)_VERSION).tar.gz
-$(PKG)_URL      := http://xmlsoft.org/sources/$($(PKG)_FILE)
-$(PKG)_URL_2    := https://ftp.osuosl.org/pub/blfs/conglomeration/libxml2/$($(PKG)_FILE)
+$(PKG)_VERSION  := 2.9.13
+$(PKG)_CHECKSUM := 0d676b10cfd13ab966907a3917bd86b17a1c22befdf42144cdc1ad5bb9e65c45
+$(PKG)_SUBDIR   := $(PKG)-v$($(PKG)_VERSION)
+$(PKG)_FILE     := $(PKG)-v$($(PKG)_VERSION).tar.gz
+$(PKG)_URL      := https://gitlab.gnome.org/GNOME/$(PKG)/-/archive/v$($(PKG)_VERSION)/$($(PKG)_FILE)
+$(PKG)_URL_2    := http://xmlsoft.org/sources/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc xz zlib
 
 define $(PKG)_UPDATE
@@ -20,6 +20,7 @@ endef
 
 define $(PKG)_BUILD
     $(SED) -i 's,`uname`,MinGW,g' '$(1)/xml2-config.in'
+    cd '$(1)' && ./autogen.sh
     cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --with-zlib='$(PREFIX)/$(TARGET)/lib' --without-debug --without-python --with-threads=$(MXE_GCC_THREADS)
     $(MAKE) -C '$(1)' -j '$(JOBS)' bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
     $(MAKE) -C '$(1)' -j 1 install bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
