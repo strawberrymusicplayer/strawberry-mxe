@@ -23,7 +23,8 @@ endef
 
 define $(PKG)_BUILD
     cd '$(1)' && CHOST='$(TARGET)' ./configure --prefix='$(PREFIX)/$(TARGET)' --static
-    $(MAKE) -C '$(1)' -j '$(JOBS)' install
+    $(MAKE) -C '$(1)' -j '$(JOBS)'
+    $(MAKE) -C '$(1)' -j 1 install
 endef
 
 define $(PKG)_BUILD_SHARED

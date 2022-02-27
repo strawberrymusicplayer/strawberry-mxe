@@ -20,5 +20,6 @@ endef
 define $(PKG)_BUILD
     echo 'Requires: zlib lcms2 libjpeg' >> '$(1)/libmng.pc.in'
     cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS)
-    $(MAKE) -C '$(1)' -j '$(JOBS)' install LDFLAGS='-no-undefined'
+    $(MAKE) -C '$(1)' -j '$(JOBS)' LDFLAGS='-no-undefined'
+    $(MAKE) -C '$(1)' -j 1 install
 endef

@@ -26,5 +26,6 @@ define $(PKG)_BUILD
         --without-iso-info \
         --without-iso-read \
         --enable-rock
+    $(MAKE) -C '$(1)' -j '$(JOBS)'
     $(MAKE) -C '$(1)' -j 1 install
 endef

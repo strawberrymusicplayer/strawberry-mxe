@@ -21,7 +21,8 @@ define $(PKG)_BUILD_SHARED
         --disable-pcre2grep-libz \
         --disable-pcre2grep-libbz2 \
         --disable-pcre2test-libreadline
-    $(MAKE) -C '$(1)' -j '$(JOBS)' install $(MXE_DISABLE_PROGRAMS) dist_html_DATA= dist_doc_DATA=
+    $(MAKE) -C '$(1)' -j '$(JOBS)' $(MXE_DISABLE_PROGRAMS) dist_html_DATA= dist_doc_DATA=
+    $(MAKE) -C '$(1)' -j 1 install $(MXE_DISABLE_PROGRAMS) dist_html_DATA= dist_doc_DATA=
     rm -f '$(PREFIX)/$(TARGET)'/share/man/man1/pcre*.1
     rm -f '$(PREFIX)/$(TARGET)'/share/man/man3/pcre*.3
     ln -sf '$(PREFIX)/$(TARGET)/bin/pcre2-config' '$(PREFIX)/bin/$(TARGET)-pcre2-config'

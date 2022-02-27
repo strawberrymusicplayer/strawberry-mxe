@@ -20,5 +20,6 @@ endef
 
 define $(PKG)_BUILD
     cd '$(1)' && bash_cv_wcwidth_broken=no ./configure $(MXE_CONFIGURE_OPTS) --disable-install-examples --without-curses --enable-multibyte
-    $(MAKE) -C '$(1)' -j '$(JOBS)' install
+    $(MAKE) -C '$(1)' -j '$(JOBS)'
+    $(MAKE) -C '$(1)' -j 1 install
 endef

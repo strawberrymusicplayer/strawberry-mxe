@@ -26,7 +26,8 @@ define $(PKG)_BUILD
         --with-crypto=libgcrypt \
         LIBS="`$(PREFIX)/$(TARGET)/bin/libgcrypt-config --libs`" \
         PKG_CONFIG='$(TARGET)-pkg-config'
-    $(MAKE) -C '$(1)' -j '$(JOBS)' install $(MXE_DISABLE_CRUFT)
+    $(MAKE) -C '$(1)' -j '$(JOBS)' $(MXE_DISABLE_CRUFT)
+    $(MAKE) -C '$(1)' -j 1 install $(MXE_DISABLE_CRUFT)
 
     '$(TARGET)-gcc' -W -Wall -Werror -ansi -pedantic '$(TEST_FILE)' -o '$(PREFIX)/$(TARGET)/bin/test-libssh2.exe' `'$(TARGET)-pkg-config' --cflags --libs libssh2`
 endef

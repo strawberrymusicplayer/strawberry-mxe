@@ -18,12 +18,11 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    # build and install the library
     cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure $(MXE_CONFIGURE_OPTS) --disable-rpath --disable-nls --disable-doc
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' $(MXE_DISABLE_CRUFT)
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install $(MXE_DISABLE_CRUFT)
 
-    # create pkg-config files
+    # Create pkg-config files
     $(INSTALL) -d '$(PREFIX)/$(TARGET)/lib/pkgconfig'
     (echo 'Name: $(PKG)'; \
      echo 'Version: $($(PKG)_VERSION)'; \
@@ -33,6 +32,5 @@ define $(PKG)_BUILD
      > '$(PREFIX)/$(TARGET)/lib/pkgconfig/$(PKG).pc'
     # TODO create pc files for iconv and unistring.
 
-    # compile test
     '$(TARGET)-gcc' -W -Wall -Werror -ansi -pedantic '$(TEST_FILE)' -o '$(PREFIX)/$(TARGET)/bin/test-$(PKG).exe' `'$(TARGET)-pkg-config' $(PKG) --cflags --libs`
 endef

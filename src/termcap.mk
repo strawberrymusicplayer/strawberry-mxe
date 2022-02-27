@@ -22,7 +22,8 @@ define $(PKG)_BUILD
     # configure script is ancient and lacks cross-compiling support
     cd '$(1)' && autoreconf -fi
     cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS)
-    $(MAKE) -C '$(1)' -j '$(JOBS)' AR='$(TARGET)-ar' oldincludedir= install
+    $(MAKE) -C '$(1)' -j '$(JOBS)' AR='$(TARGET)-ar' oldincludedir=
+    $(MAKE) -C '$(1)' -j 1 install
 
     # no shared support in configure/Makefile
     $(if $(BUILD_SHARED), $(MAKE_SHARED_FROM_STATIC) '$(1)/libtermcap.a')
