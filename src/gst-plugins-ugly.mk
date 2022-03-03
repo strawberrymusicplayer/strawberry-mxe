@@ -17,6 +17,7 @@ define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && '$(TARGET)-meson' \
         --buildtype='$(MESON_BUILD_TYPE)' \
         -Dtests=disabled \
+        -Ddoc=disabled \
         -Dgpl=enabled \
         -Dorc=enabled \
         -Dasfdemux=enabled \
