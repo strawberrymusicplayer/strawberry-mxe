@@ -20,7 +20,6 @@ PRINTF_COL_1_WIDTH := 13
 DUMMY_PROXY        := 192.0.2.0
 SOURCEFORGE_MIRROR := downloads.sourceforge.net
 PKG_JKVINGE        := https://files.jkvinge.net/packages/strawberry-dependencies
-# reorder as required, ensuring final one is a http fallback
 MIRROR_SITES       := PKG_JKVINGE
 
 PWD        := $(shell pwd)
@@ -206,8 +205,7 @@ MAKE_SHARED_FROM_STATIC = \
 	--bindir '$(PREFIX)/$(TARGET)/bin'
 
 define AUTOTOOLS_CONFIGURE
-    cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
-        $(MXE_CONFIGURE_OPTS)
+    cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure $(MXE_CONFIGURE_OPTS)
 endef
 
 define AUTOTOOLS_MAKE
@@ -248,8 +246,7 @@ ENV_WHITELIST += ACLOCAL_PATH LD_LIBRARY_PATH
 
 unexport $(filter-out $(ENV_WHITELIST),$(shell env | cut -d '=' -f1))
 
-SHORT_PKG_VERSION = \
-    $(word 1,$(subst ., ,$($(1)_VERSION))).$(word 2,$(subst ., ,$($(1)_VERSION)))
+SHORT_PKG_VERSION = $(word 1,$(subst ., ,$($(1)_VERSION))).$(word 2,$(subst ., ,$($(1)_VERSION)))
 
 UNPACK_ARCHIVE = \
     $(if $(filter %.tar,     $(1)),tar xf  '$(1)', \
@@ -267,18 +264,14 @@ UNPACK_ARCHIVE = \
     $(if $(filter %.deb,     $(1)),ar x '$(1)' && tar xf data.tar*, \
     $(error Unknown archive format: $(1)))))))))))))))
 
-UNPACK_PKG_ARCHIVE = \
-    $(call UNPACK_ARCHIVE,$(PKG_DIR)/$($(1)_FILE))
+UNPACK_PKG_ARCHIVE = $(call UNPACK_ARCHIVE,$(PKG_DIR)/$($(1)_FILE))
 
 # some shortcuts for awareness of MXE_PLUGIN_DIRS
 # all files for extension plugins will be considered for outdated checks
 PKG_MAKEFILES = $(realpath $(sort $(wildcard $(addsuffix /$(1).mk, $(MXE_PLUGIN_DIRS)))))
 PKG_TESTFILES = $(realpath $(sort $(wildcard $(addsuffix /$(1)-test*, $(MXE_PLUGIN_DIRS)))))
 # allow packages to specify a list of zero or more patches
-PKG_PATCHES   = $(if $(findstring undefined,$(origin $(1)_PATCHES)), \
-                    $(realpath $(sort $(wildcard $(addsuffix /$(1)-[0-9]*.patch, $(MXE_PLUGIN_DIRS))))) \
-                $(else), \
-                    $($(1)_PATCHES))
+PKG_PATCHES   = $(if $(findstring undefined,$(origin $(1)_PATCHES)),$(realpath $(sort $(wildcard $(addsuffix /$(1)-[0-9]*.patch,$(MXE_PLUGIN_DIRS)))))$(else),$($(1)_PATCHES))
 
 define PREPARE_PKG_SOURCE
     $(if $($(1)_SOURCE_TREE),\
@@ -291,8 +284,7 @@ define PREPARE_PKG_SOURCE
     )
 endef
 
-PKG_CHECKSUM = \
-    $(OPENSSL) dgst -sha256 '$(or $(2),$(PKG_DIR)/$($(1)_FILE))' 2>/dev/null | $(SED) -n 's,^.*\([0-9a-f]\{64\}\)$$,\1,p'
+PKG_CHECKSUM = $(OPENSSL) dgst -sha256 '$(or $(2),$(PKG_DIR)/$($(1)_FILE))' 2>/dev/null | $(SED) -n 's,^.*\([0-9a-f]\{64\}\)$$,\1,p'
 
 CHECK_PKG_ARCHIVE = \
     $(if $($(1)_SOURCE_TREE),\
@@ -301,13 +293,11 @@ CHECK_PKG_ARCHIVE = \
         [ '$($(1)_CHECKSUM)' == "`$$(call PKG_CHECKSUM,$(1),$(2))`" ]\
     ))
 
-ESCAPE_PKG = \
-	echo '$($(1)_FILE)' | perl -lpe 's/([^A-Za-z0-9])/sprintf("%%%02X", ord($$$$1))/seg'
+ESCAPE_PKG = echo '$($(1)_FILE)' | perl -lpe 's/([^A-Za-z0-9])/sprintf("%%%02X", ord($$$$1))/seg'
 
 BACKUP_DOWNLOAD = \
     (echo "MXE Warning! Downloading $(1) from backup." >&2 && \
-    ($(foreach SITE,$(MIRROR_SITES), \
-        $(WGET) -O '$(TMP_FILE)' $($(SITE))/`$(call ESCAPE_PKG,$(1))`_$($(1)_CHECKSUM) || ) false))
+    ($(foreach SITE,$(MIRROR_SITES), $(WGET) -O '$(TMP_FILE)' $($(SITE))/`$(call ESCAPE_PKG,$(1))`_$($(1)_CHECKSUM) || ) false))
 
 DOWNLOAD_PKG_ARCHIVE = \
     $(eval TMP_FILE := $(PKG_DIR)/.tmp-$($(1)_FILE)) \
@@ -407,7 +397,7 @@ override MXE_PLUGIN_DIRS += $(realpath $(TOP_DIR)/plugins/native/$(OS_SHORT_NAME
 
 .PHONY: check-requirements
 define CHECK_REQUIREMENT
-    @if ! ( $(1) --help || $(1) help ) &>/dev/null; then \
+    @if ! ( which $(1) ) &>/dev/null; then \
         echo 'Missing requirement: $(1)'; \
         touch check-requirements-failed; \
     fi
@@ -474,8 +464,7 @@ $(if $(and $(filter gcc,$(LOCAL_PKG_LIST)$(MAKECMDGOALS)),\
     $(info $(call repeat,$(space),6)- please update scripts accordingly (ignore if you are building gcc alone))\
     $(info ))
 
-# distinguish between deliberately empty rules and disabled ones
-# used in build-matrix
+# distinguish between deliberately empty rules and disabled ones used in build-matrix
 VIRTUAL_PKG_TYPES := source-only meta
 # used in deps rules and build-pkg
 BUILD_PKG_TYPES := meta
@@ -953,8 +942,7 @@ BUILD_PKG_TMP_FILES := *-*.list mxe-*.tar.xz mxe-*.deb* wheezy jessie
 
 .PHONY: clean
 clean:
-	rm -rf $(call TMP_DIR,*) $(PREFIX) \
-	       $(addprefix $(TOP_DIR)/, $(BUILD_PKG_TMP_FILES))
+	rm -rf $(call TMP_DIR,*) $(PREFIX) $(addprefix $(TOP_DIR)/, $(BUILD_PKG_TMP_FILES))
 	@echo
 	@echo 'review ccache size with:'
 	@echo '$(MXE_CCACHE_DIR)/bin/ccache -s'
