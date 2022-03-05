@@ -39,4 +39,4 @@ RUN cp /tmp/lockedlist/Plugins/LockedList64.dll /usr/share/nsis/Plugins/
 RUN mkdir -p /usr/src
 RUN cd /usr/src/ && git clone https://github.com/strawberrymusicplayer/strawberry-mxe
 RUN sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := x86_64-w64-mingw32.shared/g' /usr/src/strawberry-mxe/settings.mk
-RUN cd /usr/src/strawberry-mxe && make -j4
+RUN cd /usr/src/strawberry-mxe && make -j4 || { cat $(ls -1t log/*-* | head -n 1) && exit 1; }
