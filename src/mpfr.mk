@@ -20,6 +20,7 @@ define $(PKG)_UPDATE
     grep -a 'mpfr-' | \
     LC_ALL=C $(SED) 's/[\d128-\d255]//g' | \
     $(SED) 's/^.*mpfr-\([0-9\.]*\)\..*/\1/p' | \
+    sort -V | \
     tail -1
 endef
 
