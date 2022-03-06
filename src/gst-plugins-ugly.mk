@@ -11,7 +11,7 @@ $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad libcdio
 
-$(PKG)_UPDATE = $(subst gstreamer/refs,gst-plugins-ugly/refs,$(gstreamer_UPDATE))
+$(PKG)_UPDATE = $(gstreamer_UPDATE)
 
 define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && '$(TARGET)-meson' \
