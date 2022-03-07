@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := 015b8d4d9a395ebf444d40876867a2034dd3304b3ad48bc3a0dd0c1ee71dc
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc gstreamer gst-plugins-base gst-plugins-good libgcrypt libxml2 libopus faad2 faac libmpcdec chromaprint libopenmpt fdk-aac
+$(PKG)_DEPS     := cc gstreamer gst-plugins-base gst-plugins-good libgcrypt libxml2 libopus faad2 faac musepack chromaprint libopenmpt fdk-aac
 
 $(PKG)_UPDATE = $(gstreamer_UPDATE)
 
@@ -140,7 +140,7 @@ define $(PKG)_BUILD
         -Dmpeg2enc=disabled \
         -Dmplex=disabled \
         -Dmsdk=disabled \
-        -Dmusepack=auto \
+        -Dmusepack=enabled \
         -Dneon=disabled \
         -Dnvcodec=disabled \
         -Donnx=disabled \
