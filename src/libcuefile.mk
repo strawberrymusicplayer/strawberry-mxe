@@ -18,6 +18,8 @@ define $(PKG)_BUILD
         $(if $(BUILD_SHARED),-DSHARED=ON)
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
-    rm -rf '$(PREFIX)/$(TARGET)/include/cuetools'
-    cp -r '$(SOURCE_DIR)/include/cuetools' '$(PREFIX)/$(TARGET)/include/'
+    $(INSTALL) -d '$(PREFIX)/$(TARGET)/include/cuetools'
+    $(INSTALL) -m644 '$(SOURCE_DIR)/include/cuetools/cd.h' '$(PREFIX)/$(TARGET)/include/cuetools'
+    $(INSTALL) -m644 '$(SOURCE_DIR)/include/cuetools/cdtext.h' '$(PREFIX)/$(TARGET)/include/cuetools'
+    $(INSTALL) -m644 '$(SOURCE_DIR)/include/cuetools/cuefile.h' '$(PREFIX)/$(TARGET)/include/cuetools'
 endef

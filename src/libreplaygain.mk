@@ -18,6 +18,6 @@ define $(PKG)_BUILD
         $(if $(BUILD_SHARED),-DSHARED=ON)
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
-    mkdir -p '$(PREFIX)/$(TARGET)/include/replaygain/'
-    cp '$(SOURCE_DIR)/include/replaygain/gain_analysis.h' '$(PREFIX)/$(TARGET)/include/replaygain/'
+    $(INSTALL) -d '$(PREFIX)/$(TARGET)/include/replaygain'
+    $(INSTALL) -m644 '$(SOURCE_DIR)/include/replaygain/gain_analysis.h' '$(PREFIX)/$(TARGET)/include/replaygain/'
 endef

@@ -20,7 +20,7 @@ define $(PKG)_BUILD
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
     $(if $(BUILD_SHARED),
-      cp '$(BUILD_DIR)/libmpcdec/libmpcdec.dll.a' '$(PREFIX)/$(TARGET)/lib'
-      cp '$(BUILD_DIR)/libmpcdec/libmpcdec.dll' '$(PREFIX)/$(TARGET)/bin'
+      $(INSTALL) -m644 '$(BUILD_DIR)/libmpcdec/libmpcdec.dll.a' '$(PREFIX)/$(TARGET)/lib/'
+      $(INSTALL) -m644 '$(BUILD_DIR)/libmpcdec/libmpcdec.dll' '$(PREFIX)/$(TARGET)/bin/'
     )
 endef
