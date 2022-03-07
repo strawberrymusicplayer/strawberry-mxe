@@ -3,6 +3,9 @@
 MAKEFILE := $(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
 TOP_DIR  := $(patsubst %/,%,$(dir $(MAKEFILE)))
 EXT_DIR  := $(TOP_DIR)/ext
+PWD      := $(shell pwd)
+SHELL    := bash
+MXE_TMP  := $(PWD)
 
 # GNU Make Standard Library (https://gmsl.sourceforge.io/)
 # See docs/gmsl.html for further information
@@ -13,8 +16,7 @@ MXE_LIB_TYPES      := static shared
 MXE_TARGET_LIST    := $(strip $(foreach TRIPLET,$(MXE_TRIPLETS), $(addprefix $(TRIPLET).,$(MXE_LIB_TYPES))))
 MXE_TARGETS        := x86_64-w64-mingw32.shared
 MXE_BUILD_TYPE     := Release
-.DEFAULT_GOAL      := all-filtered
-
+MESON_BUILD_TYPE   := $(shell echo '$(strip $(MXE_BUILD_TYPE))' | tr '[:upper:]' '[:lower:]')
 DEFAULT_MAX_JOBS   := 6
 PRINTF_COL_1_WIDTH := 13
 DUMMY_PROXY        := 192.0.2.0
@@ -22,27 +24,21 @@ SOURCEFORGE_MIRROR := downloads.sourceforge.net
 PKG_JKVINGE        := https://files.jkvinge.net/packages/strawberry-dependencies
 MIRROR_SITES       := PKG_JKVINGE
 
-PWD        := $(shell pwd)
-SHELL      := bash
+.DEFAULT_GOAL      := all-filtered
 
-MXE_TMP := $(PWD)
-
-MESON_BUILD_TYPE := $(shell echo '$(strip $(MXE_BUILD_TYPE))' | tr '[:upper:]' '[:lower:]')
-
-ORIG_PATH  := $(call merge,:,$(filter-out $(PREFIX)/$(BUILD)/bin $(PREFIX)/bin,$(call split,:,$(PATH))))
-BUILD_CC   := $(shell (gcc --help >/dev/null 2>&1 && echo gcc) || (clang --help >/dev/null 2>&1 && echo clang))
-BUILD_CXX  := $(shell (g++ --help >/dev/null 2>&1 && echo g++) || (clang++ --help >/dev/null 2>&1 && echo clang++))
-DATE       := $(shell gdate --help >/dev/null 2>&1 && echo g)date
-INSTALL    := $(shell ginstall --help >/dev/null 2>&1 && echo g)install
-LIBTOOL    := $(shell glibtool --help >/dev/null 2>&1 && echo g)libtool
-LIBTOOLIZE := $(shell glibtoolize --help >/dev/null 2>&1 && echo g)libtoolize
+BUILD_CC   := $(shell (which gcc >/dev/null 2>&1 && echo gcc) || (which clang >/dev/null 2>&1 && echo clang))
+BUILD_CXX  := $(shell (which g++ >/dev/null 2>&1 && echo g++) || (which clang++ >/dev/null 2>&1 && echo clang++))
+DATE       := $(shell which gdate >/dev/null 2>&1 && echo g)date
+INSTALL    := $(shell which ginstall >/dev/null 2>&1 && echo g)install
+LIBTOOL    := $(shell which glibtool >/dev/null 2>&1 && echo g)libtool
+LIBTOOLIZE := $(shell which glibtoolize >/dev/null 2>&1 && echo g)libtoolize
 OPENSSL    := openssl
-PATCH      := $(shell gpatch --help >/dev/null 2>&1 && echo g)patch
-PYTHON     := $(shell PATH="$(ORIG_PATH)" which python3)
+PATCH      := $(shell which gpatch >/dev/null 2>&1 && echo g)patch
+PYTHON     := $(shell which python3 || which python)
 PY_XY_VER  := $(shell $(PYTHON) -c "import sys; print('{0[0]}.{0[1]}'.format(sys.version_info))")
-SED        := $(shell gsed --help >/dev/null 2>&1 && echo g)sed
-SORT       := $(shell gsort --help >/dev/null 2>&1 && echo g)sort
-DEFAULT_UA := $(shell wget --version | $(SED) -n 's,GNU \(Wget\) \([0-9.]*\).*,\1/\2,p')
+SED        := $(shell which gsed >/dev/null 2>&1 && echo g)sed
+SORT       := $(shell which gsort >/dev/null 2>&1 && echo g)sort
+DEFAULT_UA := $(shell wget --help | $(SED) -n 's,GNU \(Wget\) \([0-9.]*\).*,\1/\2,p')
 WGET_TOOL   = wget
 WGET        = $(WGET_TOOL) --user-agent='$(or $($(1)_UA),$(DEFAULT_UA))' -t 2 --timeout=10
 
@@ -271,7 +267,7 @@ UNPACK_PKG_ARCHIVE = $(call UNPACK_ARCHIVE,$(PKG_DIR)/$($(1)_FILE))
 PKG_MAKEFILES = $(realpath $(sort $(wildcard $(addsuffix /$(1).mk, $(MXE_PLUGIN_DIRS)))))
 PKG_TESTFILES = $(realpath $(sort $(wildcard $(addsuffix /$(1)-test*, $(MXE_PLUGIN_DIRS)))))
 # allow packages to specify a list of zero or more patches
-PKG_PATCHES   = $(if $(findstring undefined,$(origin $(1)_PATCHES)),$(realpath $(sort $(wildcard $(addsuffix /$(1)-[0-9]*.patch,$(MXE_PLUGIN_DIRS)))))$(else),$($(1)_PATCHES))
+PKG_PATCHES   = $(if $(findstring undefined,$(origin $(1)_PATCHES)), $(realpath $(sort $(wildcard $(addsuffix /$(1)-[0-9]*.patch, $(MXE_PLUGIN_DIRS))))) $(else), $($(1)_PATCHES))
 
 define PREPARE_PKG_SOURCE
     $(if $($(1)_SOURCE_TREE),\
@@ -464,21 +460,20 @@ $(if $(and $(filter gcc,$(LOCAL_PKG_LIST)$(MAKECMDGOALS)),\
     $(info $(call repeat,$(space),6)- please update scripts accordingly (ignore if you are building gcc alone))\
     $(info ))
 
-# distinguish between deliberately empty rules and disabled ones used in build-matrix
+# Distinguish between deliberately empty rules and disabled ones used in build-matrix
 VIRTUAL_PKG_TYPES := source-only meta
-# used in deps rules and build-pkg
+# Used in deps rules and build-pkg
 BUILD_PKG_TYPES := meta
-# used to avoid unpacking archives when $(PKG)_FILE can't be unset
+# Used to avoid unpacking archives when $(PKG)_FILE can't be unset
 SCRIPT_PKG_TYPES := script
 
-# all pkgs have (implied) order-only dependencies on MXE_CONF_PKGS.
+# All pkgs have (implied) order-only dependencies on MXE_CONF_PKGS.
 MXE_CONF_PKGS := mxe-conf
 
 # dummy *.mk files (usually overrides for plugins)
 NON_PKG_BASENAMES := overrides
 
-# autotools/cmake are generally always required, but separate them
-# for the case of `make gcc` which should only build real deps.
+# autotools/cmake are generally always required, but separate them for the case of `make gcc` which should only build real deps.
 AUTOTOOLS_PKGS := $(filter-out $(MXE_CONF_PKGS) %autotools autoconf automake libtool, \
     $(sort $(basename $(notdir \
         $(shell grep -l 'auto[conf\|reconf\|gen\|make]\|aclocal\|LIBTOOL' \
@@ -489,26 +484,21 @@ CMAKE_PKGS := $(filter-out $(MXE_CONF_PKGS) cmake-conf cmake, \
         $(shell grep -l '(TARGET)-cmake' \
                 $(addsuffix /*.mk,$(MXE_PLUGIN_DIRS)))))))
 
-# all other packages should list their deps explicitly, if tools become
-# universally used, we can add them to the toolchain deps (e.g. pkgconf)
+# All other packages should list their deps explicitly,
+# if tools become universally used, we can add them to the toolchain deps (e.g. pkgconf)
 # or add new implicit `${TOOL}_PKGS` rules
 
-# $(PKG) and $(TARGET) are in scope from the calling loop so reference
-# variables by name instead of position
+# $(PKG) and $(TARGET) are in scope from the calling loop so reference variables by name instead of position
 
-# explicit normal package deps
+# Explicit normal package deps
 PKG_DEPS = \
     $(foreach DEP,$(value $(call LOOKUP_PKG_RULE,$(PKG),DEPS,$(TARGET))), \
         $(if $(filter $(DEP),$(PKGS)), \
-            $(if $(or $(value $(call LOOKUP_PKG_RULE,$(DEP),BUILD,$(TARGET))), \
-                      $(filter $($(DEP)_TYPE),$(BUILD_PKG_TYPES))), \
-                $(TARGET)/installed/$(DEP)) \
+            $(if $(or $(value $(call LOOKUP_PKG_RULE,$(DEP),BUILD,$(TARGET))), $(filter $($(DEP)_TYPE),$(BUILD_PKG_TYPES))), $(TARGET)/installed/$(DEP)) \
         $(else), \
-            $(if $(or $(value $(call LOOKUP_PKG_RULE,$($(DEP)_PKG),BUILD,$($(DEP)_TGT))), \
-                      $(filter $($($(DEP)_PKG)_TYPE),$(BUILD_PKG_TYPES))), \
-                $($(DEP)_TGT)/installed/$($(DEP)_PKG))))
+            $(if $(or $(value $(call LOOKUP_PKG_RULE,$($(DEP)_PKG),BUILD,$($(DEP)_TGT))), $(filter $($($(DEP)_PKG)_TYPE),$(BUILD_PKG_TYPES))), $($(DEP)_TGT)/installed/$($(DEP)_PKG))))
 
-# order-only package deps - needs target lookup for e.g. zstd native case
+# Order-only package deps - needs target lookup for e.g. zstd native case
 PKG_OO_DEPS = \
     $(foreach DEP,$(value $(call LOOKUP_PKG_RULE,$(PKG),OO_DEPS,$(TARGET))), \
         $(if $(filter $(DEP),$(PKGS)), \
@@ -520,12 +510,10 @@ PKG_OO_DEPS = \
                       $(filter $($($(DEP)_PKG)_TYPE),$(BUILD_PKG_TYPES))), \
                 $($(DEP)_TGT)/installed/$($(DEP)_PKG))))
 
-# all deps for download rules (includes source-only pkgs)
+# All deps for download rules (includes source-only pkgs)
 PKG_ALL_DEPS = \
     $(foreach DEP,$($(PKG)_OO_DEPS) $(value $(call LOOKUP_PKG_RULE,$(PKG),DEPS,$(TARGET))), \
-        $(if $(filter $(DEP),$(PKGS)), \
-            $(TARGET)~$(DEP), \
-            $(DEP)))
+        $(if $(filter $(DEP),$(PKGS)), $(TARGET)~$(DEP), $(DEP)))
 
 
 # include files from MXE_PLUGIN_DIRS, set base filenames and `all-<plugin>` target
@@ -543,8 +531,7 @@ include $(PLUGIN_FILES)
 # add autotools, cmake, mxe-conf implicit order-only deps
 CROSS_TARGETS := $(filter-out $(BUILD),$(MXE_TARGETS))
 $(foreach PKG,$(PKGS), \
-    $(if $(filter $(PKG),$(filter-out $(autotools_DEPS),$(AUTOTOOLS_PKGS))),\
-        $(eval $(PKG)_OO_DEPS += $(BUILD)~autotools)) \
+    $(if $(filter $(PKG),$(filter-out $(autotools_DEPS),$(AUTOTOOLS_PKGS))),$(eval $(PKG)_OO_DEPS += $(BUILD)~autotools)) \
     $(if $(filter $(PKG),$(CMAKE_PKGS)),$(eval $(PKG)_OO_DEPS += cmake-conf)) \
     $(if $(filter $(PKG),$(MXE_CONF_PKGS)),,$(eval $(PKG)_OO_DEPS += mxe-conf)) \
     $(if $(filter %$(PKG),$(MXE_CONF_PKGS) $(BOOTSTRAP_PKGS)),,$(eval $(PKG)_OO_DEPS += $(BOOTSTRAP_PKGS))) \
@@ -553,9 +540,10 @@ $(foreach PKG,$(PKGS), \
     $(foreach TARGET,$(filter $($(PKG)_TARGETS),$(CROSS_TARGETS) $(BUILD)), \
         $(eval $(TARGET)~$(PKG)_PKG := $(PKG)) \
         $(eval $(TARGET)~$(PKG)_TGT := $(TARGET)) \
-        $(eval $(TARGET)_PKGS += $(PKG))))
+        $(eval $(TARGET)_PKGS += $(PKG))) \
+)
 
-# always add $(BUILD) to our targets
+# Always add $(BUILD) to our targets
 override MXE_TARGETS := $(CROSS_TARGETS) $(BUILD)
 
 # cache some target string manipulation functions with normal make variables
@@ -569,7 +557,7 @@ $(foreach TARGET,$(MXE_TARGETS),\
     $(call CHOP_TARGETS,$(TARGET))\
     $(eval $(TARGET)_UC_LIB_TYPE := $(if $(findstring shared,$(TARGET)),SHARED,STATIC)))
 
-# finds a package rule defintion
+# Finds a package rule defintion
 RULE_TYPES := BUILD DEPS FILE MESSAGE OO_DEPS URL
 # by truncating the target elements then looking for STAIC|SHARED rules:
 #
@@ -584,8 +572,7 @@ RULE_TYPES := BUILD DEPS FILE MESSAGE OO_DEPS URL
 LOOKUP_PKG_RULE = $(or $(LOOKUP_PKG_RULE_$(1)_$(2)_$(3)),$(1)_$(2))
 
 # $(call _LOOKUP_PKG_RULE, package, rule type, target [, lib type])
-# returns variable name for use with $(value). PKG_RULE below will
-# populate LOOKUP_PKG_RULE_* variables for rules that require lookups
+# Returns variable name for use with $(value). PKG_RULE below will populate LOOKUP_PKG_RULE_* variables for rules that require lookups
 _LOOKUP_PKG_RULE = $(strip \
     $(if $(findstring undefined, $(flavor $(PKG)_$(RULE)_$(3))),\
         $(if $(3),\
@@ -628,7 +615,7 @@ endef
 $(foreach TARGET,$(MXE_TARGETS),$(call TARGET_RULE,$(TARGET)))
 
 define PKG_RULE
-# configure GitHub metadata if GH_CONF is set
+# Configure GitHub metadata if GH_CONF is set
 $(if $($(PKG)_GH_CONF),$(eval $(MXE_SETUP_GITHUB)))
 $(eval $(PKG)_PATCHES := $(PKG_PATCHES))
 
@@ -679,7 +666,7 @@ $(foreach RULE,$(RULE_TYPES),\
 endef
 $(foreach PKG,$(PKGS),$(eval $(call PKG_RULE,$(PKG),$(call TMP_DIR,$(PKG)))))
 
-# disable networking during build-only rules for reproducibility
+# Disable networking during build-only rules for reproducibility
 ifeq ($(findstring darwin,$(BUILD)),)
     NONET_LIB := $(PREFIX)/$(BUILD)/lib/nonetwork.so
     PRELOAD   := LD_PRELOAD='$(NONET_LIB)'
@@ -706,14 +693,13 @@ define PKG_TARGET_RULE
 download-$(1): download-$(3)~$(1) download-only-$(1)
 
 .PHONY: download-$(3)~$(1)
-download-$(3)~$(1): download-only-$(1) \
-                    $(addprefix download-,$(PKG_ALL_DEPS))
+download-$(3)~$(1): download-only-$(1) $(addprefix download-,$(PKG_ALL_DEPS))
 
 .PHONY: $(1) $(1)~$(3)
-# requested pkgs should not build their native version unless
-# explicitly set in DEPS or they only have a single target
+# Requested pkgs should not build their native version unless explicitly set in DEPS or they only have a single target
 $(if $(filter-out $(BUILD),$(3))$(call not,$(word 2,$($(1)_TARGETS))),$(1)) \
     $(1)~$(3): $(PREFIX)/$(3)/installed/$(1)
+
 $(PREFIX)/$(3)/installed/$(1): $(PKG_MAKEFILES) \
                           $($(PKG)_PATCHES) \
                           $(PKG_TESTFILES) \
@@ -767,8 +753,7 @@ $(PREFIX)/$(3)/installed/$(1): $(PKG_MAKEFILES) \
 
 
 .PHONY: build-only-$(1)_$(3)
-# target-specific variables provide an extra level of scoping so that named
-# variables can be used in package build rules:
+# Target-specific variables provide an extra level of scoping so that named variables can be used in package build rules:
 # https://www.gnu.org/software/make/manual/html_node/Target_002dspecific.html
 build-only-$(1)_$(3): PKG = $(1)
 build-only-$(1)_$(3): TARGET = $(3)
@@ -835,9 +820,7 @@ SET_APPEND = $(eval $(1) := $(sort $($(1)) $(2)))
 
 SET_CLEAR = $(eval $(1) := )
 
-# WALK functions accept a list of pkgs and/or wildcards
-# use PKG_ALL_DEPS and strip target prefixes to get
-# global package level deps
+# WALK functions accept a list of pkgs and/or wildcards use PKG_ALL_DEPS and strip target prefixes to get global package level deps
 WALK_UPSTREAM = \
     $(strip \
         $(foreach PKG,$(filter $(1),$(PKGS)),\
@@ -848,8 +831,7 @@ WALK_UPSTREAM = \
                   $(call WALK_UPSTREAM,$(DEP))\
                   $(DEP))))))
 
-# not really walking downstream - that seems to be quadratic, so take
-# a linear approach and filter the fully expanded upstream for each pkg
+# Not really walking downstream - that seems to be quadratic, so take a linear approach and filter the fully expanded upstream for each pkg
 WALK_DOWNSTREAM = \
     $(strip \
         $(foreach PKG,$(PKGS),\
@@ -858,7 +840,7 @@ WALK_DOWNSTREAM = \
         $(foreach PKG,$(PKGS),\
             $(if $(filter $(1),$(ALL_$(PKG)_DEPS)),$(PKG))))
 
-# list of direct downstream deps
+# List of direct downstream deps
 DIRECT_DOWNSTREAM = \
     $(strip \
         $(foreach PKG,$(PKGS),\
@@ -871,8 +853,7 @@ RECURSIVELY_EXCLUDED_PKGS = \
         $(call SET_CLEAR,PKGS_VISITED)\
         $(call WALK_DOWNSTREAM,$(EXCLUDE_PKGS)))
 
-# INCLUDE_PKGS can be a list of pkgs and/or wildcards
-# only used by build-pkg
+# INCLUDE_PKGS can be a list of pkgs and/or wildcards only used by build-pkg
 INCLUDE_PKGS := $(MXE_BUILD_PKG_PKGS)
 RECURSIVELY_INCLUDED_PKGS = \
     $(sort \
@@ -890,7 +871,7 @@ all-filtered: $(REQUIRED_PKGS)
 .PHONY: download
 download: $(addprefix download-,$(REQUIRED_PKGS))
 
-# print a list of upstream dependencies and downstream dependents
+# Print a list of upstream dependencies and downstream dependents
 show-deps-%:
 	$(if $(call set_is_member,$*,$(PKGS)),\
 	    $(call SET_CLEAR,PKGS_VISITED)\
@@ -903,8 +884,8 @@ show-deps-%:
 	    @echo,\
 	    $(error Package $* not found))
 
-# show upstream dependencies and downstream dependents separately
-# suitable for usage in shell with: `make show-downstream-deps-foo`
+# Show upstream dependencies and downstream dependents separately suitable for usage in shell with:
+# `make show-downstream-deps-foo`
 # @echo -n suppresses the "Nothing to be done" without an eol
 show-downstream-deps-%:
 	$(if $(call set_is_member,$*,$(PKGS)),\
@@ -926,13 +907,12 @@ show-upstream-deps-%:
 	    @echo -n,\
 	    $(error Package $* not found))
 
-# print first level pkg deps for use in build-pkg.lua
+# Print first level pkg deps for use in build-pkg.lua
 .PHONY: print-deps-for-build-pkg
 print-deps-for-build-pkg:
 	$(foreach TARGET,$(sort $(MXE_TARGETS)), \
 	    $(foreach PKG,$(filter $(REQUIRED_PKGS),$(sort $($(TARGET)_PKGS))), \
-	        $(if $(or $(value $(call LOOKUP_PKG_RULE,$(PKG),BUILD,$(TARGET))), \
-	                  $(filter $($(PKG)_TYPE),$(BUILD_PKG_TYPES))), \
+	        $(if $(or $(value $(call LOOKUP_PKG_RULE,$(PKG),BUILD,$(TARGET))), $(filter $($(PKG)_TYPE),$(BUILD_PKG_TYPES))), \
 	            $(info $(strip for-build-pkg $(TARGET)~$(PKG) \
 	            $(subst $(space),-,$($(PKG)_VERSION)-$(OS_SHORT_NAME)) \
 	            $(subst /installed/,~,$(PKG_DEPS) $(PKG_OO_DEPS)))))))
@@ -1107,6 +1087,6 @@ docs/packages.json: $(foreach 1,$(PKGS),$(PKG_MAKEFILES))
 	@echo '    "": null'             >> $@
 	@echo '}'                        >> $@
 
-# for other mxe functions
+# For other MXE functions
 include mxe.patch.mk
 include mxe.updates.mk
