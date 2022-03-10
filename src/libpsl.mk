@@ -10,10 +10,10 @@ $(PKG)_GH_CONF  := rockdaboot/libpsl/releases/latest
 $(PKG)_SUBDIR   := libpsl-$($(PKG)_VERSION)
 $(PKG)_FILE     := libpsl-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://github.com/rockdaboot/libpsl/releases/download/$($(PKG)_VERSION)/$(PKG)-$($(PKG)_VERSION).tar.gz
-$(PKG)_DEPS     := cc libunistring
+$(PKG)_DEPS     := cc libunistring libidn2
 
 define $(PKG)_BUILD
-    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --disable-rpath --disable-nls
-    $(MAKE) -C '$(1)' -j '$(JOBS)'
-    $(MAKE) -C '$(1)' -j 1 install
+    cd '$(SOURCE_DIR)' && LDFLAGS='$(LDFLAGS) -liconv' '$(TARGET)-meson' --buildtype='$(MESON_BUILD_TYPE)' '$(BUILD_DIR)'
+    cd '$(BUILD_DIR)' && ninja
+    cd '$(BUILD_DIR)' && ninja install
 endef
