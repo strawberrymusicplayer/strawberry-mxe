@@ -7,11 +7,20 @@ $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 4.0.0
 $(PKG)_CHECKSUM := 4880c25022100c31aef4bdea084be2fe58020f9756e94151b8d1cbf0be1ed54c
 $(PKG)_GH_CONF  := harfbuzz/harfbuzz/releases
-$(PKG)_DEPS     := cc cairo freetype-bootstrap glib icu4c
+$(PKG)_DEPS     := cc freetype-bootstrap glib icu4c cairo
 
 define $(PKG)_BUILD
-    # mman-win32 is only a partial implementation
-    cd '$(1)' && ./autogen.sh && ./configure $(MXE_CONFIGURE_OPTS) ac_cv_header_sys_mman_h=no
-    $(MAKE) -C '$(1)'
-    $(MAKE) -C '$(1)' install
+    cd '$(SOURCE_DIR)' && '$(TARGET)-meson' \
+        --buildtype='$(MESON_BUILD_TYPE)' \
+        -Dtests=disabled \
+        -Ddocs=disabled \
+        -Dglib=enabled \
+        -Dgobject=enabled \
+        -Dcairo=enabled \
+        -Dcoretext=enabled \
+        -Dfreetype=enabled \
+        -Dicu=enabled \
+        '$(BUILD_DIR)'
+   cd '$(BUILD_DIR)' && ninja
+   cd '$(BUILD_DIR)' && ninja install
 endef
