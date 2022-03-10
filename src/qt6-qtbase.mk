@@ -23,7 +23,6 @@ endef
 
 define $(PKG)_BUILD
     mkdir -p '$(PREFIX)/$(TARGET)/qt6/bin/'
-    cp '$(PREFIX)/$(BUILD)/qt6/libexec/qvkgen' '$(PREFIX)/$(TARGET)/qt6/bin/qvkgen.exe'
     PKG_CONFIG="${TARGET}-pkg-config" \
     PKG_CONFIG_SYSROOT_DIR="/" \
     PKG_CONFIG_LIBDIR="$(PREFIX)/$(TARGET)/lib/pkgconfig" \
@@ -77,21 +76,30 @@ define $(PKG)_BUILD
     cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
     cmake --install '$(BUILD_DIR)'
 
+    $(INSTALL) -m755 '$(PREFIX)/$(BUILD)/qt6/bin/moc' '$(PREFIX)/$(TARGET)/qt6/bin/moc.exe'
+    $(INSTALL) -m755 '$(PREFIX)/$(BUILD)/qt6/bin/rcc' '$(PREFIX)/$(TARGET)/qt6/bin/rcc.exe'
+    $(INSTALL) -m755 '$(PREFIX)/$(BUILD)/qt6/bin/uic' '$(PREFIX)/$(TARGET)/qt6/bin/uic.exe'
+
 endef
 
 define $(PKG)_BUILD_$(BUILD)
-    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
+    cd '$(BUILD_DIR)' && CXXFLAGS='$(CXXFLAGS) -Wno-unused-but-set-variable' '$(SOURCE_DIR)/configure' \
         -prefix '$(PREFIX)/$(TARGET)/qt6' \
+        -libexecdir '$(PREFIX)/$(TARGET)/qt6/bin' \
         -static \
         -release \
         -opensource \
         -confirm-license \
-        -no-{eventfd,glib,icu,openssl,opengl,dbus,harfbuzz,xcb-xlib,xcb,xkbcommon} \
-        -no-sql-{db2,ibase,mysql,oci,odbc,psql,sqlite} \
-        -no-use-gold-linker \
+        -developer-build \
+        -make tools \
         -nomake examples \
         -nomake tests \
-        -make tools
+        -nomake benchmarks \
+        -nomake manual-tests \
+        -nomake minimal-static-tests \
+        -no-{accessibility,glib,openssl,opengl,dbus,fontconfig,freetype,icu,harfbuzz,xcb-xlib,xcb,xkbcommon,eventfd,evdev,gif,ico,libjpeg,pch} \
+        -no-sql-{db2,ibase,mysql,oci,odbc,psql,sqlite} \
+        -no-use-gold-linker
 
     '$(TARGET)-cmake' --build '$(BUILD_DIR)' -j '$(JOBS)'
     '$(TARGET)-cmake' --install '$(BUILD_DIR)'

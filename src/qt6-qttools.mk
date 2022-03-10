@@ -43,11 +43,8 @@ define $(PKG)_BUILD
     cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
     cmake --install '$(BUILD_DIR)'
 
-    cp '$(PREFIX)/$(BUILD)/qt6/libexec/moc' '$(PREFIX)/$(TARGET)/qt6/bin/moc.exe'
-    cp '$(PREFIX)/$(BUILD)/qt6/libexec/rcc' '$(PREFIX)/$(TARGET)/qt6/bin/rcc.exe'
-    cp '$(PREFIX)/$(BUILD)/qt6/libexec/uic' '$(PREFIX)/$(TARGET)/qt6/bin/uic.exe'
-    cp '$(PREFIX)/$(BUILD)/qt6/bin/lrelease' '$(PREFIX)/$(TARGET)/qt6/bin/lrelease.exe'
-    cp '$(PREFIX)/$(BUILD)/qt6/bin/lconvert' '$(PREFIX)/$(TARGET)/qt6/bin/lconvert.exe'
+    $(INSTALL) -m755 '$(PREFIX)/$(BUILD)/qt6/bin/lrelease' '$(PREFIX)/$(TARGET)/qt6/bin/lrelease.exe'
+    $(INSTALL) -m755 '$(PREFIX)/$(BUILD)/qt6/bin/lconvert' '$(PREFIX)/$(TARGET)/qt6/bin/lconvert.exe'
 
 endef
 
