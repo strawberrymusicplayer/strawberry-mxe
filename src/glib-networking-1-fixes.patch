@@ -4,45 +4,29 @@ Contains ad hoc patches for cross building.
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Jonas Kvinge <jonas@jkvinge.net>
-Date: Sat, 29 Feb 2020 05:43:58 +0100
-Subject: [PATCH 1/1] Add liconv to linker
+Date: Sat, 12 Oct 2019 14:03:44 +0200
+Subject: [PATCH 1/1] Remove tests
 
 
-diff --git a/tls/openssl/meson.build b/tls/openssl/meson.build
+diff --git a/meson.build b/meson.build
 index 1111111..2222222 100644
---- a/tls/openssl/meson.build
-+++ b/tls/openssl/meson.build
-@@ -15,6 +15,10 @@ incs = [top_inc]
+--- a/meson.build
++++ b/meson.build
+@@ -166,7 +166,7 @@ if libproxy_dep.found() or gsettings_desktop_schemas_dep.found()
+     subdir('proxy/gnome')
+   endif
  
- openssl_inc = include_directories('.')
+-  subdir('proxy/tests')
++  #subdir('proxy/tests')
+ endif
  
-+if host_system == 'windows'
-+  module_ldflags += '-liconv'
-+endif
-+
- deps = [
-   gio_dep,
-   glib_dep,
-diff --git a/tls/tests/meson.build b/tls/tests/meson.build
-index 1111111..2222222 100644
---- a/tls/tests/meson.build
-+++ b/tls/tests/meson.build
-@@ -16,6 +16,10 @@ cflags = [
-   '-DTOP_BUILDDIR="@0@"'.format(meson.build_root())
- ]
+ subdir('tls/base')
+@@ -179,7 +179,7 @@ if backends.contains('openssl')
+   subdir('tls/openssl')
+ endif
  
-+if host_system == 'windows'
-+  module_ldflags += '-liconv'
-+endif
-+
- envs = [
-   'G_TEST_SRCDIR=' + meson.current_source_dir(),
-   'G_TEST_BUILDDIR=' + meson.current_build_dir(),
-@@ -86,6 +90,7 @@ foreach backend: backends
-       include_directories: incs,
-       dependencies: program[2],
-       c_args: test_cflags,
-+      link_args: module_ldflags,
-       install: enable_installed_tests,
-       install_dir: installed_tests_execdir
-     )
+-subdir('tls/tests')
++#subdir('tls/tests')
+ 
+ # Will automatically pick it up from the cross file if defined
+ gio_querymodules = find_program('gio-querymodules', required : false)
