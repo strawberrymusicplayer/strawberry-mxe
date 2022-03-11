@@ -10,6 +10,13 @@ for i in $modified_files; do
   if [ "$package" = "" ]; then
     continue
   fi
+  grep '^\$(PKG)_CHECKSUM :=\s$' $i >/dev/null 2>&1
+  if [ $? -eq 0 ]; then
+    echo "Skipping $i, invalid checksum."
+    git checkout $i
+    continue
+  fi
+  echo "Committing $i"
   git commit $i -m "Update $package" || exit 1
 done
 
