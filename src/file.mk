@@ -10,7 +10,7 @@ $(PKG)_SUBDIR   := file-$($(PKG)_VERSION)
 $(PKG)_FILE     := file-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://astron.com/pub/file/$($(PKG)_FILE)
 $(PKG)_URL_2    := https://distfiles.macports.org/file/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc libgnurx
+$(PKG)_DEPS     := cc libgnurx bzip2
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://astron.com/pub/file/' | \
