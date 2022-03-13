@@ -36,6 +36,14 @@ RUN cd /tmp/lockedlist && unzip /tmp/lockedlist/LockedList.zip
 RUN cp /tmp/lockedlist/Plugins/x86-unicode/LockedList.dll /usr/share/nsis/Plugins/x86-unicode/
 RUN cp /tmp/lockedlist/Plugins/LockedList64.dll /usr/share/nsis/Plugins/
 
+RUN mkdir -p /tmp/registry && wget https://nsis.sourceforge.io/mediawiki/images/4/47/Registry.zip --directory-prefix=/tmp/registry
+RUN cd /tmp/registry && unzip /tmp/registry/Registry.zip
+RUN cp /tmp/registry/Desktop/Plugin/registry.dll /usr/share/nsis/Plugins/
+
+RUN mkdir -p /tmp/inetc && wget https://nsis.sourceforge.io/mediawiki/images/c/c9/Inetc.zip --directory-prefix=/tmp/inetc
+RUN cd /tmp/inetc && unzip /tmp/inetc/Inetc.zip
+RUN cp /tmp/inetc/Plugins/x86-unicode/INetC.dll /usr/share/nsis/Plugins/x86-unicode/
+
 RUN mkdir -p /usr/src
 RUN cd /usr/src/ && git clone https://github.com/strawberrymusicplayer/strawberry-mxe
 RUN sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := x86_64-w64-mingw32.shared/g' /usr/src/strawberry-mxe/settings.mk
