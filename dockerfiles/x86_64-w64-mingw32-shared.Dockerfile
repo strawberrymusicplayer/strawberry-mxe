@@ -39,6 +39,7 @@ RUN cp /tmp/lockedlist/Plugins/LockedList64.dll /usr/share/nsis/Plugins/
 RUN mkdir -p /tmp/registry && wget https://nsis.sourceforge.io/mediawiki/images/4/47/Registry.zip --directory-prefix=/tmp/registry
 RUN cd /tmp/registry && unzip /tmp/registry/Registry.zip
 RUN cp /tmp/registry/Desktop/Plugin/registry.dll /usr/share/nsis/Plugins/
+RUN cp /tmp/registry/Desktop/Plugin/registry.dll /usr/share/nsis/Plugins/x86-unicode/
 
 RUN mkdir -p /tmp/inetc && wget https://nsis.sourceforge.io/mediawiki/images/c/c9/Inetc.zip --directory-prefix=/tmp/inetc
 RUN cd /tmp/inetc && unzip /tmp/inetc/Inetc.zip
