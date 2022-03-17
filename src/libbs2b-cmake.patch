@@ -1,6 +1,18 @@
-diff -ruN libbs2b-3.1.0.orig/CMakeLists.txt libbs2b-3.1.0/CMakeLists.txt
---- libbs2b-3.1.0.orig/CMakeLists.txt	1970-01-01 01:00:00.000000000 +0100
-+++ libbs2b-3.1.0/CMakeLists.txt	2022-03-17 23:11:08.388438255 +0100
+This file is part of MXE. See LICENSE.md for licensing information.
+
+Contains ad hoc patches for cross building.
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Thu, 17 Mar 2022 23:24:24 +0100
+Subject: [PATCH 1/1] Add cmake support
+
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+new file mode 100644
+index 0000000..9dffabb
+--- /dev/null
++++ b/CMakeLists.txt
 @@ -0,0 +1,17 @@
 +cmake_minimum_required(VERSION 3.5)
 +project(libbs2b)
@@ -19,10 +31,34 @@ diff -ruN libbs2b-3.1.0.orig/CMakeLists.txt libbs2b-3.1.0/CMakeLists.txt
 +set(includedir "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
 +configure_file(libbs2b.pc.in libbs2b.pc @ONLY)
 +install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libbs2b.pc" DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
-diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
---- libbs2b-3.1.0.orig/src/bs2b.c	2009-06-04 20:01:15.000000000 +0200
-+++ libbs2b-3.1.0/src/bs2b.c	2022-03-17 22:36:24.648393039 +0100
-@@ -218,7 +218,7 @@
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+new file mode 100644
+index 0000000..2007423
+--- /dev/null
++++ b/src/CMakeLists.txt
+@@ -0,0 +1,17 @@
++add_library(libbs2b bs2b.c)
++
++target_compile_definitions(libbs2b
++  PRIVATE $<$<BOOL:${BUILD_SHARED_LIBS}>:BS2B_API_EXPORTS>
++)
++
++if(BUILD_SHARED_LIBS)
++    set_target_properties(libbs2b PROPERTIES VERSION 3.1.0 SOVERSION 0)
++endif()
++
++install(TARGETS libbs2b EXPORT targets
++    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
++    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
++    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
++)
++
++install(FILES bs2b.h bs2bversion.h bs2btypes.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/bs2b)
+diff --git a/src/bs2b.c b/src/bs2b.c
+index 1111111..2222222 100644
+--- a/src/bs2b.c
++++ b/src/bs2b.c
+@@ -218,7 +218,7 @@ static void cross_feed_d( t_bs2bdp bs2bdp, double *sample )
   * See descriptions in "bs2b.h"
   */
  
@@ -31,7 +67,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	t_bs2bdp bs2bdp = NULL;
  
-@@ -231,12 +231,12 @@
+@@ -231,12 +231,12 @@ t_bs2bdp bs2b_open( void )
  	return bs2bdp;
  } /* bs2b_open() */
  
@@ -46,7 +82,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	if( NULL == bs2bdp ) return;
  
-@@ -246,12 +246,12 @@
+@@ -246,12 +246,12 @@ void bs2b_set_level( t_bs2bdp bs2bdp, uint32_t level )
  	init( bs2bdp );
  } /* bs2b_set_level() */
  
@@ -61,7 +97,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	uint32_t level;
  
-@@ -263,12 +263,12 @@
+@@ -263,12 +263,12 @@ void bs2b_set_level_fcut( t_bs2bdp bs2bdp, int fcut )
  	bs2b_set_level( bs2bdp, level );
  } /* bs2b_set_level_fcut() */
  
@@ -76,7 +112,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	uint32_t level;
  
-@@ -280,12 +280,12 @@
+@@ -280,12 +280,12 @@ void bs2b_set_level_feed( t_bs2bdp bs2bdp, int feed )
  	bs2b_set_level( bs2bdp, level );
  } /* bs2b_set_level_feed() */
  
@@ -91,7 +127,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	int fcut;
  	
-@@ -297,7 +297,7 @@
+@@ -297,7 +297,7 @@ int bs2b_get_level_delay( t_bs2bdp bs2bdp )
  	return bs2b_level_delay( fcut );
  } /* bs2b_get_level_delay() */
  
@@ -100,7 +136,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	if( NULL == bs2bdp ) return;
  
-@@ -308,18 +308,18 @@
+@@ -308,18 +308,18 @@ void bs2b_set_srate( t_bs2bdp bs2bdp, uint32_t srate )
  	bs2b_clear( bs2bdp );
  } /* bs2b_set_srate() */
  
@@ -122,7 +158,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	int loopv = sizeof( bs2bdp->lfs );
  
-@@ -332,17 +332,17 @@
+@@ -332,17 +332,17 @@ int bs2b_is_clear( t_bs2bdp bs2bdp )
  	return 1;
  } /* bs2b_is_clear() */
  
@@ -143,7 +179,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	if( n > 0 )
  	{
-@@ -361,7 +361,7 @@
+@@ -361,7 +361,7 @@ void bs2b_cross_feed_d( t_bs2bdp bs2bdp, double *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_d() */
  
@@ -152,7 +188,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	if( n > 0 )
  	{
-@@ -390,7 +390,7 @@
+@@ -390,7 +390,7 @@ void bs2b_cross_feed_dbe( t_bs2bdp bs2bdp, double *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_dbe() */
  
@@ -161,7 +197,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	if( n > 0 )
  	{
-@@ -419,7 +419,7 @@
+@@ -419,7 +419,7 @@ void bs2b_cross_feed_dle( t_bs2bdp bs2bdp, double *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_dle() */
  
@@ -170,7 +206,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-@@ -446,7 +446,7 @@
+@@ -446,7 +446,7 @@ void bs2b_cross_feed_f( t_bs2bdp bs2bdp, float *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_f() */
  
@@ -179,7 +215,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-@@ -483,7 +483,7 @@
+@@ -483,7 +483,7 @@ void bs2b_cross_feed_fbe( t_bs2bdp bs2bdp, float *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_fbe() */
  
@@ -188,7 +224,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-@@ -529,7 +529,7 @@
+@@ -529,7 +529,7 @@ void bs2b_cross_feed_fle( t_bs2bdp bs2bdp, float *sample, int n )
  #define MAX_INT8_VALUE          127.0
  #define MIN_INT8_VALUE         -128.0
  
@@ -197,7 +233,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-@@ -556,7 +556,7 @@
+@@ -556,7 +556,7 @@ void bs2b_cross_feed_s32( t_bs2bdp bs2bdp, int32_t *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_s32() */
  
@@ -206,7 +242,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-@@ -583,7 +583,7 @@
+@@ -583,7 +583,7 @@ void bs2b_cross_feed_u32( t_bs2bdp bs2bdp, uint32_t *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_u32() */
  
@@ -215,7 +251,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-@@ -620,7 +620,7 @@
+@@ -620,7 +620,7 @@ void bs2b_cross_feed_s32be( t_bs2bdp bs2bdp, int32_t *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_s32be() */
  
@@ -224,7 +260,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-@@ -657,7 +657,7 @@
+@@ -657,7 +657,7 @@ void bs2b_cross_feed_u32be( t_bs2bdp bs2bdp, uint32_t *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_u32be() */
  
@@ -233,7 +269,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-@@ -694,7 +694,7 @@
+@@ -694,7 +694,7 @@ void bs2b_cross_feed_s32le( t_bs2bdp bs2bdp, int32_t *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_s32le() */
  
@@ -242,7 +278,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-@@ -731,7 +731,7 @@
+@@ -731,7 +731,7 @@ void bs2b_cross_feed_u32le( t_bs2bdp bs2bdp, uint32_t *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_u32le() */
  
@@ -251,7 +287,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-@@ -758,7 +758,7 @@
+@@ -758,7 +758,7 @@ void bs2b_cross_feed_s16( t_bs2bdp bs2bdp, int16_t *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_s16() */
  
@@ -260,7 +296,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-@@ -785,7 +785,7 @@
+@@ -785,7 +785,7 @@ void bs2b_cross_feed_u16( t_bs2bdp bs2bdp, uint16_t *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_u16() */
  
@@ -269,7 +305,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-@@ -822,7 +822,7 @@
+@@ -822,7 +822,7 @@ void bs2b_cross_feed_s16be( t_bs2bdp bs2bdp, int16_t *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_s16be() */
  
@@ -278,7 +314,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-@@ -859,7 +859,7 @@
+@@ -859,7 +859,7 @@ void bs2b_cross_feed_u16be( t_bs2bdp bs2bdp, uint16_t *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_u16be() */
  
@@ -287,7 +323,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-@@ -896,7 +896,7 @@
+@@ -896,7 +896,7 @@ void bs2b_cross_feed_s16le( t_bs2bdp bs2bdp, int16_t *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_s16le() */
  
@@ -296,7 +332,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-@@ -933,7 +933,7 @@
+@@ -933,7 +933,7 @@ void bs2b_cross_feed_u16le( t_bs2bdp bs2bdp, uint16_t *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_u16le() */
  
@@ -305,7 +341,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-@@ -960,7 +960,7 @@
+@@ -960,7 +960,7 @@ void bs2b_cross_feed_s8( t_bs2bdp bs2bdp, int8_t *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_s8() */
  
@@ -314,7 +350,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-@@ -987,7 +987,7 @@
+@@ -987,7 +987,7 @@ void bs2b_cross_feed_u8( t_bs2bdp bs2bdp, uint8_t *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_u8() */
  
@@ -323,7 +359,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-@@ -1014,7 +1014,7 @@
+@@ -1014,7 +1014,7 @@ void bs2b_cross_feed_s24( t_bs2bdp bs2bdp, bs2b_int24_t *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_s24() */
  
@@ -332,7 +368,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-@@ -1041,7 +1041,7 @@
+@@ -1041,7 +1041,7 @@ void bs2b_cross_feed_u24( t_bs2bdp bs2bdp, bs2b_uint24_t *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_u24() */
  
@@ -341,7 +377,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-@@ -1078,7 +1078,7 @@
+@@ -1078,7 +1078,7 @@ void bs2b_cross_feed_s24be( t_bs2bdp bs2bdp, bs2b_int24_t *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_s24be() */
  
@@ -350,7 +386,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-@@ -1115,7 +1115,7 @@
+@@ -1115,7 +1115,7 @@ void bs2b_cross_feed_u24be( t_bs2bdp bs2bdp, bs2b_uint24_t *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_u24be() */
  
@@ -359,7 +395,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-@@ -1152,7 +1152,7 @@
+@@ -1152,7 +1152,7 @@ void bs2b_cross_feed_s24le( t_bs2bdp bs2bdp, bs2b_int24_t *sample, int n )
  	} /* if */
  } /* bs2b_cross_feed_s24le() */
  
@@ -368,9 +404,10 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.c libbs2b-3.1.0/src/bs2b.c
  {
  	double sample_d[ 2 ];
  
-diff -ruN libbs2b-3.1.0.orig/src/bs2b.h libbs2b-3.1.0/src/bs2b.h
---- libbs2b-3.1.0.orig/src/bs2b.h	2009-06-04 20:01:15.000000000 +0200
-+++ libbs2b-3.1.0/src/bs2b.h	2022-03-17 23:03:24.584428191 +0100
+diff --git a/src/bs2b.h b/src/bs2b.h
+index 1111111..2222222 100644
+--- a/src/bs2b.h
++++ b/src/bs2b.h
 @@ -27,6 +27,16 @@
  #include "bs2bversion.h"
  #include "bs2btypes.h"
@@ -388,7 +425,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.h libbs2b-3.1.0/src/bs2b.h
  /* Minimum/maximum sample rate (Hz) */
  #define BS2B_MINSRATE 2000
  #define BS2B_MAXSRATE 384000
-@@ -84,55 +94,55 @@
+@@ -84,55 +94,55 @@ extern "C"
  /* Allocates and sets a data to defaults.
   * Return NULL on error.
   */
@@ -459,7 +496,7 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.h libbs2b-3.1.0/src/bs2b.h
  
  /* 'bs2b_cross_feed_*' crossfeeds buffer of 'n' stereo samples
   * pointed by 'sample'.
-@@ -142,82 +152,82 @@
+@@ -142,82 +152,82 @@ uint32_t bs2b_runtime_version_int( void );
   */
  
  /* sample poits to double floats native endians */
@@ -568,24 +605,3 @@ diff -ruN libbs2b-3.1.0.orig/src/bs2b.h libbs2b-3.1.0/src/bs2b.h
  
  #ifdef __cplusplus
  }	/* extern "C" */
-diff -ruN libbs2b-3.1.0.orig/src/CMakeLists.txt libbs2b-3.1.0/src/CMakeLists.txt
---- libbs2b-3.1.0.orig/src/CMakeLists.txt	1970-01-01 01:00:00.000000000 +0100
-+++ libbs2b-3.1.0/src/CMakeLists.txt	2022-03-17 23:18:42.264448104 +0100
-@@ -0,0 +1,17 @@
-+add_library(libbs2b bs2b.c)
-+
-+target_compile_definitions(libbs2b
-+  PRIVATE $<$<BOOL:${BUILD_SHARED_LIBS}>:BS2B_API_EXPORTS>
-+)
-+
-+if(BUILD_SHARED_LIBS)
-+    set_target_properties(libbs2b PROPERTIES VERSION 3.1.0 SOVERSION 0)
-+endif()
-+
-+install(TARGETS libbs2b EXPORT targets
-+    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-+    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-+    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
-+)
-+
-+install(FILES bs2b.h bs2bversion.h bs2btypes.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/bs2b)
