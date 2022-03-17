@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM = $(freetype_CHECKSUM)
 $(PKG)_SUBDIR   = $(freetype_SUBDIR)
 $(PKG)_FILE     = $(freetype_FILE)
 $(PKG)_URL      = $(freetype_URL)
-$(PKG)_DEPS    := cc zlib bzip2 brotli libpng
+$(PKG)_DEPS    := cc meson-conf zlib bzip2 brotli libpng
 
 define $(PKG)_UPDATE
     echo $(freetype_VERSION)

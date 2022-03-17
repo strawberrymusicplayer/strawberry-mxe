@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := 3333ae7cfda88429c97a7ae63b7d01ab398076c3b67182e960e5684050f2c
 $(PKG)_SUBDIR   := freetype-$($(PKG)_VERSION)
 $(PKG)_FILE     := freetype-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://$(SOURCEFORGE_MIRROR)/project/freetype/freetype2/$(shell echo '$($(PKG)_VERSION)' | cut -d . -f 1,2,3)/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc zlib bzip2 brotli libpng harfbuzz
+$(PKG)_DEPS     := cc meson-conf zlib bzip2 brotli libpng harfbuzz
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://sourceforge.net/projects/freetype/files/freetype2/' | \
