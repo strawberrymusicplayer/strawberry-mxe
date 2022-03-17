@@ -4,23 +4,39 @@ Contains ad hoc patches for cross building.
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Jonas Kvinge <jonas@jkvinge.net>
-Date: Mon, 7 Mar 2022 13:39:27 +0100
-Subject: [PATCH 1/1] Fix hardcoded paths
+Date: Thu, 17 Mar 2022 23:58:18 +0100
+Subject: [PATCH 1/1] Build fixes
 
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
 index 1111111..2222222 100755
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -16,7 +16,7 @@ endif(WIN32)
+@@ -15,19 +15,14 @@ endif(WIN32)
+ 
  add_definitions(-DFAST_MATH -DCVD_FASTLOG)
  
++if(MSVC AND SHARED)
++  add_definitions(-DDLL_EXPORT)
++endif()
++
  if(NOT MSVC)
 -  set(CMAKE_C_FLAGS "-O3 -Wall -fomit-frame-pointer -pipe")
 +  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -Wall -fomit-frame-pointer -pipe")
  endif(NOT MSVC)
  
  add_subdirectory(libmpcdec)
+-add_subdirectory(libmpcpsy)
+ add_subdirectory(libmpcenc)
+-add_subdirectory(libwavformat)
+-add_subdirectory(mpcgain)
+-add_subdirectory(mpcdec)
+-add_subdirectory(mpcenc)
+-add_subdirectory(mpc2sv8)
+-add_subdirectory(mpccut)
+-add_subdirectory(mpcchap)
+-add_subdirectory(wavcmp)
+ add_subdirectory(include)
 diff --git a/mpcgain/CMakeLists.txt b/mpcgain/CMakeLists.txt
 index 1111111..2222222 100755
 --- a/mpcgain/CMakeLists.txt
