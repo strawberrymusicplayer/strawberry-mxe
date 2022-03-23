@@ -4,8 +4,8 @@ PKG             := harfbuzz
 $(PKG)_WEBSITE  := https://wiki.freedesktop.org/www/Software/HarfBuzz/
 $(PKG)_DESCR    := HarfBuzz is a text shaping engine
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 4.0.1
-$(PKG)_CHECKSUM := 449edee95208344d75f8e886da6ae390a3e1002e5b3ca4eb7ed42e69958491e2
+$(PKG)_VERSION  := 4.1.0
+$(PKG)_CHECKSUM := 0dad9332aa017d216981382cc07a9cf115740990c83b81ce3ea71ad88026d7f1
 $(PKG)_GH_CONF  := harfbuzz/harfbuzz/releases
 $(PKG)_DEPS     := cc freetype-bootstrap glib icu4c cairo
 
