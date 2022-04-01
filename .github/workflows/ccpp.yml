@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1.2.0
       - name: Add devel-tools-building repo
-        run: zypper -n ar -c -f -n 'repo-devel-tools-building' https://download.opensuse.org/repositories/devel:/tools:/building/openSUSE_Leap_15.3/ repo-devel-tools-building
+        run: zypper -n ar -c -f -n 'repo-devel-tools-building' https://download.opensuse.org/repositories/devel:/tools:/building/15.3/ repo-devel-tools-building
       - name: Update packages
         run: zypper -n --gpg-auto-import-keys ref
       - name: Upgrade packages
@@ -53,7 +53,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1.2.0
       - name: Add devel-tools-building repo
-        run: zypper -n ar -c -f -n 'repo-devel-tools-building' https://download.opensuse.org/repositories/devel:/tools:/building/openSUSE_Leap_15.3/ repo-devel-tools-building
+        run: zypper -n ar -c -f -n 'repo-devel-tools-building' https://download.opensuse.org/repositories/devel:/tools:/building/15.3/ repo-devel-tools-building
       - name: Update packages
         run: zypper -n --gpg-auto-import-keys ref
       - name: Upgrade packages
