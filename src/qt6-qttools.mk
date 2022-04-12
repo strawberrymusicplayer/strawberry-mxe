@@ -4,19 +4,19 @@ PKG             := qt6-qttools
 $(PKG)_WEBSITE  := https://www.qt.io/
 $(PKG)_DESCR    := Qt 6 Tools
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 6.2.4
-$(PKG)_CHECKSUM := 17f40689c4a1706a1b7db22fa92f6ab79f7b698a89e100cab4d10e19335f8267
+$(PKG)_VERSION  := 6.3.0
+$(PKG)_CHECKSUM := fce94688ea925782a2879347584991f854630daadba6c52aed6d93e33cd0b19c
 $(PKG)_FILE     := qttools-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_SUBDIR   := qttools-everywhere-src-$($(PKG)_VERSION)
-$(PKG)_URL      := https://download.qt.io/official_releases/qt/6.2/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
+$(PKG)_URL      := https://download.qt.io/official_releases/qt/6.3/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS     := cc qt6-qtbase $(BUILD)~$(PKG)
 $(PKG)_DEPS_$(BUILD) := qt6-qtbase
 $(PKG)_OO_DEPS_$(BUILD) += qt6-conf ninja
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- https://download.qt.io/official_releases/qt/6.2/ | \
-    $(SED) -n 's,.*href="\(6\.2\.[^/]*\)/".*,\1,p' | \
+    $(WGET) -q -O- https://download.qt.io/official_releases/qt/6.3/ | \
+    $(SED) -n 's,.*href="\(6\.3\.[^/]*\)/".*,\1,p' | \
     sort |
     tail -1
 endef
