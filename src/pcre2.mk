@@ -13,16 +13,17 @@ $(PKG)_URL      := https://github.com/PhilipHazel/pcre2/releases/download/$(PKG)
 $(PKG)_DEPS     := cc
 
 define $(PKG)_BUILD_SHARED
-    cd '$(1)' && ./configure \
-        $(MXE_CONFIGURE_OPTS) \
-        --enable-unicode \
-        --enable-pcre2-16 \
-        --enable-pcre2-32 \
-        --disable-pcre2grep-libz \
-        --disable-pcre2grep-libbz2 \
-        --disable-pcre2test-libreadline
-    $(MAKE) -C '$(1)' -j '$(JOBS)' $(MXE_DISABLE_PROGRAMS) dist_html_DATA= dist_doc_DATA=
-    $(MAKE) -C '$(1)' -j 1 install $(MXE_DISABLE_PROGRAMS) dist_html_DATA= dist_doc_DATA=
+   cd '$(BUILD_DIR)' && $(TARGET)-cmake \
+       -DPCRE2_SUPPORT_UNICODE=ON \
+       -DPCRE2_BUILD_PCRE2_8=ON \
+       -DPCRE2_BUILD_PCRE2_16=ON \
+       -DPCRE2_BUILD_PCRE2_32=ON \
+       -DPCRE2_SUPPORT_UNICODE=ON \
+       -DPCRE2_BUILD_TESTS=OFF \
+       -DPCRE2_BUILD_PCRE2GREP=OFF \
+       '$(SOURCE_DIR)'
+    $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
+    $(MAKE) -C '$(BUILD_DIR)' -j 1 install
     rm -f '$(PREFIX)/$(TARGET)'/share/man/man1/pcre*.1
     rm -f '$(PREFIX)/$(TARGET)'/share/man/man3/pcre*.3
     ln -sf '$(PREFIX)/$(TARGET)/bin/pcre2-config' '$(PREFIX)/bin/$(TARGET)-pcre2-config'
