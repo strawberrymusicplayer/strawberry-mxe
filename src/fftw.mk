@@ -23,12 +23,4 @@ define $(PKG)_BUILD
     cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --enable-threads --with-combined-threads --disable-doc
     $(MAKE) -C '$(1)' -j '$(JOBS)' bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
     $(MAKE) -C '$(1)' -j 1 install bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
-
-    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --enable-threads --with-combined-threads --enable-long-double --disable-doc
-    $(MAKE) -C '$(1)' -j '$(JOBS)' bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
-    $(MAKE) -C '$(1)' -j 1 install bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
-
-    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --enable-threads --with-combined-threads --enable-float --disable-doc
-    $(MAKE) -C '$(1)' -j '$(JOBS)' bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
-    $(MAKE) -C '$(1)' -j 1 install bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
 endef
