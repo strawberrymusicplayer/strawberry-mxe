@@ -84,7 +84,7 @@ define $(PKG)_BUILD
 endef
 
 define $(PKG)_BUILD_$(BUILD)
-    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
+    cd '$(BUILD_DIR)' && CXXFLAGS='$(CXXFLAGS) -Wno-unused-but-set-variable' '$(SOURCE_DIR)/configure' \
         -prefix '$(PREFIX)/$(TARGET)/qt6' \
         -libexecdir '$(PREFIX)/$(TARGET)/qt6/bin' \
         -static \
