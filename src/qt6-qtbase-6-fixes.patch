@@ -1,0 +1,72 @@
+From 5302857f5a716037aaef22143ea11102ad47bce0 Mon Sep 17 00:00:00 2001
+From: Thiago Macieira <thiago.macieira@intel.com>
+Date: Mon, 25 Apr 2022 14:00:58 -0700
+Subject: Atomics: workaround GCC 12 warning about overflowing d->state
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+I don't see a way this can be anything but a bogus warning.
+
+In member function ‘std::__atomic_base<_IntTp>::__int_type std::__atomic_base<_IntTp>::fetch_or(__int_type, std::memory_order) [with _ITp = int]’,
+    inlined from ‘static T QAtomicOps<X>::fetchAndOrRelaxed(std::atomic<T>&, typename QAtomicAdditiveType<T>::AdditiveT) [with T = int; X = int]’ at qatomic_cxx11.h:449:33,
+    inlined from ‘T QBasicAtomicInteger<T>::fetchAndOrRelaxed(T) [with T = int]’ at qbasicatomic.h:168:36,
+    inlined from ‘int switch_on(QAtomicInt&, int)’ at qfutureinterface.cpp:97:31,
+    inlined from ‘void QFutureInterfaceBase::setThrottled(bool)’ at qfutureinterface.cpp:194:18:
+atomic_base.h:648:33: warning: ‘unsigned int __atomic_or_fetch_4(volatile void*, unsigned int, int)’ writing 4 bytes into a region of size 0 overflows the destination [-Wstringop-overflow=]
+
+A few more of those appear in other modules. I'm not fixing them all,
+assuming GCC will soon fix the warning.
+
+Pick-to: 6.2 6.3
+Change-Id: I7fb65b80b7844c8d8f26fffd16e93f68e278d048
+Reviewed-by: Marc Mutz <marc.mutz@qt.io>
+---
+ src/corelib/thread/qfutureinterface.cpp | 5 +++++
+ src/gui/text/qtextengine.cpp            | 7 +++++++
+ 2 files changed, 12 insertions(+)
+
+diff --git a/src/corelib/thread/qfutureinterface.cpp b/src/corelib/thread/qfutureinterface.cpp
+index efbcf9ce58..84d6b09ce8 100644
+--- a/src/corelib/thread/qfutureinterface.cpp
++++ b/src/corelib/thread/qfutureinterface.cpp
+@@ -50,6 +50,11 @@
+ #  undef interface
+ #endif
+ 
++// GCC 12 gets confused about QFutureInterfaceBase::state, for some non-obvious
++// reason
++//  warning: ‘unsigned int __atomic_or_fetch_4(volatile void*, unsigned int, int)’ writing 4 bytes into a region of size 0 overflows the destination [-Wstringop-overflow=]
++QT_WARNING_DISABLE_GCC("-Wstringop-overflow")
++
+ QT_BEGIN_NAMESPACE
+ 
+ enum {
+diff --git a/src/gui/text/qtextengine.cpp b/src/gui/text/qtextengine.cpp
+index c7e5c19c31..37388750ff 100644
+--- a/src/gui/text/qtextengine.cpp
++++ b/src/gui/text/qtextengine.cpp
+@@ -2277,6 +2277,12 @@ QFontEngine *QTextEngine::fontEngine(const QScriptItem &si, QFixed *ascent, QFix
+             if (feCache.prevScaledFontEngine) {
+                 scaledEngine = feCache.prevScaledFontEngine;
+             } else {
++                // GCC 12 gets confused about QFontEngine::ref, for some non-obvious reason
++                //  warning: ‘unsigned int __atomic_or_fetch_4(volatile void*, unsigned int, int)’ writing 4 bytes
++                //  into a region of size 0 overflows the destination [-Wstringop-overflow=]
++                QT_WARNING_PUSH
++                QT_WARNING_DISABLE_GCC("-Wstringop-overflow")
++
+                 QFontEngine *scEngine = rawFont.d->fontEngine->cloneWithSize(smallCapsFraction * rawFont.pixelSize());
+                 scEngine->ref.ref();
+                 scaledEngine = QFontEngineMulti::createMultiFontEngine(scEngine, script);
+@@ -2286,6 +2292,7 @@ QFontEngine *QTextEngine::fontEngine(const QScriptItem &si, QFixed *ascent, QFix
+                 if (!scEngine->ref.deref())
+                     delete scEngine;
+ 
++                QT_WARNING_POP
+             }
+         }
+     } else
+-- 
+cgit v1.2.1
+
