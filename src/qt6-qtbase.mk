@@ -22,9 +22,9 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
+    rm -rf '$(PREFIX)/$(TARGET)/qt6'
     rm -rf $(SOURCE_DIR)/src/3rdparty/{freetype,harfbuzz-ng,libjpeg,libpng,pixman,sqlite,zlib}
     mv -v '$(PREFIX)/$(TARGET)/cmake/pcre2-config.cmake' '$(PREFIX)/$(TARGET)/cmake/pcre2-config.cmake_'
-    mv -v '$(PREFIX)/$(TARGET)/cmake/pcre2-config-version.cmake' '$(PREFIX)/$(TARGET)/cmake/pcre2-config-version.cmake_'
     mkdir -p '$(PREFIX)/$(TARGET)/qt6/bin/'
     PKG_CONFIG="${TARGET}-pkg-config" \
     PKG_CONFIG_SYSROOT_DIR="/" \
@@ -84,7 +84,6 @@ define $(PKG)_BUILD
         -DFEATURE_system_sqlite=ON
 
     mv -v '$(PREFIX)/$(TARGET)/cmake/pcre2-config.cmake_' '$(PREFIX)/$(TARGET)/cmake/pcre2-config.cmake'
-    mv -v '$(PREFIX)/$(TARGET)/cmake/pcre2-config-version.cmake_' '$(PREFIX)/$(TARGET)/cmake/pcre2-config-version.cmake'
 
     cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
     cmake --install '$(BUILD_DIR)'
@@ -96,23 +95,19 @@ define $(PKG)_BUILD
 endef
 
 define $(PKG)_BUILD_$(BUILD)
-    cd '$(BUILD_DIR)' && CXXFLAGS='$(CXXFLAGS) -Wno-unused-but-set-variable' '$(SOURCE_DIR)/configure' \
-        -prefix '$(PREFIX)/$(TARGET)/qt6' \
-        -libexecdir '$(PREFIX)/$(TARGET)/qt6/bin' \
-        -static \
-        -release \
-        -opensource \
-        -confirm-license \
-        -developer-build \
-        -make tools \
-        -nomake examples \
-        -nomake tests \
-        -nomake benchmarks \
-        -nomake manual-tests \
-        -nomake minimal-static-tests \
-        -no-{accessibility,glib,openssl,opengl,dbus,fontconfig,icu,harfbuzz,xcb-xlib,xcb,xkbcommon,eventfd,evdev,gif,ico,libjpeg,pch,zstd} \
-        -no-sql-{db2,ibase,mysql,oci,odbc,psql,sqlite} \
-        -no-use-gold-linker
+    rm -rf '$(PREFIX)/$(BUILD)/qt6'
+    rm -rf $(SOURCE_DIR)/src/3rdparty/{freetype,harfbuzz-ng,libjpeg,libpng,pixman,sqlite}
+    '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
+        -G Ninja \
+        -DCMAKE_INSTALL_PREFIX='$(PREFIX)/$(TARGET)/qt6' \
+        -DINSTALL_LIBEXECDIR='$(PREFIX)/$(TARGET)/qt6/bin' \
+        -DQT_BUILD_{TESTS,EXAMPLES,BENCHMARKS,MANUAL_TESTS,MINIMAL_STATIC_TESTS}=OFF \
+        -DBUILD_SHARED_LIBS=OFF \
+        -DBUILD_WITH_PCH=OFF \
+        -DFEATURE_USE_GOLD_LINKER_ALIAS=OFF \
+        -DFEATURE_{accessibility,androiddeployqt,brotli,dbus,egl,evdev,eventfd,fontconfig,freetype,gif,glib,gui,harfbuzz,ico,icu,jpeg,opengl,opengl_desktop,openssl,pch,pcre2,pdf,png,printer,sql,style_fusion,testlib,vulkan,widgets,xcb,xcb_xlib,xkbcommon,xml,zstd}=OFF \
+        -DFEATURE_DEVELOPER_BUILD=ON \
+        -DINPUT_opengl=OFF
 
     '$(TARGET)-cmake' --build '$(BUILD_DIR)' -j '$(JOBS)'
     '$(TARGET)-cmake' --install '$(BUILD_DIR)'
