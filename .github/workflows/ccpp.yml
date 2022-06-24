@@ -6,11 +6,11 @@ jobs:
   build-i686-shared:
     name: Build MinGW i686 Shared
     runs-on: ubuntu-latest
-    container: opensuse/leap:15.3
+    container: opensuse/leap:15.4
     steps:
       - uses: actions/checkout@v1.2.0
       - name: Add devel-tools-building repo
-        run: zypper -n ar -c -f -n 'repo-devel-tools-building' https://download.opensuse.org/repositories/devel:/tools:/building/15.3/ repo-devel-tools-building
+        run: zypper -n ar -c -f -n 'repo-devel-tools-building' https://download.opensuse.org/repositories/devel:/tools:/building/15.4/ repo-devel-tools-building
       - name: Update packages
         run: zypper -n --gpg-auto-import-keys ref
       - name: Upgrade packages
@@ -49,11 +49,11 @@ jobs:
   build-x86_64-shared:
     name: Build MinGW x86_64 shared
     runs-on: ubuntu-latest
-    container: opensuse/leap:15.3
+    container: opensuse/leap:15.4
     steps:
       - uses: actions/checkout@v1.2.0
       - name: Add devel-tools-building repo
-        run: zypper -n ar -c -f -n 'repo-devel-tools-building' https://download.opensuse.org/repositories/devel:/tools:/building/15.3/ repo-devel-tools-building
+        run: zypper -n ar -c -f -n 'repo-devel-tools-building' https://download.opensuse.org/repositories/devel:/tools:/building/15.4/ repo-devel-tools-building
       - name: Update packages
         run: zypper -n --gpg-auto-import-keys ref
       - name: Upgrade packages
