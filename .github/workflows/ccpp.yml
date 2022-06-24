@@ -39,6 +39,8 @@ jobs:
           wget https://patch-diff.githubusercontent.com/raw/mesonbuild/meson/pull/9841.patch
           cd /usr/lib/python3.6/site-packages
           patch -p1 < /tmp/9841.patch
+      - name: Add safe git directory
+        run: git config --global --add safe.directory /__w/strawberry-mxe/strawberry-mxe
       - name: Update settings.mk
         shell: bash
         run: sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := i686-w64-mingw32.shared/g' settings.mk
@@ -82,6 +84,8 @@ jobs:
           wget https://patch-diff.githubusercontent.com/raw/mesonbuild/meson/pull/9841.patch
           cd /usr/lib/python3.6/site-packages
           patch -p1 < /tmp/9841.patch
+      - name: Add safe git directory
+        run: git config --global --add safe.directory /__w/strawberry-mxe/strawberry-mxe
       - name: Update settings.mk
         shell: bash
         run: sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := x86_64-w64-mingw32.shared/g' settings.mk
@@ -96,8 +100,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+      - name: Install git
+        run: apt-get update && apt-get install -y git
+
       - name: Checkout
         uses: actions/checkout@v1.2.0
+
+      - name: Add safe git directory
+        run: git config --global --add safe.directory /__w/strawberry-mxe/strawberry-mxe
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -121,8 +131,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+      - name: Install git
+        run: apt-get update && apt-get install -y git
+
       - name: Checkout
         uses: actions/checkout@v1.2.0
+
+      - name: Add safe git directory
+        run: git config --global --add safe.directory /__w/strawberry-mxe/strawberry-mxe
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
