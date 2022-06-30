@@ -14,8 +14,6 @@ $(PKG)_DEPS     := cc glib glib-networking sqlite brotli libpsl nghttp2 $(BUILD)
 define $(PKG)_UPDATE
     $(call MXE_GET_GH_TAGS,GNOME/libsoup) | \
     grep -v '\([0-9]\+\.\)\{2\}9[0-9]' | \
-    grep -v '2.99.' | \
-    grep -v '3.0.' | \
     $(SORT) -Vr | \
     head -1
 endef
@@ -30,8 +28,6 @@ define $(PKG)_BUILD
         -Dtests=false \
         -Dsysprof=disabled \
         -Dtls_check=false \
-        -Dgnome=false \
-        -Dgtk_doc=false \
         '$(BUILD_DIR)'
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install
