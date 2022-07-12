@@ -12,7 +12,7 @@ RUN zypper -n --gpg-auto-import-keys install \
     make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool \
     tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip \
     gtk-doc gettext-tools scons bison flex ruby orc zlib-devel \
-    linux-glibc-devel glibc-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel libzstd-devel \
+    linux-glibc-devel glibc-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel libzstd-devel pcre2-devel \
     python3-base python3-Mako \
     mingw32-cross-nsis
 
