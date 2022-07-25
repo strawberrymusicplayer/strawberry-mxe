@@ -35,7 +35,7 @@ define $(PKG)_BUILD_SHARED
     $(INSTALL) '$(PREFIX)/$(TARGET)/bin/sqlite3.exe'                               '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
     $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gst-launch-1.0.exe'                        '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
     $(INSTALL) '$(PREFIX)/$(TARGET)/bin/gst-discoverer-1.0.exe'                    '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
-    $(INSTALL) '$(PREFIX)/$(TARGET)/bin/libsoup-2.4-1.dll'                         '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
+    $(INSTALL) '$(PREFIX)/$(TARGET)/bin/libsoup-3.0-0.dll'                         '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
     $(INSTALL) '$(PREFIX)/$(TARGET)/bin/libnghttp2.dll'                            '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/'
 
     $(INSTALL) -d '$(PREFIX)/$(TARGET)/apps/$(PKG)/bin/gio-modules'
