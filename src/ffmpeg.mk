@@ -40,6 +40,7 @@ define $(PKG)_BUILD
         --disable-manpages \
         --disable-podpages \
         --disable-txtpages \
+        --disable-libcdio \
         --enable-gpl \
         --enable-version3 \
         --enable-gnutls \
