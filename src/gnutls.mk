@@ -3,8 +3,8 @@
 PKG             := gnutls
 $(PKG)_WEBSITE  := https://www.gnu.org/software/gnutls/
 $(PKG)_DESCR    := The GnuTLS Transport Layer Security Library
-$(PKG)_VERSION  := 3.7.6
-$(PKG)_CHECKSUM := 77065719a345bfb18faa250134be4c53bef70c1bd61f6c0c23ceb8b44f0262ff
+$(PKG)_VERSION  := 3.7.7
+$(PKG)_CHECKSUM := be9143d0d58eab64dba9b77114aaafac529b6c0d7e81de6bdf1c9b59027d2106
 $(PKG)_SUBDIR   := gnutls-$($(PKG)_VERSION)
 $(PKG)_FILE     := gnutls-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gnupg.org/ftp/gcrypt/gnutls/v3.7/$($(PKG)_FILE)
