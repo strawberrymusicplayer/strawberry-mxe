@@ -12,7 +12,7 @@ $(PKG)_URL      := https://bitbucket.org/mpyne/game-music-emu/downloads/$($(PKG)
 $(PKG)_DEPS     := cc
 
 define $(PKG)_BUILD
-    cd '$(BUILD_DIR)' && '$(TARGET)-cmake' -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' -DENABLE_UBSAN=OFF '$(SOURCE_DIR)'
+    cd '$(BUILD_DIR)' && '$(TARGET)-cmake' -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' -DBUILD_SHARED_LIBS=$(CMAKE_SHARED_BOOL) -DENABLE_UBSAN=OFF '$(SOURCE_DIR)'
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 endef
