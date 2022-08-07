@@ -47,6 +47,7 @@ define $(PKG)_BUILD
         -DFEATURE_pkg_config=ON \
         -DFEATURE_accessibility=ON \
         -DFEATURE_fontconfig=OFF \
+        -DFEATURE_freetype=ON \
         -DFEATURE_harfbuzz=ON \
         -DFEATURE_pcre2=ON \
         -DFEATURE_openssl=ON \
@@ -55,7 +56,7 @@ define $(PKG)_BUILD
         -DFEATURE_opengl_dynamic=ON \
         -DFEATURE_use_gold_linker_alias=OFF \
         -DFEATURE_glib=ON \
-        -DFEATURE_icu=OFF \
+        -DFEATURE_icu=ON \
         -DFEATURE_directfb=OFF \
         -DFEATURE_dbus=OFF \
         -DFEATURE_sql=ON \
