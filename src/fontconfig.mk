@@ -20,7 +20,7 @@ endef
 
 define $(PKG)_BUILD
     cd '$(1)' && autoreconf -fi
-    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --with-arch='$(TARGET)' --with-expat='$(PREFIX)/$(TARGET)' --disable-rpath --disable-docs
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --with-arch='$(TARGET)' --with-expat='$(PREFIX)/$(TARGET)' --disable-rpath --disable-nls --disable-docs
     $(MAKE) -C '$(1)' -j '$(JOBS)' bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
     $(MAKE) -C '$(1)' -j 1 install bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
 endef
