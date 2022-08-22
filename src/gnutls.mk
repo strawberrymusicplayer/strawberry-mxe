@@ -8,7 +8,7 @@ $(PKG)_CHECKSUM := be9143d0d58eab64dba9b77114aaafac529b6c0d7e81de6bdf1c9b59027d2
 $(PKG)_SUBDIR   := gnutls-$($(PKG)_VERSION)
 $(PKG)_FILE     := gnutls-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gnupg.org/ftp/gcrypt/gnutls/v3.7/$($(PKG)_FILE)
-$(PKG)_URL_2    := https://www.mirrorservice.org/sites/ftp.gnupg.org/gcrypt/gnutls/v3.5/$($(PKG)_FILE)
+$(PKG)_URL_2    := https://www.mirrorservice.org/sites/ftp.gnupg.org/gcrypt/gnutls/v3.7/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc gettext gmp libidn2 libtasn1 libunistring nettle zlib
 
 define $(PKG)_UPDATE
