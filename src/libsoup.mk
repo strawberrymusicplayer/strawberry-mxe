@@ -4,8 +4,8 @@ PKG             := libsoup
 $(PKG)_WEBSITE  := https://github.com/GNOME/libsoup
 $(PKG)_DESCR    := HTTP client/server library for GNOME
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.74.2
-$(PKG)_CHECKSUM := f0a427656e5fe19e1df71c107e88dfa1b2e673c25c547b7823b6018b40d01159
+$(PKG)_VERSION  := 3.1.3
+$(PKG)_CHECKSUM := d8aa9537a164ea6fbbda8858f28cc63d880fc4418c9beed3de625ed971eb59a7
 $(PKG)_SUBDIR   := libsoup-$($(PKG)_VERSION)
 $(PKG)_FILE     := libsoup-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/libsoup/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
@@ -15,7 +15,6 @@ define $(PKG)_UPDATE
     $(call MXE_GET_GH_TAGS,GNOME/libsoup) | \
     grep -v '\([0-9]\+\.\)\{2\}9[0-9]' | \
     $(SORT) -Vr | \
-    grep -v '^3' | \
     head -1
 endef
 
