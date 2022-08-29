@@ -8,7 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     container: opensuse/leap:15.4
     steps:
-      - uses: actions/checkout@v1.2.0
       - name: Add devel-tools-building repo
         run: zypper -n ar -c -f -n 'repo-devel-tools-building' https://download.opensuse.org/repositories/devel:/tools:/building/15.4/ repo-devel-tools-building
       - name: Update packages
@@ -39,6 +38,7 @@ jobs:
           wget https://patch-diff.githubusercontent.com/raw/mesonbuild/meson/pull/9841.patch
           cd /usr/lib/python3.6/site-packages
           patch -p1 < /tmp/9841.patch
+      - uses: actions/checkout@v3
       - name: Add safe git directory
         run: git config --global --add safe.directory /__w/strawberry-mxe/strawberry-mxe
       - name: Update settings.mk
@@ -53,7 +53,6 @@ jobs:
     runs-on: ubuntu-latest
     container: opensuse/leap:15.4
     steps:
-      - uses: actions/checkout@v1.2.0
       - name: Add devel-tools-building repo
         run: zypper -n ar -c -f -n 'repo-devel-tools-building' https://download.opensuse.org/repositories/devel:/tools:/building/15.4/ repo-devel-tools-building
       - name: Update packages
@@ -84,6 +83,7 @@ jobs:
           wget https://patch-diff.githubusercontent.com/raw/mesonbuild/meson/pull/9841.patch
           cd /usr/lib/python3.6/site-packages
           patch -p1 < /tmp/9841.patch
+      - uses: actions/checkout@v3
       - name: Add safe git directory
         run: git config --global --add safe.directory /__w/strawberry-mxe/strawberry-mxe
       - name: Update settings.mk
@@ -96,12 +96,12 @@ jobs:
 
   build-docker-i686:
     name: Build MXE Docker i686
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/action'
     runs-on: ubuntu-latest
     steps:
 
       - name: Checkout
-        uses: actions/checkout@v1.2.0
+        uses: actions/checkout@v3
 
       - name: Add safe git directory
         run: git config --global --add safe.directory /__w/strawberry-mxe/strawberry-mxe
@@ -110,13 +110,13 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       - name: Login to DockerHub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Push to DockerHub
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           file: ./dockerfiles/i686-w64-mingw32-shared.Dockerfile
           push: true
@@ -124,12 +124,12 @@ jobs:
 
   build-docker-x86_64:
     name: Build MXE Docker x86_64
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/action'
     runs-on: ubuntu-latest
     steps:
 
       - name: Checkout
-        uses: actions/checkout@v1.2.0
+        uses: actions/checkout@v3
 
       - name: Add safe git directory
         run: git config --global --add safe.directory /__w/strawberry-mxe/strawberry-mxe
@@ -138,13 +138,13 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       - name: Login to DockerHub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Push to DockerHub
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           file: ./dockerfiles/x86_64-w64-mingw32-shared.Dockerfile
           push: true
