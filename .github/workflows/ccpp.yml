@@ -46,7 +46,7 @@ jobs:
         run: sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := i686-w64-mingw32.shared/g' settings.mk
       - name: Compile
         shell: bash
-        run: make -j1 || { cat $(ls -1t log/*-* | head -n 1) && exit 1; }
+        run: make -j 4
 
   build-x86_64-shared:
     name: Build MinGW x86_64 shared
@@ -91,7 +91,7 @@ jobs:
         run: sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := x86_64-w64-mingw32.shared/g' settings.mk
       - name: Compile
         shell: bash
-        run: make -j1 || { cat $(ls -1t log/*-* | head -n 1) && exit 1; }
+        run: make -j 4
 
 
   build-docker-i686:
