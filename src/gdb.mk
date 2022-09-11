@@ -23,10 +23,17 @@ define $(PKG)_BUILD
         --host='$(TARGET)' \
         --build='$(BUILD)' \
         --prefix='$(PREFIX)/$(TARGET)' \
-        host_configargs="LIBS=\"`$(TARGET)-pkg-config --libs dlfcn` -lmman\"" \
+        --enable-static \
+        --disable-shared \
+        host_configargs="LIBS=\"-lmman\"" \
         LDFLAGS='-Wl,--allow-multiple-definition'
 
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(INSTALL) -m755 '$(BUILD_DIR)/gdb/gdb.exe' '$(PREFIX)/$(TARGET)/bin/'
 
 endef
+
+# Static build fails in the CI while it works locally.
+# libintl linking problems. Disabling static build until issue is resolved.
+
+$(PKG)_BUILD_STATIC =
