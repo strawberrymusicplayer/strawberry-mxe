@@ -4,18 +4,18 @@ PKG             := libsoup
 $(PKG)_WEBSITE  := https://github.com/GNOME/libsoup
 $(PKG)_DESCR    := HTTP client/server library for GNOME
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 3.1.4
-$(PKG)_CHECKSUM := 0415993fc99746bb0fca9549004a828080b1b936213540f297c290059570b554
+$(PKG)_VERSION  := 3.0.8
+$(PKG)_CHECKSUM := c8739dc1c23c2b1e3b816d7598b3fa1764a3e1a2a2f5257b1bc4466d867caced
 $(PKG)_SUBDIR   := libsoup-$($(PKG)_VERSION)
 $(PKG)_FILE     := libsoup-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/libsoup/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc glib glib-networking sqlite brotli libpsl nghttp2 $(BUILD)~ninja
 
 define $(PKG)_UPDATE
-    $(call MXE_GET_GH_TAGS,GNOME/libsoup) | \
-    grep -v '\([0-9]\+\.\)\{2\}9[0-9]' | \
-    $(SORT) -Vr | \
-    head -1
+    $(WGET) -q -O- 'https://gitlab.gnome.org/GNOME/libsoup/tags' | \
+    $(SED) -n "s,.*<a [^>]\+>v\?\([0-9]\+\.[02468]\.[0-9]\+\)<.*,\1,p" | \
+    $(SORT) -V | \
+    tail -1
 endef
 
 define $(PKG)_BUILD
