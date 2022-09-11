@@ -12,10 +12,10 @@ $(PKG)_URL      := https://download.gnome.org/sources/json-glib/$(call SHORT_PKG
 $(PKG)_DEPS     := cc glib $(BUILD)~ninja
 
 define $(PKG)_UPDATE
-    $(call MXE_GET_GH_TAGS,GNOME/json-glib) | \
-    grep -v '\([0-9]\+\.\)\{2\}9[0-9]' | \
-    $(SORT) -Vr | \
-    head -1
+    $(WGET) -q -O- 'https://gitlab.gnome.org/GNOME/json-glib/tags' | \
+    $(SED) -n "s,.*<a [^>]\+>v\?\([0-9]\+\.[0-9]\+\.[0-9]\+\)<.*,\1,p" | \
+    $(SORT) -V | \
+    tail -1
 endef
 
 define $(PKG)_BUILD

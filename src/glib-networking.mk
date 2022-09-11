@@ -12,13 +12,13 @@ $(PKG)_URL      := https://download.gnome.org/sources/$(PKG)/$(call SHORT_PKG_VE
 $(PKG)_DEPS     := cc meson-conf glib gnutls openssl
 
 define $(PKG)_UPDATE
-    $(call MXE_GET_GH_TAGS,GNOME/glib-networking) | \
-    grep -v '\([0-9]\+\.\)\{2\}9[0-9]' | \
+    $(WGET) -q -O- 'https://gitlab.gnome.org/GNOME/glib-networking/tags' | \
+    $(SED) -n "s,.*glib-networking-\([0-9]\+\.[0-9]*[0-9]*\.[^']*\)\.tar.*,\1,p" |
     grep -v 'alpha' |
     grep -v 'beta' |
     grep -v '\.rc' |
-    $(SORT) -Vr | \
-    head -1
+    $(SORT) -V | \
+    tail -1
 endef
 
 define $(PKG)_BUILD

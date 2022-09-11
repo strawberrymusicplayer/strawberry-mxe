@@ -14,8 +14,8 @@ $(PKG)_DEPS     := cc zlib libflac libogg libvorbis portaudio
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://lib.openmpt.org/files/libopenmpt/src/' | \
     $(SED) -n 's,.*libopenmpt-\([0-9][^>]*\)+release\.autotools\.tar.*,\1,p' | \
-    $(SORT) -Vr | \
-    head -1
+    $(SORT) -V | \
+    tail -1
 endef
 
 define $(PKG)_BUILD

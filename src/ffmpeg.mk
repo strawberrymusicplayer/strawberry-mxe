@@ -19,8 +19,8 @@ define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://ffmpeg.org/releases/' | \
     $(SED) -n 's,.*ffmpeg-\([0-9][^>]*\)\.tar.*,\1,p' | \
     grep -v 'alpha\|beta\|rc\|git' | \
-    $(SORT) -Vr | \
-    head -1
+    $(SORT) -V | \
+    tail -1
 endef
 
 define $(PKG)_BUILD

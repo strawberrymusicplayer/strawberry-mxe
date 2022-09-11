@@ -16,10 +16,10 @@ $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS_$(BUILD) := ninja gettext libffi libiconv zlib
 
 define $(PKG)_UPDATE
-    $(call MXE_GET_GH_TAGS,GNOME/glib) | \
-    grep -v '\([0-9]\+\.\)\{2\}9[0-9]' | \
-    $(SORT) -Vr | \
-    head -1
+    $(WGET) -q -O- 'https://gitlab.gnome.org/GNOME/glib/tags' | \
+    $(SED) -n "s,.*<a [^>]\+>v\?\([0-9]\+\.[0-9.]\+\)<.*,\1,p" | \
+    $(SORT) -V | \
+    tail -1
 endef
 
 define $(PKG)_BUILD_$(BUILD)

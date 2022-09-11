@@ -21,8 +21,8 @@ define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://ftp.gnu.org/gnu/gettext/' | \
     grep 'gettext-' | \
     $(SED) -n 's,.*gettext-\([0-9][^>]*\)\.tar.*,\1,p' | \
-    $(SORT) -Vr | \
-    head -1
+    $(SORT) -V | \
+    tail -1
 endef
 
 define $(PKG)_BUILD

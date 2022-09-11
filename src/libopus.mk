@@ -17,8 +17,8 @@ define $(PKG)_UPDATE
     grep -v 'alpha' | \
     grep -v 'beta' | \
     grep -v 'rc' | \
-    $(SORT) -Vr | \
-    head -1
+    $(SORT) -V | \
+    tail -1
 endef
 
 define $(PKG)_BUILD
