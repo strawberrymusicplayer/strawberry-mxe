@@ -20,5 +20,6 @@ else
               --cross-file="@MESON_CROSS_FILE@" \
               --default-library="@LIBTYPE@" \
               --prefix="@PREFIX@/@TARGET@" \
+              --wrap-mode=nodownload \
               "$@"
 fi

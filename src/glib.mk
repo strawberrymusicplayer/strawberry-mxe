@@ -27,6 +27,7 @@ define $(PKG)_BUILD_$(BUILD)
         --prefix='$(PREFIX)/$(TARGET)' \
         --buildtype='$(MESON_BUILD_TYPE)' \
         --pkg-config-path='$(PREFIX)/$(TARGET)/bin/pkgconf' \
+        --wrap-mode=nodownload \
         '$(BUILD_DIR)'
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install
