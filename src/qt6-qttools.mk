@@ -22,7 +22,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    $(QT6_CMAKE) -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
+    $(QT6_CMAKE) --log-level="DEBUG" -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
         -DQT_BUILD_EXAMPLES=OFF \
         -DQT_BUILD_EXAMPLES_BY_DEFAULT=OFF \
         -DQT_BUILD_TOOLS_WHEN_CROSSCOMPILING=ON \
@@ -30,14 +30,12 @@ define $(PKG)_BUILD
         -DFEATURE_designer=ON \
         -DFEATURE_distancefieldgenerator=OFF \
         -DFEATURE_kmap2qmap=OFF \
-        -DFEATURE_macdeployqt=OFF \
         -DFEATURE_pixeltool=OFF \
         -DFEATURE_qdbus=OFF \
         -DFEATURE_qev=OFF \
         -DFEATURE_qtattributionsscanner=OFF \
         -DFEATURE_qtdiag=OFF \
         -DFEATURE_qtplugininfo=OFF \
-        -DFEATURE_windeployqt=OFF \
         -DFEATURE_linguist=ON
 
     cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
@@ -49,21 +47,19 @@ define $(PKG)_BUILD
 endef
 
 define $(PKG)_BUILD_$(BUILD)
-    $(QT6_CMAKE) -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
+    $(QT6_CMAKE) --log-level="DEBUG" -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
         -DQT_BUILD_EXAMPLES=OFF \
         -DQT_BUILD_EXAMPLES_BY_DEFAULT=OFF \
         -DFEATURE_assistant=OFF \
         -DFEATURE_designer=ON \
         -DFEATURE_distancefieldgenerator=OFF \
         -DFEATURE_kmap2qmap=OFF \
-        -DFEATURE_macdeployqt=OFF \
         -DFEATURE_pixeltool=OFF \
         -DFEATURE_qdbus=OFF \
         -DFEATURE_qev=OFF \
         -DFEATURE_qtattributionsscanner=OFF \
         -DFEATURE_qtdiag=OFF \
         -DFEATURE_qtplugininfo=OFF \
-        -DFEATURE_windeployqt=OFF \
         -DFEATURE_linguist=ON
     cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
     cmake --install '$(BUILD_DIR)'

@@ -10,7 +10,7 @@ $(PKG)_FILE     := qtbase-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_SUBDIR   := qtbase-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/6.3/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
-$(PKG)_DEPS     := cc openssl pcre2 fontconfig freetype harfbuzz glib jpeg libpng zlib zstd sqlite mesa $(BUILD)~$(PKG) $(BUILD)~qt6-qttools
+$(PKG)_DEPS     := cc openssl pcre2 fontconfig freetype harfbuzz glib zlib libpng zstd brotli jpeg sqlite mesa $(BUILD)~$(PKG) $(BUILD)~qt6-qttools
 $(PKG)_DEPS_$(BUILD) :=
 $(PKG)_OO_DEPS_$(BUILD) += qt6-conf ninja
 
@@ -26,7 +26,7 @@ define $(PKG)_BUILD
     PKG_CONFIG="${TARGET}-pkg-config" \
     PKG_CONFIG_SYSROOT_DIR="/" \
     PKG_CONFIG_LIBDIR="$(PREFIX)/$(TARGET)/lib/pkgconfig" \
-    '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
+    '$(TARGET)-cmake' --log-level="DEBUG" -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
         -G Ninja \
         -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
         -DCMAKE_INSTALL_PREFIX='$(PREFIX)/$(TARGET)/qt6' \
@@ -46,12 +46,14 @@ define $(PKG)_BUILD
         -DFEATURE_rpath=OFF \
         -DFEATURE_pkg_config=ON \
         -DFEATURE_accessibility=ON \
+        -DFEATURE_brotli=ON \
         -DFEATURE_fontconfig=OFF \
         -DFEATURE_freetype=ON \
         -DFEATURE_harfbuzz=ON \
         -DFEATURE_pcre2=ON \
+        -DFEATURE_schannel=ON \
         -DFEATURE_openssl=ON \
-        $(if $(BUILD_SHARED), -DFEATURE_openssl_linked=ON) \
+        -DFEATURE_openssl_linked=$(CMAKE_SHARED_BOOL) \
         -DFEATURE_opengl=ON \
         -DFEATURE_opengl_dynamic=ON \
         -DFEATURE_use_gold_linker_alias=OFF \
@@ -62,6 +64,8 @@ define $(PKG)_BUILD
         -DFEATURE_sql=ON \
         -DFEATURE_sql_sqlite=ON \
         -DFEATURE_sql_odbc=ON \
+        -DFEATURE_sql_mysql=OFF \
+        -DFEATURE_sql_psql=OFF \
         -DFEATURE_jpeg=ON \
         -DFEATURE_png=ON \
         -DFEATURE_gif=ON \
