@@ -27,7 +27,7 @@ define $(PKG)_BUILD
         -DQT_BUILD_EXAMPLES_BY_DEFAULT=OFF \
         -DQT_BUILD_TOOLS_WHEN_CROSSCOMPILING=ON \
         -DFEATURE_assistant=OFF \
-        -DFEATURE_designer=ON \
+        -DFEATURE_designer=OFF \
         -DFEATURE_distancefieldgenerator=OFF \
         -DFEATURE_kmap2qmap=OFF \
         -DFEATURE_pixeltool=OFF \
@@ -51,7 +51,7 @@ define $(PKG)_BUILD_$(BUILD)
         -DQT_BUILD_EXAMPLES=OFF \
         -DQT_BUILD_EXAMPLES_BY_DEFAULT=OFF \
         -DFEATURE_assistant=OFF \
-        -DFEATURE_designer=ON \
+        -DFEATURE_designer=OFF \
         -DFEATURE_distancefieldgenerator=OFF \
         -DFEATURE_kmap2qmap=OFF \
         -DFEATURE_pixeltool=OFF \

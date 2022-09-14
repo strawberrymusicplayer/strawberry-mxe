@@ -1,0 +1,45 @@
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index cb0c21a..0c36807 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -26,7 +26,7 @@ if(QT_FEATURE_linguist)
+     add_subdirectory(linguist)
+ endif()
+ # add_subdirectory(global) # special case remove
+-if(QT_FEATURE_designer)
++if(QT_FEATURE_linguist OR QT_FEATURE_designer)
+     add_subdirectory(designer)
+ endif()
+ if(QT_FEATURE_pixeltool)
+diff --git a/src/designer/CMakeLists.txt b/src/designer/CMakeLists.txt
+index 35b6eea..ca9fc9c 100644
+--- a/src/designer/CMakeLists.txt
++++ b/src/designer/CMakeLists.txt
+@@ -1,6 +1,6 @@
+ # Generated from designer.pro.
+ 
+-if(NOT QT_FEATURE_designer)
++if(NOT QT_FEATURE_linguist AND NOT QT_FEATURE_designer)
+     return()
+ endif()
+ add_subdirectory(src)
+diff --git a/src/designer/src/CMakeLists.txt b/src/designer/src/CMakeLists.txt
+index 32fb451..3521f39 100644
+--- a/src/designer/src/CMakeLists.txt
++++ b/src/designer/src/CMakeLists.txt
+@@ -10,11 +10,11 @@ qt_exclude_tool_directories_from_default_target(
+ 
+ add_subdirectory(uiplugin)
+ add_subdirectory(uitools)
+-if(QT_FEATURE_process)
++if(QT_FEATURE_process AND QT_FEATURE_designer)
+     add_subdirectory(lib)
+     add_subdirectory(components)
+     add_subdirectory(designer)
+-endif()
+-if(QT_BUILD_SHARED_LIBS AND QT_FEATURE_process)
+-    add_subdirectory(plugins)
++    if(QT_BUILD_SHARED_LIBS)
++        add_subdirectory(plugins)
++    endif()
+ endif()
