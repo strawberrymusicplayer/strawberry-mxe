@@ -1,15 +1,5 @@
-This file is part of MXE. See LICENSE.md for licensing information.
-
-Contains ad hoc patches for cross building.
-
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Jonas Kvinge <jonas@jkvinge.net>
-Date: Fri, 10 Jun 2022 19:20:39 +0200
-Subject: [PATCH 1/1] Build fixes
-
-
 diff --git a/src/compress.c b/src/compress.c
-index 1111111..2222222 100644
+index b456626..fec951c 100644
 --- a/src/compress.c
 +++ b/src/compress.c
 @@ -924,9 +924,14 @@ uncompressbuf(int fd, size_t bytes_max, size_t method, const unsigned char *old,
@@ -27,11 +17,24 @@ index 1111111..2222222 100644
  		closep(fdp[STDIN_FILENO]);
  		closep(fdp[STDOUT_FILENO]);
  		return makeerror(newch, n, "Cannot create pipe, %s",
+diff --git a/src/file.c b/src/file.c
+index 1566a17..2aad57c 100644
+--- a/src/file.c
++++ b/src/file.c
+@@ -602,7 +602,7 @@ fname_print(const char *inname)
+ 	for (i = 0; i < n; i++) {
+ 		unsigned char c = CAST(unsigned char, inname[i]);
+ 		if (isprint(c)) {
+-			putc(c);
++			putchar(c);
+ 			continue;
+ 		}
+ 		file_octal(c);
 diff --git a/src/file.h b/src/file.h
-index 1111111..2222222 100644
+index 85675df..80afe9f 100644
 --- a/src/file.h
 +++ b/src/file.h
-@@ -581,8 +581,10 @@ public char * file_printable(struct magic_set *, char *, size_t,
+@@ -584,8 +584,10 @@ protected char * file_printable(struct magic_set *, char *, size_t,
  protected int file_os2_apptype(struct magic_set *, const char *, const void *,
      size_t);
  #endif /* __EMX__ */
@@ -43,10 +46,10 @@ index 1111111..2222222 100644
  
  protected void buffer_init(struct buffer *, int, const struct stat *,
 diff --git a/src/funcs.c b/src/funcs.c
-index 1111111..2222222 100644
+index 41c4106..ea121d2 100644
 --- a/src/funcs.c
 +++ b/src/funcs.c
-@@ -840,6 +840,7 @@ file_print_guid(char *str, size_t len, const uint64_t *guid)
+@@ -841,6 +841,7 @@ file_print_guid(char *str, size_t len, const uint64_t *guid)
  #endif
  }
  
@@ -54,7 +57,7 @@ index 1111111..2222222 100644
  protected int
  file_pipe_closexec(int *fds)
  {
-@@ -855,6 +856,7 @@ file_pipe_closexec(int *fds)
+@@ -856,6 +857,7 @@ file_pipe_closexec(int *fds)
  	return 0;
  #endif
  }
@@ -62,7 +65,7 @@ index 1111111..2222222 100644
  
  protected int
  file_clear_closexec(int fd) {
-@@ -881,3 +883,4 @@ file_strtrim(char *str)
+@@ -882,3 +884,4 @@ file_strtrim(char *str)
  	*++last = '\0';
  	return str;
  }
