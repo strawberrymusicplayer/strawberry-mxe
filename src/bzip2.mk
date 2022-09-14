@@ -24,6 +24,14 @@ define $(PKG)_BUILD_COMMON
     $(INSTALL) -d '$(PREFIX)/$(TARGET)/lib'
     $(INSTALL) -d '$(PREFIX)/$(TARGET)/include'
     $(INSTALL) -m644 '$(1)/bzlib.h' '$(PREFIX)/$(TARGET)/include/'
+
+    # create pkg-config file
+    mkdir -p '$(PREFIX)/$(TARGET)/lib/pkgconfig'
+    (echo 'Name: $(PKG)'; \
+     echo 'Version: $($(PKG)_VERSION)'; \
+     echo 'Description: $(PKG)'; \
+     echo 'Libs: -lbz2'; \
+    ) > '$(PREFIX)/$(TARGET)/lib/pkgconfig/bzip2.pc'
 endef
 
 define $(PKG)_BUILD
