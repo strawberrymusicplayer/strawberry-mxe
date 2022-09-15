@@ -9,7 +9,6 @@ $(PKG)_CHECKSUM := b3683e8b8111ebf6f1ac004ebb6b0c975cd310ec469d98364388e9cedbfa6
 $(PKG)_SUBDIR   := libpng-$($(PKG)_VERSION)
 $(PKG)_FILE     := libpng-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://$(SOURCEFORGE_MIRROR)/project/libpng/libpng16/$($(PKG)_VERSION)/$($(PKG)_FILE)
-$(PKG)_URL_2    := https://ftp-osl.osuosl.org/pub/libpng/src/libpng16/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc zlib
 
 define $(PKG)_UPDATE
