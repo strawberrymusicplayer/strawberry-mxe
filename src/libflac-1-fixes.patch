@@ -1,0 +1,25 @@
+diff --git a/configure.ac b/configure.ac
+index daa6304..8cad96c 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -375,10 +375,6 @@ if test "x$enable_doxygen_docs" != xfalse ; then
+ fi
+ AM_CONDITIONAL(FLaC__HAS_DOXYGEN, test -n "$DOXYGEN")
+ 
+-if test  "x$DOXYGEN" = "x"; then
+-	AC_CHECK_FILE($srcdir/doc/FLAC.tag,[HAVE_PREBUILT_FLAC_TAG=yes])
+-	AC_CHECK_FILE($srcdir/doc/api/modules.html,[HAVE_PREBUILT_API_DIR=yes])
+-fi
+ AM_CONDITIONAL(FLaC__HAS_PREBUILT_DOXYGEN, test "x$HAVE_PREBUILD_FLAG_TAG$HAVEPREBUILD_API_DIR" = "xyesyes")
+ 
+ AC_ARG_ENABLE(local-xmms-plugin,
+@@ -482,9 +478,6 @@ AM_CONDITIONAL(FLaC__HAS_PANDOC, test -n "$PANDOC")
+ if test -n "$PANDOC" ; then
+ AC_DEFINE(FLAC__HAS_PANDOC)
+ AH_TEMPLATE(FLAC__HAS_PANDOC, [define if you have pandoc])
+-else
+-AC_CHECK_FILE($srcdir/man/flac.1,[HAVE_MAN_FLAC=yes])
+-AC_CHECK_FILE($srcdir/man/metaflac.1,[HAVE_MAN_METAFLAC=yes])
+ fi
+ AM_CONDITIONAL(FLaC__HAS_PREBUILT_MANPAGES, test "x$HAVE_MAN_FLAC$HAVE_MAN_METAFLAC" = "xyesyes")
+ 
