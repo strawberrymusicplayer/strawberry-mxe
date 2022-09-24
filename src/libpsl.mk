@@ -10,7 +10,7 @@ $(PKG)_GH_CONF  := rockdaboot/libpsl/releases/latest
 $(PKG)_SUBDIR   := libpsl-$($(PKG)_VERSION)
 $(PKG)_FILE     := libpsl-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://github.com/rockdaboot/libpsl/releases/download/$($(PKG)_VERSION)/$(PKG)-$($(PKG)_VERSION).tar.gz
-$(PKG)_DEPS     := cc libunistring libidn2
+$(PKG)_DEPS     := cc meson-conf libunistring libidn2
 
 define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && LDFLAGS='$(LDFLAGS) -liconv' '$(TARGET)-meson' --buildtype='$(MESON_BUILD_TYPE)' '$(BUILD_DIR)'
