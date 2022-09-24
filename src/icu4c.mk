@@ -10,7 +10,7 @@ $(PKG)_CHECKSUM := d88a4ea7a4a28b445bb073a6cfeb2a296bf49a4a2fe5f1b49f87ecb4fc55c
 $(PKG)_GH_CONF  := unicode-org/icu/releases/latest,release-,,,-
 $(PKG)_SUBDIR   := icu-release-$(subst .,-,$($(PKG)_VERSION))/$(PKG)
 $(PKG)_URL      := $($(PKG)_WEBSITE)/releases/download/release-$(subst .,-,$($(PKG)_VERSION))/icu4c-$(subst .,_,$($(PKG)_VERSION))-src.tgz
-$(PKG)_DEPS     := cc $(BUILD)~$(PKG) pe-util
+$(PKG)_DEPS     := cc $(BUILD)~$(PKG)
 
 $(PKG)_TARGETS       := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS_$(BUILD) :=
@@ -41,20 +41,11 @@ endef
 
 define $(PKG)_BUILD_SHARED
     $($(PKG)_BUILD_COMMON)
-    # icu4c installs its DLLs to lib/. Move them to bin/.
-    #mv -fv $(PREFIX)/$(TARGET)/lib/icu*.dll '$(PREFIX)/$(TARGET)/bin/'
 
     # stub data is icudt.dll, actual data is libicudt.dll - prefer actual
     test ! -e '$(PREFIX)/$(TARGET)/lib/libicudt$($(PKG)_MAJOR).dll' || mv -fv '$(PREFIX)/$(TARGET)/lib/libicudt$($(PKG)_MAJOR).dll' '$(PREFIX)/$(TARGET)/bin/icudt$($(PKG)_MAJOR).dll'
 
     $($(PKG)_BUILD_TEST)
-
-    # bundle test to verify deployment
-    rm -rfv '$(PREFIX)/$(TARGET)/bin/test-$(PKG)' '$(PREFIX)/$(TARGET)/bin/test-$(PKG).zip'
-    $(INSTALL) -d '$(PREFIX)/$(TARGET)/bin/test-$(PKG)'
-    cp $$($(TARGET)-peldd --all '$(PREFIX)/$(TARGET)/bin/test-$(PKG).exe') '$(PREFIX)/$(TARGET)/bin/test-$(PKG)'
-    cd '$(PREFIX)/$(TARGET)/bin' && 7za a -tzip test-$(PKG).zip test-$(PKG)
-    rm -rfv '$(PREFIX)/$(TARGET)/bin/test-$(PKG)'
 endef
 
 define $(PKG)_BUILD
