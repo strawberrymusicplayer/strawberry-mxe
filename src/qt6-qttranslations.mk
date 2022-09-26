@@ -11,12 +11,7 @@ $(PKG)_SUBDIR   := qttranslations-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/6.3/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc qt6-qtbase qt6-qttools
 
-define $(PKG)_UPDATE
-    $(WGET) -q -O- https://download.qt.io/official_releases/qt/6.3/ | \
-    $(SED) -n 's,.*href="\(6\.3\.[^/]*\)/".*,\1,p' | \
-    sort |
-    tail -1
-endef
+$(PKG)_UPDATE = $(qt6-qtbase_UPDATE)
 
 define $(PKG)_BUILD
     $(QT6_CMAKE) --log-level="DEBUG" -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)'

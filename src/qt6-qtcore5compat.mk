@@ -14,12 +14,7 @@ $(PKG)_DEPS     := cc qt6-qtbase
 $(PKG)_DEPS_$(BUILD) :=
 $(PKG)_OO_DEPS_$(BUILD) += qt6-conf ninja
 
-define $(PKG)_UPDATE
-    $(WGET) -q -O- https://download.qt.io/official_releases/qt/6.3/ | \
-    $(SED) -n 's,.*href="\(6\.3\.[^/]*\)/".*,\1,p' | \
-    sort |
-    tail -1
-endef
+$(PKG)_UPDATE = $(qt6-qtbase_UPDATE)
 
 define $(PKG)_BUILD
     $(QT6_CMAKE) --log-level="DEBUG" -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)'
