@@ -28,6 +28,8 @@ function update_package() {
   local package_name
   local package_version
   local package_branch
+  local package_shortname
+  local package_files
 
   package_file="${1}"
 
@@ -38,8 +40,8 @@ function update_package() {
   fi
 
   package_version=$(grep '$(PKG)_VERSION\s\+:=\s\+' ${package_file} | sed -e 's/^\$(PKG)_VERSION\s\+:=\s\+\(.*\)/\1/' || exit 1)
-  if [ "${package_name}" = "" ]; then
-    echo "Could not get package name for ${package_file}"
+  if [ "${package_version}" = "" ]; then
+    echo "Could not get package version for ${package_file}"
     return
   fi
 
@@ -51,20 +53,32 @@ function update_package() {
     return
   fi
 
-  package_branch="${package_name}_$(echo ${package_version} | sed 's/\./_/g')"
+  if [ "${package_name}" = "qt6-qtbase" ]; then
+    package_shortname="qt6"
+    package_files=$(git ls-files src/qt6-*.mk --modified | tr '\n' ' ')
+  elif [ "${package_name}" = "gstreamer" ]; then
+    package_shortname="${package_name}"
+    package_files="${package_file} $(git ls-files src/gst-*.mk --modified | tr '\n' ' ')"
+  else
+    package_shortname="${package_name}"
+    package_files="${package_file}"
+  fi
+
+  package_branch="${package_shortname}_$(echo ${package_version} | sed 's/\./_/g')"
+
   git branch | grep "${package_branch}" >/dev/null 2>&1
   if [ $? -eq 0 ]; then
-    echo "Skipping ${package_name} (${package_file}), branch for version ${package_version} already exists."
-    git checkout "${package_file}"
+    echo "Skipping ${package_shortname} (${package_files}), branch for version ${package_version} already exists."
+    git checkout ${package_files}
     return
   fi
 
-  echo "${package_name}: ${package_version}"
+  echo "${package_shortname}: ${package_version}"
   git checkout -b "${package_branch}" || exit 1
-  git add "${package_file}" || exit 1
-  git commit -m "Update ${package_name}" "${package_file}" || exit 1
+  git add ${package_files} || exit 1
+  git commit -m "Update ${package_shortname}" ${package_files} || exit 1
   git push origin "${package_branch}" || exit 1
-  gh pr create --repo "${repo}" --head "${package_branch}" --base "master" --title "Update ${package_name} to ${package_version}" --body "Update ${package_name} to ${package_version}" || exit 1
+  gh pr create --repo "${repo}" --head "${package_branch}" --base "master" --title "Update ${package_shortname} to ${package_version}" --body "Update ${package_shortname} to ${package_version}" || exit 1
   if ! [ "$(git branch | head -1 | cut -d ' ' -f2)" = "master" ]; then
     git checkout master >/dev/null 2>&1
     if [ $? -ne 0 ]; then
@@ -179,7 +193,24 @@ if [ "${package_files}" = "" ]; then
 fi
 
 for package_file in ${package_files}; do
+
+  package_name=$(grep '^PKG\s*:= ' ${package_file} | sed -e 's/^PKG\s*:= \(.*\)/\1/' || exit 1)
+  if [ "${package_name}" = "" ]; then
+    continue
+  fi
+
+  # Ignore qt6 packages except qt6-qtbase
+  if [ ! "$(echo "${package_name}" | grep '^qt6-')" = "" ] && [ "$(echo "${package_name}" | grep '^qt6-qtbase$')" = "" ]; then
+    continue
+  fi
+
+  # Ignore gstreamer plugins
+  if [ ! "$(echo "${package_name}" | grep -e '^gst-plugins-' -e '^gst-libav$')" = "" ]; then
+    continue
+  fi
+
   update_package "${package_file}"
+
   if ! [ "$(git branch | head -1 | cut -d ' ' -f2)" = "master" ]; then
     git checkout master >/dev/null 2>&1
     if [ $? -ne 0 ]; then
@@ -187,6 +218,7 @@ for package_file in ${package_files}; do
       exit 1
     fi
   fi
+
 done
 
 git checkout . >/dev/null 2>&1
@@ -200,3 +232,5 @@ if [ $? -ne 0 ]; then
   echo "Could not pull with rebase ."
   exit 1
 fi
+
+rm -f pkg/*
