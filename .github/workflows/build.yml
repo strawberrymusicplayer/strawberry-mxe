@@ -1,13 +1,60 @@
 name: Build
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
 
-  build-i686-shared:
-    name: Build MinGW i686 Shared
+  get_packages:
+    name: Get build packages
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{steps.get_packages.outputs.packages}}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Add safe git directory
+        run: git config --global --add safe.directory ${GITHUB_WORKSPACE}
+      - name: Get build packages
+        id: get_packages
+        shell: bash
+        run: |
+          set -x
+          changed_files=$(git diff --name-only --diff-filter=ACMRT ${{github.event.pull_request.base.sha}} ${{github.sha}})
+          echo "Changed files: ${changed_files}"
+          changed_packages=$(echo "${changed_files}" | tr ' ' '\n' | grep '^src/.*\.mk$' | sed 's/src\/\(.*\)\.mk$/\1/g' | tr '\n' ' ' | sed 's/ $/\n/g' || true)
+          echo "Changed packages: ${changed_packages}"
+          build_packages=()
+          for changed_package in ${changed_packages}; do
+            if [[ ! "${build_packages[*]}" =~ "${changed_package}" ]]; then
+              build_packages+=("${changed_package}")
+            fi
+            downstream_packages=$(make show-downstream-deps-${changed_package})
+            for downstream_package in ${downstream_packages}; do
+              if [[ ! "${build_packages[*]}" =~ "${downstream_package}" ]]; then
+                build_packages+=("${downstream_package}")
+              fi
+            done
+          done
+          echo "Build packages: ${build_packages[@]}"
+          echo "::set-output name=packages::${build_packages[@]}"
+      - name: Show build packages
+        shell: bash
+        run: echo "Build packages ${{steps.get_packages.outputs.packages}}"
+
+
+  build:
+    name: Build
     runs-on: ubuntu-latest
     container: opensuse/leap:15.4
+    needs: get_packages
+    strategy:
+      matrix:
+       target: [ i686-w64-mingw32.shared, x86_64-w64-mingw32.shared ]
     steps:
+      - name: Show build packages
+        shell: bash
+        run: echo "Build packages ${{needs.get_packages.outputs.packages}}"
       - name: Add devel-tools-building repo
         run: zypper -n ar -c -f -n 'repo-devel-tools-building' https://download.opensuse.org/repositories/devel:/tools:/building/15.4/ repo-devel-tools-building
       - name: Update packages
@@ -26,10 +73,6 @@ jobs:
           update-alternatives --set c++ /usr/bin/g++-11
           update-alternatives --set gcc /usr/bin/gcc-11
           update-alternatives --set g++ /usr/bin/g++-11
-      - name: gcc version
-        run: |
-          gcc -v
-          g++ -v
       - name: Link python 3
         run: ln -s /usr/bin/python3 /usr/bin/python
       - name: Patch meson
@@ -43,109 +86,7 @@ jobs:
         run: git config --global --add safe.directory ${GITHUB_WORKSPACE}
       - name: Update settings.mk
         shell: bash
-        run: sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := i686-w64-mingw32.shared/g' settings.mk
-      - name: Compile
+        run: sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := ${{matrix.target}}/g' settings.mk
+      - name: Build
         shell: bash
-        run: make -j 4
-
-  build-x86_64-shared:
-    name: Build MinGW x86_64 shared
-    runs-on: ubuntu-latest
-    container: opensuse/leap:15.4
-    steps:
-      - name: Add devel-tools-building repo
-        run: zypper -n ar -c -f -n 'repo-devel-tools-building' https://download.opensuse.org/repositories/devel:/tools:/building/15.4/ repo-devel-tools-building
-      - name: Update packages
-        run: zypper -n --gpg-auto-import-keys ref
-      - name: Upgrade packages
-        run: zypper -n --gpg-auto-import-keys up -l -y
-      - name: Install openSUSE dependencies
-        run: zypper -n --gpg-auto-import-keys install glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc11 gcc11-c++ shadow which patch gperf wget curl git diffutils make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip gtk-doc gettext-tools scons bison flex ruby orc linux-glibc-devel glibc-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel python3-base python3-Mako libzstd-devel pcre2-devel
-      - name: update-alternatives
-        run: |
-          update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-11 50
-          update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-11 50
-          update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 50
-          update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 50
-          update-alternatives --set cc /usr/bin/gcc-11
-          update-alternatives --set c++ /usr/bin/g++-11
-          update-alternatives --set gcc /usr/bin/gcc-11
-          update-alternatives --set g++ /usr/bin/g++-11
-      - name: gcc version
-        run: |
-          gcc -v
-          g++ -v
-      - name: Link python 3
-        run: ln -s /usr/bin/python3 /usr/bin/python
-      - name: Patch meson
-        run: |
-          cd /tmp
-          wget https://patch-diff.githubusercontent.com/raw/mesonbuild/meson/pull/9841.patch
-          cd /usr/lib/python3.6/site-packages
-          patch -p1 < /tmp/9841.patch
-      - uses: actions/checkout@v3
-      - name: Add safe git directory
-        run: git config --global --add safe.directory ${GITHUB_WORKSPACE}
-      - name: Update settings.mk
-        shell: bash
-        run: sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := x86_64-w64-mingw32.shared/g' settings.mk
-      - name: Compile
-        shell: bash
-        run: make -j 4
-
-
-  build-docker-i686:
-    name: Build MXE Docker i686
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/action'
-    runs-on: ubuntu-latest
-    steps:
-
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Add safe git directory
-        run: git config --global --add safe.directory ${GITHUB_WORKSPACE}
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-
-      - name: Push to DockerHub
-        uses: docker/build-push-action@v3
-        with:
-          file: ./dockerfiles/i686-w64-mingw32-shared.Dockerfile
-          push: true
-          tags: jonaski/strawberry-mxe-i686:latest
-
-  build-docker-x86_64:
-    name: Build MXE Docker x86_64
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/action'
-    runs-on: ubuntu-latest
-    steps:
-
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Add safe git directory
-        run: git config --global --add safe.directory ${GITHUB_WORKSPACE}
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-
-      - name: Push to DockerHub
-        uses: docker/build-push-action@v3
-        with:
-          file: ./dockerfiles/x86_64-w64-mingw32-shared.Dockerfile
-          push: true
-          tags: jonaski/strawberry-mxe-x86_64:latest
+        run: make -j 4 ${{needs.get_packages.outputs.packages}}
