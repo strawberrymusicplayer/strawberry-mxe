@@ -8,7 +8,7 @@ $(PKG)_VERSION  := 6.3.2
 $(PKG)_CHECKSUM := ef76cc957b762fb7761c96651ba07f87e4515f8262dc977962c53cd259b2c6c0
 $(PKG)_FILE     := qttranslations-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_SUBDIR   := qttranslations-everywhere-src-$($(PKG)_VERSION)
-$(PKG)_URL      := https://download.qt.io/official_releases/qt/6.3/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
+$(PKG)_URL      := https://download.qt.io/official_releases/qt/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc qt6-qtbase qt6-qttools
 
 $(PKG)_UPDATE = $(qt6-qtbase_UPDATE)

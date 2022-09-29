@@ -8,15 +8,15 @@ $(PKG)_VERSION  := 6.3.2
 $(PKG)_CHECKSUM := 7929ba4df870b6b30870bc0aed2525cfc606ed7091107b23cf7ed7e434caa9a6
 $(PKG)_FILE     := qtbase-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_SUBDIR   := qtbase-everywhere-src-$($(PKG)_VERSION)
-$(PKG)_URL      := https://download.qt.io/official_releases/qt/6.3/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
+$(PKG)_URL      := https://download.qt.io/official_releases/qt/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS     := cc openssl pcre2 fontconfig freetype harfbuzz glib zlib libpng zstd brotli jpeg sqlite mesa $(BUILD)~$(PKG) $(BUILD)~qt6-qttools
 $(PKG)_DEPS_$(BUILD) :=
 $(PKG)_OO_DEPS_$(BUILD) += qt6-conf ninja
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- https://download.qt.io/official_releases/qt/6.3/ | \
-    $(SED) -n 's,.*href="\(6\.3\.[^/]*\)/".*,\1,p' | \
+    $(WGET) -q -O- https://download.qt.io/official_releases/qt/6.4/ | \
+    $(SED) -n 's,.*href="\(6\.[0-9]*\.[^/]*\)/".*,\1,p' | \
     $(SORT) -V | \
     tail -1
 endef
