@@ -24,7 +24,7 @@ jobs:
           set -x
           changed_files=$(git diff --name-only --diff-filter=ACMRT ${{github.event.pull_request.base.sha}} ${{github.sha}})
           echo "Changed files: ${changed_files}"
-          changed_packages=$(echo "${changed_files}" | tr ' ' '\n' | grep '^src/.*\.mk$' | sed 's/src\/\(.*\)\.mk$/\1/g' | tr '\n' ' ' | sed 's/ $/\n/g' || true)
+          changed_packages=$(echo "${changed_files}" | tr ' ' '\n' | grep '^src/[0-9a-zA-Z_-]*\.mk$' | sed 's/src\/\(.*\)\.mk$/\1/g' | tr '\n' ' ' | sed 's/ $/\n/g' || true)
           echo "Changed packages: ${changed_packages}"
           build_packages=()
           for changed_package in ${changed_packages}; do
