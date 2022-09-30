@@ -1,5 +1,7 @@
 FROM opensuse/leap:15.4
 
+COPY / /strawberry-mxe
+
 RUN zypper -n ar -c -f -n 'repo-devel-tools-building' https://download.opensuse.org/repositories/devel:/tools:/building/15.4/ repo-devel-tools-building
 RUN zypper -n ar -c -f -n 'repo-mingw' https://download.opensuse.org/repositories/windows:/mingw:/win32/openSUSE_Leap_15.4/ repo-mingw
 
@@ -45,6 +47,4 @@ RUN mkdir -p /tmp/inetc && wget https://nsis.sourceforge.io/mediawiki/images/c/c
 RUN cd /tmp/inetc && unzip /tmp/inetc/Inetc.zip
 RUN cp /tmp/inetc/Plugins/x86-unicode/INetC.dll /usr/share/nsis/Plugins/x86-unicode/
 
-RUN mkdir -p /usr/src
-RUN cd /usr/src/ && git clone https://github.com/strawberrymusicplayer/strawberry-mxe
-RUN cd /usr/src/strawberry-mxe && make -j 4 MXE_TARGETS="i686-w64-mingw32.shared" MXE_VERBOSE=1
+RUN cd strawberry-mxe && make -j 4 MXE_TARGETS="i686-w64-mingw32.shared" MXE_VERBOSE=1
