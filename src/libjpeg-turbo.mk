@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := d3ed26a1131a13686dfca4935e520eb7c90ae76fbc45d98bb50a8dc862303
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://$(SOURCEFORGE_MIRROR)/project/$(PKG)/$($(PKG)_VERSION)/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc yasm
+$(PKG)_DEPS     := cc $(BUILD)~nasm
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://sourceforge.net/projects/libjpeg-turbo/files/' | \
