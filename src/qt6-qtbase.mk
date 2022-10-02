@@ -22,6 +22,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
+    rm -rf $(SOURCE_DIR)/src/3rdparty/{freetype,harfbuzz-ng,libjpeg,libpng,pixman,sqlite,zlib}
     mkdir -p '$(PREFIX)/$(TARGET)/qt6/bin/'
     PKG_CONFIG="${TARGET}-pkg-config" \
     PKG_CONFIG_SYSROOT_DIR="/" \
