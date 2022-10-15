@@ -66,7 +66,7 @@ function merge_prs() {
   fi
 
   for pr in ${prs}; do
-    if ! [ "$(gh pr view "${pr}" --json 'author' | jq -r '.author.login')" = "strawbsbot" ]; then
+    if ! [ "$(gh pr view "${pr}" --json 'author' | jq -r '.author.login')" = "${gh_username}" ]; then
       continue
     fi
     if ! [ "$(gh pr view "${pr}" --json 'isDraft' | jq '.isDraft')" = "false" ]; then
@@ -291,6 +291,12 @@ fi
 gh auth status >/dev/null
 if [ $? -ne 0 ]; then
   error "Missing GitHub login."
+  exit 1
+fi
+
+gh_username=$(sed -n 's,^[ ]*user: \(.*\)$,\1,p' ~/.config/gh/hosts.yml)
+if [ "${gh_username}" = "" ]; then
+  error "Missing GitHub username."
   exit 1
 fi
 
