@@ -17,8 +17,6 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-repo="strawberrymusicplayer/strawberry-mxe"
-
 function timestamp() { date '+%Y-%m-%d %H:%M:%S'; }
 function status() { echo "[$(timestamp)] $*"; }
 function error() { echo "[$(timestamp)] ERROR: $*" >&2; }
@@ -275,6 +273,12 @@ fi
 cd "${repodir}"
 if [ $? -ne 0 ]; then
   error "Could not change directory to ${repodir}."
+  exit 1
+fi
+
+repo=$(git config --get remote.origin.url | cut -d ':' -f 2 | sed 's/\.git$//g')
+if [ "${repo}" = "" ]; then
+  error "Could not get repo name."
   exit 1
 fi
 
