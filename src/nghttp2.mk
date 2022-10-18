@@ -6,7 +6,7 @@ $(PKG)_DESCR    := HTTP/2 C Library and tools
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.50.0
 $(PKG)_CHECKSUM := 6de469efc8e9d47059327a6736aebe0a7d73f57e5e37ab4c4f838fb1eebd7889
-$(PKG)_GH_CONF  := nghttp2/nghttp2/tags, v
+$(PKG)_GH_CONF  := nghttp2/nghttp2/releases/latest, v
 $(PKG)_DEPS     := cc openssl zlib libxml2 cares
 
 define $(PKG)_BUILD

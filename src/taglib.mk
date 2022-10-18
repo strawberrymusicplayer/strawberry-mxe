@@ -6,7 +6,7 @@ $(PKG)_DESCR    := TagLib Audio Meta-Data Library
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.12
 $(PKG)_CHECKSUM := b5a56f78a8bd962aaaec992b25a031f541b949b6eb30aa232bd6d5fa17cf8fa8
-$(PKG)_GH_CONF  := taglib/taglib/tags, v
+$(PKG)_GH_CONF  := taglib/taglib/releases/latest, v
 $(PKG)_DEPS     := cc zlib
 
 define $(PKG)_BUILD
