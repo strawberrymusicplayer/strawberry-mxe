@@ -10,6 +10,7 @@ $(PKG)_GH_CONF  := knik0/faad2/releases/latest
 $(PKG)_DEPS     := cc
 
 define $(PKG)_BUILD
+    cd '$(1)' && ./bootstrap
     cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS)
     $(MAKE) -C '$(1)' -j '$(JOBS)' LDFLAGS='-no-undefined'
     $(MAKE) -C '$(1)' -j 1 install LDFLAGS='-no-undefined'
