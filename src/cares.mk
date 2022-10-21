@@ -11,6 +11,13 @@ $(PKG)_SUBDIR   := c-ares-$($(PKG)_VERSION)
 $(PKG)_URL      := https://c-ares.org/download/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc
 
+define $(PKG)_UPDATE
+    $(WGET) -q -O- 'https://c-ares.org/download/' | \
+    $(SED) -n 's,.*c-ares-\([^>]*\)\.tar.*,\1,p' | \
+    $(SORT) -V | \
+    tail -1
+endef
+
 define $(PKG)_BUILD
     cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --disable-tests --enable-nonblocking
     $(MAKE) -C '$(1)' -j '$(JOBS)'
