@@ -11,6 +11,13 @@ $(PKG)_FILE     := $(PKG)_src_r$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://files.musepack.net/source/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc libcuefile libreplaygain
 
+define $(PKG)_UPDATE
+    $(WGET) -q -O- 'https://www.musepack.net/index.php?pg=src' | \
+    $(SED) -n 's,.*musepack_src_r\([^>]*\)\.tar.*,\1,p' | \
+    $(SORT) -V | \
+    tail -1
+endef
+
 define $(PKG)_BUILD
     LDFLAGS='$(LDFLAGS) -Wl,--allow-multiple-definition' \
     '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
