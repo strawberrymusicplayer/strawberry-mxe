@@ -11,6 +11,13 @@ $(PKG)_SUBDIR   := game-music-emu-$($(PKG)_VERSION)
 $(PKG)_URL      := https://bitbucket.org/mpyne/game-music-emu/downloads/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc
 
+define $(PKG)_UPDATE
+    $(WGET) -q -O- 'https://bitbucket.org/mpyne/game-music-emu/downloads/' | \
+    $(SED) -n 's,.*game-music-emu-\([^>]*\)\.tar.*,\1,p' | \
+    $(SORT) -V | \
+    tail -1
+endef
+
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && '$(TARGET)-cmake' -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' -DBUILD_SHARED_LIBS=$(CMAKE_SHARED_BOOL) -DENABLE_UBSAN=OFF '$(SOURCE_DIR)'
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
