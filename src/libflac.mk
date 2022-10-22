@@ -6,17 +6,11 @@ $(PKG)_DESCR    := Free Lossless Audio Codec
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.4.1
 $(PKG)_CHECKSUM := 91303c3e5dfde52c3e94e75976c0ab3ee14ced278ab8f60033a3a12db9209ae6
+$(PKG)_GH_CONF  := xiph/flac/releases/latest
 $(PKG)_SUBDIR   := flac-$($(PKG)_VERSION)
 $(PKG)_FILE     := flac-$($(PKG)_VERSION).tar.xz
-$(PKG)_URL      := https://downloads.xiph.org/releases/flac/$($(PKG)_FILE)
+$(PKG)_URL      := https://github.com/xiph/flac/releases/download/$($(PKG)_VERSION)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc libogg $(BUILD)~nasm
-
-define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://downloads.xiph.org/releases/flac/' | \
-    $(SED) -n 's,.*<a href="flac-\([0-9][0-9.]*\)\.tar\.[gx]z">.*,\1,p' | \
-    $(SORT) -V | \
-    tail -1
-endef
 
 define $(PKG)_BUILD
     cd '$(1)' && ./autogen.sh
