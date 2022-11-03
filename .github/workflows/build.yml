@@ -39,7 +39,7 @@ jobs:
             done
           done
           echo "Build packages: ${build_packages[@]}"
-          echo "::set-output name=packages::${build_packages[@]}"
+          echo "packages=${build_packages[@]}" >> $GITHUB_OUTPUT
       - name: Show build packages
         shell: bash
         run: echo "Build packages ${{steps.get_packages.outputs.packages}}"
