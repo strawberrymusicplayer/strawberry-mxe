@@ -19,7 +19,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(SOURCE_DIR)' && LDFLAGS='$(LDFLAGS) -Wl,--allow-multiple-definition' '$(TARGET)-meson' \
+    cd '$(SOURCE_DIR)' && CFLAGS='-Wno-nonnull' LDFLAGS='$(LDFLAGS) -Wl,--allow-multiple-definition' '$(TARGET)-meson' \
         --buildtype='$(MESON_BUILD_TYPE)' \
         -Dtests=false \
         -Dvapi=disabled \
