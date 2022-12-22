@@ -4,8 +4,8 @@ PKG             := nasm
 $(PKG)_WEBSITE  := https://www.nasm.us/
 $(PKG)_DESCR    := NASM - The Netwide Assembler
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.15.05
-$(PKG)_CHECKSUM := 3caf6729c1073bf96629b57cee31eeb54f4f8129b01902c73428836550b30a3f
+$(PKG)_VERSION  := 2.16.01
+$(PKG)_CHECKSUM := c77745f4802375efeee2ec5c0ad6b7f037ea9c87c92b149a9637ff099f162558
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://www.nasm.us/pub/$(PKG)/releasebuilds/$($(PKG)_VERSION)/$($(PKG)_FILE)
@@ -19,7 +19,8 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD_$(BUILD)
-    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' $(MXE_CONFIGURE_OPTS)
-    $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
-    $(MAKE) -C '$(BUILD_DIR)' -j 1 install
+    cd '$(1)' && './autogen.sh'
+    cd '$(1)' && './configure' $(MXE_CONFIGURE_OPTS)
+    $(MAKE) -C '$(1)' -j '$(JOBS)'
+    $(MAKE) -C '$(1)' -j 1 install
 endef
