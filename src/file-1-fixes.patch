@@ -1,8 +1,8 @@
 diff --git a/src/compress.c b/src/compress.c
-index b456626..fec951c 100644
+index 282f2a3..15a960e 100644
 --- a/src/compress.c
 +++ b/src/compress.c
-@@ -924,9 +924,14 @@ uncompressbuf(int fd, size_t bytes_max, size_t method, const unsigned char *old,
+@@ -1088,9 +1088,14 @@ uncompressbuf(int fd, size_t bytes_max, size_t method, int nofork,
  	 * and both must have large outputs. Thus it happens not that often).
  	 * To avoid this, be sure to create pipes with O_CLOEXEC.
  	 */
@@ -17,56 +17,23 @@ index b456626..fec951c 100644
  		closep(fdp[STDIN_FILENO]);
  		closep(fdp[STDOUT_FILENO]);
  		return makeerror(newch, n, "Cannot create pipe, %s",
-diff --git a/src/file.c b/src/file.c
-index 1566a17..2aad57c 100644
---- a/src/file.c
-+++ b/src/file.c
-@@ -602,7 +602,7 @@ fname_print(const char *inname)
- 	for (i = 0; i < n; i++) {
- 		unsigned char c = CAST(unsigned char, inname[i]);
- 		if (isprint(c)) {
--			putc(c);
-+			putchar(c);
- 			continue;
- 		}
- 		file_octal(c);
-diff --git a/src/file.h b/src/file.h
-index 85675df..80afe9f 100644
---- a/src/file.h
-+++ b/src/file.h
-@@ -584,8 +584,10 @@ protected char * file_printable(struct magic_set *, char *, size_t,
- protected int file_os2_apptype(struct magic_set *, const char *, const void *,
-     size_t);
- #endif /* __EMX__ */
-+#ifndef WIN32
- protected int file_pipe_closexec(int *);
- protected int file_clear_closexec(int);
-+#endif
- protected char *file_strtrim(char *);
- 
- protected void buffer_init(struct buffer *, int, const struct stat *,
 diff --git a/src/funcs.c b/src/funcs.c
-index 41c4106..ea121d2 100644
+index d4fefcd..6ae167b 100644
 --- a/src/funcs.c
 +++ b/src/funcs.c
-@@ -841,6 +841,7 @@ file_print_guid(char *str, size_t len, const uint64_t *guid)
+@@ -875,6 +875,7 @@ file_print_guid(char *str, size_t len, const uint64_t *guid)
  #endif
  }
  
 +#ifndef WIN32
- protected int
+ file_protected int
  file_pipe_closexec(int *fds)
  {
-@@ -856,6 +857,7 @@ file_pipe_closexec(int *fds)
+@@ -890,6 +891,7 @@ file_pipe_closexec(int *fds)
  	return 0;
  #endif
  }
 +#endif
  
- protected int
+ file_protected int
  file_clear_closexec(int fd) {
-@@ -882,3 +884,4 @@ file_strtrim(char *str)
- 	*++last = '\0';
- 	return str;
- }
-+
