@@ -24,7 +24,6 @@ define $(PKG)_BUILD
         -Ddvdlpcmdec=disabled \
         -Ddvdsub=disabled \
         -Drealmedia=disabled \
-        -Dxingmux=enabled \
         -Da52dec=disabled \
         -Damrnb=disabled \
         -Damrwbdec=disabled \
