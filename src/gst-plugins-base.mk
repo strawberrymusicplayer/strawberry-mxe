@@ -39,9 +39,8 @@ define $(PKG)_BUILD
         -Dsubparse=disabled \
         -Dtcp=enabled \
         -Dtypefind=enabled \
-        -Dvideoconvert=disabled \
+        -Dvideoconvertscale=disabled \
         -Dvideorate=disabled \
-        -Dvideoscale=disabled \
         -Dvideotestsrc=disabled \
         -Dvolume=enabled \
         -Dalsa=disabled \
@@ -56,6 +55,7 @@ define $(PKG)_BUILD
         -Dx11=disabled \
         -Dxshm=disabled \
         -Dxvideo=disabled \
+        -Dxi=disabled \
         -Dgl=disabled \
         -Dgl-graphene=disabled \
         -Dgl-jpeg=disabled \

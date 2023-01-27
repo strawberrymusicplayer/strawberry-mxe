@@ -62,6 +62,7 @@ define $(PKG)_BUILD
         -Dvideomixer=disabled \
         -Dwavenc=enabled \
         -Dwavparse=enabled \
+        -Dxingmux=enabled \
         -Dy4m=disabled \
         -Daalib=disabled \
         -Dbz2=disabled \
@@ -96,6 +97,7 @@ define $(PKG)_BUILD
         -Dv4l2=disabled \
         -Dv4l2-libv4l2=disabled \
         -Dv4l2-gudev=disabled \
+        -Dhls-crypto=openssl \
         '$(BUILD_DIR)'
 
     cd '$(BUILD_DIR)' && ninja

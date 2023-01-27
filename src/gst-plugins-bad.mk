@@ -35,6 +35,7 @@ define $(PKG)_BUILD
         -Dbayer=disabled \
         -Dcamerabin2=disabled \
         -Dcodecalpha=disabled \
+        -Dcodectimestamper=disabled \
         -Dcoloreffects=disabled \
         -Ddebugutils=disabled \
         -Ddvbsubenc=disabled \
@@ -68,6 +69,7 @@ define $(PKG)_BUILD
         -Dpnm=disabled \
         -Dproxy=disabled \
         -Dqroverlay=disabled \
+        -Dqsv=disabled \
         -Drawparse=disabled \
         -Dremovesilence=enabled \
         -Drist=disabled \
@@ -112,6 +114,7 @@ define $(PKG)_BUILD
         -Ddecklink=disabled \
         -Ddirectfb=disabled \
         -Ddirectsound=enabled \
+        -Ddirectshow=disabled \
         -Ddtls=disabled \
         -Ddts=disabled \
         -Ddvb=disabled \
@@ -125,6 +128,7 @@ define $(PKG)_BUILD
         -Dgme=enabled \
         -Dgs=disabled \
         -Dgsm=disabled \
+        -Dgtk3=disabled \
         -Dipcpipeline=disabled \
         -Diqa=disabled \
         -Dkate=disabled \
@@ -180,6 +184,8 @@ define $(PKG)_BUILD
         -Dwebrtc=disabled \
         -Dwebrtcdsp=disabled \
         -Dwildmidi=disabled \
+        -Dwic=disabled \
+        -Dwin32ipc=disabled \
         -Dwinks=disabled \
         -Dwinscreencap=disabled \
         -Dx265=disabled \
