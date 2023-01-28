@@ -48,7 +48,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    container: opensuse/leap:15.4
+    container: opensuse/tumbleweed
     needs: get_packages
     strategy:
       matrix:
@@ -57,32 +57,14 @@ jobs:
       - name: Show build packages
         shell: bash
         run: echo "Build packages ${{needs.get_packages.outputs.packages}}"
-      - name: Add devel-tools-building repo
-        run: zypper -n ar -c -f -n 'repo-devel-tools-building' https://download.opensuse.org/repositories/devel:/tools:/building/15.4/ repo-devel-tools-building
       - name: Update packages
         run: zypper -n --gpg-auto-import-keys ref
       - name: Upgrade packages
-        run: zypper -n --gpg-auto-import-keys up -l -y
+        run: zypper -n --gpg-auto-import-keys dup -l -y
       - name: Install openSUSE dependencies
-        run: zypper -n --gpg-auto-import-keys install glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc11 gcc11-c++ shadow which patch gperf wget curl git diffutils make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip gtk-doc gettext-tools scons bison flex ruby orc linux-glibc-devel glibc-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel python3-base python3-Mako libzstd-devel pcre2-devel
-      - name: update-alternatives
-        run: |
-          update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-11 50
-          update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-11 50
-          update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 50
-          update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 50
-          update-alternatives --set cc /usr/bin/gcc-11
-          update-alternatives --set c++ /usr/bin/g++-11
-          update-alternatives --set gcc /usr/bin/gcc-11
-          update-alternatives --set g++ /usr/bin/g++-11
+        run: zypper -n --gpg-auto-import-keys install glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc gcc-c++ shadow which patch gperf wget curl git diffutils make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip gtk-doc gettext-tools scons bison flex ruby orc linux-glibc-devel glibc-devel libstdc++-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel python3-base python3-Mako libzstd-devel pcre2-devel zlib-devel
       - name: Link python 3
         run: ln -s /usr/bin/python3 /usr/bin/python
-      - name: Patch meson
-        run: |
-          cd /tmp
-          wget https://patch-diff.githubusercontent.com/raw/mesonbuild/meson/pull/9841.patch
-          cd /usr/lib/python3.6/site-packages
-          patch -p1 < /tmp/9841.patch
       - uses: actions/checkout@v3
       - name: Add safe git directory
         run: git config --global --add safe.directory ${GITHUB_WORKSPACE}
