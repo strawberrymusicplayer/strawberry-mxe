@@ -15,6 +15,7 @@ define $(PKG)_BUILD
     $(call PREPARE_PKG_SOURCE,googletest,$(SOURCE_DIR))
 
     '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
+        -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
         -DCMAKE_INSTALL_PREFIX='$(PREFIX)/$(TARGET)' \
         -Dprotobuf_WITH_ZLIB=ON \
         -Dprotobuf_BUILD_TESTS=OFF \
