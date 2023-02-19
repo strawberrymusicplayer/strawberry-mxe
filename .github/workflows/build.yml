@@ -53,6 +53,7 @@ jobs:
     strategy:
       matrix:
        target: [ i686-w64-mingw32.shared, x86_64-w64-mingw32.shared ]
+       build_type: [ release, debug ]
     steps:
       - name: Show build packages
         shell: bash
@@ -70,4 +71,4 @@ jobs:
         run: git config --global --add safe.directory ${GITHUB_WORKSPACE}
       - name: Build
         shell: bash
-        run: make -j 4 ${{needs.get_packages.outputs.packages}} MXE_TARGETS="${{matrix.target}}" MXE_VERBOSE=1
+        run: make -j 4 ${{needs.get_packages.outputs.packages}} MXE_TARGETS="${{matrix.target}}" MXE_BUILD_TYPE="${{matrix.build_type}}" MXE_VERBOSE=1
