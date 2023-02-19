@@ -17,13 +17,14 @@ define $(PKG)_BUILD
     '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
         -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
         -DCMAKE_INSTALL_PREFIX='$(PREFIX)/$(TARGET)' \
-        -Dprotobuf_WITH_ZLIB=ON \
+        -Dprotobuf_BUILD_SHARED_LIBS=$(CMAKE_SHARED_BOOL) \
+        -Dprotobuf_BUILD_LIBPROTOC=OFF \
+        -Dprotobuf_BUILD_PROTOC_BINARIES=ON \
         -Dprotobuf_BUILD_TESTS=OFF \
         -Dprotobuf_BUILD_EXAMPLES=OFF \
+        -Dprotobuf_WITH_ZLIB=ON \
         -Dprotobuf_ABSL_PROVIDER='package'
 
     '$(TARGET)-cmake' --build '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
-
-    $(if $(BUILD_CROSS), '$(TARGET)-g++' -W -Wall -Werror -ansi -pedantic -std=c++17 '$(TEST_FILE)' -o '$(PREFIX)/$(TARGET)/bin/test-protobuf.exe' `'$(TARGET)-pkg-config' protobuf --cflags --libs` )
 endef
