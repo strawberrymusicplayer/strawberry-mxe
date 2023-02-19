@@ -12,6 +12,7 @@ jobs:
     strategy:
       matrix:
         arch: [ i686, x86_64 ]
+        build_type: [ release, debug ]
     steps:
 
       - name: Checkout
@@ -32,6 +33,6 @@ jobs:
       - name: Push to DockerHub
         uses: docker/build-push-action@v3
         with:
-          file: ./dockerfiles/${{matrix.arch}}-w64-mingw32-shared.Dockerfile
+          file: ./dockerfiles/${{matrix.arch}}-w64-mingw32-shared-${{matrix.build_type}}.Dockerfile
           push: true
-          tags: jonaski/strawberry-mxe-${{matrix.arch}}:latest
+          tags: jonaski/strawberry-mxe-${{matrix.arch}}-${{matrix.build_type}}:latest

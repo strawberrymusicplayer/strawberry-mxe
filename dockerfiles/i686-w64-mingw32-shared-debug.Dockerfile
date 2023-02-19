@@ -33,4 +33,4 @@ RUN mkdir -p /tmp/inetc && wget https://nsis.sourceforge.io/mediawiki/images/c/c
 RUN cd /tmp/inetc && unzip /tmp/inetc/Inetc.zip
 RUN cp /tmp/inetc/Plugins/x86-unicode/INetC.dll /usr/share/nsis/Plugins/x86-unicode/
 
-RUN cd strawberry-mxe && make -j 4 MXE_TARGETS="i686-w64-mingw32.shared" MXE_VERBOSE=1
+RUN cd strawberry-mxe && make -j 4 MXE_TARGETS="i686-w64-mingw32.shared" MXE_BUILD_TYPE="Debug" MXE_VERBOSE=1
