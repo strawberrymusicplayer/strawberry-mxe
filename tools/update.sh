@@ -66,7 +66,8 @@ function merge_prs() {
   fi
 
   for pr in ${prs}; do
-    if ! [ "$(gh pr view "${pr}" --json 'author' | jq -r '.author.login')" = "${gh_username}" ]; then
+    pr_author=$(gh pr view "${pr}" --json 'author' | jq -r '.author.login')
+    if ! [ "${pr_author}" = "${gh_username}" ] && ! [ "${pr_author}" = "dependabot" ] && ! [ "${pr_author}" = "jonaski" ] ; then
       continue
     fi
     if ! [ "$(gh pr view "${pr}" --json 'isDraft' | jq '.isDraft')" = "false" ]; then
