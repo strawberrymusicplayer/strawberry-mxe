@@ -136,6 +136,7 @@ define MXE_GET_GH_RELEASE
     | $(if $(4),grep -vi '$(strip $(4))') \
     | $(SED) -n 's,^$(strip $(2))\([^"]*\)$(strip $(3))$$,\1,p' \
     | tr '$(strip $(5))' '.' \
+    | grep -v '^\*name$$' \
     | $(SORT) -V \
     | tail -1
 endef
