@@ -1,21 +1,18 @@
-FROM opensuse/tumbleweed
+FROM fedora:38
 
 COPY / /strawberry-mxe
 
-RUN zypper -n ar -c -f -n 'repo-mingw' https://download.opensuse.org/repositories/windows:/mingw:/win32/openSUSE_Tumbleweed/ repo-mingw
-
-RUN zypper -n --gpg-auto-import-keys ref
-RUN zypper -n --gpg-auto-import-keys dup -l -y
-
-RUN zypper -n --gpg-auto-import-keys install \
-    glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc gcc-c++ \
+RUN dnf update --assumeyes
+RUN dnf upgrade --assumeyes
+RUN dnf install --assumeyes \
+    glibc gcc gcc-c++ \
     shadow which patch gperf wget curl git diffutils \
-    make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool \
-    tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip \
-    gtk-doc gettext-tools scons bison flex ruby orc zlib-devel \
-    linux-glibc-devel glibc-devel libstdc++-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel libzstd-devel pcre2-devel \
-    python3-base python3-Mako \
-    mingw32-cross-nsis
+    make cmake libtool pkg-config autoconf automake meson intltool \
+    tar gzip bzip2 xz p7zip lzip zip unzip \
+    gtk-doc gettext scons bison flex ruby orc zlib-devel \
+    glibc-devel libstdc++-devel file-devel openssl-devel libffi-devel gdk-pixbuf2-devel libzstd-devel pcre2-devel \
+    python3 python3-mako \
+    mingw32-nsis
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
