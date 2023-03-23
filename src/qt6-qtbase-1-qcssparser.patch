@@ -1,0 +1,47 @@
+From 18def77d27f88ce26b6af29fe56a80429fed555d Mon Sep 17 00:00:00 2001
+From: Ville Voutilainen <ville.voutilainen@qt.io>
+Date: Tue, 15 Nov 2022 03:28:11 +0200
+Subject: Fix dangling references
+
+These were found with the help of -Wdangling-reference, which is
+new in GCC 13.
+
+The one in qtpaths.cpp is a false positive: parseLocationOrError()
+returns a reference, so there's nothing for the full expression to
+destroy. Moreover, it returns a reference to a static object, so
+there's no destruction inside the function either.
+
+The other two aren't, but are also harmless. QDBusMessage::arguments()
+and QVariant::toList() return a stored QVariantList by value, so
+QList's COW mechanism means at() returns a reference that will not be
+destroyed. However, the compiler has no way of knowing that. And
+since it depends on the implementation details, change the code to
+not depend on that.
+
+
+Pick-to: 6.5
+Change-Id: If53aa16fcc24586d752ffc76c193c81e43dc9d95
+Reviewed-by: Thiago Macieira <thiago.macieira@intel.com>
+---
+ src/gui/text/qcssparser.cpp | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+(limited to 'src/gui/text/qcssparser.cpp')
+
+diff --git a/src/gui/text/qcssparser.cpp b/src/gui/text/qcssparser.cpp
+index 2f3c04dc54..f79369a36b 100644
+--- a/src/gui/text/qcssparser.cpp
++++ b/src/gui/text/qcssparser.cpp
+@@ -1439,7 +1439,8 @@ QColor Declaration::colorValue(const QPalette &pal) const
+             return pal.color((QPalette::ColorRole)(d->parsed.toInt()));
+         case qMetaTypeId<QList<QVariant>>():
+             if (d->parsed.toList().size() == 1) {
+-                const auto &value = d->parsed.toList().at(0);
++                auto parsedList = d->parsed.toList();
++                const auto &value = parsedList.at(0);
+                 return qvariant_cast<QColor>(value);
+             }
+             break;
+-- 
+cgit v1.2.1
+
