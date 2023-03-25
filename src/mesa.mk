@@ -3,8 +3,8 @@
 PKG             := mesa
 $(PKG)_WEBSITE  := https://mesa3d.org
 $(PKG)_DESCR    := The Mesa 3D Graphics Library
-$(PKG)_VERSION  := 23.0.0
-$(PKG)_CHECKSUM := 01f3cff3763f09e0adabcb8011e4aebc6ad48f6a4dd4bae904fe918707d253e4
+$(PKG)_VERSION  := 23.0.1
+$(PKG)_CHECKSUM := e8e586856b55893abae9bdcdb98b41c081d909bb1faf372e6e7262307bf34adf
 $(PKG)_SUBDIR   := mesa-$($(PKG)_VERSION)
 $(PKG)_FILE     := mesa-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := ftp://ftp.freedesktop.org/pub/mesa/$($(PKG)_FILE)
