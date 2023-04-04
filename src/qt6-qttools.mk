@@ -4,8 +4,8 @@ PKG             := qt6-qttools
 $(PKG)_WEBSITE  := https://www.qt.io/
 $(PKG)_DESCR    := Qt 6 Tools
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 6.4.3
-$(PKG)_CHECKSUM := 867df829cd5cd3ae8efe62e825503123542764b13c96953511e567df70c5a091
+$(PKG)_VERSION  := 6.5.0
+$(PKG)_CHECKSUM := 49c33d96b0a44988be954269b8ce3d1a495b439726e03a6be7c0d50a686369c4
 $(PKG)_FILE     := qttools-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_SUBDIR   := qttools-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
@@ -17,7 +17,10 @@ $(PKG)_OO_DEPS_$(BUILD) += qt6-conf ninja
 $(PKG)_UPDATE = $(qt6-qtbase_UPDATE)
 
 define $(PKG)_BUILD
-    $(QT6_CMAKE) --log-level="DEBUG" -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
+    $(QT6_CMAKE) --log-level="DEBUG" -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
+        -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
+        -DBUILD_SHARED_LIBS=$(CMAKE_SHARED_BOOL) \
+        -DBUILD_STATIC_LIBS=$(CMAKE_STATIC_BOOL) \
         -DQT_BUILD_EXAMPLES=OFF \
         -DQT_BUILD_EXAMPLES_BY_DEFAULT=OFF \
         -DQT_BUILD_TOOLS_WHEN_CROSSCOMPILING=ON \
