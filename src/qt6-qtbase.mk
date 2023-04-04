@@ -4,8 +4,8 @@ PKG             := qt6-qtbase
 $(PKG)_WEBSITE  := https://www.qt.io/
 $(PKG)_DESCR    := Qt 6 Base
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 6.4.3
-$(PKG)_CHECKSUM := 5087c9e5b0165e7bc3c1a4ab176b35d0cd8f52636aea903fa377bdba00891a60
+$(PKG)_VERSION  := 6.5.0
+$(PKG)_CHECKSUM := fde1aa7b4fbe64ec1b4fc576a57f4688ad1453d2fab59cbadd948a10a6eaf5ef
 $(PKG)_FILE     := qtbase-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_SUBDIR   := qtbase-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
@@ -15,7 +15,7 @@ $(PKG)_DEPS_$(BUILD) :=
 $(PKG)_OO_DEPS_$(BUILD) += qt6-conf ninja
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- https://download.qt.io/official_releases/qt/6.4/ | \
+    $(WGET) -q -O- https://download.qt.io/official_releases/qt/6.5/ | \
     $(SED) -n 's,.*href="\(6\.[0-9]*\.[^/]*\)/".*,\1,p' | \
     $(SORT) -V | \
     tail -1
@@ -23,6 +23,8 @@ endef
 
 define $(PKG)_BUILD
     rm -rf $(SOURCE_DIR)/src/3rdparty/{freetype,harfbuzz-ng,libjpeg,libpng,pixman,sqlite,zlib}
+    mv -v '$(PREFIX)/$(TARGET)/cmake/pcre2-config.cmake' '$(PREFIX)/$(TARGET)/cmake/pcre2-config.cmake_'
+    mv -v '$(PREFIX)/$(TARGET)/cmake/pcre2-config-version.cmake' '$(PREFIX)/$(TARGET)/cmake/pcre2-config-version.cmake_'
     mkdir -p '$(PREFIX)/$(TARGET)/qt6/bin/'
     PKG_CONFIG="${TARGET}-pkg-config" \
     PKG_CONFIG_SYSROOT_DIR="/" \
@@ -30,9 +32,10 @@ define $(PKG)_BUILD
     '$(TARGET)-cmake' --log-level="DEBUG" -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
         -G Ninja \
         -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
-        -DCMAKE_INSTALL_PREFIX='$(PREFIX)/$(TARGET)/qt6' \
         -DBUILD_SHARED_LIBS=$(CMAKE_SHARED_BOOL) \
-        -DPKG_CONFIG_EXECUTABLE=$(PREFIX)/bin/$(TARGET)-pkg-config \
+        -DBUILD_STATIC_LIBS=$(CMAKE_STATIC_BOOL) \
+        -DCMAKE_INSTALL_PREFIX='$(PREFIX)/$(TARGET)/qt6' \
+        -DPKG_CONFIG_EXECUTABLE='$(PREFIX)/bin/$(TARGET)-pkg-config' \
         -DQT_HOST_PATH='$(PREFIX)/$(BUILD)/qt6' \
         -DQT_QMAKE_TARGET_MKSPEC=win32-g++ \
         -DQT_QMAKE_DEVICE_OPTIONS='CROSS_COMPILE=$(TARGET)-;PKG_CONFIG=$(TARGET)-pkg-config' \
@@ -79,6 +82,9 @@ define $(PKG)_BUILD
         -DFEATURE_system_freetype=ON \
         -DFEATURE_system_harfbuzz=ON \
         -DFEATURE_system_sqlite=ON
+
+    mv -v '$(PREFIX)/$(TARGET)/cmake/pcre2-config.cmake_' '$(PREFIX)/$(TARGET)/cmake/pcre2-config.cmake'
+    mv -v '$(PREFIX)/$(TARGET)/cmake/pcre2-config-version.cmake_' '$(PREFIX)/$(TARGET)/cmake/pcre2-config-version.cmake'
 
     cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
     cmake --install '$(BUILD_DIR)'
