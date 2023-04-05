@@ -13,15 +13,16 @@ $(PKG)_URL      := https://github.com/PhilipHazel/pcre2/releases/download/$(PKG)
 $(PKG)_DEPS     := cc
 
 define $(PKG)_BUILD_SHARED
-   cd '$(BUILD_DIR)' && $(TARGET)-cmake \
-       -DPCRE2_SUPPORT_UNICODE=ON \
-       -DPCRE2_BUILD_PCRE2_8=ON \
-       -DPCRE2_BUILD_PCRE2_16=ON \
-       -DPCRE2_BUILD_PCRE2_32=ON \
-       -DPCRE2_SUPPORT_UNICODE=ON \
-       -DPCRE2_BUILD_TESTS=OFF \
-       -DPCRE2_BUILD_PCRE2GREP=OFF \
-       '$(SOURCE_DIR)'
+    '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
+        -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
+        -DBUILD_SHARED_LIBS=$(CMAKE_SHARED_BOOL) \
+        -DBUILD_STATIC_LIBS=$(CMAKE_STATIC_BOOL) \
+        -DPCRE2_SUPPORT_UNICODE=ON \
+        -DPCRE2_BUILD_PCRE2_8=ON \
+        -DPCRE2_BUILD_PCRE2_16=ON \
+        -DPCRE2_BUILD_PCRE2_32=ON \
+        -DPCRE2_BUILD_TESTS=OFF \
+        -DPCRE2_BUILD_PCRE2GREP=OFF
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
     rm -f '$(PREFIX)/$(TARGET)'/share/man/man1/pcre*.1

@@ -16,7 +16,11 @@ $(PKG)_BUILD_$(BUILD) :=
 
 define $(PKG)_BUILD
     # build and install the cross-library
-    cd '$(BUILD_DIR)' && $(TARGET)-cmake -DBUILD_COMMAND_LINE_TOOLS=OFF '$(SOURCE_DIR)'
+    '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
+        -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
+        -DBUILD_SHARED_LIBS=$(CMAKE_SHARED_BOOL) \
+        -DBUILD_STATIC_LIBS=$(CMAKE_STATIC_BOOL) \
+        -DBUILD_COMMAND_LINE_TOOLS=OFF
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 

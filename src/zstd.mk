@@ -10,12 +10,11 @@ $(PKG)_GH_CONF  := facebook/zstd/releases/latest,v
 $(PKG)_DEPS     := cc
 
 define $(PKG)_BUILD
-    cd '$(BUILD_DIR)' && '$(TARGET)-cmake' \
+    '$(TARGET)-cmake' -S '$(SOURCE_DIR)/build/cmake' -B '$(BUILD_DIR)' \
         -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
         -DZSTD_BUILD_STATIC=$(CMAKE_STATIC_BOOL) \
         -DZSTD_BUILD_SHARED=$(CMAKE_SHARED_BOOL) \
-        -DZSTD_BUILD_PROGRAMS=OFF \
-        '$(SOURCE_DIR)/build/cmake'
+        -DZSTD_BUILD_PROGRAMS=OFF
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 

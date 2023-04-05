@@ -10,12 +10,12 @@ $(PKG)_GH_CONF  := stachenov/quazip/releases/latest, v
 $(PKG)_DEPS     := cc zlib qt6-qtbase qt6-qttools qt6-qtcore5compat
 
 define $(PKG)_BUILD
-    cd '$(BUILD_DIR)' && $(TARGET)-cmake \
+    '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
         -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
         -DBUILD_SHARED_LIBS=$(CMAKE_SHARED_BOOL) \
+        -DBUILD_STATIC_LIBS=$(CMAKE_STATIC_BOOL) \
         -DCMAKE_PREFIX_PATH=$(PREFIX)/$(TARGET)/qt6/lib/cmake \
-        -DQUAZIP_QT_MAJOR_VERSION=6 \
-        '$(SOURCE_DIR)'
+        -DQUAZIP_QT_MAJOR_VERSION=6
 
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install

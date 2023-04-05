@@ -10,12 +10,12 @@ $(PKG)_GH_CONF  := gpodder/libmygpo-qt/branches/master
 $(PKG)_DEPS     := cc qt6-qtbase qt6-qttools
 
 define $(PKG)_BUILD
-    cd '$(BUILD_DIR)' && $(TARGET)-cmake \
+    '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
         -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
-        -DCMAKE_PREFIX_PATH=$(PREFIX)/$(TARGET)/qt6/lib/cmake \
         -DBUILD_SHARED_LIBS=$(CMAKE_SHARED_BOOL) \
-        -DMYGPO_BUILD_TESTS=OFF \
-        '$(SOURCE_DIR)'
+        -DBUILD_STATIC_LIBS=$(CMAKE_STATIC_BOOL) \
+        -DCMAKE_PREFIX_PATH=$(PREFIX)/$(TARGET)/qt6/lib/cmake \
+        -DMYGPO_BUILD_TESTS=OFF
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 endef
