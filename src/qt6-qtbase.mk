@@ -24,7 +24,6 @@ endef
 define $(PKG)_BUILD
     rm -rf '$(PREFIX)/$(TARGET)/qt6'
     rm -rf $(SOURCE_DIR)/src/3rdparty/{freetype,harfbuzz-ng,libjpeg,libpng,pixman,sqlite,zlib}
-    mv -v '$(PREFIX)/$(TARGET)/cmake/pcre2-config.cmake' '$(PREFIX)/$(TARGET)/cmake/pcre2-config.cmake_'
     mkdir -p '$(PREFIX)/$(TARGET)/qt6/bin/'
     PKG_CONFIG="${TARGET}-pkg-config" \
     PKG_CONFIG_SYSROOT_DIR="/" \
@@ -82,8 +81,6 @@ define $(PKG)_BUILD
         -DFEATURE_system_freetype=ON \
         -DFEATURE_system_harfbuzz=ON \
         -DFEATURE_system_sqlite=ON
-
-    mv -v '$(PREFIX)/$(TARGET)/cmake/pcre2-config.cmake_' '$(PREFIX)/$(TARGET)/cmake/pcre2-config.cmake'
 
     cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
     cmake --install '$(BUILD_DIR)'
