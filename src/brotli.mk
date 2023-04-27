@@ -9,10 +9,7 @@ $(PKG)_CHECKSUM := f9e8d81d0405ba66d181529af42a3354f838c939095ff99930da6aa9cdf6f
 $(PKG)_GH_CONF  := google/brotli/releases/latest, v
 $(PKG)_DEPS     := cc
 
-$(PKG)_STATIC_PATCH := $(realpath $(TOP_DIR)/src/brotli-static.patch)
-
 define $(PKG)_BUILD
-    $(if $(BUILD_STATIC),cd '$(SOURCE_DIR)' && patch -p1 < '$($(PKG)_STATIC_PATCH)',)
     '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
         -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
         -DBUILD_SHARED_LIBS=$(CMAKE_SHARED_BOOL) \
