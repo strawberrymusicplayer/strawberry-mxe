@@ -1,5 +1,5 @@
 diff --git a/scripts/libbrotlicommon.pc.in b/scripts/libbrotlicommon.pc.in
-index 10ca969..c80a8cb 100644
+index 10ca969..2a8cf7a 100644
 --- a/scripts/libbrotlicommon.pc.in
 +++ b/scripts/libbrotlicommon.pc.in
 @@ -7,5 +7,5 @@ Name: libbrotlicommon
@@ -7,29 +7,29 @@ index 10ca969..c80a8cb 100644
  Description: Brotli common dictionary library
  Version: @PACKAGE_VERSION@
 -Libs: -L${libdir} -R${libdir} -lbrotlicommon
-+Libs: -L${libdir} -R${libdir} -lbrotlicommon-static
++Libs: -L${libdir} -lbrotlicommon
  Cflags: -I${includedir}
 diff --git a/scripts/libbrotlidec.pc.in b/scripts/libbrotlidec.pc.in
-index e7c3124..f111a49 100644
+index e7c3124..6f8ef2e 100644
 --- a/scripts/libbrotlidec.pc.in
 +++ b/scripts/libbrotlidec.pc.in
-@@ -7,6 +7,5 @@ Name: libbrotlidec
+@@ -7,6 +7,6 @@ Name: libbrotlidec
  URL: https://github.com/google/brotli
  Description: Brotli decoder library
  Version: @PACKAGE_VERSION@
 -Libs: -L${libdir} -R${libdir} -lbrotlidec
--Requires.private: libbrotlicommon >= 1.0.2
-+Libs: -L${libdir} -R${libdir} -lbrotlidec-static -lbrotlicommon-static
++Libs: -L${libdir} -lbrotlidec
+ Requires.private: libbrotlicommon >= 1.0.2
  Cflags: -I${includedir}
 diff --git a/scripts/libbrotlienc.pc.in b/scripts/libbrotlienc.pc.in
-index 4dd0811..7f91fce 100644
+index 4dd0811..2098afe 100644
 --- a/scripts/libbrotlienc.pc.in
 +++ b/scripts/libbrotlienc.pc.in
-@@ -7,6 +7,5 @@ Name: libbrotlienc
+@@ -7,6 +7,6 @@ Name: libbrotlienc
  URL: https://github.com/google/brotli
  Description: Brotli encoder library
  Version: @PACKAGE_VERSION@
 -Libs: -L${libdir} -R${libdir} -lbrotlienc
--Requires.private: libbrotlicommon >= 1.0.2
-+Libs: -L${libdir} -R${libdir} -lbrotlienc-static -lbrotlicommon-static
++Libs: -L${libdir} -lbrotlienc
+ Requires.private: libbrotlicommon >= 1.0.2
  Cflags: -I${includedir}
