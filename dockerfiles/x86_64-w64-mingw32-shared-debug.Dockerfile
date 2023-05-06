@@ -9,7 +9,7 @@ RUN zypper -n --gpg-auto-import-keys dup -l -y
 
 RUN zypper -n --gpg-auto-import-keys install \
     glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc gcc-c++ \
-    shadow which patch gperf wget curl git diffutils \
+    shadow which patch gperf wget curl git diffutils rsync \
     make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool \
     tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip \
     gtk-doc gettext-tools scons bison flex ruby orc zlib-devel \
