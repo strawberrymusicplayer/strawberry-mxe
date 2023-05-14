@@ -110,7 +110,7 @@ define $(PKG)_BUILD_$(BUILD)
         -nomake benchmarks \
         -nomake manual-tests \
         -nomake minimal-static-tests \
-        -no-{accessibility,glib,openssl,opengl,dbus,fontconfig,icu,harfbuzz,xcb-xlib,xcb,xkbcommon,eventfd,evdev,gif,ico,libjpeg,pch} \
+        -no-{accessibility,glib,openssl,opengl,dbus,fontconfig,icu,harfbuzz,xcb-xlib,xcb,xkbcommon,eventfd,evdev,gif,ico,libjpeg,pch,zstd} \
         -no-sql-{db2,ibase,mysql,oci,odbc,psql,sqlite} \
         -no-use-gold-linker
 
