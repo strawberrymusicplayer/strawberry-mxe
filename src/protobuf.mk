@@ -29,4 +29,5 @@ define $(PKG)_BUILD
 
     '$(TARGET)-cmake' --build '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
+    $(INSTALL) -m755 '$(PREFIX)/$(BUILD)/bin/protoc' '$(PREFIX)/$(TARGET)/bin/protoc.exe-$($(PKG)_VERSION).0'
 endef
