@@ -4,8 +4,8 @@ PKG             := fribidi
 $(PKG)_WEBSITE  := https://fribidi.org/
 $(PKG)_DESCR    := GNU FriBidi is an implementation of the Unicode Bidirectional Algorithm (bidi)
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.0.12
-$(PKG)_CHECKSUM := 2e9e859876571f03567ac91e5ed3b5308791f31cda083408c2b60fa1fe00a39d
+$(PKG)_VERSION  := 1.0.13
+$(PKG)_CHECKSUM := f24e8e381bcf76533ae56bd776196f3a0369ec28e9c0fdb6edd163277e008314
 $(PKG)_GH_CONF  := fribidi/fribidi/releases, v
 $(PKG)_DEPS     := cc meson-conf $(BUILD)~ninja
 
