@@ -19,8 +19,6 @@ RUN zypper -n --gpg-auto-import-keys install \
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
-RUN ln -s /usr/lib64/libzstd.so /usr/lib64/libzstd.a
-
 RUN mkdir -p /tmp/lockedlist && wget https://nsis.sourceforge.io/mediawiki/images/d/d3/LockedList.zip --directory-prefix=/tmp/lockedlist
 RUN cd /tmp/lockedlist && unzip /tmp/lockedlist/LockedList.zip
 RUN cp /tmp/lockedlist/Plugins/x86-unicode/LockedList.dll /usr/share/nsis/Plugins/x86-unicode/
