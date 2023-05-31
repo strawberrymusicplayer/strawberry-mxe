@@ -20,7 +20,18 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --enable-threads --with-combined-threads --disable-doc
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) \
+        --enable-threads \
+        --with-combined-threads \
+        --disable-doc \
+        --with-our-malloc \
+        --enable-sse2 \
+        --enable-avx \
+        --enable-avx2 \
+        $(if $(findstring x86_64,$(TARGET)), --enable-avx512) \
+        --enable-avx-128-fma \
+        --enable-generic-simd128 \
+        --enable-generic-simd256
     $(MAKE) -C '$(1)' -j '$(JOBS)' bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
     $(MAKE) -C '$(1)' -j 1 install bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
 endef
