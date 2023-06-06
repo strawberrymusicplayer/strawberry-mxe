@@ -1,7 +1,7 @@
-From 49f4a62528d353244ca26032c44ae9e762f5ea46 Mon Sep 17 00:00:00 2001
+From 2a7da1b3c8c4096d7c2b09f3fcc58e9cf47867cd Mon Sep 17 00:00:00 2001
 From: Volker Hilsheimer <volker.hilsheimer@qt.io>
 Date: Mon, 5 Jun 2023 17:10:00 +0200
-Subject: [PATCH] QTabBar: recalculate scroll offset when showing
+Subject: QTabBar: recalculate scroll offset when showing
 
 If an application sets the current index and resizes the tab widget
 before showing it, then the scroll offset might be calculated based on
@@ -20,13 +20,15 @@ case there.
 Pick-to: 6.5 6.6
 Fixes: QTBUG-114204
 Change-Id: I1e9506b9dde1dd892291d108dd2c7b675ef99509
+Reviewed-by: Axel Spoerl <axel.spoerl@qt.io>
+Reviewed-by: Jonas Kvinge <jonas@jkvinge.net>
 ---
  src/widgets/widgets/qtabbar.cpp                    |  2 ++
  .../widgets/widgets/qtabwidget/tst_qtabwidget.cpp  | 37 ++++++++++++++++++++++
  2 files changed, 39 insertions(+)
 
 diff --git a/src/widgets/widgets/qtabbar.cpp b/src/widgets/widgets/qtabbar.cpp
-index 75cb6dd4ea6b..ea408ec7f6ac 100644
+index 75cb6dd4ea..ea408ec7f6 100644
 --- a/src/widgets/widgets/qtabbar.cpp
 +++ b/src/widgets/widgets/qtabbar.cpp
 @@ -1656,6 +1656,8 @@ void QTabBar::showEvent(QShowEvent *)
@@ -39,7 +41,7 @@ index 75cb6dd4ea6b..ea408ec7f6ac 100644
  }
  
 diff --git a/tests/auto/widgets/widgets/qtabwidget/tst_qtabwidget.cpp b/tests/auto/widgets/widgets/qtabwidget/tst_qtabwidget.cpp
-index 00cb26c2d3e8..eb29933fd1e5 100644
+index 00cb26c2d3..eb29933fd1 100644
 --- a/tests/auto/widgets/widgets/qtabwidget/tst_qtabwidget.cpp
 +++ b/tests/auto/widgets/widgets/qtabwidget/tst_qtabwidget.cpp
 @@ -79,6 +79,9 @@ private slots:
@@ -93,5 +95,5 @@ index 00cb26c2d3e8..eb29933fd1e5 100644
  QTEST_MAIN(tst_QTabWidget)
  #include "tst_qtabwidget.moc"
 -- 
-2.16.3
+cgit v1.2.3
 
