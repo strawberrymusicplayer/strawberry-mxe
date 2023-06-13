@@ -4,11 +4,11 @@ PKG             := icu4c
 $(PKG)_WEBSITE  := https://icu.unicode.org/
 $(PKG)_DESCR    := ICU4C
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 73.1
+$(PKG)_VERSION  := 73.2
 $(PKG)_MAJOR    := $(word 1,$(subst ., ,$($(PKG)_VERSION)))
-$(PKG)_CHECKSUM := a457431de164b4aa7eca00ed134d00dfbf88a77c6986a10ae7774fc076bb8c45
+$(PKG)_CHECKSUM := c15f704e83c221c0680640a995d9db641f5b82098fb4b258a94b7d0561493c88
 $(PKG)_GH_CONF  := unicode-org/icu/releases/latest,release-,,,-
-$(PKG)_SUBDIR   := icu/source
+$(PKG)_SUBDIR   := icu-release-$(subst .,-,$($(PKG)_VERSION))/$(PKG)/source
 $(PKG)_URL      := https://github.com/unicode-org/icu/releases/download/release-$(subst .,-,$($(PKG)_VERSION))/icu4c-$(subst .,_,$($(PKG)_VERSION))-src.tgz
 $(PKG)_DEPS     := cc $(BUILD)~$(PKG)
 
