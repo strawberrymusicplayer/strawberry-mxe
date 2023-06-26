@@ -26,6 +26,7 @@ Some of the libraries here are:
   * Qt 6
   * TagLib
   * Chromaprint
+  * libebur128
   * Google Test
 
 + All their dependencies.
