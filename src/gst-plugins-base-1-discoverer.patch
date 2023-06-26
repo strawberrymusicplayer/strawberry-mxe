@@ -1,0 +1,32 @@
+From 40dbf7c06d62bd9325ccae8e6e3fdb3b120b7acd Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Mon, 26 Jun 2023 23:09:45 +0200
+Subject: [PATCH] gstdiscoverer: Only call handle_current_async if still
+ processing
+
+When gst_element_set_state is called in _setup_locked and errors, the callback is already processed before we reach handle_current_async, and the timer is started even though it's finished processing, which results in a NULL pointer crash later in async_timeout_cb.
+To fix this, we check that it's still processing before calling handle_current_async.
+
+Fixes #1683
+---
+ .../gst-plugins-base/gst-libs/gst/pbutils/gstdiscoverer.c     | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/subprojects/gst-plugins-base/gst-libs/gst/pbutils/gstdiscoverer.c b/subprojects/gst-plugins-base/gst-libs/gst/pbutils/gstdiscoverer.c
+index 678e1d07c74..7775e5c0eee 100644
+--- a/gst-libs/gst/pbutils/gstdiscoverer.c
++++ b/gst-libs/gst/pbutils/gstdiscoverer.c
+@@ -2080,8 +2080,8 @@ start_discovering (GstDiscoverer * dc)
+       g_source_attach (source, dc->priv->ctx);
+       goto beach;
+     }
+-
+-    handle_current_async (dc);
++    if (dc->priv->processing)
++      handle_current_async (dc);
+   } else {
+     if (!ready)
+       handle_current_sync (dc);
+-- 
+GitLab
+
