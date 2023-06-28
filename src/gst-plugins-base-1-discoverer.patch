@@ -1,4 +1,4 @@
-From 40dbf7c06d62bd9325ccae8e6e3fdb3b120b7acd Mon Sep 17 00:00:00 2001
+From 9b6a34c94551281efd8e433ac1e0b60511c7e65c Mon Sep 17 00:00:00 2001
 From: Jonas Kvinge <jonas@jkvinge.net>
 Date: Mon, 26 Jun 2023 23:09:45 +0200
 Subject: [PATCH] gstdiscoverer: Only call handle_current_async if still
@@ -9,14 +9,24 @@ To fix this, we check that it's still processing before calling handle_current_a
 
 Fixes #1683
 ---
- .../gst-plugins-base/gst-libs/gst/pbutils/gstdiscoverer.c     | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../gst-plugins-base/gst-libs/gst/pbutils/gstdiscoverer.c  | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/subprojects/gst-plugins-base/gst-libs/gst/pbutils/gstdiscoverer.c b/subprojects/gst-plugins-base/gst-libs/gst/pbutils/gstdiscoverer.c
-index 678e1d07c74..7775e5c0eee 100644
+index 678e1d07c74..1ef00c718e9 100644
 --- a/gst-libs/gst/pbutils/gstdiscoverer.c
 +++ b/gst-libs/gst/pbutils/gstdiscoverer.c
-@@ -2080,8 +2080,8 @@ start_discovering (GstDiscoverer * dc)
+@@ -1348,7 +1348,8 @@ setup_next_uri_locked (GstDiscoverer * dc)
+ 
+     if (!ready) {
+       /* Start timeout */
+-      handle_current_async (dc);
++      if (dc->priv->processing)
++        handle_current_async (dc);
+     } else {
+       g_idle_add_full (G_PRIORITY_DEFAULT_IDLE,
+           (GSourceFunc) emit_discovererd_and_next, gst_object_ref (dc),
+@@ -2080,8 +2081,8 @@ start_discovering (GstDiscoverer * dc)
        g_source_attach (source, dc->priv->ctx);
        goto beach;
      }
