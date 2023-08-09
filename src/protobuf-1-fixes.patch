@@ -43,17 +43,15 @@ index 0493260..649e92a 100644
    union { Impl_ _impl_; };
    friend struct ::TableStruct_google_2fprotobuf_2fapi_2eproto;
 diff --git a/src/google/protobuf/compiler/cpp/message.cc b/src/google/protobuf/compiler/cpp/message.cc
-index b9dfb7a..ac13199 100644
+index b9dfb7a..ea64c92 100644
 --- a/src/google/protobuf/compiler/cpp/message.cc
 +++ b/src/google/protobuf/compiler/cpp/message.cc
-@@ -1824,7 +1824,9 @@ void MessageGenerator::GenerateClassDefinition(io::Printer* p) {
+@@ -1824,7 +1824,7 @@ void MessageGenerator::GenerateClassDefinition(io::Printer* p) {
    }
  
    // For detecting when concurrent accessor calls cause races.
 -  format("PROTOBUF_TSAN_DECLARE_MEMBER;\n");
-+  format("#ifdef PROTOBUF_TSAN_DECLARE_MEMBER\n");
 +  format("PROTOBUF_TSAN_DECLARE_MEMBER\n");
-+  format("#endif\n");
  
    format.Outdent();
    format("};\n");
