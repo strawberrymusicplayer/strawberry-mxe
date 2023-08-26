@@ -19,17 +19,10 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && ./configure \
-        $(MXE_CONFIGURE_OPTS) \
-        --disable-tests \
-        --disable-verbose-mode \
-        --disable-asserts \
-        --disable-maintainer-mode \
-        --disable-silent-rules \
-        --disable-launchd \
-        --disable-doxygen-docs \
-        --disable-xml-docs \
-        CFLAGS='$(CFLAGS) -DPROCESS_QUERY_LIMITED_INFORMATION=0x1000'
-    $(MAKE) -C '$(1)' -j '$(JOBS)'
-    $(MAKE) -C '$(1)' -j 1 install
+    '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
+        -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
+        -DBUILD_SHARED_LIBS=$(CMAKE_SHARED_BOOL) \
+        -DBUILD_STATIC_LIBS=$(CMAKE_STATIC_BOOL)
+    $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
+    $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 endef
