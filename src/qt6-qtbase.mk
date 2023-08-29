@@ -81,8 +81,7 @@ define $(PKG)_BUILD
         -DFEATURE_system_pcre2=ON \
         -DFEATURE_system_freetype=ON \
         -DFEATURE_system_harfbuzz=ON \
-        -DFEATURE_system_sqlite=ON \
-        -DFEATURE_printsupport=OFF
+        -DFEATURE_system_sqlite=ON
 
     mv -v '$(PREFIX)/$(TARGET)/cmake/pcre2-config.cmake_' '$(PREFIX)/$(TARGET)/cmake/pcre2-config.cmake'
     mv -v '$(PREFIX)/$(TARGET)/cmake/pcre2-config-version.cmake_' '$(PREFIX)/$(TARGET)/cmake/pcre2-config-version.cmake'
