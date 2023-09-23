@@ -4,8 +4,8 @@ PKG             := cairo
 $(PKG)_WEBSITE  := https://cairographics.org/
 $(PKG)_DESCR    := Cairo is a 2D graphics library with support for multiple output devices
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.16.0
-$(PKG)_CHECKSUM := 5e7b29b3f113ef870d1e3ecf8adf21f923396401604bda16d44be45e66052331
+$(PKG)_VERSION  := 1.18.0
+$(PKG)_CHECKSUM := 243a0736b978a33dee29f9cca7521733b78a65b5418206fef7bd1c3d4cf10b64
 $(PKG)_SUBDIR   := cairo-$($(PKG)_VERSION)
 $(PKG)_FILE     := cairo-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://cairographics.org/releases/$($(PKG)_FILE)
@@ -18,35 +18,15 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    $(SED) -i 's,libpng12,libpng,g' '$(1)/configure'
-    $(SED) -i 's,^\(Libs:.*\),\1 @CAIRO_NONPKGCONFIG_LIBS@,' '$(1)/src/cairo.pc.in'
-    cd '$(1)' && ./configure \
-        $(MXE_CONFIGURE_OPTS) \
-        --disable-gtk-doc \
-        --disable-gtk-doc-html \
-        --disable-gtk-doc-pdf \
-        --disable-test-surfaces \
-        --disable-gcov \
-        --disable-xlib \
-        --disable-xlib-xrender \
-        --disable-xlib-xcb \
-        --disable-quartz \
-        --disable-quartz-font \
-        --disable-quartz-image \
-        --disable-os2 \
-        --disable-beos \
-        --disable-directfb \
-        --disable-atomic \
-        --enable-win32 \
-        --enable-win32-font \
-        --enable-png \
-        --enable-ft \
-        --enable-ps \
-        --enable-pdf \
-        --enable-svg \
-        --disable-pthread \
-        CFLAGS="$(CFLAGS) $(if $(BUILD_STATIC),-DCAIRO_WIN32_STATIC_BUILD)" \
-        LIBS="-lmsimg32 -lgdi32 `$(TARGET)-pkg-config pixman-1 --libs`"
-    $(MAKE) -C '$(1)' -j '$(JOBS)' bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
-    $(MAKE) -C '$(1)' -j 1 install bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
+    cd '$(SOURCE_DIR)' && '$(TARGET)-meson' \
+        --buildtype='$(MESON_BUILD_TYPE)' \
+        -Dfontconfig=enabled \
+        -Dfreetype=enabled \
+        -Dzlib=enabled \
+        -Dpng=enabled \
+        -Dtests=disabled \
+        -Dgtk_doc=false \
+        '$(BUILD_DIR)'
+    cd '$(BUILD_DIR)' && ninja
+    cd '$(BUILD_DIR)' && ninja install
 endef
