@@ -4,8 +4,8 @@ PKG             := qt6-qtbase
 $(PKG)_WEBSITE  := https://www.qt.io/
 $(PKG)_DESCR    := Qt 6 Base
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 6.5.3
-$(PKG)_CHECKSUM := df2f4a230be4ea04f9798f2c19ab1413a3b8ec6a80bef359f50284235307b546
+$(PKG)_VERSION  := 6.6.0
+$(PKG)_CHECKSUM := 039d53312acb5897a9054bd38c9ccbdab72500b71fdccdb3f4f0844b0dd39e0e
 $(PKG)_FILE     := qtbase-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_SUBDIR   := qtbase-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
@@ -15,7 +15,7 @@ $(PKG)_DEPS_$(BUILD) :=
 $(PKG)_OO_DEPS_$(BUILD) += qt6-conf ninja
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- https://download.qt.io/official_releases/qt/6.5/ | \
+    $(WGET) -q -O- https://download.qt.io/official_releases/qt/6.6/ | \
     $(SED) -n 's,.*href="\(6\.[0-9]*\.[^/]*\)/".*,\1,p' | \
     $(SORT) -V | \
     tail -1
@@ -45,7 +45,7 @@ define $(PKG)_BUILD
         -DQT_BUILD_EXAMPLES_BY_DEFAULT=OFF \
         -DQT_BUILD_TOOLS_BY_DEFAULT=ON \
         -DQT_WILL_BUILD_TOOLS=ON \
-        -DQT_BUILD_TOOLS_WHEN_CROSSCOMPILING=ON \
+        -DQT_FORCE_BUILD_TOOLS=ON \
         -DBUILD_WITH_PCH=OFF \
         -DFEATURE_rpath=OFF \
         -DFEATURE_pkg_config=ON \
