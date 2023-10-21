@@ -1,0 +1,407 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index c875123..9e52ebe 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -51,12 +51,12 @@ project(
+ 
+ set(${PROJECT_NAME}_VERSION_MAJOR 1)
+ set(${PROJECT_NAME}_VERSION_MINOR 0)
+-set(${PROJECT_NAME}_VERSION_PATCH 0)
++set(${PROJECT_NAME}_VERSION_PATCH 95)
+ set(${PROJECT_NAME}_VERSION
+     ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH}
+ )
+ set(PROJECT_VERSION ${${PROJECT_NAME}_VERSION}) #PROJECT_VERSION is needed by some ECM modules
+-set(${PROJECT_NAME}_SOVERSION "1.0")
++set(${PROJECT_NAME}_SOVERSION "1.1")
+ 
+ cmake_policy(SET CMP0020 NEW)
+ cmake_policy(SET CMP0042 NEW)
+diff --git a/cmake/ECM/modules/ECMQueryQt.cmake b/cmake/ECM/modules/ECMQueryQt.cmake
+index 98eb500..3f3b86b 100644
+--- a/cmake/ECM/modules/ECMQueryQt.cmake
++++ b/cmake/ECM/modules/ECMQueryQt.cmake
+@@ -94,7 +94,7 @@ function(ecm_query_qt result_variable qt_variable)
+         file(TO_CMAKE_PATH "${output}" output_path)
+         set(${result_variable} "${output_path}" PARENT_SCOPE)
+     else()
+-        message(WARNING "Failed call: ${_command} \"${qt_variable}\"")
++        message(WARNING "Failed call: ${QUERY_EXECUTABLE} ${_cli_option} ${qt_variable}")
+         message(FATAL_ERROR "${_exec_name_text} call failed: ${return_code}")
+     endif()
+ endfunction()
+diff --git a/distro/qt6-kdsingleapplication.spec b/distro/qt6-kdsingleapplication.spec
+index 8159aab..f81c0f6 100644
+--- a/distro/qt6-kdsingleapplication.spec
++++ b/distro/qt6-kdsingleapplication.spec
+@@ -26,7 +26,7 @@ BuildRequires:  gcc-c++ qt6-qtbase-devel
+ %endif
+ 
+ %description
+-KDSingleApplication is a helper class for Qt5 single-instance policy applications
++KDSingleApplication is a helper class for Qt6 single-instance policy applications
+ written by KDAB.
+ 
+ Currently the documentation is woefully lacking, but see the examples or tests
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index b6e1da6..7c68880 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -22,7 +22,9 @@ endif()
+ add_library(
+     KDAB::kdsingleapplication ALIAS kdsingleapplication
+ )
+-set_target_properties(kdsingleapplication PROPERTIES OUTPUT_NAME "kdsingleapplication${KDSingleApplication_LIBRARY_QTID}")
++set_target_properties(
++    kdsingleapplication PROPERTIES OUTPUT_NAME "kdsingleapplication${KDSingleApplication_LIBRARY_QTID}"
++)
+ 
+ target_include_directories(
+     kdsingleapplication
+@@ -31,10 +33,12 @@ target_include_directories(
+ )
+ 
+ if(WIN32)
+-    target_link_libraries(kdsingleapplication kernel32)
++    target_link_libraries(kdsingleapplication PRIVATE kernel32)
+ endif()
+ target_link_libraries(
+-    kdsingleapplication Qt::Core Qt::Network
++    kdsingleapplication
++    PUBLIC Qt::Core
++    PRIVATE Qt::Network
+ )
+ 
+ install(
+@@ -57,10 +61,13 @@ if(${PROJECT_NAME}_IS_ROOT_PROJECT)
+         NAMESPACE KDAB::
+         DESTINATION ${INSTALL_LIBRARY_DIR}/cmake/KDSingleApplication${KDSingleApplication_LIBRARY_QTID}
+     )
+-    configure_file(KDSingleApplicationConfig.cmake.in KDSingleApplication${KDSingleApplication_LIBRARY_QTID}Config.cmake @ONLY)
+-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/KDSingleApplication${KDSingleApplication_LIBRARY_QTID}Config.cmake"
+-                  "${CMAKE_CURRENT_BINARY_DIR}/KDSingleApplication${KDSingleApplication_LIBRARY_QTID}ConfigVersion.cmake"
+-            DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/KDSingleApplication${KDSingleApplication_LIBRARY_QTID}"
++    configure_file(
++        KDSingleApplicationConfig.cmake.in KDSingleApplication${KDSingleApplication_LIBRARY_QTID}Config.cmake @ONLY
++    )
++    install(
++        FILES "${CMAKE_CURRENT_BINARY_DIR}/KDSingleApplication${KDSingleApplication_LIBRARY_QTID}Config.cmake"
++              "${CMAKE_CURRENT_BINARY_DIR}/KDSingleApplication${KDSingleApplication_LIBRARY_QTID}ConfigVersion.cmake"
++        DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/KDSingleApplication${KDSingleApplication_LIBRARY_QTID}"
+     )
+ 
+     include(ECMGenerateHeaders)
+diff --git a/src/kdsingleapplication.cpp b/src/kdsingleapplication.cpp
+index 0fbdb1d..d0945bb 100644
+--- a/src/kdsingleapplication.cpp
++++ b/src/kdsingleapplication.cpp
+@@ -21,7 +21,7 @@
+ class KDSingleApplicationPrivate
+ {
+ public:
+-    explicit KDSingleApplicationPrivate(const QString &name, KDSingleApplication *q);
++    explicit KDSingleApplicationPrivate(const QString &name, KDSingleApplication::Options options, KDSingleApplication *q);
+ 
+     QString name() const
+     {
+@@ -47,10 +47,10 @@ private:
+     KDSingleApplicationLocalSocket m_impl;
+ };
+ 
+-KDSingleApplicationPrivate::KDSingleApplicationPrivate(const QString &name, KDSingleApplication *q)
++KDSingleApplicationPrivate::KDSingleApplicationPrivate(const QString &name, KDSingleApplication::Options options, KDSingleApplication *q)
+     : q_ptr(q)
+     , m_name(name)
+-    , m_impl(name)
++    , m_impl(name, options)
+ {
+     if (Q_UNLIKELY(name.isEmpty()))
+         qFatal("KDSingleApplication requires a non-empty application name");
+@@ -73,7 +73,13 @@ KDSingleApplication::KDSingleApplication(QObject *parent)
+ 
+ KDSingleApplication::KDSingleApplication(const QString &name, QObject *parent)
+     : QObject(parent)
+-    , d_ptr(new KDSingleApplicationPrivate(name, this))
++    , d_ptr(new KDSingleApplicationPrivate(name, Option::IncludeUsernameInSocketName | Option::IncludeSessionInSocketName, this))
++{
++}
++
++KDSingleApplication::KDSingleApplication(const QString &name, Options options, QObject *parent)
++    : QObject(parent)
++    , d_ptr(new KDSingleApplicationPrivate(name, options, this))
+ {
+ }
+ 
+diff --git a/src/kdsingleapplication.h b/src/kdsingleapplication.h
+index 2d9ab6c..e8cc35c 100644
+--- a/src/kdsingleapplication.h
++++ b/src/kdsingleapplication.h
+@@ -11,6 +11,7 @@
+ #define KDSINGLEAPPLICATION_H
+ 
+ #include <QtCore/QObject>
++#include <QtCore/QFlags>
+ 
+ #include <memory>
+ 
+@@ -25,8 +26,18 @@ class KDSINGLEAPPLICATION_EXPORT KDSingleApplication : public QObject
+     Q_PROPERTY(bool isPrimaryInstance READ isPrimaryInstance CONSTANT)
+ 
+ public:
++    // IncludeUsernameInSocketName - Include the username in the socket name.
++    // IncludeSessionInSocketName - Include the graphical session in the socket name.
++    enum class Option {
++        None = 0x0,
++        IncludeUsernameInSocketName = 0x1,
++        IncludeSessionInSocketName = 0x2,
++    };
++    Q_DECLARE_FLAGS(Options, Option)
++
+     explicit KDSingleApplication(QObject *parent = nullptr);
+     explicit KDSingleApplication(const QString &name, QObject *parent = nullptr);
++    explicit KDSingleApplication(const QString &name, Options options, QObject *parent = nullptr);
+     ~KDSingleApplication();
+ 
+     QString name() const;
+@@ -45,4 +56,6 @@ private:
+     std::unique_ptr<KDSingleApplicationPrivate> d_ptr;
+ };
+ 
++Q_DECLARE_OPERATORS_FOR_FLAGS(KDSingleApplication::Options)
++
+ #endif // KDSINGLEAPPLICATION_H
+diff --git a/src/kdsingleapplication_localsocket.cpp b/src/kdsingleapplication_localsocket.cpp
+index 38ec887..fc10cad 100644
+--- a/src/kdsingleapplication_localsocket.cpp
++++ b/src/kdsingleapplication_localsocket.cpp
+@@ -29,40 +29,74 @@
+ // for ::getuid()
+ #include <sys/types.h>
+ #include <unistd.h>
++#include <pwd.h>
+ #endif
+ 
+ #if defined(Q_OS_WIN)
+ #include <qt_windows.h>
++#include <lmcons.h>
+ #endif
+ 
++#include "kdsingleapplication.h"
++
+ static const auto LOCALSOCKET_CONNECTION_TIMEOUT = std::chrono::seconds(5);
+ static const char LOCALSOCKET_PROTOCOL_VERSION = 2;
+ 
+ Q_LOGGING_CATEGORY(kdsaLocalSocket, "kdsingleapplication.localsocket", QtWarningMsg);
+ 
+-KDSingleApplicationLocalSocket::KDSingleApplicationLocalSocket(const QString &name, QObject *parent)
++KDSingleApplicationLocalSocket::KDSingleApplicationLocalSocket(const QString &name, KDSingleApplication::Options options, QObject *parent)
+     : QObject(parent)
+ {
++
++    m_socketName = QStringLiteral("kdsingleapp");
++
+ #if defined(Q_OS_UNIX)
+     /* cppcheck-suppress useInitializationList */
+-    m_socketName = QStringLiteral("kdsingleapp-%1-%2-%3")
+-                       .arg(::getuid())
+-                       .arg(qEnvironmentVariable("XDG_SESSION_ID"), name);
++    if (options.testFlag(KDSingleApplication::Option::IncludeUsernameInSocketName)) {
++        m_socketName += QStringLiteral("-");
++        uid_t uid = ::getuid();
++        struct passwd *pw = ::getpwuid(uid);
++        if (pw) {
++            QString username = QString::fromUtf8(pw->pw_name);
++            m_socketName += username;
++        } else {
++            m_socketName += QString::number(uid);
++        }
++    }
++    if (options.testFlag(KDSingleApplication::Option::IncludeSessionInSocketName)) {
++        QString sessionId = qEnvironmentVariable("XDG_SESSION_ID");
++        if (!sessionId.isEmpty()) {
++            m_socketName += QStringLiteral("-");
++            m_socketName += sessionId;
++        }
++    }
+ #elif defined(Q_OS_WIN)
+     // I'm not sure of a "global session identifier" on Windows; are
+     // multiple logins from the same user a possibility? For now, following this:
+     // https://docs.microsoft.com/en-us/windows/desktop/devnotes/getting-the-session-id-of-the-current-process
+-
+-    DWORD sessionId;
+-    BOOL haveSessionId = ProcessIdToSessionId(GetCurrentProcessId(), &sessionId);
+-
+-    m_socketName = QString::fromUtf8("kdsingleapp-%1-%2")
+-                       .arg(haveSessionId ? sessionId : 0)
+-                       .arg(name);
++    if (options.testFlag(KDSingleApplication::Option::IncludeUsernameInSocketName)) {
++        DWORD usernameLen = UNLEN + 1;
++        wchar_t username[UNLEN + 1];
++        if (GetUserNameW(username, &usernameLen)) {
++            m_socketName += QStringLiteral("-");
++            m_socketName += QString::fromWCharArray(username);
++        }
++    }
++    if (options.testFlag(KDSingleApplication::Option::IncludeSessionInSocketName)) {
++        DWORD sessionId;
++        BOOL haveSessionId = ProcessIdToSessionId(GetCurrentProcessId(), &sessionId);
++        if (haveSessionId) {
++            m_socketName += QStringLiteral("-");
++            m_socketName += QString::number(sessionId);
++        }
++    }
+ #else
+ #error "KDSingleApplication has not been ported to this platform"
+ #endif
+ 
++    m_socketName += QStringLiteral("-");
++    m_socketName += name;
++
+     const QString lockFilePath =
+         QDir::tempPath() + QLatin1Char('/') + m_socketName + QLatin1String(".lock");
+ 
+@@ -184,7 +218,7 @@ void KDSingleApplicationLocalSocket::handleNewConnection()
+     while ((socket = m_localServer->nextPendingConnection())) {
+         qCDebug(kdsaLocalSocket) << "Got new connection on" << m_socketName << "state" << socket->state();
+ 
+-        Connection c(std::move(socket));
++        Connection c(socket);
+         socket = c.socket.get();
+ 
+         c.readDataConnection = QObjectConnectionHolder(
+diff --git a/src/kdsingleapplication_localsocket_p.h b/src/kdsingleapplication_localsocket_p.h
+index ec9c60e..2c58616 100644
+--- a/src/kdsingleapplication_localsocket_p.h
++++ b/src/kdsingleapplication_localsocket_p.h
+@@ -25,6 +25,8 @@ QT_END_NAMESPACE
+ #include <memory>
+ #include <vector>
+ 
++#include "kdsingleapplication.h"
++
+ struct QObjectDeleteLater
+ {
+     void operator()(QObject *o)
+@@ -78,6 +80,7 @@ class KDSingleApplicationLocalSocket : public QObject
+ 
+ public:
+     explicit KDSingleApplicationLocalSocket(const QString &name,
++                                            KDSingleApplication::Options options,
+                                             QObject *parent = nullptr);
+     ~KDSingleApplicationLocalSocket();
+ 
+diff --git a/tests/auto/simpletest/simpletest/main.cpp b/tests/auto/simpletest/simpletest/main.cpp
+index fa05609..d3aef3d 100644
+--- a/tests/auto/simpletest/simpletest/main.cpp
++++ b/tests/auto/simpletest/simpletest/main.cpp
+@@ -30,7 +30,7 @@ int main(int argc, char **argv)
+ 
+     QCoreApplication app(argc, argv);
+ 
+-    const QString appName = QLatin1String("simpletest-") + app.arguments().at(1);
++    const QString appName = QLatin1String("simpletest-") + app.arguments().value(1);
+ 
+     KDSingleApplication kdsa(appName);
+ 
+@@ -49,7 +49,7 @@ int main(int argc, char **argv)
+     } else {
+         std::cout << "Secondary" << std::endl;
+ 
+-        if (!kdsa.sendMessage(app.arguments().at(2).toUtf8())) {
++        if (!kdsa.sendMessage(app.arguments().value(2).toUtf8())) {
+             std::cerr << "Unable to send message to the primary!" << std::endl;
+             return 1;
+         }
+diff --git a/tests/auto/stresstest/stresstest/main.cpp b/tests/auto/stresstest/stresstest/main.cpp
+index b3d3a1d..32aa826 100644
+--- a/tests/auto/stresstest/stresstest/main.cpp
++++ b/tests/auto/stresstest/stresstest/main.cpp
+@@ -36,10 +36,10 @@ int main(int argc, char **argv)
+         QByteArray(1024 * 10, 'x')
+     };
+ 
+-    const QString appName = QLatin1String("stresstest-") + app.arguments().at(1);
+-    const QString mode = app.arguments().at(2);
+-    const int timeout = app.arguments().at(3).toInt();
+-    const int counter = app.arguments().at(4).toInt();
++    const QString appName = QLatin1String("stresstest-") + app.arguments().value(1);
++    const QString mode = app.arguments().value(2);
++    const int timeout = app.arguments().value(3).toInt();
++    const int counter = app.arguments().value(4).toInt();
+ 
+     if (mode == QLatin1String("primary")) {
+         KDSingleApplication kdsa(appName);
+diff --git a/tests/auto/stresstest/stresstest2/main.cpp b/tests/auto/stresstest/stresstest2/main.cpp
+index a281173..274bf58 100644
+--- a/tests/auto/stresstest/stresstest2/main.cpp
++++ b/tests/auto/stresstest/stresstest2/main.cpp
+@@ -35,14 +35,14 @@ int main(int argc, char **argv)
+     const int delay = ( int )QRandomGenerator::global()->bounded(100, 200);
+     QThread::msleep(delay);
+ 
+-    const QString appName = QLatin1String("stresstest2-") + app.arguments().at(1);
+-    const int timeout = app.arguments().at(2).toInt();
++    const QString appName = QLatin1String("stresstest2-") + app.arguments().value(1);
++    const int timeout = app.arguments().value(2).toInt();
+ 
+     KDSingleApplication kdsa(appName);
+     if (kdsa.isPrimaryInstance()) {
+         std::cout << "Primary" << std::endl;
+ 
+-        int counter = app.arguments().at(3).toInt();
++        int counter = app.arguments().value(3).toInt();
+         --counter;
+ 
+         QObject::connect(&kdsa, &KDSingleApplication::messageReceived,
+diff --git a/tests/auto/stresstest/tst_stresstest.cpp b/tests/auto/stresstest/tst_stresstest.cpp
+index 1ee3638..2155a0e 100644
+--- a/tests/auto/stresstest/tst_stresstest.cpp
++++ b/tests/auto/stresstest/tst_stresstest.cpp
+@@ -10,6 +10,7 @@
+ 
+ #include <QtCore/QProcess>
+ #include <QtCore/QRandomGenerator>
++#include <QtCore/QScopeGuard>
+ #include <QtTest/QTest>
+ 
+ #include <vector>
+@@ -110,6 +111,11 @@ void tst_StressTest::testOnePrimaryManySecondaries()
+     bool ok;
+ 
+     QProcess primary;
++    auto cleanup = qScopeGuard([&primary] {
++        // QTests might return early and we might leave running process
++        primary.kill();
++        primary.waitForFinished();
++    });
+     primary.setProcessChannelMode(QProcess::ForwardedErrorChannel);
+     primary.start(executable, { testId, QStringLiteral("primary"), timeoutString, QString::number(secondariesCount * runsPerSecondary) });
+     QVERIFY(primary.waitForStarted());
+@@ -122,6 +128,13 @@ void tst_StressTest::testOnePrimaryManySecondaries()
+     QVERIFY(ok);
+ 
+     std::vector<std::unique_ptr<QProcess>> secondaries;
++    auto cleanupSecondaries = qScopeGuard([&secondaries] {
++        // QTests might return early and we might leave running process
++        for (auto &secondary : secondaries) {
++            secondary->kill();
++            secondary->waitForFinished();
++        }
++    });
+     secondaries.reserve(secondariesCount);
+     for (int i = 0; i < secondariesCount; ++i) {
+         std::unique_ptr<QProcess> secondary = std::make_unique<QProcess>();
+@@ -177,6 +190,13 @@ void tst_StressTest::testOnlyOnePrimary()
+     const auto timeoutString = QString::number(timeout);
+ 
+     std::vector<std::unique_ptr<QProcess>> processes;
++    auto cleanup = qScopeGuard([&processes] {
++        // QTests might return early and we might leave running process
++        for (auto &secondary : processes) {
++            secondary->kill();
++            secondary->waitForFinished();
++        }
++    });
+     processes.reserve(count);
+     for (int i = 0; i < count; ++i) {
+         std::unique_ptr<QProcess> process = std::make_unique<QProcess>();
