@@ -1,0 +1,15 @@
+diff --git a/src/lib/ares_getnameinfo.c b/src/lib/ares_getnameinfo.c
+index b9de85e..399dc39 100644
+--- a/src/lib/ares_getnameinfo.c
++++ b/src/lib/ares_getnameinfo.c
+@@ -48,6 +48,10 @@
+ #  include <net/if.h>
+ #endif
+ 
++#ifdef WIN32
++#  include <netioapi.h>
++#endif
++
+ #include "ares.h"
+ #include "ares_ipv6.h"
+ #include "ares_private.h"
