@@ -1,5 +1,5 @@
 diff --git a/src/lib/ares_getnameinfo.c b/src/lib/ares_getnameinfo.c
-index b9de85e..399dc39 100644
+index b9de85e..da5af0b 100644
 --- a/src/lib/ares_getnameinfo.c
 +++ b/src/lib/ares_getnameinfo.c
 @@ -48,6 +48,10 @@
@@ -7,7 +7,7 @@ index b9de85e..399dc39 100644
  #endif
  
 +#ifdef WIN32
-+#  include <netioapi.h>
++#  include <iphlpapi.h>
 +#endif
 +
  #include "ares.h"
