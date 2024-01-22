@@ -64,6 +64,7 @@ define $(PKG)_BUILD
         -Dwavparse=enabled \
         -Dxingmux=enabled \
         -Dy4m=disabled \
+        -Dadaptivedemux2=enabled \
         -Daalib=disabled \
         -Dbz2=disabled \
         -Dcairo=disabled \
@@ -84,15 +85,15 @@ define $(PKG)_BUILD
         -Dosxvideo=disabled \
         -Dpng=disabled \
         -Dpulse=disabled \
-        -Dqt5=disabled \
         -Dshout2=disabled \
-        -Dsoup=enabled \
         -Dspeex=enabled \
         -Dtaglib=enabled \
         -Dtwolame=enabled \
         -Dvpx=disabled \
         -Dwaveform=enabled \
         -Dwavpack=enabled \
+        -Dsoup=enabled \
+        -Dqt5=disabled \
         -Dximagesrc=disabled \
         -Dv4l2=disabled \
         -Dv4l2-libv4l2=disabled \
