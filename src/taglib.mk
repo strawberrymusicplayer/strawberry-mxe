@@ -4,10 +4,10 @@ PKG             := taglib
 $(PKG)_WEBSITE  := https://taglib.org/
 $(PKG)_DESCR    := TagLib Audio Meta-Data Library
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.13.1
-$(PKG)_CHECKSUM := c8da2b10f1bfec2cd7dbfcd33f4a2338db0765d851a50583d410bacf055cfd0b
+$(PKG)_VERSION  := 2.0
+$(PKG)_CHECKSUM := e36ea877a6370810b97d84cf8f72b1e4ed205149ab3ac8232d44c850f38a2859
 $(PKG)_GH_CONF  := taglib/taglib/releases/latest, v
-$(PKG)_DEPS     := cc zlib
+$(PKG)_DEPS     := cc zlib utfcpp
 
 define $(PKG)_BUILD
     '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
