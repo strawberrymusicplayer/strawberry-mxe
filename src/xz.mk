@@ -4,18 +4,14 @@ PKG             := xz
 $(PKG)_WEBSITE  := https://tukaani.org/xz/
 $(PKG)_DESCR    := XZ Utils is free general-purpose data compression software with a high compression ratio
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 5.4.5
-$(PKG)_CHECKSUM := 135c90b934aee8fbc0d467de87a05cb70d627da36abe518c357a873709e5b7d6
+$(PKG)_VERSION  := 5.4.6
+$(PKG)_CHECKSUM := b92d4e3a438affcf13362a1305cd9d94ed47ddda22e456a42791e630a5644f5c
+$(PKG)_GH_CONF  := tukaani-project/xz/releases/latest, v
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
-$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
+$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://tukaani.org/xz/$($(PKG)_FILE)
+$(PKG)_URL      := https://github.com/tukaani-project/$(PKG)/releases/download/v$($(PKG)_VERSION)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc
-
-define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://tukaani.org/xz/' | \
-    $(SED) -n 's,.*xz-\([0-9][^>]*\)\.tar.*,\1,p' | \
-    head -1
-endef
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
