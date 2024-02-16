@@ -27,7 +27,7 @@ define $(PKG)_BUILD
         -Da52dec=disabled \
         -Damrnb=disabled \
         -Damrwbdec=disabled \
-        -Dcdio=enabled \
+        -Dcdio=disabled \
         -Ddvdread=disabled \
         -Dmpeg2dec=disabled \
         -Dsidplay=disabled \
