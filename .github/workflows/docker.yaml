@@ -1,19 +1,22 @@
-name: Deploy
+name: Docker
 on:
   push:
     branches:
     - master
-    - deploy
+    - docker
 
 jobs:
-  deploy:
-    name: Deploy
+  docker:
+    name: Docker
     runs-on: ubuntu-latest
     strategy:
       matrix:
         arch: [ i686, x86_64 ]
         build_type: [ release, debug ]
     steps:
+
+      - name: Set MXE build type
+        run: echo "mxe_build_type=$(echo ${{matrix.build_type}} | tr '[:upper:]' '[:lower:]' | sed 's/.*/\u&/')" >> $GITHUB_ENV
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,6 +36,9 @@ jobs:
       - name: Push to DockerHub
         uses: docker/build-push-action@v5
         with:
-          file: ./dockerfiles/${{matrix.arch}}-w64-mingw32-shared-${{matrix.build_type}}.Dockerfile
-          push: true
+          file: ./docker/Dockerfile
+          build-args: |
+            MXE_TARGET=${{matrix.arch}}-w64-mingw32.shared
+            MXE_BUILD_TYPE=${{env.mxe_build_type}}
           tags: jonaski/strawberry-mxe-${{matrix.arch}}-${{matrix.build_type}}:latest
+          push: true
