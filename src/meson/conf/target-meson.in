@@ -8,7 +8,7 @@ fi
 
 if [[ "$NO_MESON_CROSSFILE" == "1" ]]; then
     echo "== Skip using Meson cross file: @MESON_CROSS_FILE@"
-    exec meson "$@"
+    exec meson setup "$@"
 else
     BUILD_TYPE=$(echo "@MESON_BUILD_TYPE@" | tr '[:upper:]' '[:lower:]')
     echo "== Using Meson cross file: @MESON_CROSS_FILE@"
@@ -16,7 +16,7 @@ else
         echo "== Adding --buildtype=$BUILD_TYPE"
         set -- "--buildtype=$BUILD_TYPE" "$@"
     fi
-    exec meson \
+    exec meson setup \
               --cross-file="@MESON_CROSS_FILE@" \
               --default-library="@LIBTYPE@" \
               --prefix="@PREFIX@/@TARGET@" \
