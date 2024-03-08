@@ -18,8 +18,13 @@ define $(PKG)_BUILD
         --buildtype='$(MESON_BUILD_TYPE)' \
         -Dexamples=disabled \
         -Dtests=disabled \
-        -Ddoc=disabled \
+        -Dnls=enabled \
         -Dorc=enabled \
+        -Dgobject-cast-checks=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
+        -Dglib-asserts=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
+        -Dglib-checks=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
+        -Dasm=enabled \
+        -Ddoc=disabled \
         -Dalpha=disabled \
         -Dapetag=enabled \
         -Daudiofx=enabled \
@@ -66,6 +71,8 @@ define $(PKG)_BUILD
         -Dy4m=disabled \
         -Dadaptivedemux2=enabled \
         -Daalib=disabled \
+        -Damrnb=disabled \
+        -Damrwbdec=disabled \
         -Dbz2=disabled \
         -Dcairo=disabled \
         -Ddirectsound=enabled \

@@ -17,14 +17,21 @@ define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && '$(TARGET)-meson' \
         --buildtype='$(MESON_BUILD_TYPE)' \
         -Dexamples=disabled \
+        -Dtools=enabled \
         -Dtests=disabled \
-        -Dexamples=disabled \
-        -Dgpl=enabled \
+        -Dintrospection=disabled \
+        -Dnls=enabled \
         -Dorc=enabled \
+        -Dgobject-cast-checks=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
+        -Dglib-asserts=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
+        -Dglib-checks=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
+        -Dextra-checks=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
+        -Dgpl=enabled \
         -Daccurip=disabled \
         -Dadpcmdec=disabled \
         -Dadpcmenc=disabled \
         -Daiff=enabled \
+        -Danalyticsoverlay=disabled \
         -Dasfmux=enabled \
         -Daudiobuffersplit=disabled \
         -Daudiofxbad=disabled \
@@ -34,6 +41,7 @@ define $(PKG)_BUILD
         -Dautoconvert=disabled \
         -Dbayer=disabled \
         -Dcamerabin2=disabled \
+        -Dcodec2json=disabled \
         -Dcodecalpha=disabled \
         -Dcodectimestamper=disabled \
         -Dcoloreffects=disabled \
@@ -50,6 +58,7 @@ define $(PKG)_BUILD
         -Dgdp=disabled \
         -Dgeometrictransform=disabled \
         -Did3tag=enabled \
+        -Dinsertbin=disabled \
         -Dinter=disabled \
         -Dinterlace=disabled \
         -Divfparse=disabled \
@@ -62,6 +71,7 @@ define $(PKG)_BUILD
         -Dmpegpsmux=enabled \
         -Dmpegtsdemux=enabled \
         -Dmpegtsmux=enabled \
+        -Dmse=disabled \
         -Dmxf=disabled \
         -Dnetsim=disabled \
         -Donvif=disabled \
@@ -81,6 +91,7 @@ define $(PKG)_BUILD
         -Dsubenc=disabled \
         -Dswitchbin=disabled \
         -Dtimecode=disabled \
+        -Dunixfd=disabled \
         -Dvideofilters=disabled \
         -Dvideoframe_audiolevel=disabled \
         -Dvideoparsers=disabled \
@@ -88,9 +99,12 @@ define $(PKG)_BUILD
         -Dvmnc=disabled \
         -Dy4m=disabled \
         -Dopencv=disabled \
+        -Ddrm=disabled \
+        -Dudev=disabled \
         -Dwayland=disabled \
         -Dx11=disabled \
         -Daes=enabled \
+        -Daja=disabled \
         -Daom=disabled \
         -Davtp=disabled \
         -Damfcodec=disabled \
@@ -108,6 +122,7 @@ define $(PKG)_BUILD
         -Dcurl-ssh2=disabled \
         -Dd3dvideosink=disabled \
         -Dd3d11=disabled \
+        -Dd3d12=disabled \
         -Ddash=enabled \
         -Ddc1394=disabled \
         -Ddecklink=disabled \
@@ -117,6 +132,7 @@ define $(PKG)_BUILD
         -Ddtls=disabled \
         -Ddts=disabled \
         -Ddvb=disabled \
+        -Ddwrite=disabled \
         -Dfaac=enabled \
         -Dfaad=enabled \
         -Dfbdev=disabled \
@@ -132,6 +148,8 @@ define $(PKG)_BUILD
         -Diqa=disabled \
         -Dkms=disabled \
         -Dladspa=disabled \
+        -Dladspa-rdf=disabled \
+        -Dlc3=disabled \
         -Dldac=disabled \
         -Dlibde265=disabled \
         -Dopenaptx=disabled \
@@ -156,6 +174,7 @@ define $(PKG)_BUILD
         -Dopus=enabled \
         -Dqroverlay=disabled \
         -Dqsv=disabled \
+        -Dqt6d3d11=disabled \
         -Dresindvd=disabled \
         -Drsvg=disabled \
         -Drtmp=disabled \
@@ -168,6 +187,7 @@ define $(PKG)_BUILD
         -Dspandsp=disabled \
         -Dsrt=disabled \
         -Dsrtp=disabled \
+        -Dsvtav1=disabled \
         -Dsvthevcenc=disabled \
         -Dteletext=disabled \
         -Dtinyalsa=disabled \
@@ -194,6 +214,7 @@ define $(PKG)_BUILD
         -Dwpe=disabled \
         -Dmagicleap=disabled \
         -Dv4l2codecs=disabled \
+        -Duvcgadget=disabled \
         -Disac=disabled \
         -Dhls=enabled \
         -Dhls-crypto=libgcrypt \

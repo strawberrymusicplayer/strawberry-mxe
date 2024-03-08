@@ -24,7 +24,17 @@ define $(PKG)_BUILD
         -Dexamples=disabled \
         -Dtests=disabled \
         -Dbenchmarks=disabled \
+        -Dtools=enabled \
+        -Dintrospection=disabled \
+        -Dnls=enabled \
+        -Dgobject-cast-checks=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
+        -Dglib-asserts=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
+        -Dglib-checks=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
+        -Dextra-checks=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
         -Ddoc=disabled \
+        -Dgst_debug=true \
+        -Dgst_parse=true \
+        -Dregistry=true \
         '$(BUILD_DIR)'
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install

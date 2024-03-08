@@ -16,10 +16,14 @@ $(PKG)_UPDATE = $(gstreamer_UPDATE)
 define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && '$(TARGET)-meson' \
         --buildtype='$(MESON_BUILD_TYPE)' \
+        -Dnls=enabled \
+        -Dorc=enabled \
         -Dtests=disabled \
+        -Dgobject-cast-checks=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
+        -Dglib-asserts=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
+        -Dglib-checks=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
         -Ddoc=disabled \
         -Dgpl=enabled \
-        -Dorc=enabled \
         -Dasfdemux=enabled \
         -Ddvdlpcmdec=disabled \
         -Ddvdsub=disabled \

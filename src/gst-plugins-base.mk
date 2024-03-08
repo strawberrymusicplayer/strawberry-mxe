@@ -19,8 +19,15 @@ define $(PKG)_BUILD
         -Dexamples=disabled \
         -Dtests=disabled \
         -Dtools=enabled \
-        -Ddoc=disabled \
+        -Dintrospection=disabled \
+        -Dnls=enabled \
         -Dorc=enabled \
+        -Dgobject-cast-checks=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
+        -Dglib-asserts=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
+        -Dglib-checks=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
+        -Dqt5=disabled \
+        -Ddoc=disabled \
+        -Diso-codes=disabled \
         -Dadder=enabled \
         -Dapp=enabled \
         -Daudioconvert=enabled \
@@ -29,6 +36,9 @@ define $(PKG)_BUILD
         -Daudioresample=enabled \
         -Daudiotestsrc=enabled \
         -Dcompositor=disabled \
+        -Ddebugutils=disabled \
+        -Ddrm=disabled \
+        -Ddsd=enabled \
         -Dencoding=disabled \
         -Dgio=enabled \
         -Dgio-typefinder=enabled \
