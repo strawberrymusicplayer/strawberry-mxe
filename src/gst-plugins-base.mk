@@ -16,6 +16,7 @@ $(PKG)_UPDATE = $(gstreamer_UPDATE)
 define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && '$(TARGET)-meson' \
         --buildtype='$(MESON_BUILD_TYPE)' \
+        --auto-features=disabled \
         -Dexamples=disabled \
         -Dtests=disabled \
         -Dtools=enabled \
@@ -25,9 +26,7 @@ define $(PKG)_BUILD
         -Dgobject-cast-checks=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
         -Dglib-asserts=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
         -Dglib-checks=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
-        -Dqt5=disabled \
         -Ddoc=disabled \
-        -Diso-codes=disabled \
         -Dadder=enabled \
         -Dapp=enabled \
         -Daudioconvert=enabled \
@@ -35,41 +34,18 @@ define $(PKG)_BUILD
         -Daudiorate=enabled \
         -Daudioresample=enabled \
         -Daudiotestsrc=enabled \
-        -Dcompositor=disabled \
-        -Ddebugutils=disabled \
-        -Ddrm=disabled \
         -Ddsd=enabled \
-        -Dencoding=disabled \
+        -Dencoding=enabled \
         -Dgio=enabled \
         -Dgio-typefinder=enabled \
-        -Doverlaycomposition=disabled \
         -Dpbtypes=enabled \
         -Dplayback=enabled \
-        -Drawparse=disabled \
-        -Dsubparse=disabled \
         -Dtcp=enabled \
         -Dtypefind=enabled \
-        -Dvideoconvertscale=disabled \
-        -Dvideorate=disabled \
-        -Dvideotestsrc=disabled \
         -Dvolume=enabled \
-        -Dalsa=disabled \
-        -Dcdparanoia=disabled \
-        -Dlibvisual=disabled \
         -Dogg=enabled \
         -Dopus=enabled \
-        -Dpango=disabled \
-        -Dtheora=disabled \
-        -Dtremor=disabled \
         -Dvorbis=enabled \
-        -Dx11=disabled \
-        -Dxshm=disabled \
-        -Dxvideo=disabled \
-        -Dxi=disabled \
-        -Dgl=disabled \
-        -Dgl-graphene=disabled \
-        -Dgl-jpeg=disabled \
-        -Dgl-png=disabled \
         '$(BUILD_DIR)'
 
     cd '$(BUILD_DIR)' && ninja

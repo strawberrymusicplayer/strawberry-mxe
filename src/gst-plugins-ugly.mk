@@ -16,6 +16,7 @@ $(PKG)_UPDATE = $(gstreamer_UPDATE)
 define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && '$(TARGET)-meson' \
         --buildtype='$(MESON_BUILD_TYPE)' \
+        --auto-features=disabled \
         -Dnls=enabled \
         -Dorc=enabled \
         -Dtests=disabled \
@@ -25,15 +26,6 @@ define $(PKG)_BUILD
         -Ddoc=disabled \
         -Dgpl=enabled \
         -Dasfdemux=enabled \
-        -Ddvdlpcmdec=disabled \
-        -Ddvdsub=disabled \
-        -Drealmedia=disabled \
-        -Da52dec=disabled \
-        -Dcdio=disabled \
-        -Ddvdread=disabled \
-        -Dmpeg2dec=disabled \
-        -Dsidplay=disabled \
-        -Dx264=disabled \
         '$(BUILD_DIR)'
 
     cd '$(BUILD_DIR)' && ninja
