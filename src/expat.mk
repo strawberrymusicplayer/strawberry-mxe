@@ -5,16 +5,20 @@ $(PKG)_WEBSITE  := https://libexpat.github.io/
 $(PKG)_DESCR    := a stream-oriented XML parser library written in C
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 2.6.2
-$(PKG)_CHECKSUM := 9c7c1b5dcbc3c237c500a8fb1493e14d9582146dd9b42aa8d3ffb856a3b927e0
+$(PKG)_CHECKSUM := ee14b4c5d8908b1bec37ad937607eab183d4d9806a08adee472c3c3121d27364
 $(PKG)_SUBDIR   := expat-$($(PKG)_VERSION)
-$(PKG)_FILE     := expat-$($(PKG)_VERSION).tar.bz2
-$(PKG)_URL      := https://$(SOURCEFORGE_MIRROR)/project/expat/expat/$($(PKG)_VERSION)/$($(PKG)_FILE)
+$(PKG)_FILE     := expat-$($(PKG)_VERSION).tar.xz
+$(PKG)_URL      := https://github.com/libexpat/libexpat/releases/download/R_$(subst .,_,$($(PKG)_VERSION))/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://sourceforge.net/projects/expat/files/expat/' | \
-    $(SED) -n 's,.*/projects/.*/\([0-9][^"]*\)/".*,\1,p' | \
-    head -1
+    $(WGET) -q -O- 'https://github.com/libexpat/libexpat/releases' | \
+    $(SED) -n 's,.*releases/tag/\([^"&;]*\)".*,\1,p' | \
+    grep -v '^\*name' | \
+    $(SED) 's,^R_,,g' | \
+    tr '_' '.' | \
+    $(SORT) -V | \
+    tail -1
 endef
 
 define $(PKG)_BUILD
