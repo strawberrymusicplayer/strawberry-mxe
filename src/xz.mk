@@ -9,7 +9,6 @@ $(PKG)_CHECKSUM := f334777310ca3ae9ba07206d78ed286a655aa3f44eec27854f740c26b2cd2
 $(PKG)_GH_CONF  := tukaani-project/xz/releases/latest, v
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
-$(PKG)_URL      := https://tukaani.org/xz/$($(PKG)_FILE)
 $(PKG)_URL      := https://github.com/tukaani-project/$(PKG)/releases/download/v$($(PKG)_VERSION)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc
 
