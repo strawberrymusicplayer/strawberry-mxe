@@ -6,7 +6,6 @@ $(PKG)_DESCR    := XZ Utils is free general-purpose data compression software wi
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 5.4.6
 $(PKG)_CHECKSUM := b92d4e3a438affcf13362a1305cd9d94ed47ddda22e456a42791e630a5644f5c
-$(PKG)_GH_CONF  := tukaani-project/xz/releases/latest, v
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://downloads.sourceforge.net/project/lzmautils/$($(PKG)_FILE)
