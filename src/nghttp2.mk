@@ -4,8 +4,8 @@ PKG             := nghttp2
 $(PKG)_WEBSITE  := https://nghttp2.org/
 $(PKG)_DESCR    := HTTP/2 C Library and tools
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.60.0
-$(PKG)_CHECKSUM := ca2333c13d1af451af68de3bd13462de7e9a0868f0273dea3da5bc53ad70b379
+$(PKG)_VERSION  := 1.61.0
+$(PKG)_CHECKSUM := aa7594c846e56a22fbf3d6e260e472268808d3b49d5e0ed339f589e9cc9d484c
 $(PKG)_GH_CONF  := nghttp2/nghttp2/releases/latest, v
 $(PKG)_DEPS     := cc openssl zlib libxml2 cares
 
