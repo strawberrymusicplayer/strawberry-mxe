@@ -12,6 +12,7 @@ $(PKG)_DEPS     := cc freetype-bootstrap glib icu4c cairo
 define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && '$(TARGET)-meson' \
         --buildtype='$(MESON_BUILD_TYPE)' \
+        -Dcpp_std=c++17 \
         -Dtests=disabled \
         -Ddocs=disabled \
         -Dglib=enabled \
