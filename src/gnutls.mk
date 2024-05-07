@@ -27,7 +27,8 @@ define $(PKG)_BUILD
         --disable-doc \
         --disable-tests \
         --without-p11-kit \
-        --disable-silent-rules
+        --disable-silent-rules \
+        CFLAGS='-Wno-incompatible-pointer-types -Wno-int-conversion'
     $(MAKE) -C '$(1)' -j '$(JOBS)'
     $(MAKE) -C '$(1)' -j 1 install
 
