@@ -18,7 +18,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(SOURCE_DIR)' && '$(TARGET)-meson' \
+    cd '$(SOURCE_DIR)' && CFLAGS='-Wno-incompatible-pointer-types' '$(TARGET)-meson' \
         --buildtype='$(MESON_BUILD_TYPE)' \
         -Dfontconfig=enabled \
         -Dfreetype=enabled \
