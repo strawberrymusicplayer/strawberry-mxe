@@ -12,7 +12,7 @@ $(PKG)_URL      := https://files.musepack.net/source/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc
 
 define $(PKG)_BUILD
-    '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
+    CFLAGS='-Wno-implicit-function-declaration' '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
         -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
         -DCMAKE_INSTALL_PREFIX='$(PREFIX)/$(TARGET)' \
         $(if $(BUILD_SHARED),-DSHARED=ON)
