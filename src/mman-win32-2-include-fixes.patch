@@ -1,0 +1,12 @@
+diff --git a/test.c b/test.c
+index 9374b9f..30a6148 100644
+--- a/test.c
++++ b/test.c
+@@ -1,6 +1,7 @@
+ 
+ #include "mman.h"
+ 
++#include <stdio.h>
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <sys/stat.h>
