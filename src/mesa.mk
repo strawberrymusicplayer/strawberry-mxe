@@ -8,7 +8,7 @@ $(PKG)_CHECKSUM := b7eac8c79244806b1c276eeeacc329e4a5b31a370804c4b0c7cd16837783f
 $(PKG)_SUBDIR   := mesa-$($(PKG)_VERSION)
 $(PKG)_FILE     := mesa-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://archive.mesa3d.org/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc meson-conf zlib
+$(PKG)_DEPS     := cc meson-conf zlib directx-headers
 
 define $(PKG)_UPDATE
     $(call GET_LATEST_VERSION, https://archive.mesa3d.org, mesa-)
