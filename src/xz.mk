@@ -6,17 +6,11 @@ $(PKG)_DESCR    := XZ Utils is free general-purpose data compression software wi
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 5.6.2
 $(PKG)_CHECKSUM := a9db3bb3d64e248a0fae963f8fb6ba851a26ba1822e504dc0efd18a80c626caf
+$(PKG)_GH_CONF  := tukaani-project/xz/releases/latest, v
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
-$(PKG)_URL      := https://downloads.sourceforge.net/project/lzmautils/$($(PKG)_FILE)
+$(PKG)_URL      := https://github.com/tukaani-project/$(PKG)/releases/download/v$($(PKG)_VERSION)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc
-
-define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://sourceforge.net/projects/lzmautils/files/' | \
-    $(SED) -n 's,.*xz-\([0-9.]*\)\.tar.*,\1,p' | \
-    sort -V | \
-    tail -1
-endef
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
