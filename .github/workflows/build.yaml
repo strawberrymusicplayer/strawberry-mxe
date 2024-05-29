@@ -63,7 +63,7 @@ jobs:
       - name: Upgrade packages
         run: zypper -n --gpg-auto-import-keys dup -l -y
       - name: Install openSUSE dependencies
-        run: zypper -n --gpg-auto-import-keys install glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc gcc-c++ shadow which patch gperf wget curl git diffutils make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip gtk-doc gettext-tools scons bison flex ruby orc linux-glibc-devel glibc-devel libstdc++-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel python3-base python3-Mako python3-packaging libzstd-devel pcre2-devel zlib-devel
+        run: zypper -n --gpg-auto-import-keys install glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc gcc-c++ shadow which patch gperf wget curl git diffutils make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip gtk-doc gettext-tools scons bison flex ruby orc linux-glibc-devel glibc-devel libstdc++-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel python3-base python3-Mako python3-packaging libzstd-devel pcre2-devel zlib-devel fmt-devel xxhash-devel doctest-devel
       - name: Link python 3
         run: ln -s /usr/bin/python3 /usr/bin/python
       - uses: actions/checkout@v4
