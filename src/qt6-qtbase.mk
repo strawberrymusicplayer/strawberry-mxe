@@ -4,8 +4,8 @@ PKG             := qt6-qtbase
 $(PKG)_WEBSITE  := https://www.qt.io/
 $(PKG)_DESCR    := Qt 6 Base
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 6.7.1
-$(PKG)_CHECKSUM := b7338da1bdccb4d861e714efffaa83f174dfe37e194916bfd7ec82279a6ace19
+$(PKG)_VERSION  := 6.7.2
+$(PKG)_CHECKSUM := c5f22a5e10fb162895ded7de0963328e7307611c688487b5d152c9ee64767599
 $(PKG)_FILE     := qtbase-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_SUBDIR   := qtbase-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
@@ -103,9 +103,8 @@ define $(PKG)_BUILD_$(BUILD)
         -DBUILD_SHARED_LIBS=OFF \
         -DBUILD_WITH_PCH=OFF \
         -DFEATURE_USE_GOLD_LINKER_ALIAS=OFF \
-        -DFEATURE_{accessibility,androiddeployqt,brotli,dbus,egl,evdev,eventfd,fontconfig,freetype,gif,glib,gui,harfbuzz,ico,icu,jpeg,opengl,opengl_desktop,openssl,pch,pcre2,pdf,png,printer,sql,style_fusion,testlib,vulkan,widgets,xcb,xcb_xlib,xkbcommon,xml,zstd}=OFF \
-        -DFEATURE_DEVELOPER_BUILD=ON \
-        -DINPUT_opengl=OFF
+	-DFEATURE_DEVELOPER_BUILD=ON \
+        -DFEATURE_{accessibility,androiddeployqt,brotli,dbus,egl,evdev,eventfd,fontconfig,freetype,gif,glib,harfbuzz,ico,icu,jpeg,opengl,opengl_desktop,openssl,pch,pcre2,png,sql,style_fusion,testlib,vulkan,xcb,xcb_xlib,xkbcommon,xml,zstd}=OFF
 
     '$(TARGET)-cmake' --build '$(BUILD_DIR)' -j '$(JOBS)'
     '$(TARGET)-cmake' --install '$(BUILD_DIR)'
