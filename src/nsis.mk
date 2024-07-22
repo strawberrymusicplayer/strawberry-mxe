@@ -26,7 +26,7 @@ define $(PKG)_BUILD
         XGCC_W32_PREFIX='$(TARGET)-' \
         PREFIX='$(PREFIX)/$(TARGET)' \
         NSIS_MAX_STRLEN=8192 \
-        SKIPUTILS='MakeLangId,Makensisw,NSIS Menu,zip2exe' \
+        SKIPUTILS='MakeLangId,Makensisw,zip2exe' \
         -j 1 install
 
     $(INSTALL) -m755 '$(PREFIX)/$(TARGET)/bin/makensis' '$(PREFIX)/bin/$(TARGET)-makensis'
