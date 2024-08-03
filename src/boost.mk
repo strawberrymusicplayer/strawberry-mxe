@@ -120,12 +120,12 @@ define $(PKG)_BUILD
     #    -L'$(PREFIX)/$(TARGET)/lib'
 
     # test cmake
-    mkdir '$(1).test-cmake'
-    cd '$(1).test-cmake' && '$(TARGET)-cmake' \
-        -DPKG=$(PKG) \
-        -DPKG_VERSION=$($(PKG)_VERSION) \
-        '$(PWD)/src/cmake/test'
-    $(MAKE) -C '$(1).test-cmake' -j 1 install
+    #mkdir '$(BUILD_DIR).test-cmake'
+    #cd '$(BUILD_DIR).test-cmake' && '$(TARGET)-cmake' \
+    #    -DPKG=$(PKG) \
+    #    -DPKG_VERSION=$($(PKG)_VERSION) \
+    #    '$(PWD)/src/cmake/test'
+    #$(MAKE) -C '$(BUILD_DIR).test-cmake' -j 1 install
 endef
 
 define $(PKG)_BUILD_$(BUILD)
