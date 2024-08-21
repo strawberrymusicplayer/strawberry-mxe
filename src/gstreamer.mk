@@ -12,8 +12,8 @@ $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc glib pthreads orc dlfcn-win32
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://cgit.freedesktop.org/gstreamer/gstreamer/refs/tags' | \
-    $(SED) -n "s,.*<a href='[^']*/tag/?h=[^0-9]*\\([0-9]\..[02468]\.[0-9][^']*\\)'.*,\\1,p" | \
+    $(WGET) -q -O- 'https://gstreamer.freedesktop.org/src/gstreamer' | \
+    $(SED) -n "s,.*gstreamer-\([0-9]\.[0-9][02468]\.[0-9]*\)\.tar\.xz.*,\\1,p" | \
     $(SORT) -V | \
     tail -1
 endef
