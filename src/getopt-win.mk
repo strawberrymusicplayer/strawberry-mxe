@@ -16,21 +16,4 @@ define $(PKG)_BUILD
         -DBUILD_STATIC_LIBS=$(CMAKE_STATIC_BOOL)
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
-
-    # Create pkg-config file
-    $(INSTALL) -d '$(PREFIX)/$(TARGET)/lib/pkgconfig'
-    ( \
-     echo 'prefix=$(PREFIX)'; \
-     echo 'exec_prefix=$(PREFIX)'; \
-     echo 'libdir=$(PREFIX)/lib'; \
-     echo 'includedir=$(PREFIX)/include'; \
-     echo ''; \
-     echo 'Name: getopt'; \
-     echo 'Version: $($(PKG)_VERSION)'; \
-     echo 'Description: $($(PKG)_DESCR)'; \
-     echo 'Libs: -L$(PREFIX)/lib -lgetopt'; \
-     echo 'Cflags: -I$(PREFIX)/include'; \
-     ) \
-     > '$(PREFIX)/$(TARGET)/lib/pkgconfig/getopt.pc'
-
 endef
