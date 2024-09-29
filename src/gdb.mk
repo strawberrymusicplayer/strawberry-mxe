@@ -3,8 +3,8 @@
 PKG             := gdb
 $(PKG)_WEBSITE  := https://www.gnu.org/software/gdb/
 $(PKG)_DESCR    := GDB: The GNU Project Debugger
-$(PKG)_VERSION  := 15.1
-$(PKG)_CHECKSUM := 38254eacd4572134bca9c5a5aa4d4ca564cbbd30c369d881f733fb6b903354f2
+$(PKG)_VERSION  := 15.2
+$(PKG)_CHECKSUM := 83350ccd35b5b5a0cba6b334c41294ea968158c573940904f00b92f76345314d
 $(PKG)_SUBDIR   := gdb-$($(PKG)_VERSION)
 $(PKG)_FILE     := gdb-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://ftp.gnu.org/gnu/$(PKG)/$($(PKG)_FILE)
