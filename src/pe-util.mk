@@ -8,8 +8,8 @@ $(PKG)_VERSION  := dc5dda5
 $(PKG)_CHECKSUM := c3b926d8367154fb65a2d49f88cf1389e06a5ce0cc44c7b3526d901ecaba7e1d
 $(PKG)_GH_CONF  := gsauthof/pe-util/branches/master
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
-$(PKG)_DEPS     := cc boost pe-parse $(BUILD)~$(PKG)
-$(PKG)_DEPS_$(BUILD) := boost cmake pe-parse
+$(PKG)_DEPS     := cc pe-parse $(BUILD)~$(PKG)
+$(PKG)_DEPS_$(BUILD) := cmake pe-parse
 
 define $(PKG)_PRE_CONFIGURE
     # expects pe-parse in source tree as git submodule
