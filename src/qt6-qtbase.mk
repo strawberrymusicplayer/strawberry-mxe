@@ -4,13 +4,13 @@ PKG             := qt6-qtbase
 $(PKG)_WEBSITE  := https://www.qt.io/
 $(PKG)_DESCR    := Qt 6 Base
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 6.8.0
-$(PKG)_CHECKSUM := 1bad481710aa27f872de6c9f72651f89a6107f0077003d0ebfcc9fd15cba3c75
+$(PKG)_VERSION  := 6.8.1
+$(PKG)_CHECKSUM := 40b14562ef3bd779bc0e0418ea2ae08fa28235f8ea6e8c0cb3bce1d6ad58dcaf
 $(PKG)_FILE     := qtbase-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_SUBDIR   := qtbase-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
-$(PKG)_DEPS     := cc openssl pcre2 fontconfig freetype harfbuzz glib zlib libpng zstd brotli jpeg sqlite mesa $(BUILD)~$(PKG) $(BUILD)~qt6-qttools
+$(PKG)_DEPS     := cc openssl pcre2 fontconfig freetype harfbuzz glib zlib libpng zstd brotli jpeg sqlite mesa pixman $(BUILD)~$(PKG) $(BUILD)~qt6-qttools
 $(PKG)_DEPS_$(BUILD) :=
 $(PKG)_OO_DEPS_$(BUILD) += qt6-conf ninja
 
@@ -94,7 +94,7 @@ endef
 
 define $(PKG)_BUILD_$(BUILD)
     rm -rf '$(PREFIX)/$(BUILD)/qt6'
-    rm -rf $(SOURCE_DIR)/src/3rdparty/{freetype,harfbuzz-ng,libjpeg,libpng,pixman,sqlite}
+    rm -rf $(SOURCE_DIR)/src/3rdparty/{freetype,harfbuzz-ng,libjpeg,libpng,sqlite}
     '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
         -G Ninja \
         -DCMAKE_INSTALL_PREFIX='$(PREFIX)/$(TARGET)/qt6' \
