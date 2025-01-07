@@ -8,7 +8,7 @@ $(PKG)_VERSION  := 1.87.0
 $(PKG)_CHECKSUM := af57be25cb4c4f4b413ed692fe378affb4352ea50fbe294a11ef548f4d527d89
 $(PKG)_SUBDIR   := boost_$(subst .,_,$($(PKG)_VERSION))
 $(PKG)_FILE     := boost_$(subst .,_,$($(PKG)_VERSION)).tar.bz2
-$(PKG)_URL      := https://boostorg.jfrog.io/artifactory/main/release/$($(PKG)_VERSION)/source/$($(PKG)_FILE)
+$(PKG)_URL      := https://downloads.sourceforge.net/project/boost/boost/$($(PKG)_VERSION)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc bzip2 expat zlib xz
 
 define $(PKG)_UPDATE
