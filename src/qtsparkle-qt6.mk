@@ -19,18 +19,4 @@ define $(PKG)_BUILD
 
     $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS)
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
-
-    # create pkg-config file
-    $(INSTALL) -d '$(PREFIX)/$(TARGET)/lib/pkgconfig'
-    (echo 'prefix=$(PREFIX)/$(TARGET)'; \
-     echo 'exec_prefix=$${prefix}'; \
-     echo 'libdir=$${exec_prefix}/lib'; \
-     echo 'includedir=$${prefix}/include'; \
-     echo ''; \
-     echo 'Name: $(PKG)'; \
-     echo 'Version: '; \
-     echo 'Description: Qt auto-updater lib'; \
-     echo 'Libs: -L$${libdir} -lqtsparkle-qt6'; \
-     echo 'Cflags: -I$${includedir}') \
-     > '$(PREFIX)/$(TARGET)/lib/pkgconfig/qtsparkle-qt6.pc'
 endef
