@@ -5,7 +5,7 @@ $(PKG)_WEBSITE  := https://github.com/sparsehash/sparsehash
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 2.0.4
 $(PKG)_CHECKSUM := 8cd1a95827dfd8270927894eb77f62b4087735cbede953884647f16c521c7e58
-$(PKG)_GH_CONF  := sparsehash/sparsehash/tags, sparsehash-
+$(PKG)_GH_CONF  := sparsehash/sparsehash/releases/latest, sparsehash-
 $(PKG)_DEPS     := cc
 
 define $(PKG)_BUILD
