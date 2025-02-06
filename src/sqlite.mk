@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := ac992f7fca3989de7ed1fe99c16363f848794c8c32a158dafd4eb927a2e02
 $(PKG)_SUBDIR   := $(PKG)-autoconf-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-autoconf-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://www.sqlite.org/2025/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc
+$(PKG)_DEPS     := cc dlfcn-win32
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://www.sqlite.org/download.html' | \
