@@ -81,7 +81,6 @@ define $(PKG)_BUILD
         -DFEATURE_system_pcre2=ON \
         -DFEATURE_system_freetype=ON \
         -DFEATURE_system_harfbuzz=ON \
-        $(if $(BUILD_SHARED), -DSQLite3_LIBRARY='$(PREFIX)/$(TARGET)/lib/libsqlite3.dll') \
         -DFEATURE_system_sqlite=ON
 
     cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
