@@ -4,19 +4,10 @@ PKG             := faac
 $(PKG)_WEBSITE  := http://sourceforge.net/projects/faac/
 $(PKG)_DESCR    := Freeware Advanced Audio Coder
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.30
-$(PKG)_CHECKSUM := adc387ce588cca16d98c03b6ec1e58f0ffd9fc6eadb00e254157d6b16203b2d2
-$(PKG)_SUBDIR   := $(PKG)-$(subst .,_,$($(PKG)_VERSION))
-$(PKG)_FILE     := $(PKG)-$(subst .,_,$($(PKG)_VERSION)).tar.gz
-$(PKG)_URL      := https://$(SOURCEFORGE_MIRROR)/project/faac/$(PKG)-src/$(PKG)-1.30/$($(PKG)_FILE)
+$(PKG)_VERSION  := 1.31
+$(PKG)_CHECKSUM := 92894e3205ca7fbb0b0d38161ae94c9e884efe5af65886e5ad60eb1a318c78f1
+$(PKG)_GH_CONF  := knik0/faac/releases/latest, faac-
 $(PKG)_DEPS     := cc
-
-define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://sourceforge.net/projects/faac/files/faac-src/faac-1.30/' | \
-    $(SED) -n 's,.*faac-\([0-9][^"]*\).tar.gz".*,\1,p' | \
-    $(SED) 's,_,.,g' |
-    head -1
-endef
 
 define $(PKG)_BUILD
     cd '$(1)' && ./bootstrap
