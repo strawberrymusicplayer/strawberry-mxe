@@ -50,6 +50,7 @@ define $(PKG)_BUILD
         -Dopenmpt=enabled \
         -Dopus=enabled \
         -Dwasapi=enabled \
+        -Dasio=enabled \
         -Dhls=enabled \
         -Dhls-crypto=libgcrypt \
         '$(BUILD_DIR)'
