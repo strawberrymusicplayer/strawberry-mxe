@@ -10,7 +10,7 @@ $(PKG)_GH_CONF  := Tencent/rapidjson/branches/master
 $(PKG)_DEPS     := cc
 
 define $(PKG)_BUILD
-    '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
+    CXXFLAGS='-Wno-array-bounds -Wno-stringop-overread' '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
         -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
         -DBUILD_SHARED_LIBS=$(CMAKE_SHARED_BOOL) \
         -DBUILD_STATIC_LIBS=$(CMAKE_STATIC_BOOL)
