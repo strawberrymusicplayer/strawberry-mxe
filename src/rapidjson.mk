@@ -13,7 +13,8 @@ define $(PKG)_BUILD
     CXXFLAGS='-Wno-array-bounds -Wno-stringop-overread' '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
         -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
         -DBUILD_SHARED_LIBS=$(CMAKE_SHARED_BOOL) \
-        -DBUILD_STATIC_LIBS=$(CMAKE_STATIC_BOOL)
+        -DBUILD_STATIC_LIBS=$(CMAKE_STATIC_BOOL) \
+        -DCMAKE_INSTALL_DIR="$(PREFIX)/$(TARGET)/lib/cmake/RapidJSON"
     $(MAKE) -C '$(BUILD_DIR)' -j $(JOBS)
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 endef
