@@ -15,7 +15,7 @@ $(PKG)_DEPS_$(BUILD) :=
 $(PKG)_OO_DEPS_$(BUILD) += qt6-conf ninja
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- https://download.qt.io/official_releases/qt/6.8/ | \
+    $(WGET) -q -O- https://download.qt.io/official_releases/qt/6.9/ | \
     $(SED) -n 's,.*href="\(6\.[0-9]*\.[^/]*\)/".*,\1,p' | \
     $(SORT) -V | \
     tail -1
