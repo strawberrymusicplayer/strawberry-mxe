@@ -26,7 +26,9 @@ define $(PKG)_BUILD
         --disable-examples \
         --disable-tests \
         --disable-openmpt123 \
-        --without-mpg123
+        --without-mpg123 \
+        CFLAGS='-D_WIN32_WINNT=0x0601' \
+        CXXFLAGS='-D_WIN32_WINNT=0x0601'
     $(MAKE) -C '$(1)' -j '$(JOBS)' bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
     $(MAKE) -C '$(1)' -j 1 install bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
 endef
