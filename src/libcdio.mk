@@ -4,16 +4,10 @@ PKG             := libcdio
 $(PKG)_WEBSITE  := https://www.gnu.org/software/libcdio/
 $(PKG)_DESCR    := GNU Compact Disc Input and Control Library
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.1.0
-$(PKG)_CHECKSUM := 8550e9589dbd594bfac93b81ecf129b1dc9d0d51e90f9696f1b2f9b2af32712b
-$(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
-$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_URL      := https://ftp.gnu.org/gnu/libcdio/$(PKG)-$($(PKG)_VERSION).tar.bz2
+$(PKG)_VERSION  := 2.2.0
+$(PKG)_CHECKSUM := 1b6c58137f71721ddb78773432d26252ee6500d92d227d4c4892631c30ea7abb
+$(PKG)_GH_CONF  := libcdio/libcdio/releases/latest
 $(PKG)_DEPS     := cc
-
-define $(PKG)_UPDATE
-    $(call GET_LATEST_VERSION, https://ftp.gnu.org/gnu/libcdio)
-endef
 
 define $(PKG)_BUILD
     cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) \
