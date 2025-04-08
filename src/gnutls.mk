@@ -21,6 +21,7 @@ endef
 define $(PKG)_BUILD
     cd '$(1)' && autoreconf -fi && ./configure \
         $(MXE_CONFIGURE_OPTS) \
+        --enable-threads=windows \
         --disable-rpath \
         --disable-nls \
         --disable-guile \
