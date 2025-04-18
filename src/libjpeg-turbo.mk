@@ -4,19 +4,10 @@ PKG             := libjpeg-turbo
 $(PKG)_WEBSITE  := https://libjpeg-turbo.org/
 $(PKG)_DESCR    := Free library for JPEG image compression
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 3.0.1
-$(PKG)_CHECKSUM := 22429507714ae147b3acacd299e82099fce5d9f456882fc28e252e4579ba2a75
-$(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
-$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
-$(PKG)_URL      := https://$(SOURCEFORGE_MIRROR)/project/$(PKG)/$($(PKG)_VERSION)/$($(PKG)_FILE)
+$(PKG)_VERSION  := 3.1.0
+$(PKG)_CHECKSUM := 9564c72b1dfd1d6fe6274c5f95a8d989b59854575d4bbee44ade7bc17aa9bc93
+$(PKG)_GH_CONF  := libjpeg-turbo/libjpeg-turbo/releases/latest
 $(PKG)_DEPS     := cc $(BUILD)~nasm
-
-define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://sourceforge.net/projects/libjpeg-turbo/files/' | \
-    $(SED) -n 's,.*/projects/.*/\([0-9][^"%]*\)/".*,\1,p' | \
-    $(SORT) -V | \
-    tail -1
-endef
 
 define $(PKG)_BUILD
     $(TARGET)-cmake -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
