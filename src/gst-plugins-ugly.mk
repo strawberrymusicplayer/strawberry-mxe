@@ -20,9 +20,6 @@ define $(PKG)_BUILD
         -Dnls=enabled \
         -Dorc=enabled \
         -Dtests=disabled \
-        -Dgobject-cast-checks=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
-        -Dglib-asserts=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
-        -Dglib-checks=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
         -Ddoc=disabled \
         -Dgpl=enabled \
         -Dasfdemux=enabled \

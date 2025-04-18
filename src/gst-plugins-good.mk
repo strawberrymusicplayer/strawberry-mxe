@@ -21,9 +21,6 @@ define $(PKG)_BUILD
         -Dtests=disabled \
         -Dnls=enabled \
         -Dorc=enabled \
-        -Dgobject-cast-checks=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
-        -Dglib-asserts=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
-        -Dglib-checks=$(if '$(MESON_BUILD_TYPE)' = 'debug',enabled,disabled) \
         -Dasm=enabled \
         -Ddoc=disabled \
         -Dapetag=enabled \
