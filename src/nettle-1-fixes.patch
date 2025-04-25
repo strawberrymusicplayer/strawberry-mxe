@@ -1,0 +1,53 @@
+diff --git a/getopt.c b/getopt.c
+index 9d29de7..86c881a 100644
+--- a/getopt.c
++++ b/getopt.c
+@@ -128,18 +128,6 @@ int optopt = '?';
+ /* Keep a global copy of all internal members of getopt_data.  */
+ 
+ static struct _getopt_data getopt_data;
+-
+-
+-#ifndef __GNU_LIBRARY__
+-
+-/* Avoid depending on library functions or files
+-   whose names are inconsistent.  */
+-
+-#ifndef getenv
+-extern char *getenv ();
+-#endif
+-
+-#endif /* not __GNU_LIBRARY__ */
+ 
+ #ifdef _LIBC
+ /* Stored original parameters.
+diff --git a/getopt.h b/getopt.h
+index da1a01f..f2166af 100644
+--- a/getopt.h
++++ b/getopt.h
+@@ -165,8 +165,6 @@ extern int __posix_getopt (int ___argc, char *const *___argv,
+ #   define getopt __posix_getopt
+ #  endif
+ # endif
+-#else /* not __GNU_LIBRARY__ */
+-extern int getopt ();
+ #endif /* __GNU_LIBRARY__ */
+ 
+ #ifndef __need_getopt
+diff --git a/hogweed.pc.in b/hogweed.pc.in
+index 97fb9d4..839f7d0 100644
+--- a/hogweed.pc.in
++++ b/hogweed.pc.in
+@@ -11,9 +11,8 @@ Name: Hogweed
+ Description: Nettle low-level cryptographic library (public-key algorithms)
+ URL: http://www.lysator.liu.se/~nisse/nettle
+ Version: @PACKAGE_VERSION@
+-Requires: @IF_NOT_SHARED@ nettle
+-Requires.private: @IF_SHARED@ nettle
+-Libs: -L${libdir} -lhogweed @IF_NOT_SHARED@ @LIBS@
+-Libs.private: @IF_SHARED@ @LIBS@
++Requires.private: nettle
++Libs: -L${libdir} -lhogweed
++Libs.private: @LIBS@
+ Cflags: -I${includedir}
+ 

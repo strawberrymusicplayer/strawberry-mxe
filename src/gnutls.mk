@@ -19,7 +19,8 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && autoreconf -fi && ./configure \
+    cd '$(1)' && autoreconf -fi
+    cd '$(1)' && ./configure \
         $(MXE_CONFIGURE_OPTS) \
         --enable-threads=windows \
         --disable-rpath \
@@ -29,7 +30,7 @@ define $(PKG)_BUILD
         --disable-tests \
         --without-p11-kit \
         --disable-silent-rules \
-        CFLAGS='-Wno-incompatible-pointer-types -Wno-int-conversion'
+        CFLAGS='-std=gnu17 -Wno-incompatible-pointer-types -Wno-int-conversion'
     $(MAKE) -C '$(1)' -j '$(JOBS)'
     $(MAKE) -C '$(1)' -j 1 install
 

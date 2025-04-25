@@ -21,8 +21,8 @@ endef
 define $(PKG)_BUILD
     # configure script is ancient and lacks cross-compiling support
     cd '$(1)' && autoreconf -fi
-    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS)
-    $(MAKE) -C '$(1)' -j '$(JOBS)' AR='$(TARGET)-ar' oldincludedir=
+    cd '$(1)' && ./configure --host='$(TARGET)' --build='$(BUILD)' --prefix='$(PREFIX)/$(TARGET)'
+    $(MAKE) -C '$(1)' -j '$(JOBS)' AR='$(TARGET)-ar' oldincludedir= CFLAGS='-std=gnu17 -Wno-implicit-function-declaration -Wno-old-style-definition -Wno-declaration-missing-parameter-type'
     $(MAKE) -C '$(1)' -j 1 install
 
     # no shared support in configure/Makefile

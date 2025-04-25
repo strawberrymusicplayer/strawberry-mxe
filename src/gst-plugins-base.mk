@@ -14,7 +14,7 @@ $(PKG)_DEPS     := cc glib gstreamer libogg libopus libvorbis dlfcn-win32
 $(PKG)_UPDATE = $(gstreamer_UPDATE)
 
 define $(PKG)_BUILD
-    cd '$(SOURCE_DIR)' && '$(TARGET)-meson' \
+    cd '$(SOURCE_DIR)' && CFLAGS='-std=gnu17' '$(TARGET)-meson' \
         --buildtype='$(MESON_BUILD_TYPE)' \
         --auto-features=disabled \
         -Dexamples=disabled \

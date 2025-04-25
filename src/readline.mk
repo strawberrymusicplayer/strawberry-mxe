@@ -19,7 +19,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(BUILD_DIR)' && bash_cv_wcwidth_broken=no '$(SOURCE_DIR)/configure' $(MXE_CONFIGURE_OPTS) --disable-install-examples --without-curses --enable-multibyte CFLAGS='-Wno-implicit-function-declaration'
+    cd '$(BUILD_DIR)' && bash_cv_wcwidth_broken=no '$(SOURCE_DIR)/configure' $(MXE_CONFIGURE_OPTS) --disable-install-examples --without-curses --enable-multibyte CFLAGS='-std=gnu17 -Wno-implicit-function-declaration'
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 endef

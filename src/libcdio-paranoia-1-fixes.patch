@@ -1,0 +1,36 @@
+diff --git a/src/getopt.c b/src/getopt.c
+index 80c7cb2..f8fbd2f 100644
+--- a/src/getopt.c
++++ b/src/getopt.c
+@@ -139,18 +139,6 @@ int optopt = '?';
+ /* Keep a global copy of all internal members of getopt_data.  */
+ 
+ static struct _getopt_data getopt_data;
+-
+-
+-#ifndef __GNU_LIBRARY__
+-
+-/* Avoid depending on library functions or files
+-   whose names are inconsistent.  */
+-
+-#ifndef getenv
+-extern char *getenv ();
+-#endif
+-
+-#endif /* not __GNU_LIBRARY__ */
+ 
+ #ifdef _LIBC
+ /* Stored original parameters.
+diff --git a/src/getopt.h b/src/getopt.h
+index da1a01f..f2166af 100644
+--- a/src/getopt.h
++++ b/src/getopt.h
+@@ -165,8 +165,6 @@ extern int __posix_getopt (int ___argc, char *const *___argv,
+ #   define getopt __posix_getopt
+ #  endif
+ # endif
+-#else /* not __GNU_LIBRARY__ */
+-extern int getopt ();
+ #endif /* __GNU_LIBRARY__ */
+ 
+ #ifndef __need_getopt
