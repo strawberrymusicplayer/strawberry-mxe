@@ -16,6 +16,7 @@ $(PKG)_BUILD_$(BUILD) :=
 
 define $(PKG)_BUILD
     # build and install the cross-library
+    CXXFLAGS='-Wno-deprecated-declarations' \
     '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
         -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
         -DBUILD_SHARED_LIBS=$(CMAKE_SHARED_BOOL) \

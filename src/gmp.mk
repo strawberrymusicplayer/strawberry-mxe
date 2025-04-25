@@ -23,7 +23,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && CC_FOR_BUILD=$(BUILD_CC) ./configure $(MXE_CONFIGURE_OPTS) --enable-cxx --without-readline
+    cd '$(1)' && CC_FOR_BUILD=$(BUILD_CC) CFLAGS='-std=gnu17 -Wno-implicit-int' ./configure $(MXE_CONFIGURE_OPTS) --enable-cxx --without-readline
     $(MAKE) -C '$(1)' -j '$(JOBS)'
     $(MAKE) -C '$(1)' -j 1 install
 
