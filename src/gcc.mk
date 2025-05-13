@@ -27,7 +27,7 @@ define $(PKG)_CONFIGURE
         --prefix='$(PREFIX)' \
         --libdir='$(PREFIX)/lib' \
         --with-sysroot='$(PREFIX)/$(TARGET)' \
-        --enable-languages='c,c++,objc,fortran' \
+        --enable-languages='c,c++,objc' \
         --enable-version-specific-runtime-libs \
         --with-gcc \
         --with-gnu-ld \
@@ -49,6 +49,7 @@ define $(PKG)_CONFIGURE
         --with-ld='$(PREFIX)/bin/$(TARGET)-ld' \
         --with-nm='$(PREFIX)/bin/$(TARGET)-nm' \
         $(shell [ `uname -s` == Darwin ] && echo "LDFLAGS='-Wl,-no_pie'") \
+        --disable-libquadmath \
         $(PKG_CONFIGURE_OPTS)
 endef
 
