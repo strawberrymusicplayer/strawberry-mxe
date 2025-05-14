@@ -31,8 +31,8 @@ define $(PKG)_BUILD
         --target-os=mingw32 \
         --prefix='$(PREFIX)/$(TARGET)' \
         $(if $(BUILD_STATIC), --enable-static --disable-shared , --disable-static --enable-shared ) \
-        --disable-pthreads \
-        --enable-w32threads \
+        --enable-pthreads \
+        --disable-w32threads \
         --x86asmexe='$(TARGET)-yasm' \
         --extra-libs='-mconsole' \
         --disable-debug \
