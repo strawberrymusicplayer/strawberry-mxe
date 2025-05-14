@@ -9,31 +9,3 @@ This is a modified and minimal version of MXE specifically to build [Strawberry]
 Feel free to make use of it if you need something.
 
 See [MXE](https://github.com/mxe/mxe) for the official and full version.
-
-Some of the libraries here are:
-
-  * GCC 11
-  * pthreads
-  * Boost
-  * CMake
-  * Protobuf
-  * GLib
-  * GStreamer
-  * GnuTLS
-  * OpenSSL
-  * SQLite
-  * FFTW
-  * Qt 6
-  * TagLib
-  * Chromaprint
-  * libebur128
-  * Google Test
-
-+ All their dependencies.
-
-Differences from the official repositories:
-
-  * Most of the packages here are on the latest version
-  * Up-to-date core packages, GLib, libsoup and pango.
-  * Qt 6 has only SQL support for sqlite.
-  * GStreamer has only audio specific plugins.
