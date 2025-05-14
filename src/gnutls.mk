@@ -22,7 +22,7 @@ define $(PKG)_BUILD
     cd '$(1)' && autoreconf -fi
     cd '$(1)' && ./configure \
         $(MXE_CONFIGURE_OPTS) \
-        --enable-threads=windows \
+        --enable-threads=posix \
         --disable-rpath \
         --disable-nls \
         --disable-guile \
