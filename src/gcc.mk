@@ -50,7 +50,6 @@ define $(PKG)_CONFIGURE
         --with-nm='$(PREFIX)/bin/$(TARGET)-nm' \
         $(shell [ `uname -s` == Darwin ] && echo "LDFLAGS='-Wl,-no_pie'") \
         --disable-libquadmath \
-        $(if $(findstring Debug,$(MXE_BUILD_TYPE)),CFLAGS='-D_GLIBCXX_DEBUG' CXXFLAGS='-D_GLIBCXX_DEBUG',) \
         $(PKG_CONFIGURE_OPTS)
 endef
 
