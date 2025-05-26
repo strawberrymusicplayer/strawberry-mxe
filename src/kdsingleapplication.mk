@@ -4,11 +4,11 @@ PKG             := kdsingleapplication
 $(PKG)_WEBSITE  := https://github.com/KDAB/KDSingleApplication
 $(PKG)_DESCR    := KDAB's helper class for single-instance policy applications
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.1.0
-$(PKG)_CHECKSUM := 31029fffa4873e2769c555668e8edaa6bd5721edbc445bff5e66cc6af3b9ed78
+$(PKG)_VERSION  := 1.2.0
+$(PKG)_CHECKSUM := ff4ae6a4620beed1cdb3e6a9b78a17d7d1dae7139c3d4746d4856b7547d42c38
 $(PKG)_GH_CONF  := KDAB/KDSingleApplication/releases/latest, v
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
+$(PKG)_SUBDIR   := KDSingleApplication-$($(PKG)_VERSION)
 $(PKG)_DEPS     := cc qt6-qtbase
 
 define $(PKG)_BUILD
