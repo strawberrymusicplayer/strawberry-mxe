@@ -4,8 +4,8 @@ PKG             := taglib
 $(PKG)_WEBSITE  := https://taglib.org/
 $(PKG)_DESCR    := TagLib Audio Meta-Data Library
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.0.2
-$(PKG)_CHECKSUM := 0de288d7fe34ba133199fd8512f19cc1100196826eafcb67a33b224ec3a59737
+$(PKG)_VERSION  := 2.1
+$(PKG)_CHECKSUM := 95b788b39eaebab41f7e6d1c1d05ceee01a5d1225e4b6d11ed8976e96ba90b0c
 $(PKG)_GH_CONF  := taglib/taglib/releases/latest, v
 $(PKG)_DEPS     := cc zlib utfcpp
 
