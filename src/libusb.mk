@@ -4,8 +4,8 @@ PKG             := libusb
 $(PKG)_WEBSITE  := https://libusb.info/
 $(PKG)_DESCR    := A cross-platform user library to access USB devices
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.0.28
-$(PKG)_CHECKSUM := 378b3709a405065f8f9fb9f35e82d666defde4d342c2a1b181a9ac134d23c6fe
+$(PKG)_VERSION  := 1.0.29
+$(PKG)_CHECKSUM := 7c2dd39c0b2589236e48c93247c986ae272e27570942b4163cb00a060fcf1b74
 $(PKG)_GH_CONF  := libusb/libusb/releases/latest, v
 $(PKG)_DEPS     := cc
 
