@@ -25,6 +25,7 @@ define $(PKG)_BUILD
         --prefix='$(PREFIX)/$(TARGET)' \
         --enable-static \
         --disable-shared \
+        --disable-nls \
         host_configargs="LIBS=\"-lmman\"" \
         CFLAGS='-D_WIN32_WINNT=0x0601 -Wno-implicit-function-declaration' \
         CXXFLAGS='-D_WIN32_WINNT=0x0601'
