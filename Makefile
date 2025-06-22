@@ -84,9 +84,9 @@ BUILD      := $(shell '$(EXT_DIR)/config.guess')
 PATH       := $(PREFIX)/$(BUILD)/bin:$(PREFIX)/bin:$(shell echo $$PATH | $(SED) -e 's,:\.$$,,' -e 's,\.:,,g')
 
 # set to empty or $(false) to disable stripping
-STRIP_TOOLCHAIN := $(true)
+STRIP_TOOLCHAIN := $(false)
 STRIP_LIB       := $(false)
-STRIP_EXE       := $(true)
+STRIP_EXE       := $(false)
 
 # disable by setting MXE_USE_CCACHE
 MXE_USE_CCACHE      := mxe
