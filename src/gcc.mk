@@ -49,7 +49,6 @@ define $(PKG)_CONFIGURE
         --with-ld='$(PREFIX)/bin/$(TARGET)-ld' \
         --with-nm='$(PREFIX)/bin/$(TARGET)-nm' \
         --disable-libquadmath \
-        $(if $(findstring Debug,$(MXE_BUILD_TYPE)),--enable-libstdcxx-debug) \
         $(PKG_CONFIGURE_OPTS)
 endef
 
@@ -104,8 +103,6 @@ define $(PKG)_POST_BUILD
       $(MAKE) -C '$(BUILD_DIR)/$(TARGET)/libgcc' -j 1 toolexecdir='$(PREFIX)/$(TARGET)/bin' SHLIB_SLIBDIR_QUAL= install-shared
       cp -v '$(PREFIX)/lib/gcc/$(TARGET)/$($(PKG)_VERSION)/'*.dll.a '$(PREFIX)/$(TARGET)/lib/'
       cp -v '$(PREFIX)/lib/gcc/$(TARGET)/$($(PKG)_VERSION)/'*.dll '$(PREFIX)/$(TARGET)/bin/'
-      $(if $(findstring Debug,$(MXE_BUILD_TYPE)),cp -v '$(PREFIX)/lib/gcc/$(TARGET)/$($(PKG)_VERSION)/debug/'*.dll.a '$(PREFIX)/$(TARGET)/lib/')
-      $(if $(findstring Debug,$(MXE_BUILD_TYPE)),cp -v '$(PREFIX)/lib/gcc/$(TARGET)/$($(PKG)_VERSION)/debug/'*.dll '$(PREFIX)/$(TARGET)/bin/')
     )
 
     # cc1libdir isn't passed to subdirs so install correctly and rm
