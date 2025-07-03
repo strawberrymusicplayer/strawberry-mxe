@@ -9,8 +9,7 @@ $(PKG)_CHECKSUM := ddfe36cab873794038ae2c1210557ad34857a4b6bdc515785d1da9e175b1d
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://$(SOURCEFORGE_MIRROR)/project/$(PKG)/$(PKG)/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
-# $(BUILD)~gettext only required for autoreconf *.m4 macros
-$(PKG)_DEPS     := cc $(BUILD)~gettext
+$(PKG)_DEPS     := cc
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://sourceforge.net/p/lame/svn/HEAD/tree/tags' | \

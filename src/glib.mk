@@ -10,10 +10,10 @@ $(PKG)_SUBDIR   := glib-$($(PKG)_VERSION)
 $(PKG)_FILE     := glib-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/glib/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
 $(PKG)_URL_2    := https://gitlab.gnome.org/GNOME/glib/-/archive/$($(PKG)_VERSION)/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc meson-conf dbus gettext libffi libiconv pcre2 zlib $(BUILD)~$(PKG)
+$(PKG)_DEPS     := cc meson-conf dbus libffi libiconv pcre2 zlib $(BUILD)~$(PKG)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
-$(PKG)_DEPS_$(BUILD) := ninja gettext libffi libiconv zlib
+$(PKG)_DEPS_$(BUILD) := ninja libffi libiconv zlib
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://gitlab.gnome.org/GNOME/glib/tags' | \
