@@ -19,6 +19,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
+    cd '$(1)' && autoreconf -f
     cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --disable-rpath --enable-relocatable --enable-threads=$(MXE_GCC_THREADS)
     $(MAKE) -C '$(1)' -j '$(JOBS)'
     $(MAKE) -C '$(1)' -j 1 install
