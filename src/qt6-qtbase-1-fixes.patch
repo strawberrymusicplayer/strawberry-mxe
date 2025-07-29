@@ -1,0 +1,112 @@
+From de161cccceef97d556be157acb577500ce35edbe Mon Sep 17 00:00:00 2001
+From: =?utf8?q?M=C3=A5rten=20Nordheim?= <marten.nordheim@qt.io>
+Date: Tue, 29 Jul 2025 13:57:37 +0200
+Subject: [PATCH] Http: Remove incomplete cache-objects on destruction
+
+Most commonly this would be a file, by way of the network disk cache.
+
+The switch to use QSaveFile in the network disk cache in
+e5f295c8a458dcd336f7cf3768ca62aded69e659 exposed the issue because
+the leftover file objects were no longer deleted during
+the cache trimming, so the handles were left open even if we
+deleted the file.
+
+The real issue, however, is that we did not notify the cache
+that we were not going to complete the cache object, thus closing
+the file object and deleting the uncommitted file.
+
+That issue was probably introduced as part of
+6f25051536c1636688a0a0939196007aac34676d.
+
+Pick-to: 6.10 6.9 6.8 6.5
+Fixes: QTBUG-135641
+Change-Id: I4c185e4d6e44029e221e69e2ef7135b3710f1069
+---
+ src/network/access/qnetworkreplyhttpimpl.cpp  |  2 ++
+ .../qnetworkreply/tst_qnetworkreply.cpp       | 36 +++++++++++++++++++
+ 2 files changed, 38 insertions(+)
+
+diff --git a/src/network/access/qnetworkreplyhttpimpl.cpp b/src/network/access/qnetworkreplyhttpimpl.cpp
+index 11041dff127e..f3ddb75b1276 100644
+--- a/src/network/access/qnetworkreplyhttpimpl.cpp
++++ b/src/network/access/qnetworkreplyhttpimpl.cpp
+@@ -470,6 +470,8 @@ QNetworkReplyHttpImplPrivate::QNetworkReplyHttpImplPrivate()
+ 
+ QNetworkReplyHttpImplPrivate::~QNetworkReplyHttpImplPrivate()
+ {
++    if (cacheSaveDevice)
++        managerPrivate->networkCache->remove(url);
+ }
+ 
+ /*
+diff --git a/tests/auto/network/access/qnetworkreply/tst_qnetworkreply.cpp b/tests/auto/network/access/qnetworkreply/tst_qnetworkreply.cpp
+index 975cc3beb04c..0ef268cdeb1b 100644
+--- a/tests/auto/network/access/qnetworkreply/tst_qnetworkreply.cpp
++++ b/tests/auto/network/access/qnetworkreply/tst_qnetworkreply.cpp
+@@ -510,6 +510,7 @@ private Q_SLOTS:
+ #endif
+ 
+     void dontInsertPartialContentIntoTheCache();
++    void removeIncompleteCacheObjects();
+ 
+     void httpUserAgent();
+ #if QT_CONFIG(networkproxy)
+@@ -974,6 +975,7 @@ public:
+ 
+     QHash<QUrl, QIODevice*> m_buffers;
+     QList<QUrl> m_insertedUrls;
++    QList<QUrl> m_removedUrls;
+ 
+     QNetworkCacheMetaData metaData(const QUrl &) override
+     {
+@@ -998,6 +1000,7 @@ public:
+     bool remove(const QUrl &url) override
+     {
+         delete m_buffers.take(url);
++        m_removedUrls.append(url);
+         return m_insertedUrls.removeAll(url) > 0;
+     }
+ 
+@@ -8737,6 +8740,39 @@ void tst_QNetworkReply::dontInsertPartialContentIntoTheCache()
+     QCOMPARE(memoryCache->m_insertedUrls.size(), 0);
+ }
+ 
++void tst_QNetworkReply::removeIncompleteCacheObjects()
++{
++    const auto compressedHelloWorld = QByteArray::fromBase64("H4sIAAAAAAAAA8tIzcnJVyjPL8pJAQCFEUoNCwAAAA==");
++    const QByteArray reply404CompressedHelloWorld =
++            "HTTP/1.1 404\r\n"
++            "Content-Type: text/plain\r\n"
++            "Content-length: "_ba + QByteArray::number(compressedHelloWorld.size()) + "\r\n"
++            "Content-Encoding: gzip\r\n"
++            "\r\n"_ba +
++            compressedHelloWorld;
++
++    MiniHttpServer server(reply404CompressedHelloWorld);
++    server.doClose = false;
++
++    MySpyMemoryCache *memoryCache = new MySpyMemoryCache(&manager);
++    manager.setCache(memoryCache);
++
++    QUrl url = "http://localhost:" + QString::number(server.serverPort());
++    QNetworkRequest request(url);
++
++    QNetworkReplyPtr reply(manager.get(request));
++
++    QVERIFY2(waitForFinish(reply) == Failure, msgWaitForFinished(reply));
++    QCOMPARE(reply->error(), QNetworkReply::ContentNotFoundError);
++
++    QVERIFY(server.totalConnections > 0);
++    // We don't read the data, just delete the reply:
++    reply.reset();
++    QCOMPARE(memoryCache->m_insertedUrls.size(), 0);
++    QCOMPARE(memoryCache->m_removedUrls.size(), 1);
++    QCOMPARE(memoryCache->m_removedUrls[0], url);
++}
++
+ void tst_QNetworkReply::httpUserAgent()
+ {
+     QByteArray response("HTTP/1.0 200 OK\r\n\r\n");
+-- 
+2.43.0
+
