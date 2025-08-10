@@ -37,7 +37,7 @@ define $(PKG)_CONFIGURE
         --disable-multilib \
         --without-x \
         --disable-win32-registry \
-        --enable-threads=$(if $(POSIX_THREADS),posix,win32) \
+        --enable-threads=$(MXE_GCC_THREADS) \
         $(MXE_GCC_EXCEPTION_OPTS) \
         --enable-default-ssp \
         --enable-libgomp \
