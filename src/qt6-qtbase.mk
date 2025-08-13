@@ -72,6 +72,7 @@ define $(PKG)_BUILD
         -DFEATURE_jpeg=ON \
         -DFEATURE_png=ON \
         -DFEATURE_gif=ON \
+        -DFEATURE_egl=OFF \
         -DFEATURE_style_windows=ON \
         -DFEATURE_style_windowsvista=ON \
         -DFEATURE_style_windows11=ON \
