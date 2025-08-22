@@ -4,12 +4,12 @@ PKG             := ffmpeg
 $(PKG)_WEBSITE  := https://ffmpeg.org/
 $(PKG)_DESCR    := A complete, cross-platform solution to record, convert and stream audio and video.
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 7.1.1
-$(PKG)_CHECKSUM := 0c8da2f11579a01e014fc007cbacf5bb4da1d06afd0b43c7f8097ec7c0f143ba
+$(PKG)_VERSION  := 8.0
+$(PKG)_CHECKSUM := 3e74acc48ddb9f5f70b6747d3f439d51e7cc5497f097d58e5975c84488f4d186
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_URL      := https://ffmpeg.org/releases/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc yasm zlib bzip2 gnutls wavpack libvorbis libopus speex lame libcdio getopt-win
+$(PKG)_DEPS     := cc $(BUILD)~nasm zlib bzip2 gnutls wavpack libvorbis libopus speex lame libcdio getopt-win
 
 # DO NOT ADD fdk-aac.
 # Although it is free software, the license is not compatible with the GPL, and we'd like to enable GPL in our default ffmpeg build.
@@ -33,7 +33,6 @@ define $(PKG)_BUILD
         $(if $(BUILD_STATIC), --enable-static --disable-shared , --disable-static --enable-shared ) \
         --enable-pthreads \
         --disable-w32threads \
-        --x86asmexe='$(TARGET)-yasm' \
         --extra-libs='-mconsole' \
         --disable-debug \
         --disable-doc \
