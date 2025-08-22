@@ -1,5 +1,5 @@
 diff --git a/libavcodec/pngenc.c b/libavcodec/pngenc.c
-index cb79c04..302e082 100644
+index 9bbb826..650c488 100644
 --- a/libavcodec/pngenc.c
 +++ b/libavcodec/pngenc.c
 @@ -39,6 +39,7 @@
@@ -11,7 +11,7 @@ index cb79c04..302e082 100644
  #define IOBUF_SIZE 4096
  
 diff --git a/libavcodec/rasc.c b/libavcodec/rasc.c
-index 7b0251c..ec77e30 100644
+index a8e00a4..1cdd86f 100644
 --- a/libavcodec/rasc.c
 +++ b/libavcodec/rasc.c
 @@ -33,6 +33,7 @@
@@ -35,7 +35,7 @@ index e0329e2..b0d1a9a 100644
  
  #define BUFFER_CAPACITY         (4 * 1024 * 1024)
 diff --git a/libavformat/cache.c b/libavformat/cache.c
-index 5d71e56..2662331 100644
+index 0d68221..fdb5891 100644
 --- a/libavformat/cache.c
 +++ b/libavformat/cache.c
 @@ -40,6 +40,7 @@
@@ -47,7 +47,7 @@ index 5d71e56..2662331 100644
  #include <sys/stat.h>
  #include <stdlib.h>
 diff --git a/libavformat/file.c b/libavformat/file.c
-index 6a66040..c710a3c 100644
+index a6eceff..f476815 100644
 --- a/libavformat/file.c
 +++ b/libavformat/file.c
 @@ -36,6 +36,7 @@
@@ -59,7 +59,7 @@ index 6a66040..c710a3c 100644
  #include <sys/stat.h>
  #include <stdlib.h>
 diff --git a/libavformat/hlsenc.c b/libavformat/hlsenc.c
-index 081d91f..de9595c 100644
+index d3db830..6b29f93 100644
 --- a/libavformat/hlsenc.c
 +++ b/libavformat/hlsenc.c
 @@ -26,6 +26,7 @@
@@ -71,10 +71,10 @@ index 081d91f..de9595c 100644
  
  #include "libavutil/avassert.h"
 diff --git a/libavformat/http.c b/libavformat/http.c
-index ec60bc0..1877f62 100644
+index 0d40775..766056f 100644
 --- a/libavformat/http.c
 +++ b/libavformat/http.c
-@@ -25,6 +25,7 @@
+@@ -27,6 +27,7 @@
  #include <time.h>
  #if CONFIG_ZLIB
  #include <zlib.h>
@@ -83,7 +83,7 @@ index ec60bc0..1877f62 100644
  
  #include "libavutil/avassert.h"
 diff --git a/libavformat/id3v2.c b/libavformat/id3v2.c
-index 3507885..ba13877 100644
+index 037d1a2..d52dca1 100644
 --- a/libavformat/id3v2.c
 +++ b/libavformat/id3v2.c
 @@ -30,6 +30,7 @@
@@ -95,10 +95,10 @@ index 3507885..ba13877 100644
  
  #include "libavutil/avstring.h"
 diff --git a/libavformat/matroskadec.c b/libavformat/matroskadec.c
-index efa3e44..3f6c9cf 100644
+index 1e0c75c..ea4a1ca 100644
 --- a/libavformat/matroskadec.c
 +++ b/libavformat/matroskadec.c
-@@ -77,6 +77,7 @@
+@@ -76,6 +76,7 @@
  #if CONFIG_ZLIB
  #include <zlib.h>
  #endif
@@ -107,10 +107,10 @@ index efa3e44..3f6c9cf 100644
  #include "qtpalette.h"
  
 diff --git a/libavformat/mov.c b/libavformat/mov.c
-index 41ca280..0bb6557 100644
+index b29c41a..0155171 100644
 --- a/libavformat/mov.c
 +++ b/libavformat/mov.c
-@@ -71,6 +71,7 @@
+@@ -72,6 +72,7 @@
  
  #if CONFIG_ZLIB
  #include <zlib.h>
@@ -119,7 +119,7 @@ index 41ca280..0bb6557 100644
  
  #include "qtpalette.h"
 diff --git a/libavformat/network.h b/libavformat/network.h
-index ca21408..1c9e563 100644
+index 7c72c90..7d9884b 100644
 --- a/libavformat/network.h
 +++ b/libavformat/network.h
 @@ -32,6 +32,7 @@
@@ -131,7 +131,7 @@ index ca21408..1c9e563 100644
  
  #if HAVE_WINSOCK2_H
 diff --git a/libavutil/cpu.c b/libavutil/cpu.c
-index 44cbb9e..d68c6d1 100644
+index 8f9b785..3688760 100644
 --- a/libavutil/cpu.c
 +++ b/libavutil/cpu.c
 @@ -47,6 +47,7 @@
@@ -143,7 +143,7 @@ index 44cbb9e..d68c6d1 100644
  
  #if HAVE_GETAUXVAL || HAVE_ELF_AUX_INFO
 diff --git a/libavutil/file.c b/libavutil/file.c
-index db85072..29b2d21 100644
+index 4ef940a..b509da5 100644
 --- a/libavutil/file.c
 +++ b/libavutil/file.c
 @@ -27,6 +27,7 @@
@@ -167,10 +167,10 @@ index 4692035..010529b 100644
  #if HAVE_IO_H
  #include <io.h>
 diff --git a/libavutil/log.h b/libavutil/log.h
-index ab7ceab..abe041f 100644
+index 4a111ca..429197a 100644
 --- a/libavutil/log.h
 +++ b/libavutil/log.h
-@@ -63,6 +63,7 @@ struct AVOptionRanges;
+@@ -73,6 +73,7 @@ struct AVOptionRanges;
   * arbitrary struct of which the first field is a pointer to an
   * AVClass struct (e.g. AVCodecContext, AVFormatContext etc.).
   */
