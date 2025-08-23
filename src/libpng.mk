@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := 4df396518620a7aa3651443e87d1b2862e4e88cad135a8b93423e01706232
 $(PKG)_SUBDIR   := libpng-$($(PKG)_VERSION)
 $(PKG)_FILE     := libpng-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://$(SOURCEFORGE_MIRROR)/project/libpng/libpng16/$($(PKG)_VERSION)/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc zlib
+$(PKG)_DEPS     := cc zlib getopt-win
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://sourceforge.net/p/libpng/code/ref/master/tags/' | \

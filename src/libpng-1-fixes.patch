@@ -1,0 +1,24 @@
+diff --git a/contrib/tools/pngcp.c b/contrib/tools/pngcp.c
+index cf621fa..6a75243 100644
+--- a/contrib/tools/pngcp.c
++++ b/contrib/tools/pngcp.c
+@@ -269,16 +269,16 @@ vl_windowBits_IDAT[] =
+ };
+ #endif /* IDAT compression */
+ 
+-typedef struct option
++typedef struct png_option
+ {
+    const char       *name;         /* name of the option */
+    png_uint_32       opt;          /* an option, or OPTION or LIST */
+    png_byte          search;       /* Search on --search */
+    png_byte          value_count;  /* length of the list of values: */
+    const value_list *values;       /* values for OPTION or LIST */
+-}  option;
++}  png_option;
+ 
+-static const option options[] =
++static const png_option options[] =
+ {
+    /* struct display options, these are set when the command line is read */
+ #  define S(n,v) { #n, v, 0, 2, vl_on_off },
