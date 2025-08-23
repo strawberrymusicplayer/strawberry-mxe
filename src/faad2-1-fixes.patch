@@ -1,0 +1,12 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 97b61cc..c5090ea 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -148,6 +148,7 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/neaacdec.h
+ 
+ foreach(LIB faad faad_drm faad_fixed faad_drm_fixed)
+   add_library(${LIB} ${LIBFAAD_SOURCES})
++  target_link_libraries(${LIB} PUBLIC getopt)
+   if(MATH_LIBRARY)
+     target_link_libraries(${LIB} PUBLIC ${MATH_LIBRARY})
+   endif()

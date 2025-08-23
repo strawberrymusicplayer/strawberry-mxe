@@ -7,7 +7,7 @@ $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 2.11.2
 $(PKG)_CHECKSUM := 3fcbd305e4abd34768c62050e18ca0986f7d9c5eca343fb98275418013065c0e
 $(PKG)_GH_CONF  := knik0/faad2/releases/latest
-$(PKG)_DEPS     := cc
+$(PKG)_DEPS     := cc getopt-win
 
 define $(PKG)_BUILD
     '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \

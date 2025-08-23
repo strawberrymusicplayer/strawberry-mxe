@@ -10,7 +10,7 @@ $(PKG)_GH_CONF  := tukaani-project/xz/releases/latest, v
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://github.com/tukaani-project/$(PKG)/releases/download/v$($(PKG)_VERSION)/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc
+$(PKG)_DEPS     := cc getopt-win
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
@@ -18,7 +18,8 @@ define $(PKG)_BUILD
         --enable-threads=$(if $(findstring win32,$(MXE_GCC_THREADS)),vista,posix) \
         --disable-rpath \
         --disable-nls \
-        --disable-doc
+        --disable-doc \
+        LDFLAGS='$(LDFLAGS) -lgetopt'
     $(MAKE) -C '$(BUILD_DIR)' src/liblzma -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' src/liblzma -j 1 install
 endef

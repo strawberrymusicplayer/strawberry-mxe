@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := 0c8da2f11579a01e014fc007cbacf5bb4da1d06afd0b43c7f8097ec7c0f14
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_URL      := https://ffmpeg.org/releases/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc yasm zlib bzip2 gnutls wavpack libvorbis libopus speex lame libcdio
+$(PKG)_DEPS     := cc yasm zlib bzip2 gnutls wavpack libvorbis libopus speex lame libcdio getopt-win
 
 # DO NOT ADD fdk-aac.
 # Although it is free software, the license is not compatible with the GPL, and we'd like to enable GPL in our default ffmpeg build.
@@ -24,7 +24,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
+    cd '$(BUILD_DIR)' && LDFLAGS='$(LDFLAGS) -lgetopt' '$(SOURCE_DIR)/configure' \
         --cross-prefix='$(TARGET)'- \
         --enable-cross-compile \
         --arch=$(firstword $(subst -, ,$(TARGET))) \
