@@ -4,8 +4,8 @@ PKG             := getopt-win
 $(PKG)_WEBSITE  := https://github.com/ludvikjerabek/getopt-win
 $(PKG)_DESCR    := Full getopt port for unicode and multibyte windows applications
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := c620fc7
-$(PKG)_CHECKSUM := aa4d5914d2e10d313f2333c340d61066f5c6c8ed0f073a6c6a2b8f15eaea1a28
+$(PKG)_VERSION  := 5d16202
+$(PKG)_CHECKSUM := 1961922194544e71a21005f2132a647e7faac905cf18b1f68d38b7e1c64e2518
 $(PKG)_GH_CONF  := ludvikjerabek/getopt-win/branches/main
 $(PKG)_DEPS     := cc
 
