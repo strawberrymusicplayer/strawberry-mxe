@@ -4,8 +4,8 @@ PKG             := utfcpp
 $(PKG)_WEBSITE  := https://github.com/nemtrif/utfcpp
 $(PKG)_DESCR    := UTF-8 with C++ in a Portable Way
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 4.0.7
-$(PKG)_CHECKSUM := 1afaa8090eea45ed81625ad3df3bf485f28abbb4393eca28b23d8a01880b34a6
+$(PKG)_VERSION  := 4.0.8
+$(PKG)_CHECKSUM := f808b26d8c3a59def27fea207182ece77a8930bd121a69f80d328ecf3cfef925
 $(PKG)_GH_CONF  := nemtrif/utfcpp/releases/latest, v
 $(PKG)_DEPS     := cc
 
