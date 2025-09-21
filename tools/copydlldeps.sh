@@ -338,10 +338,18 @@ fi
         touch "$tmp/$bn"
         return 0
     fi
-    $OBJDUMP -p "$path" | grep 'DLL Name:' | cut -f3 -d' ' > "$tmp/$bn"
-    echo "executing: $OBJDUMP -p "$path" | grep 'DLL Name:' | cut -f3 -d' ' > "$tmp/$bn""
-    for dll in $( cat "$tmp/$bn" | tr '\n' ' ' ); do
-        append_deps "$dll"
+
+    which peldd >/dev/null 2>&1
+    if [ $? -eq 0 ]; then
+      echo "executing: peldd "$path" > "$tmp/$bn""
+      peldd "$path" > "$tmp/$bn"
+    else
+      echo "executing: objdump -p "$path" | grep 'DLL Name:' | cut -f3 -d' ' > "$tmp/$bn""
+      $OBJDUMP -p "$path" | grep 'DLL Name:' | cut -f3 -d' ' > "$tmp/$bn"
+    fi
+
+    for dll in $(cat "$tmp/$bn" | tr '\n' ' '); do
+      append_deps "$dll"
     done
     alldeps=$(printf "$alldeps\n%s" "$(cat $tmp/$bn)" | sort | uniq)
 }
