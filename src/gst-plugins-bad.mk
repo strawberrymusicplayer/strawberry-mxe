@@ -46,6 +46,7 @@ define $(PKG)_BUILD
         -Dopenmpt=enabled \
         -Dopus=enabled \
         -Dwasapi=enabled \
+        -Dwasapi2=enabled \
         -Dasio=enabled \
         -Dhls=enabled \
         -Dhls-crypto=libgcrypt \
