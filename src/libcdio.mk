@@ -4,8 +4,8 @@ PKG             := libcdio
 $(PKG)_WEBSITE  := https://www.gnu.org/software/libcdio/
 $(PKG)_DESCR    := GNU Compact Disc Input and Control Library
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.2.0
-$(PKG)_CHECKSUM := 1b6c58137f71721ddb78773432d26252ee6500d92d227d4c4892631c30ea7abb
+$(PKG)_VERSION  := 2.3.0
+$(PKG)_CHECKSUM := 37bcb13296febbcff9dc4485834bac09212cb463c31fcea52f70ee1dd3a5a5de
 $(PKG)_GH_CONF  := libcdio/libcdio/releases/latest
 $(PKG)_DEPS     := cc getopt-win
 
