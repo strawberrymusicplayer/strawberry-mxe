@@ -4,12 +4,11 @@ PKG             := glib
 $(PKG)_WEBSITE  := https://docs.gtk.org/glib/
 $(PKG)_DESCR    := GLib general-purpose, portable utility library
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.87.0
-$(PKG)_CHECKSUM := 926cf73d8eb90ea341cc2d6fc7b258901e1a086a3808b166b4476d69a98b2401
+$(PKG)_VERSION  := 2.87.1
+$(PKG)_CHECKSUM := fc2ce0f948ee163f8adc5bdde2f38612b8a3f270022aa1b0d087cb9f1f0ac5c2
 $(PKG)_SUBDIR   := glib-$($(PKG)_VERSION)
 $(PKG)_FILE     := glib-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/glib/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
-$(PKG)_URL_2    := https://gitlab.gnome.org/GNOME/glib/-/archive/$($(PKG)_VERSION)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc meson-conf dbus gettext libffi libiconv pcre2 zlib $(BUILD)~$(PKG)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
