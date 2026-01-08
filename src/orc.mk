@@ -4,8 +4,8 @@ PKG             := orc
 $(PKG)_WEBSITE  := https://gstreamer.freedesktop.org/projects/orc.html
 $(PKG)_DESCR    := ORC Acceleration
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 0.4.41
-$(PKG)_CHECKSUM := cb1bfd4f655289cd39bc04642d597be9de5427623f0861c1fc19c08d98467fa2
+$(PKG)_VERSION  := 0.4.42
+$(PKG)_CHECKSUM := 7ec912ab59af3cc97874c456a56a8ae1eec520c385ec447e8a102b2bd122c90c
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
@@ -23,7 +23,6 @@ define $(PKG)_BUILD
         --buildtype='$(MESON_BUILD_TYPE)' \
         -Dbenchmarks=disabled \
         -Dexamples=disabled \
-        -Dgtk_doc=disabled \
         -Dtests=disabled \
         -Dtools=disabled \
         '$(BUILD_DIR)'
