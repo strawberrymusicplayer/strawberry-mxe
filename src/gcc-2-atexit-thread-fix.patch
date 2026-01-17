@@ -20,3 +20,6 @@ diff --git a/libstdc++-v3/libsupc++/atexit_thread.cc b/libstdc++-v3/libsupc++/at
  	struct elt_t *next = elt->head->next;
  	elt->head->func (elt->head->obj);
  	free (elt->head);
+ 	elt->head = next;
+       }
+   }
