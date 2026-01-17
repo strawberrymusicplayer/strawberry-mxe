@@ -1,7 +1,7 @@
 diff --git a/libstdc++-v3/libsupc++/atexit_thread.cc b/libstdc++-v3/libsupc++/atexit_thread.cc
 --- a/libstdc++-v3/libsupc++/atexit_thread.cc
 +++ b/libstdc++-v3/libsupc++/atexit_thread.cc
-@@ -95,9 +95,17 @@ namespace {
+@@ -95,9 +95,18 @@ namespace {
    void run (void *p)
    {
      auto elt = (__cxxabiv1::__cxa_thread_info*)p;
@@ -13,7 +13,9 @@ diff --git a/libstdc++-v3/libsupc++/atexit_thread.cc b/libstdc++-v3/libsupc++/at
      while (elt->head)
        {
 +#if defined(__MINGW32__) && !defined(_GLIBCXX_HAS_GTHREADS)
-+	if (!elt->head->func) break;
++	// Additional safety check for corrupted atexit chain
++	if (!elt->head->func)
++	  break;
 +#endif
  	struct elt_t *next = elt->head->next;
  	elt->head->func (elt->head->obj);
