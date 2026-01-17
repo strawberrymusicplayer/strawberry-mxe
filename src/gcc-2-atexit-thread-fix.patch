@@ -14,7 +14,7 @@ diff --git a/libstdc++-v3/libsupc++/atexit_thread.cc b/libstdc++-v3/libsupc++/at
        {
 +#if defined(__MINGW32__) && !defined(_GLIBCXX_HAS_GTHREADS)
 +	// Additional safety check for corrupted atexit chain
-+	if (!elt->head->func)
++	if (!elt->head || !elt->head->func)
 +	  break;
 +#endif
  	struct elt_t *next = elt->head->next;
