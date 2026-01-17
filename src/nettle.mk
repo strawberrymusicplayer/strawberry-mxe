@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := ccfeff981b0ca71bbd6fbcb054f407c60ffb644389a5be80d6716d5b550c6
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://www.lysator.liu.se/~nisse/archive/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc gmp
+$(PKG)_DEPS     := cc gmp getopt-win
 $(PKG)_OO_DEPS   = $(BUILD)~autotools
 
 define $(PKG)_UPDATE
