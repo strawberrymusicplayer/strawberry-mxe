@@ -1,7 +1,7 @@
 diff --git a/libstdc++-v3/libsupc++/atexit_thread.cc b/libstdc++-v3/libsupc++/atexit_thread.cc
 --- a/libstdc++-v3/libsupc++/atexit_thread.cc
 +++ b/libstdc++-v3/libsupc++/atexit_thread.cc
-@@ -95,9 +95,18 @@ namespace {
+@@ -95,11 +95,21 @@ namespace {
    void run (void *p)
    {
      auto elt = (__cxxabiv1::__cxa_thread_info*)p;
