@@ -10,6 +10,8 @@ $(PKG)_URL      := https://download.qt.io/official_releases/qt/$(call SHORT_PKG_
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS     := cc qt6-qtbase jasper libwebp tiff
 
+$(PKG)_UPDATE = $(qt6-qtbase_UPDATE)
+
 define $(PKG)_BUILD
     $(QT6_CMAKE) --log-level="DEBUG" -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
         -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
