@@ -1,0 +1,26 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 179f782..ff82840 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -155,6 +155,8 @@ include(LibraryFeatures)
+ # math.h/libm portability
+ find_package(CMath REQUIRED)
+ 
++find_package(getopt REQUIRED)
++
+ # Release support
+ include(Release)
+ 
+diff --git a/libtiff/CMakeLists.txt b/libtiff/CMakeLists.txt
+index 2d76d1e..90e59c8 100755
+--- a/libtiff/CMakeLists.txt
++++ b/libtiff/CMakeLists.txt
+@@ -184,6 +184,8 @@ if(CMath_LIBRARY)
+   list(APPEND tiff_libs_private_list "${CMath_LIBRARY}")
+ endif()
+ 
++target_link_libraries(tiff PUBLIC getopt::getopt_shared)
++
+ set(tiff_libs_private_list "${tiff_libs_private_list}" PARENT_SCOPE)
+ set(tiff_requires_private "${tiff_requires_private}" PARENT_SCOPE)
+ 
