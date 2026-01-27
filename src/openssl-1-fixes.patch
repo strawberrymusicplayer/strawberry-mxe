@@ -1,0 +1,13 @@
+diff --git a/ssl/quic/quic_reactor.c b/ssl/quic/quic_reactor.c
+index 1a95f13..d68adf9 100644
+--- a/ssl/quic/quic_reactor.c
++++ b/ssl/quic/quic_reactor.c
+@@ -91,7 +91,7 @@ static void rtor_configure_winsock(BIO_POLL_DESCRIPTOR *bpd)
+     if (bpd->type == BIO_POLL_DESCRIPTOR_TYPE_SOCK_FD) {
+         WSAIoctl(bpd->value.fd, SIO_UDP_CONNRESET, &bNewBehavior,
+             sizeof(bNewBehavior), NULL, 0, &dwBytesReturned, NULL, NULL);
+-        WSAIoctl(bpd->value.fd, SIO_UDP_NETRESET, &bNewBehavior,
++        WSAIoctl(bpd->value.fd, SIO_UDP_CONNRESET, &bNewBehavior,
+             sizeof(bNewBehavior), NULL, 0, &dwBytesReturned, NULL, NULL);
+     }
+ }
