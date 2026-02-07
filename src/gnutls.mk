@@ -19,7 +19,6 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && autoreconf -fi
     cd '$(1)' && ./configure \
         $(MXE_CONFIGURE_OPTS) \
         --enable-threads=posix \
