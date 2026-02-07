@@ -1,23 +1,773 @@
-This file is part of MXE. See LICENSE.md for licensing information.
-
-Contains ad hoc patches for cross building.
-
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Jonas Kvinge <jonas@jkvinge.net>
-Date: Mon, 12 Jul 2021 14:08:54 +0200
-Subject: [PATCH 1/1] Define GNUTLS_INTERNAL_BUILD
-
-
-diff --git a/lib/includes/gnutls/gnutls.h.in b/lib/includes/gnutls/gnutls.h.in
-index 1111111..2222222 100644
---- a/lib/includes/gnutls/gnutls.h.in
-+++ b/lib/includes/gnutls/gnutls.h.in
-@@ -64,6 +64,8 @@ extern "C" {
- #define GNUTLS_CIPHER_RIJNDAEL_CBC GNUTLS_CIPHER_AES_128_CBC
- #define GNUTLS_CIPHER_ARCFOUR GNUTLS_CIPHER_ARCFOUR_128
+diff --git a/lib/accelerated/aarch64/aarch64-common.h b/lib/accelerated/aarch64/aarch64-common.h
+index fde4fd9..21f7b9e 100644
+--- a/lib/accelerated/aarch64/aarch64-common.h
++++ b/lib/accelerated/aarch64/aarch64-common.h
+@@ -28,7 +28,7 @@
+ 	{ #name,                                      \
+ 	  sizeof(struct name##_ctx),                  \
+ 	  NAME##_DIGEST_SIZE,                         \
+-	  NAME##_DATA_SIZE,                           \
++	  NAME##_BLOCK_SIZE,                           \
+ 	  (nettle_hash_init_func *)name##_init,       \
+ 	  (nettle_hash_update_func *)update_func,     \
+ 	  (nettle_hash_digest_func *)digest_func }
+diff --git a/lib/accelerated/aarch64/hmac-sha-aarch64.c b/lib/accelerated/aarch64/hmac-sha-aarch64.c
+index 46bf1ca..07f16e6 100644
+--- a/lib/accelerated/aarch64/hmac-sha-aarch64.c
++++ b/lib/accelerated/aarch64/hmac-sha-aarch64.c
+@@ -28,7 +28,7 @@
+ #include "gnutls_int.h"
+ #include "hash_int.h"
+ #include "errors.h"
+-#include <nettle/sha.h>
++#include <nettle/sha1.h>
+ #include <nettle/hmac.h>
+ #include <nettle/macros.h>
+ #include "sha-aarch64.h"
+@@ -60,7 +60,7 @@ struct aarch64_hmac_ctx {
+ static void aarch64_hmac_sha1_set_key(struct hmac_sha1_ctx *ctx,
+ 				      size_t key_length, const uint8_t *key)
+ {
+-	HMAC_SET_KEY(ctx, &aarch64_sha1, key_length, key);
++	hmac_sha1_set_key(ctx, key_length, key);
+ }
  
-+#define GNUTLS_INTERNAL_BUILD 1
-+
- #if !defined(GNUTLS_INTERNAL_BUILD) && defined(_WIN32)
- # define _SYM_EXPORT __declspec(dllimport)
- #else
+ static void aarch64_hmac_sha1_update(struct hmac_sha1_ctx *ctx, size_t length,
+@@ -78,7 +78,7 @@ static void aarch64_hmac_sha1_digest(struct hmac_sha1_ctx *ctx, size_t length,
+ static void aarch64_hmac_sha256_set_key(struct hmac_sha256_ctx *ctx,
+ 					size_t key_length, const uint8_t *key)
+ {
+-	HMAC_SET_KEY(ctx, &aarch64_sha256, key_length, key);
++	hmac_sha256_set_key(ctx, key_length, key);
+ }
+ 
+ static void aarch64_hmac_sha256_update(struct hmac_sha256_ctx *ctx,
+@@ -96,7 +96,7 @@ static void aarch64_hmac_sha256_digest(struct hmac_sha256_ctx *ctx,
+ static void aarch64_hmac_sha224_set_key(struct hmac_sha224_ctx *ctx,
+ 					size_t key_length, const uint8_t *key)
+ {
+-	HMAC_SET_KEY(ctx, &aarch64_sha224, key_length, key);
++	hmac_sha224_set_key(ctx, key_length, key);
+ }
+ 
+ static void aarch64_hmac_sha224_digest(struct hmac_sha224_ctx *ctx,
+@@ -108,7 +108,7 @@ static void aarch64_hmac_sha224_digest(struct hmac_sha224_ctx *ctx,
+ static void aarch64_hmac_sha384_set_key(struct hmac_sha384_ctx *ctx,
+ 					size_t key_length, const uint8_t *key)
+ {
+-	HMAC_SET_KEY(ctx, &aarch64_sha384, key_length, key);
++	hmac_sha384_set_key(ctx, key_length, key);
+ }
+ 
+ static void aarch64_hmac_sha384_digest(struct hmac_sha384_ctx *ctx,
+@@ -120,7 +120,7 @@ static void aarch64_hmac_sha384_digest(struct hmac_sha384_ctx *ctx,
+ static void aarch64_hmac_sha512_set_key(struct hmac_sha512_ctx *ctx,
+ 					size_t key_length, const uint8_t *key)
+ {
+-	HMAC_SET_KEY(ctx, &aarch64_sha512, key_length, key);
++	hmac_sha512_set_key(ctx, key_length, key);
+ }
+ 
+ static void aarch64_hmac_sha512_update(struct hmac_sha512_ctx *ctx,
+diff --git a/lib/accelerated/aarch64/sha-aarch64.c b/lib/accelerated/aarch64/sha-aarch64.c
+index 725dd54..f6ab807 100644
+--- a/lib/accelerated/aarch64/sha-aarch64.c
++++ b/lib/accelerated/aarch64/sha-aarch64.c
+@@ -25,7 +25,7 @@
+ #include "gnutls_int.h"
+ #include <gnutls/crypto.h>
+ #include "errors.h"
+-#include <nettle/sha.h>
++#include <nettle/sha1.h>
+ #include <nettle/macros.h>
+ #include <nettle/nettle-meta.h>
+ #include "sha-aarch64.h"
+@@ -84,7 +84,7 @@ void aarch64_sha1_update(struct sha1_ctx *ctx, size_t length,
+ 	unsigned t2, i;
+ 
+ 	if ((res = ctx->index)) {
+-		res = SHA1_DATA_SIZE - res;
++		res = SHA1_BLOCK_SIZE - res;
+ 		if (length < res)
+ 			res = length;
+ 		sha1_update(ctx, res, data);
+@@ -98,14 +98,14 @@ void aarch64_sha1_update(struct sha1_ctx *ctx, size_t length,
+ 	octx.h3 = ctx->state[3];
+ 	octx.h4 = ctx->state[4];
+ 
+-	memcpy(octx.data, ctx->block, SHA1_DATA_SIZE);
++	memcpy(octx.data, ctx->block, SHA1_BLOCK_SIZE);
+ 	octx.num = ctx->index;
+ 
+-	res = length % SHA1_DATA_SIZE;
++	res = length % SHA1_BLOCK_SIZE;
+ 	length -= res;
+ 
+ 	if (length > 0) {
+-		t2 = length / SHA1_DATA_SIZE;
++		t2 = length / SHA1_BLOCK_SIZE;
+ 
+ 		sha1_block_data_order(&octx, data, t2);
+ 
+@@ -142,7 +142,7 @@ void aarch64_sha256_update(struct sha256_ctx *ctx, size_t length,
+ 	unsigned t2, i;
+ 
+ 	if ((res = ctx->index)) {
+-		res = SHA256_DATA_SIZE - res;
++		res = SHA256_BLOCK_SIZE - res;
+ 		if (length < res)
+ 			res = length;
+ 		sha256_update(ctx, res, data);
+@@ -151,14 +151,14 @@ void aarch64_sha256_update(struct sha256_ctx *ctx, size_t length,
+ 	}
+ 
+ 	memcpy(octx.h, ctx->state, sizeof(octx.h));
+-	memcpy(octx.data, ctx->block, SHA256_DATA_SIZE);
++	memcpy(octx.data, ctx->block, SHA256_BLOCK_SIZE);
+ 	octx.num = ctx->index;
+ 
+-	res = length % SHA256_DATA_SIZE;
++	res = length % SHA256_BLOCK_SIZE;
+ 	length -= res;
+ 
+ 	if (length > 0) {
+-		t2 = length / SHA1_DATA_SIZE;
++		t2 = length / SHA1_BLOCK_SIZE;
+ 		sha256_block_data_order(&octx, data, t2);
+ 
+ 		for (i = 0; i < t2; i++)
+@@ -193,7 +193,7 @@ void aarch64_sha512_update(struct sha512_ctx *ctx, size_t length,
+ 	unsigned t2, i;
+ 
+ 	if ((res = ctx->index)) {
+-		res = SHA512_DATA_SIZE - res;
++		res = SHA512_BLOCK_SIZE - res;
+ 		if (length < res)
+ 			res = length;
+ 		sha512_update(ctx, res, data);
+@@ -202,14 +202,14 @@ void aarch64_sha512_update(struct sha512_ctx *ctx, size_t length,
+ 	}
+ 
+ 	memcpy(octx.h, ctx->state, sizeof(octx.h));
+-	memcpy(octx.u.p, ctx->block, SHA512_DATA_SIZE);
++	memcpy(octx.u.p, ctx->block, SHA512_BLOCK_SIZE);
+ 	octx.num = ctx->index;
+ 
+-	res = length % SHA512_DATA_SIZE;
++	res = length % SHA512_BLOCK_SIZE;
+ 	length -= res;
+ 
+ 	if (length > 0) {
+-		t2 = length / SHA512_DATA_SIZE;
++		t2 = length / SHA512_BLOCK_SIZE;
+ 		sha512_block_data_order(&octx, data, t2);
+ 
+ 		for (i = 0; i < t2; i++)
+diff --git a/lib/accelerated/aarch64/sha-aarch64.h b/lib/accelerated/aarch64/sha-aarch64.h
+index 25eb4f3..c669d86 100644
+--- a/lib/accelerated/aarch64/sha-aarch64.h
++++ b/lib/accelerated/aarch64/sha-aarch64.h
+@@ -1,7 +1,7 @@
+ #ifndef GNUTLS_LIB_ACCELERATED_AARCH64_SHA_AARCH64_H
+ #define GNUTLS_LIB_ACCELERATED_AARCH64_SHA_AARCH64_H
+ 
+-#include <nettle/sha.h>
++#include <nettle/sha1.h>
+ 
+ extern const struct nettle_hash aarch64_sha1;
+ extern const struct nettle_hash aarch64_sha224;
+diff --git a/lib/accelerated/x86/aes-gcm-padlock.c b/lib/accelerated/x86/aes-gcm-padlock.c
+index 7dbe572..fd923e2 100644
+--- a/lib/accelerated/x86/aes-gcm-padlock.c
++++ b/lib/accelerated/x86/aes-gcm-padlock.c
+@@ -177,7 +177,9 @@ static void aes_gcm_tag(void *_ctx, void *tag, size_t tagsize)
+ {
+ 	struct gcm_padlock_aes_ctx *ctx = _ctx;
+ 
+-	GCM_DIGEST(&ctx->inner, padlock_aes_encrypt, tagsize, tag);
++	uint8_t fulltag[tagsize];
++	gcm_aes128_digest(&ctx->inner, fulltag);
++	memcpy(tag, fulltag, tagsize);
+ }
+ 
+ #include "aes-gcm-aead.h"
+diff --git a/lib/accelerated/x86/aes-gcm-x86-aesni.c b/lib/accelerated/x86/aes-gcm-x86-aesni.c
+index 8f0d23e..be9453e 100644
+--- a/lib/accelerated/x86/aes-gcm-x86-aesni.c
++++ b/lib/accelerated/x86/aes-gcm-x86-aesni.c
+@@ -169,7 +169,9 @@ static void aes_gcm_tag(void *_ctx, void *tag, size_t tagsize)
+ {
+ 	struct gcm_x86_aes_ctx *ctx = _ctx;
+ 
+-	GCM_DIGEST(&ctx->inner, x86_aes_encrypt, tagsize, tag);
++	uint8_t fulltag[tagsize];
++	gcm_aes128_digest(&ctx->inner, fulltag);
++	memcpy(tag, fulltag, tagsize);
+ }
+ 
+ static void aes_gcm_deinit(void *_ctx)
+diff --git a/lib/accelerated/x86/aes-gcm-x86-ssse3.c b/lib/accelerated/x86/aes-gcm-x86-ssse3.c
+index bb2fe37..31a2b21 100644
+--- a/lib/accelerated/x86/aes-gcm-x86-ssse3.c
++++ b/lib/accelerated/x86/aes-gcm-x86-ssse3.c
+@@ -178,7 +178,9 @@ static void aes_gcm_tag(void *_ctx, void *tag, size_t tagsize)
+ {
+ 	struct gcm_x86_aes_ctx *ctx = _ctx;
+ 
+-	GCM_DIGEST(&ctx->inner, x86_aes_encrypt, tagsize, tag);
++	uint8_t fulltag[tagsize];
++	gcm_aes128_digest(&ctx->inner, fulltag);
++	memcpy(tag, fulltag, tagsize);
+ }
+ 
+ static void aes_gcm_deinit(void *_ctx)
+diff --git a/lib/accelerated/x86/hmac-padlock.c b/lib/accelerated/x86/hmac-padlock.c
+index 8da42b3..6a992b6 100644
+--- a/lib/accelerated/x86/hmac-padlock.c
++++ b/lib/accelerated/x86/hmac-padlock.c
+@@ -27,7 +27,7 @@
+ #include "gnutls_int.h"
+ #include "hash_int.h"
+ #include "errors.h"
+-#include <nettle/sha.h>
++#include <nettle/sha1.h>
+ #include <nettle/hmac.h>
+ #include <nettle/macros.h>
+ #include <nettle/memxor.h>
+@@ -65,7 +65,7 @@ struct padlock_hmac_ctx {
+ static void padlock_hmac_sha1_set_key(struct hmac_sha1_ctx *ctx,
+ 				      size_t key_length, const uint8_t *key)
+ {
+-	HMAC_SET_KEY(ctx, &padlock_sha1, key_length, key);
++	hmac_sha1_set_key(ctx, key_length, key);
+ }
+ 
+ static void padlock_hmac_sha1_update(struct hmac_sha1_ctx *ctx, size_t length,
+@@ -77,13 +77,13 @@ static void padlock_hmac_sha1_update(struct hmac_sha1_ctx *ctx, size_t length,
+ static void padlock_hmac_sha1_digest(struct hmac_sha1_ctx *ctx, size_t length,
+ 				     uint8_t *digest)
+ {
+-	HMAC_DIGEST(ctx, &padlock_sha1, length, digest);
++	hmac_sha1_digest(ctx, digest);
+ }
+ 
+ static void padlock_hmac_sha256_set_key(struct hmac_sha256_ctx *ctx,
+ 					size_t key_length, const uint8_t *key)
+ {
+-	HMAC_SET_KEY(ctx, &padlock_sha256, key_length, key);
++	hmac_sha256_set_key(ctx, key_length, key);
+ }
+ 
+ static void padlock_hmac_sha256_update(struct hmac_sha256_ctx *ctx,
+@@ -95,37 +95,37 @@ static void padlock_hmac_sha256_update(struct hmac_sha256_ctx *ctx,
+ static void padlock_hmac_sha256_digest(struct hmac_sha256_ctx *ctx,
+ 				       size_t length, uint8_t *digest)
+ {
+-	HMAC_DIGEST(ctx, &padlock_sha256, length, digest);
++	hmac_sha256_digest(ctx, digest);
+ }
+ 
+ static void padlock_hmac_sha224_set_key(struct hmac_sha224_ctx *ctx,
+ 					size_t key_length, const uint8_t *key)
+ {
+-	HMAC_SET_KEY(ctx, &padlock_sha224, key_length, key);
++	hmac_sha224_set_key(ctx, key_length, key);
+ }
+ 
+ static void padlock_hmac_sha224_digest(struct hmac_sha224_ctx *ctx,
+ 				       size_t length, uint8_t *digest)
+ {
+-	HMAC_DIGEST(ctx, &padlock_sha224, length, digest);
++	hmac_sha224_digest(ctx, digest);
+ }
+ 
+ static void padlock_hmac_sha384_set_key(struct hmac_sha384_ctx *ctx,
+ 					size_t key_length, const uint8_t *key)
+ {
+-	HMAC_SET_KEY(ctx, &padlock_sha384, key_length, key);
++	hmac_sha384_set_key(ctx, key_length, key);
+ }
+ 
+ static void padlock_hmac_sha384_digest(struct hmac_sha384_ctx *ctx,
+ 				       size_t length, uint8_t *digest)
+ {
+-	HMAC_DIGEST(ctx, &padlock_sha384, length, digest);
++	hmac_sha384_digest(ctx, digest);
+ }
+ 
+ static void padlock_hmac_sha512_set_key(struct hmac_sha512_ctx *ctx,
+ 					size_t key_length, const uint8_t *key)
+ {
+-	HMAC_SET_KEY(ctx, &padlock_sha512, key_length, key);
++	hmac_sha512_set_key(ctx, key_length, key);
+ }
+ 
+ static void padlock_hmac_sha512_update(struct hmac_sha512_ctx *ctx,
+@@ -137,7 +137,7 @@ static void padlock_hmac_sha512_update(struct hmac_sha512_ctx *ctx,
+ static void padlock_hmac_sha512_digest(struct hmac_sha512_ctx *ctx,
+ 				       size_t length, uint8_t *digest)
+ {
+-	HMAC_DIGEST(ctx, &padlock_sha512, length, digest);
++	hmac_sha512_digest(ctx, digest);
+ }
+ 
+ static int _hmac_ctx_init(gnutls_mac_algorithm_t algo,
+@@ -280,39 +280,39 @@ static int wrap_padlock_hmac_fast(gnutls_mac_algorithm_t algo,
+ {
+ 	if (algo == GNUTLS_MAC_SHA1 || algo == GNUTLS_MAC_SHA256) {
+ 		unsigned char *pad;
+-		unsigned char pad2[SHA1_DATA_SIZE + MAX_SHA_DIGEST_SIZE];
++		unsigned char pad2[SHA1_BLOCK_SIZE + MAX_SHA_DIGEST_SIZE];
+ 		unsigned char hkey[MAX_SHA_DIGEST_SIZE];
+ 		unsigned int digest_size =
+ 			_gnutls_mac_get_algo_len(mac_to_entry(algo));
+ 
+-		if (key_size > SHA1_DATA_SIZE) {
++		if (key_size > SHA1_BLOCK_SIZE) {
+ 			wrap_padlock_hash_fast((gnutls_digest_algorithm_t)algo,
+ 					       key, key_size, hkey);
+ 			key = hkey;
+ 			key_size = digest_size;
+ 		}
+ 
+-		pad = gnutls_malloc(text_size + SHA1_DATA_SIZE);
++		pad = gnutls_malloc(text_size + SHA1_BLOCK_SIZE);
+ 		if (pad == NULL)
+ 			return gnutls_assert_val(GNUTLS_E_MEMORY_ERROR);
+ 
+-		memset(pad, IPAD, SHA1_DATA_SIZE);
++		memset(pad, IPAD, SHA1_BLOCK_SIZE);
+ 		memxor(pad, key, key_size);
+ 
+-		memcpy(&pad[SHA1_DATA_SIZE], text, text_size);
++		memcpy(&pad[SHA1_BLOCK_SIZE], text, text_size);
+ 
+ 		wrap_padlock_hash_fast((gnutls_digest_algorithm_t)algo, pad,
+-				       text_size + SHA1_DATA_SIZE,
+-				       &pad2[SHA1_DATA_SIZE]);
++				       text_size + SHA1_BLOCK_SIZE,
++				       &pad2[SHA1_BLOCK_SIZE]);
+ 
+-		zeroize_key(pad, text_size + SHA1_DATA_SIZE);
++		zeroize_key(pad, text_size + SHA1_BLOCK_SIZE);
+ 		gnutls_free(pad);
+ 
+-		memset(pad2, OPAD, SHA1_DATA_SIZE);
++		memset(pad2, OPAD, SHA1_BLOCK_SIZE);
+ 		memxor(pad2, key, key_size);
+ 
+ 		wrap_padlock_hash_fast((gnutls_digest_algorithm_t)algo, pad2,
+-				       digest_size + SHA1_DATA_SIZE, digest);
++				       digest_size + SHA1_BLOCK_SIZE, digest);
+ 
+ 		zeroize_key(pad2, sizeof(pad2));
+ 		zeroize_key(hkey, sizeof(hkey));
+diff --git a/lib/accelerated/x86/hmac-x86-ssse3.c b/lib/accelerated/x86/hmac-x86-ssse3.c
+index 9b19552..9fb69cd 100644
+--- a/lib/accelerated/x86/hmac-x86-ssse3.c
++++ b/lib/accelerated/x86/hmac-x86-ssse3.c
+@@ -27,7 +27,7 @@
+ #include "gnutls_int.h"
+ #include "hash_int.h"
+ #include "errors.h"
+-#include <nettle/sha.h>
++#include <nettle/sha1.h>
+ #include <nettle/hmac.h>
+ #include <nettle/macros.h>
+ #include "aes-x86.h"
+@@ -60,7 +60,7 @@ struct x86_hmac_ctx {
+ static void x86_hmac_sha1_set_key(struct hmac_sha1_ctx *ctx, size_t key_length,
+ 				  const uint8_t *key)
+ {
+-	HMAC_SET_KEY(ctx, &x86_sha1, key_length, key);
++	hmac_sha1_set_key(ctx, key_length, key);
+ }
+ 
+ static void x86_hmac_sha1_update(struct hmac_sha1_ctx *ctx, size_t length,
+@@ -72,13 +72,13 @@ static void x86_hmac_sha1_update(struct hmac_sha1_ctx *ctx, size_t length,
+ static void x86_hmac_sha1_digest(struct hmac_sha1_ctx *ctx, size_t length,
+ 				 uint8_t *digest)
+ {
+-	HMAC_DIGEST(ctx, &x86_sha1, length, digest);
++	hmac_sha1_digest(ctx, digest);
+ }
+ 
+ static void x86_hmac_sha256_set_key(struct hmac_sha256_ctx *ctx,
+ 				    size_t key_length, const uint8_t *key)
+ {
+-	HMAC_SET_KEY(ctx, &x86_sha256, key_length, key);
++	hmac_sha256_set_key(ctx, key_length, key);
+ }
+ 
+ static void x86_hmac_sha256_update(struct hmac_sha256_ctx *ctx, size_t length,
+@@ -90,37 +90,37 @@ static void x86_hmac_sha256_update(struct hmac_sha256_ctx *ctx, size_t length,
+ static void x86_hmac_sha256_digest(struct hmac_sha256_ctx *ctx, size_t length,
+ 				   uint8_t *digest)
+ {
+-	HMAC_DIGEST(ctx, &x86_sha256, length, digest);
++	hmac_sha256_digest(ctx, digest);
+ }
+ 
+ static void x86_hmac_sha224_set_key(struct hmac_sha224_ctx *ctx,
+ 				    size_t key_length, const uint8_t *key)
+ {
+-	HMAC_SET_KEY(ctx, &x86_sha224, key_length, key);
++	hmac_sha224_set_key(ctx, key_length, key);
+ }
+ 
+ static void x86_hmac_sha224_digest(struct hmac_sha224_ctx *ctx, size_t length,
+ 				   uint8_t *digest)
+ {
+-	HMAC_DIGEST(ctx, &x86_sha224, length, digest);
++	hmac_sha224_digest(ctx, digest);
+ }
+ 
+ static void x86_hmac_sha384_set_key(struct hmac_sha384_ctx *ctx,
+ 				    size_t key_length, const uint8_t *key)
+ {
+-	HMAC_SET_KEY(ctx, &x86_sha384, key_length, key);
++	hmac_sha384_set_key(ctx, key_length, key);
+ }
+ 
+ static void x86_hmac_sha384_digest(struct hmac_sha384_ctx *ctx, size_t length,
+ 				   uint8_t *digest)
+ {
+-	HMAC_DIGEST(ctx, &x86_sha384, length, digest);
++	hmac_sha384_digest(ctx, digest);
+ }
+ 
+ static void x86_hmac_sha512_set_key(struct hmac_sha512_ctx *ctx,
+ 				    size_t key_length, const uint8_t *key)
+ {
+-	HMAC_SET_KEY(ctx, &x86_sha512, key_length, key);
++	hmac_sha512_set_key(ctx, key_length, key);
+ }
+ 
+ static void x86_hmac_sha512_update(struct hmac_sha512_ctx *ctx, size_t length,
+@@ -132,7 +132,7 @@ static void x86_hmac_sha512_update(struct hmac_sha512_ctx *ctx, size_t length,
+ static void x86_hmac_sha512_digest(struct hmac_sha512_ctx *ctx, size_t length,
+ 				   uint8_t *digest)
+ {
+-	HMAC_DIGEST(ctx, &x86_sha512, length, digest);
++	hmac_sha512_digest(ctx, digest);
+ }
+ 
+ static int _hmac_ctx_init(gnutls_mac_algorithm_t algo, struct x86_hmac_ctx *ctx)
+diff --git a/lib/accelerated/x86/sha-padlock.c b/lib/accelerated/x86/sha-padlock.c
+index 44e1eab..710f9a5 100644
+--- a/lib/accelerated/x86/sha-padlock.c
++++ b/lib/accelerated/x86/sha-padlock.c
+@@ -24,7 +24,6 @@
+ #include "gnutls_int.h"
+ #include "hash_int.h"
+ #include "errors.h"
+-#include <nettle/sha.h>
+ #include <nettle/hmac.h>
+ #include <nettle/macros.h>
+ #include "aes-padlock.h"
+@@ -189,8 +188,8 @@ static void padlock_sha512_digest(struct sha512_ctx *ctx, size_t length,
+ 	/* This is slightly inefficient, as the numbers are converted to
+ 	   big-endian format, and will be converted back by the compression
+ 	   function. It's probably not worth the effort to fix this. */
+-	WRITE_UINT64(ctx->block + (SHA512_DATA_SIZE - 16), high);
+-	WRITE_UINT64(ctx->block + (SHA512_DATA_SIZE - 8), low);
++	WRITE_UINT64(ctx->block + (SHA512_BLOCK_SIZE - 16), high);
++	WRITE_UINT64(ctx->block + (SHA512_BLOCK_SIZE - 8), low);
+ 	SHA512_COMPRESS(ctx, ctx->block);
+ 
+ 	words = length / 8;
+diff --git a/lib/accelerated/x86/sha-padlock.h b/lib/accelerated/x86/sha-padlock.h
+index 990c02d..34c4527 100644
+--- a/lib/accelerated/x86/sha-padlock.h
++++ b/lib/accelerated/x86/sha-padlock.h
+@@ -1,7 +1,7 @@
+ #ifndef GNUTLS_LIB_ACCELERATED_X86_SHA_PADLOCK_H
+ #define GNUTLS_LIB_ACCELERATED_X86_SHA_PADLOCK_H
+ 
+-#include <nettle/sha.h>
++#include <nettle/sha1.h>
+ 
+ void padlock_sha1_oneshot(void *ctx, const void *inp, size_t len);
+ void padlock_sha256_oneshot(void *ctx, const void *inp, size_t len);
+diff --git a/lib/accelerated/x86/sha-x86-ssse3.c b/lib/accelerated/x86/sha-x86-ssse3.c
+index eab6c70..cb41efd 100644
+--- a/lib/accelerated/x86/sha-x86-ssse3.c
++++ b/lib/accelerated/x86/sha-x86-ssse3.c
+@@ -25,7 +25,8 @@
+ #include <gnutls/crypto.h>
+ #include "errors.h"
+ #include "aes-x86.h"
+-#include <nettle/sha.h>
++#include <nettle/sha1.h>
++#include <nettle/sha2.h>
+ #include <nettle/macros.h>
+ #include <nettle/nettle-meta.h>
+ #include "sha-x86.h"
+@@ -82,7 +83,7 @@ void x86_sha1_update(struct sha1_ctx *ctx, size_t length, const uint8_t *data)
+ 	unsigned t2, i;
+ 
+ 	if ((res = ctx->index)) {
+-		res = SHA1_DATA_SIZE - res;
++		res = SHA1_BLOCK_SIZE - res;
+ 		if (length < res)
+ 			res = length;
+ 		sha1_update(ctx, res, data);
+@@ -96,14 +97,14 @@ void x86_sha1_update(struct sha1_ctx *ctx, size_t length, const uint8_t *data)
+ 	octx.h3 = ctx->state[3];
+ 	octx.h4 = ctx->state[4];
+ 
+-	memcpy(octx.data, ctx->block, SHA1_DATA_SIZE);
++	memcpy(octx.data, ctx->block, SHA1_BLOCK_SIZE);
+ 	octx.num = ctx->index;
+ 
+-	res = length % SHA1_DATA_SIZE;
++	res = length % SHA1_BLOCK_SIZE;
+ 	length -= res;
+ 
+ 	if (length > 0) {
+-		t2 = length / SHA1_DATA_SIZE;
++		t2 = length / SHA1_BLOCK_SIZE;
+ 
+ 		sha1_block_data_order(&octx, data, t2);
+ 
+@@ -140,7 +141,7 @@ void x86_sha256_update(struct sha256_ctx *ctx, size_t length,
+ 	unsigned t2, i;
+ 
+ 	if ((res = ctx->index)) {
+-		res = SHA256_DATA_SIZE - res;
++		res = SHA256_BLOCK_SIZE - res;
+ 		if (length < res)
+ 			res = length;
+ 		sha256_update(ctx, res, data);
+@@ -149,14 +150,14 @@ void x86_sha256_update(struct sha256_ctx *ctx, size_t length,
+ 	}
+ 
+ 	memcpy(octx.h, ctx->state, sizeof(octx.h));
+-	memcpy(octx.data, ctx->block, SHA256_DATA_SIZE);
++	memcpy(octx.data, ctx->block, SHA256_BLOCK_SIZE);
+ 	octx.num = ctx->index;
+ 
+-	res = length % SHA256_DATA_SIZE;
++	res = length % SHA256_BLOCK_SIZE;
+ 	length -= res;
+ 
+ 	if (length > 0) {
+-		t2 = length / SHA1_DATA_SIZE;
++		t2 = length / SHA1_BLOCK_SIZE;
+ 		sha256_block_data_order(&octx, data, t2);
+ 
+ 		for (i = 0; i < t2; i++)
+@@ -191,7 +192,7 @@ void x86_sha512_update(struct sha512_ctx *ctx, size_t length,
+ 	unsigned t2, i;
+ 
+ 	if ((res = ctx->index)) {
+-		res = SHA512_DATA_SIZE - res;
++		res = SHA512_BLOCK_SIZE - res;
+ 		if (length < res)
+ 			res = length;
+ 		sha512_update(ctx, res, data);
+@@ -200,14 +201,14 @@ void x86_sha512_update(struct sha512_ctx *ctx, size_t length,
+ 	}
+ 
+ 	memcpy(octx.h, ctx->state, sizeof(octx.h));
+-	memcpy(octx.u.p, ctx->block, SHA512_DATA_SIZE);
++	memcpy(octx.u.p, ctx->block, SHA512_BLOCK_SIZE);
+ 	octx.num = ctx->index;
+ 
+-	res = length % SHA512_DATA_SIZE;
++	res = length % SHA512_BLOCK_SIZE;
+ 	length -= res;
+ 
+ 	if (length > 0) {
+-		t2 = length / SHA512_DATA_SIZE;
++		t2 = length / SHA512_BLOCK_SIZE;
+ 		sha512_block_data_order(&octx, data, t2);
+ 
+ 		for (i = 0; i < t2; i++)
+diff --git a/lib/accelerated/x86/sha-x86.h b/lib/accelerated/x86/sha-x86.h
+index d969366..a01e0e6 100644
+--- a/lib/accelerated/x86/sha-x86.h
++++ b/lib/accelerated/x86/sha-x86.h
+@@ -1,7 +1,8 @@
+ #ifndef GNUTLS_LIB_ACCELERATED_X86_SHA_X86_H
+ #define GNUTLS_LIB_ACCELERATED_X86_SHA_X86_H
+ 
+-#include <nettle/sha.h>
++#include <nettle/sha1.h>
++#include <nettle/sha2.h>
+ 
+ extern const struct nettle_hash x86_sha1;
+ extern const struct nettle_hash x86_sha224;
+diff --git a/lib/accelerated/x86/x86-common.h b/lib/accelerated/x86/x86-common.h
+index d91947d..aa63d23 100644
+--- a/lib/accelerated/x86/x86-common.h
++++ b/lib/accelerated/x86/x86-common.h
+@@ -39,7 +39,7 @@ void gnutls_cpuid(unsigned int func, unsigned int *ax, unsigned int *bx,
+ 	{ #name,                                      \
+ 	  sizeof(struct name##_ctx),                  \
+ 	  NAME##_DIGEST_SIZE,                         \
+-	  NAME##_DATA_SIZE,                           \
++	  NAME##_BLOCK_SIZE,                           \
+ 	  (nettle_hash_init_func *)name##_init,       \
+ 	  (nettle_hash_update_func *)update_func,     \
+ 	  (nettle_hash_digest_func *)digest_func }
+diff --git a/lib/nettle/cipher.c b/lib/nettle/cipher.c
+index 1900794..e58281f 100644
+--- a/lib/nettle/cipher.c
++++ b/lib/nettle/cipher.c
+@@ -1370,7 +1370,7 @@ static int wrap_nettle_cipher_setiv(void *_ctx, const void *iv, size_t iv_size)
+ 		break;
+ 	case GNUTLS_CIPHER_SALSA20_256:
+ 	case GNUTLS_CIPHER_ESTREAM_SALSA20_256:
+-		if (iv_size != SALSA20_IV_SIZE)
++		if (iv_size != SALSA20_NONCE_SIZE)
+ 			return gnutls_assert_val(GNUTLS_E_INVALID_REQUEST);
+ 		break;
+ 	default:
+@@ -1477,7 +1477,7 @@ static int wrap_nettle_cipher_aead_encrypt(void *_ctx, const void *nonce,
+ 
+ 		ctx->cipher->encrypt(ctx, plain_size, encr, plain);
+ 
+-		ctx->cipher->tag(ctx->ctx_ptr, tag_size,
++		ctx->cipher->tag(ctx->ctx_ptr,
+ 				 ((uint8_t *)encr) + plain_size);
+ 	} else {
+ 		/* CCM-style cipher */
+@@ -1557,7 +1557,7 @@ static int wrap_nettle_cipher_aead_decrypt(void *_ctx, const void *nonce,
+ 
+ 		ctx->cipher->decrypt(ctx, encr_size, plain, encr);
+ 
+-		ctx->cipher->tag(ctx->ctx_ptr, tag_size, tag);
++		ctx->cipher->tag(ctx->ctx_ptr, tag);
+ 
+ 		if (gnutls_memcmp(((uint8_t *)encr) + encr_size, tag,
+ 				  tag_size) != 0)
+@@ -1626,7 +1626,7 @@ static void wrap_nettle_cipher_tag(void *_ctx, void *tag, size_t tag_size)
+ {
+ 	struct nettle_cipher_ctx *ctx = _ctx;
+ 
+-	ctx->cipher->tag(ctx->ctx_ptr, tag_size, tag);
++	ctx->cipher->tag(ctx->ctx_ptr, tag);
+ }
+ 
+ static void wrap_nettle_cipher_close(void *_ctx)
+diff --git a/lib/nettle/gost/cmac-kuznyechik.c b/lib/nettle/gost/cmac-kuznyechik.c
+index 9641411..f72553b 100644
+--- a/lib/nettle/gost/cmac-kuznyechik.c
++++ b/lib/nettle/gost/cmac-kuznyechik.c
+@@ -47,6 +47,6 @@ void cmac_kuznyechik_update(struct cmac_kuznyechik_ctx *ctx, size_t length,
+ void cmac_kuznyechik_digest(struct cmac_kuznyechik_ctx *ctx, size_t length,
+ 			    uint8_t *digest)
+ {
+-	CMAC128_DIGEST(ctx, kuznyechik_encrypt, length, digest);
++	CMAC128_DIGEST(ctx, kuznyechik_encrypt, digest);
+ }
+ #endif
+diff --git a/lib/nettle/gost/cmac-magma.c b/lib/nettle/gost/cmac-magma.c
+index b8e6d58..b8d2d1d 100644
+--- a/lib/nettle/gost/cmac-magma.c
++++ b/lib/nettle/gost/cmac-magma.c
+@@ -47,6 +47,6 @@ void cmac_magma_update(struct cmac_magma_ctx *ctx, size_t length,
+ void cmac_magma_digest(struct cmac_magma_ctx *ctx, size_t length,
+ 		       uint8_t *digest)
+ {
+-	CMAC64_DIGEST(ctx, magma_encrypt, length, digest);
++	CMAC64_DIGEST(ctx, magma_encrypt, digest);
+ }
+ #endif
+diff --git a/lib/nettle/int/dsa-fips.h b/lib/nettle/int/dsa-fips.h
+index 5c1c90e..1de1199 100644
+--- a/lib/nettle/int/dsa-fips.h
++++ b/lib/nettle/int/dsa-fips.h
+@@ -100,7 +100,7 @@ inline static void hash(uint8_t digest[DIGEST_SIZE], unsigned length,
+ 
+ 	sha384_init(&ctx);
+ 	sha384_update(&ctx, length, data);
+-	sha384_digest(&ctx, DIGEST_SIZE, digest);
++	sha384_digest(&ctx, digest);
+ 
+ 	return;
+ }
+diff --git a/lib/nettle/int/tls1-prf.c b/lib/nettle/int/tls1-prf.c
+index 46520b0..1366403 100644
+--- a/lib/nettle/int/tls1-prf.c
++++ b/lib/nettle/int/tls1-prf.c
+@@ -63,7 +63,7 @@ static void P_hash(void *mac_ctx, nettle_hash_update_func *update,
+ 		} else {
+ 			update(mac_ctx, digest_size, Atmp);
+ 		}
+-		digest(mac_ctx, digest_size, Atmp); /* store A(i) */
++		digest(mac_ctx, Atmp); /* store A(i) */
+ 
+ 		update(mac_ctx, digest_size, Atmp); /* hash A(i) */
+ 		update(mac_ctx, label_size,
+@@ -73,7 +73,7 @@ static void P_hash(void *mac_ctx, nettle_hash_update_func *update,
+ 		if (left < (ssize_t)digest_size)
+ 			digest_size = left;
+ 
+-		digest(mac_ctx, digest_size, dst);
++		digest(mac_ctx, dst);
+ 
+ 		left -= digest_size;
+ 		dst += digest_size;
+diff --git a/lib/nettle/mac.c b/lib/nettle/mac.c
+index b6be1c9..0c3532b 100644
+--- a/lib/nettle/mac.c
++++ b/lib/nettle/mac.c
+@@ -29,7 +29,8 @@
+ #include <nettle/md5.h>
+ #include <nettle/md2.h>
+ #include <nettle/ripemd160.h>
+-#include <nettle/sha.h>
++#include <nettle/sha1.h>
++#include <nettle/sha2.h>
+ #include <nettle/sha3.h>
+ #ifndef HAVE_NETTLE_SHA3_128_SHAKE_OUTPUT
+ #include "int/sha3-shake.h"
+@@ -284,7 +285,7 @@ static void _wrap_gmac_digest(void *_ctx, size_t length, uint8_t *digest)
+ 
+ 	if (ctx->pos)
+ 		gcm_update(&ctx->ctx, &ctx->key, ctx->pos, ctx->buffer);
+-	gcm_digest(&ctx->ctx, &ctx->key, &ctx->cipher, ctx->encrypt, length,
++	gcm_digest(&ctx->ctx, &ctx->key, &ctx->cipher, ctx->encrypt,
+ 		   digest);
+ 	ctx->pos = 0;
+ }
+@@ -669,12 +670,10 @@ static void _md5_sha1_digest(void *_ctx, size_t len, uint8_t *digest)
+ {
+ 	struct md5_sha1_ctx *ctx = _ctx;
+ 
+-	md5_digest(&ctx->md5, len <= MD5_DIGEST_SIZE ? len : MD5_DIGEST_SIZE,
+-		   digest);
++	md5_digest(&ctx->md5, digest);
+ 
+ 	if (len > MD5_DIGEST_SIZE)
+-		sha1_digest(&ctx->sha1, len - MD5_DIGEST_SIZE,
+-			    digest + MD5_DIGEST_SIZE);
++		sha1_digest(&ctx->sha1, digest + MD5_DIGEST_SIZE);
+ }
+ 
+ static void _md5_sha1_init(void *_ctx)
+@@ -929,8 +928,7 @@ static int wrap_nettle_hkdf_extract(gnutls_mac_algorithm_t mac, const void *key,
+ 		return gnutls_assert_val(ret);
+ 
+ 	ctx.set_key(&ctx, saltsize, salt);
+-	hkdf_extract(&ctx.ctx, ctx.update, ctx.digest, ctx.length, keysize, key,
+-		     output);
++	hkdf_extract(&ctx.ctx, ctx.update, ctx.digest, keysize, key, output);
+ 
+ 	zeroize_key(&ctx, sizeof(ctx));
+ 	return 0;
+diff --git a/src/gl/tests/nanosleep.c b/src/gl/tests/nanosleep.c
+index cfafa4e..9d6a97b 100644
+--- a/src/gl/tests/nanosleep.c
++++ b/src/gl/tests/nanosleep.c
+@@ -94,7 +94,7 @@ nanosleep (const struct timespec *requested_delay,
+    we use the QueryPerformanceCounter() function.  */
+ 
+ int
+-nanosleep (const struct timespec *requested_delay,
++_nanosleep (const struct timespec *requested_delay,
+            struct timespec *remaining_delay)
+ {
+   static bool initialized;
