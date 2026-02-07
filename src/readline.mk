@@ -8,7 +8,7 @@ $(PKG)_VERSION  := 8.3
 $(PKG)_CHECKSUM := fe5383204467828cd495ee8d1d3c037a7eba1389c22bc6a041f627976f9061cc
 $(PKG)_SUBDIR   := readline-$($(PKG)_VERSION)
 $(PKG)_FILE     := readline-$($(PKG)_VERSION).tar.gz
-$(PKG)_URL      := https://ftp.gnu.org/gnu/readline/$($(PKG)_FILE)
+$(PKG)_URL      := https://gnuftp.uib.no/readline/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc termcap
 
 define $(PKG)_UPDATE

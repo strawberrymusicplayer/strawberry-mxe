@@ -8,7 +8,7 @@ $(PKG)_VERSION  := 1.18
 $(PKG)_CHECKSUM := 3b08f5f4f9b4eb82f151a7040bfd6fe6c6fb922efe4b1659c66ea933276965e8
 $(PKG)_SUBDIR   := libiconv-$($(PKG)_VERSION)
 $(PKG)_FILE     := libiconv-$($(PKG)_VERSION).tar.gz
-$(PKG)_URL      := https://ftp.gnu.org/gnu/libiconv/$($(PKG)_FILE)
+$(PKG)_URL      := https://gnuftp.uib.no/libiconv/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 

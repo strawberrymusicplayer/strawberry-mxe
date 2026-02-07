@@ -8,11 +8,11 @@ $(PKG)_VERSION  := 1.4.1
 $(PKG)_CHECKSUM := 67d88430892527861903788868c77802a217b0959990f7449f2976126a307763
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
-$(PKG)_URL      := https://ftp.gnu.org/gnu/$(PKG)/$($(PKG)_FILE)
+$(PKG)_URL      := https://gnuftp.uib.no/$(PKG)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc libiconv
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://ftp.gnu.org/gnu/libunistring/?C=M;O=D' | \
+    $(WGET) -q -O- 'https://gnuftp.uib.no/libunistring/?C=M;O=D' | \
     $(SED) -n 's,.*<a href="libunistring-\([0-9][^"]*\)\.tar.*,\1,p' | \
     $(SORT) -V | \
     tail -1

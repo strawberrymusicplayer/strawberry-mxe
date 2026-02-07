@@ -7,12 +7,12 @@ $(PKG)_VERSION  := 17.1
 $(PKG)_CHECKSUM := 14996f5f74c9f68f5a543fdc45bca7800207f91f92aeea6c2e791822c7c6d876
 $(PKG)_SUBDIR   := gdb-$($(PKG)_VERSION)
 $(PKG)_FILE     := gdb-$($(PKG)_VERSION).tar.xz
-$(PKG)_URL      := https://ftp.gnu.org/gnu/$(PKG)/$($(PKG)_FILE)
+$(PKG)_URL      := https://gnuftp.uib.no/$(PKG)/$($(PKG)_FILE)
 $(PKG)_URL_2    := https://ftpmirror.gnu.org/$(PKG)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc gmp mpfr dlfcn-win32 expat libiconv mman-win32 readline zlib
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://ftp.gnu.org/gnu/gdb/?C=M;O=D' | \
+    $(WGET) -q -O- 'https://gnuftp.uib.no/gdb/?C=M;O=D' | \
     $(SED) -n 's,.*<a href="gdb-\([0-9][^"]*\)\.tar.*,\1,p' | \
     $(SORT) -V | \
     tail -1

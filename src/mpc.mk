@@ -8,14 +8,14 @@ $(PKG)_VERSION  := 1.3.1
 $(PKG)_CHECKSUM := ab642492f5cf882b74aa0cb730cd410a81edcdbec895183ce930e706c1c759b8
 $(PKG)_SUBDIR   := mpc-$($(PKG)_VERSION)
 $(PKG)_FILE     := mpc-$($(PKG)_VERSION).tar.gz
-$(PKG)_URL      := https://ftp.gnu.org/gnu/mpc/$($(PKG)_FILE)
+$(PKG)_URL      := https://gnuftp.uib.no/mpc/$($(PKG)_FILE)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS     := cc gmp mpfr
 
 $(PKG)_DEPS_$(BUILD) := gmp mpfr
 
 define $(PKG)_UPDATE
-    $(call GET_LATEST_VERSION, https://ftp.gnu.org/gnu/mpc/)
+    $(call GET_LATEST_VERSION, https://gnuftp.uib.no/mpc/)
 endef
 
 define $(PKG)_BUILD_$(BUILD)

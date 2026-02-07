@@ -8,11 +8,11 @@ $(PKG)_VERSION  := 10.2+2.0.2
 $(PKG)_CHECKSUM := 186892539dedd661276014d71318c8c8f97ecb1250a86625256abd4defbf0d0c
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
-$(PKG)_URL      := https://ftp.gnu.org/gnu/libcdio/$(PKG)-$($(PKG)_VERSION).tar.bz2
+$(PKG)_URL      := https://gnuftp.uib.no/libcdio/$(PKG)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_DEPS     := cc libcdio
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://ftp.gnu.org/gnu/libcdio/?C=M;O=D' | \
+    $(WGET) -q -O- 'https://gnuftp.uib.no/libcdio/?C=M;O=D' | \
     $(SED) -n 's,.*<a href="libcdio-paranoia-\([0-9][^"]*\)\.tar.bz2.*,\1,p' | \
     $(SORT) -V | \
     tail -1

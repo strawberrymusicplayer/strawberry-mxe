@@ -9,12 +9,12 @@ $(PKG)_VERSION  := 2.5.4
 $(PKG)_CHECKSUM := da8ebb2ce4dcf46b90098daf962cffa68f4b4f62ea60f798d0ef12929ede6adf
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
-$(PKG)_URL      := https://ftp.gnu.org/gnu/$(PKG)/$($(PKG)_FILE)
+$(PKG)_URL      := https://gnuftp.uib.no/$(PKG)/$($(PKG)_FILE)
 $(PKG)_DEPS     :=
 $(PKG)_TARGETS  := $(BUILD)
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://ftp.gnu.org/gnu/libtool/?C=M;O=D' | \
+    $(WGET) -q -O- 'https://gnuftp.uib.no/libtool/?C=M;O=D' | \
     $(SED) -n 's,.*<a href="libtool-\([0-9][^"]*\)\.tar.*,\1,p' | \
     head -1
 endef
