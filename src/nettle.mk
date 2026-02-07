@@ -17,7 +17,8 @@ define $(PKG)_UPDATE
     $(SED) -n 's,.*nettle-\([0-9][^>]*\)\.tar.*,\1,p' | \
     grep -v 'pre' | \
     grep -v 'rc' | \
-    sort | \
+    grep -v '^4.0' | \
+    sort -V | \
     tail -1
 endef
 
