@@ -1,5 +1,5 @@
 diff --git a/Makefile.in b/Makefile.in
-index f031e19..eec8d40 100644
+index 71ad761..d3e044a 100644
 --- a/Makefile.in
 +++ b/Makefile.in
 @@ -29,13 +29,10 @@ EXTRA_CFLAGS = $(CCPIC)
@@ -9,7 +9,7 @@ index f031e19..eec8d40 100644
 -getopt_SOURCES = getopt.c getopt1.c
 -getopt_TARGETS = $(getopt_SOURCES:.c=.$(OBJEXT))
 -
- internal_SOURCES = nettle-internal.c
+ internal_SOURCES = non-nettle.c
  internal_TARGETS = $(internal_SOURCES:.c=.$(OBJEXT))
  
 -TARGETS = $(getopt_TARGETS) $(internal_TARGETS) \
@@ -17,7 +17,7 @@ index f031e19..eec8d40 100644
  	  $(LIBTARGETS) $(SHLIBTARGETS)
  
  DOCTARGETS = @IF_DOCUMENTATION@ nettle.info nettle.html nettle.pdf
-@@ -248,13 +245,13 @@ HEADERS = aes.h arcfour.h arctwo.h asn1.h blowfish.h balloon.h \
+@@ -253,13 +250,13 @@ HEADERS = aes.h arcfour.h arctwo.h asn1.h blowfish.h balloon.h \
  INSTALL_HEADERS = $(HEADERS) version.h @IF_MINI_GMP@ mini-gmp.h
  
  SOURCES = $(nettle_SOURCES) $(hogweed_SOURCES) \
@@ -35,10 +35,10 @@ index f031e19..eec8d40 100644
  	configure stamp-h.in version.h.in \
 diff --git a/getopt.c b/getopt.c
 deleted file mode 100644
-index 9d29de7..0000000
+index 6d1c921..0000000
 --- a/getopt.c
 +++ /dev/null
-@@ -1,1270 +0,0 @@
+@@ -1,1259 +0,0 @@
 -/* Getopt for GNU.
 -   NOTE: getopt is part of the C library, so if you don't know what
 -   "Keep this file name-space clean" means, talk to drepper@gnu.org
@@ -170,17 +170,6 @@ index 9d29de7..0000000
 -
 -static struct _getopt_data getopt_data;
 -
--
--#ifndef __GNU_LIBRARY__
--
--/* Avoid depending on library functions or files
--   whose names are inconsistent.  */
--
--#ifndef getenv
--extern char *getenv ();
--#endif
--
--#endif /* not __GNU_LIBRARY__ */
 -
 -#ifdef _LIBC
 -/* Stored original parameters.
@@ -1311,7 +1300,7 @@ index 9d29de7..0000000
 -#endif /* TEST */
 diff --git a/getopt.h b/getopt.h
 deleted file mode 100644
-index da1a01f..0000000
+index da812bc..0000000
 --- a/getopt.h
 +++ /dev/null
 @@ -1,191 +0,0 @@
@@ -1483,7 +1472,7 @@ index da1a01f..0000000
 -#  endif
 -# endif
 -#else /* not __GNU_LIBRARY__ */
--extern int getopt ();
+-extern int getopt (int ___argc, char *const *___argv, const char *__shortopts);
 -#endif /* __GNU_LIBRARY__ */
 -
 -#ifndef __need_getopt
@@ -1837,20 +1826,55 @@ index d255c8e..0000000
 -				struct _getopt_data *__data);
 -
 -#endif /* getopt_int.h */
-diff --git a/hogweed.pc.in b/hogweed.pc.in
-index 97fb9d4..839f7d0 100644
---- a/hogweed.pc.in
-+++ b/hogweed.pc.in
-@@ -11,9 +11,8 @@ Name: Hogweed
- Description: Nettle low-level cryptographic library (public-key algorithms)
- URL: http://www.lysator.liu.se/~nisse/nettle
- Version: @PACKAGE_VERSION@
--Requires: @IF_NOT_SHARED@ nettle
--Requires.private: @IF_SHARED@ nettle
--Libs: -L${libdir} -lhogweed @IF_NOT_SHARED@ @LIBS@
--Libs.private: @IF_SHARED@ @LIBS@
-+Requires.private: nettle
-+Libs: -L${libdir} -lhogweed
-+Libs.private: @LIBS@
- Cflags: -I${includedir}
+diff --git a/tools/Makefile.in b/tools/Makefile.in
+index b76024c..57c09d6 100644
+--- a/tools/Makefile.in
++++ b/tools/Makefile.in
+@@ -26,8 +26,6 @@ TS_ALL = sexp-conv-test pkcs1-conv-test nettle-pbkdf2-test
  
+ all: $(TARGETS)
+ 
+-getopt_OBJS = ../getopt.$(OBJEXT) ../getopt1.$(OBJEXT)
+-
+ sexp_conv_SOURCES = sexp-conv.c input.c output.c parse.c misc.c
+ pkcs1_conv_SOURCES = pkcs1-conv.c misc.c
+ nettle_hash_SOURCES = nettle-hash.c misc.c
+@@ -37,23 +35,23 @@ SOURCES = $(sexp_conv_SOURCES) nettle-hash.c nettle-lfib-stream.c pkcs1-conv.c n
+ 
+ DISTFILES = $(SOURCES) $(TS_ALL) Makefile.in input.h misc.h output.h parse.h
+ 
+-sexp_conv_OBJS = $(sexp_conv_SOURCES:.c=.$(OBJEXT)) $(getopt_OBJS)
++sexp_conv_OBJS = $(sexp_conv_SOURCES:.c=.$(OBJEXT))
+ sexp-conv$(EXEEXT): $(sexp_conv_OBJS) ../libnettle.stamp
+ 	$(LINK) $(sexp_conv_OBJS) -lnettle $(LIBS) -o $@
+ 
+ nettle-lfib-stream$(EXEEXT): nettle-lfib-stream.$(OBJEXT) ../libnettle.stamp
+ 	$(LINK) nettle-lfib-stream.$(OBJEXT) -lnettle $(LIBS) -o $@
+ 
+-pkcs1_conv_OBJS = $(pkcs1_conv_SOURCES:.c=.$(OBJEXT)) $(getopt_OBJS)
++pkcs1_conv_OBJS = $(pkcs1_conv_SOURCES:.c=.$(OBJEXT))
+ pkcs1-conv$(EXEEXT): $(pkcs1_conv_OBJS) ../libnettle.stamp ../libhogweed.stamp
+ 	$(LINK) $(pkcs1_conv_OBJS) -lhogweed -lnettle $(LIBS) -o $@
+ 
+ # FIXME: Avoid linking with gmp
+-nettle_hash_OBJS = $(nettle_hash_SOURCES:.c=.$(OBJEXT)) $(getopt_OBJS)
++nettle_hash_OBJS = $(nettle_hash_SOURCES:.c=.$(OBJEXT))
+ nettle-hash$(EXEEXT): $(nettle_hash_OBJS) ../libnettle.stamp
+ 	$(LINK) $(nettle_hash_OBJS) -lnettle -o $@
+ 
+-nettle_pbkdf2_OBJS = $(nettle_pbkdf2_SOURCES:.c=.$(OBJEXT)) $(getopt_OBJS)
++nettle_pbkdf2_OBJS = $(nettle_pbkdf2_SOURCES:.c=.$(OBJEXT))
+ nettle-pbkdf2$(EXEEXT): $(nettle_pbkdf2_OBJS) ../libnettle.stamp
+ 	$(LINK) $(nettle_pbkdf2_OBJS) -lnettle -o $@
+ 
+@@ -63,10 +61,6 @@ nettle-pbkdf2$(EXEEXT): $(nettle_pbkdf2_OBJS) ../libnettle.stamp
+ 
+ # NOTE: If we required GNU make, we could use a single rule with $(@F)
+ # or $(notdir $@)
+-../getopt.$(OBJEXT):
+-	( cd .. && $(MAKE) getopt.$(OBJEXT))
+-../getopt1.$(OBJEXT):
+-	( cd .. && $(MAKE) getopt1.$(OBJEXT))
+ 
+ Makefile: $(srcdir)/Makefile.in ../config.status
+ 	cd .. && $(SHELL) ./config.status tools/$@
