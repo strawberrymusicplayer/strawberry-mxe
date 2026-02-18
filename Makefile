@@ -21,8 +21,8 @@ DEFAULT_MAX_JOBS   := 6
 PRINTF_COL_1_WIDTH := 13
 DUMMY_PROXY        := 192.0.2.0
 SOURCEFORGE_MIRROR := downloads.sourceforge.net
-PKG_JKVINGE        := https://files.jkvinge.net/packages/strawberry-dependencies
-MIRROR_SITES       := PKG_JKVINGE
+STRAWBERRY_MIRROR  := https://packages.strawberrymusicplayer.org/
+MIRROR_SITES       := STRAWBERRY_MIRROR
 
 .DEFAULT_GOAL      := all-filtered
 
