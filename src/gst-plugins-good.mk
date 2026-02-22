@@ -50,6 +50,7 @@ define $(PKG)_BUILD
         -Dwaveform=enabled \
         -Dwavpack=enabled \
         -Dsoup=enabled \
+        -Dmatroska=enabled \
         -Dhls-crypto=openssl \
         '$(BUILD_DIR)'
 
