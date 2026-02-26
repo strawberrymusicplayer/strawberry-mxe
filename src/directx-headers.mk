@@ -3,8 +3,8 @@
 PKG             := directx-headers
 $(PKG)_WEBSITE  := https://github.com/microsoft/DirectX-Headers
 $(PKG)_DESCR    := DirectX-Headers
-$(PKG)_VERSION  := 1.618.2
-$(PKG)_CHECKSUM := 62004f45e2ab00cbb5c7f03c47262632c22fbce0a237383fc458d9324c44cf36
+$(PKG)_VERSION  := 1.619.0
+$(PKG)_CHECKSUM := e1bfbe81c3eb2654abd4ac9642af2e78bd1c65c5868bf9699953af205625bca9
 $(PKG)_GH_CONF  := microsoft/DirectX-Headers/releases/latest, v
 $(PKG)_DEPS     := cc meson-conf
 
