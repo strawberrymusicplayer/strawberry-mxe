@@ -39,7 +39,7 @@ index 46bf1ca..c36f4fe 100644
 -#endif /* HAVE_LIBNETTLE */
 +#endif /* HAVE_LIBNETTLE && HMAC_SET_KEY */
 diff --git a/lib/accelerated/aarch64/sha-aarch64.c b/lib/accelerated/aarch64/sha-aarch64.c
-index 725dd54..eee0c4f 100644
+index 3b7089c..78dfe7b 100644
 --- a/lib/accelerated/aarch64/sha-aarch64.c
 +++ b/lib/accelerated/aarch64/sha-aarch64.c
 @@ -25,9 +25,11 @@
@@ -218,7 +218,7 @@ index 725dd54..eee0c4f 100644
  		ctx->ctx_ptr = &ctx->ctx.sha512;
  		ctx->length = SHA512_DIGEST_SIZE;
  		break;
-@@ -330,7 +330,15 @@ static int wrap_aarch64_hash_output(void *src_ctx, void *digest,
+@@ -335,7 +335,15 @@ static int wrap_aarch64_hash_output(void *src_ctx, void *digest,
  	if (digestsize < ctx->length)
  		return gnutls_assert_val(GNUTLS_E_SHORT_MEMORY_BUFFER);
  
@@ -234,7 +234,7 @@ index 725dd54..eee0c4f 100644
  
  	return 0;
  }
-@@ -347,7 +355,12 @@ static int wrap_aarch64_hash_fast(gnutls_digest_algorithm_t algo,
+@@ -352,7 +360,12 @@ static int wrap_aarch64_hash_fast(gnutls_digest_algorithm_t algo,
  		return gnutls_assert_val(ret);
  
  	ctx.update(&ctx, text_size, text);
@@ -453,7 +453,7 @@ index 9b19552..61b1ea8 100644
 -#endif /* HAVE_LIBNETTLE */
 +#endif /* HAVE_LIBNETTLE && HMAC_SET_KEY */
 diff --git a/lib/accelerated/x86/sha-padlock.c b/lib/accelerated/x86/sha-padlock.c
-index 44e1eab..b241fe0 100644
+index edc2c63..21bd393 100644
 --- a/lib/accelerated/x86/sha-padlock.c
 +++ b/lib/accelerated/x86/sha-padlock.c
 @@ -24,9 +24,11 @@
@@ -620,7 +620,7 @@ index 44e1eab..b241fe0 100644
  		ctx->ctx_ptr = &ctx->ctx.sha512;
  		ctx->length = SHA512_DIGEST_SIZE;
  		break;
-@@ -313,7 +332,15 @@ static int wrap_padlock_hash_output(void *src_ctx, void *digest,
+@@ -318,7 +337,15 @@ static int wrap_padlock_hash_output(void *src_ctx, void *digest,
  	if (digestsize < ctx->length)
  		return gnutls_assert_val(GNUTLS_E_SHORT_MEMORY_BUFFER);
  
@@ -651,7 +651,7 @@ index 990c02d..5247959 100644
  void padlock_sha1_oneshot(void *ctx, const void *inp, size_t len);
  void padlock_sha256_oneshot(void *ctx, const void *inp, size_t len);
 diff --git a/lib/accelerated/x86/sha-x86-ssse3.c b/lib/accelerated/x86/sha-x86-ssse3.c
-index eab6c70..d732e67 100644
+index 0f3e613..a27b6f9 100644
 --- a/lib/accelerated/x86/sha-x86-ssse3.c
 +++ b/lib/accelerated/x86/sha-x86-ssse3.c
 @@ -25,9 +25,11 @@
@@ -830,7 +830,7 @@ index eab6c70..d732e67 100644
  		ctx->ctx_ptr = &ctx->ctx.sha512;
  		ctx->length = SHA512_DIGEST_SIZE;
  		break;
-@@ -326,7 +326,15 @@ static int wrap_x86_hash_output(void *src_ctx, void *digest, size_t digestsize)
+@@ -331,7 +331,15 @@ static int wrap_x86_hash_output(void *src_ctx, void *digest, size_t digestsize)
  	if (digestsize < ctx->length)
  		return gnutls_assert_val(GNUTLS_E_SHORT_MEMORY_BUFFER);
  
@@ -846,7 +846,7 @@ index eab6c70..d732e67 100644
  
  	return 0;
  }
-@@ -342,7 +350,12 @@ static int wrap_x86_hash_fast(gnutls_digest_algorithm_t algo, const void *text,
+@@ -347,7 +355,12 @@ static int wrap_x86_hash_fast(gnutls_digest_algorithm_t algo, const void *text,
  		return gnutls_assert_val(ret);
  
  	ctx.update(&ctx, text_size, text);
@@ -874,7 +874,7 @@ index d969366..a01e0e6 100644
  extern const struct nettle_hash x86_sha1;
  extern const struct nettle_hash x86_sha224;
 diff --git a/lib/accelerated/x86/x86-common.c b/lib/accelerated/x86/x86-common.c
-index 57144e9..4b44942 100644
+index aaa7478..db625ac 100644
 --- a/lib/accelerated/x86/x86-common.c
 +++ b/lib/accelerated/x86/x86-common.c
 @@ -35,6 +35,7 @@
@@ -965,7 +965,7 @@ index 57144e9..4b44942 100644
  	}
  #endif
  
-@@ -904,6 +915,7 @@ static void register_x86_intel_crypto(unsigned capabilities)
+@@ -910,6 +921,7 @@ static void register_x86_intel_crypto(unsigned capabilities)
  			gnutls_assert();
  		}
  
@@ -973,7 +973,7 @@ index 57144e9..4b44942 100644
  		ret = gnutls_crypto_single_mac_register(
  			GNUTLS_MAC_SHA1, 80, &_gnutls_hmac_sha_x86_ssse3, 0);
  		if (ret < 0)
-@@ -918,6 +930,7 @@ static void register_x86_intel_crypto(unsigned capabilities)
+@@ -924,6 +936,7 @@ static void register_x86_intel_crypto(unsigned capabilities)
  			GNUTLS_MAC_SHA256, 80, &_gnutls_hmac_sha_x86_ssse3, 0);
  		if (ret < 0)
  			gnutls_assert();
@@ -981,7 +981,7 @@ index 57144e9..4b44942 100644
  
  		ret = gnutls_crypto_single_digest_register(
  			GNUTLS_DIG_SHA384, 80, &_gnutls_sha_x86_ssse3, 0);
-@@ -928,6 +941,7 @@ static void register_x86_intel_crypto(unsigned capabilities)
+@@ -934,6 +947,7 @@ static void register_x86_intel_crypto(unsigned capabilities)
  			GNUTLS_DIG_SHA512, 80, &_gnutls_sha_x86_ssse3, 0);
  		if (ret < 0)
  			gnutls_assert();
@@ -989,7 +989,7 @@ index 57144e9..4b44942 100644
  		ret = gnutls_crypto_single_mac_register(
  			GNUTLS_MAC_SHA384, 80, &_gnutls_hmac_sha_x86_ssse3, 0);
  		if (ret < 0)
-@@ -937,6 +951,7 @@ static void register_x86_intel_crypto(unsigned capabilities)
+@@ -943,6 +957,7 @@ static void register_x86_intel_crypto(unsigned capabilities)
  			GNUTLS_MAC_SHA512, 80, &_gnutls_hmac_sha_x86_ssse3, 0);
  		if (ret < 0)
  			gnutls_assert();
