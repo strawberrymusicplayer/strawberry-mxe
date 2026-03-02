@@ -34,8 +34,3 @@ define $(PKG)_BUILD
     $(INSTALL) -m755 '$(BUILD_DIR)/gdb/gdb.exe' '$(PREFIX)/$(TARGET)/bin/'
 
 endef
-
-# Static build fails in the CI while it works locally.
-# libintl linking problems. Disabling static build until issue is resolved.
-
-$(PKG)_BUILD_STATIC =
