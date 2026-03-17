@@ -4,14 +4,13 @@ PKG             := faac
 $(PKG)_WEBSITE  := http://sourceforge.net/projects/faac/
 $(PKG)_DESCR    := Freeware Advanced Audio Coder
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.31.1
-$(PKG)_CHECKSUM := 3191bf1b131f1213221ed86f65c2dfabf22d41f6b3771e7e65b6d29478433527
+$(PKG)_VERSION  := 1.40
+$(PKG)_CHECKSUM := 3ef4cc1fa6a750003602adc6eea892ca3815becd9145797b787f0999e8b2b89c
 $(PKG)_GH_CONF  := knik0/faac/releases/latest, faac-
 $(PKG)_DEPS     := cc
 
 define $(PKG)_BUILD
-    cd '$(1)' && ./bootstrap
-    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS)
-    $(MAKE) -C '$(1)' -j '$(JOBS)' LDFLAGS='-no-undefined'
-    $(MAKE) -C '$(1)' -j 1 install LDFLAGS='-no-undefined'
+    cd '$(SOURCE_DIR)' && '$(TARGET)-meson' --buildtype='$(MESON_BUILD_TYPE)' '$(BUILD_DIR)'
+    cd '$(BUILD_DIR)' && ninja
+    cd '$(BUILD_DIR)' && ninja install
 endef
