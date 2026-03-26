@@ -4,8 +4,8 @@ PKG             := libjpeg-turbo
 $(PKG)_WEBSITE  := https://libjpeg-turbo.org/
 $(PKG)_DESCR    := Free library for JPEG image compression
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 3.1.3
-$(PKG)_CHECKSUM := 075920b826834ac4ddf97661cc73491047855859affd671d52079c6867c1c6c0
+$(PKG)_VERSION  := 3.1.4
+$(PKG)_CHECKSUM := e23d3ebb2c6ee4d0e2a5823dbb55b614845df5ea3435c956fed5cf04041a87ad
 $(PKG)_GH_CONF  := libjpeg-turbo/libjpeg-turbo/releases/latest
 $(PKG)_DEPS     := cc $(BUILD)~nasm
 
