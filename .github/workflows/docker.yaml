@@ -36,7 +36,7 @@ jobs:
       - name: Push to DockerHub
         uses: docker/build-push-action@v7
         with:
-          file: ./docker/Dockerfile
+          file: ./Dockerfile
           build-args: |
             MXE_TARGET=${{matrix.arch}}-w64-mingw32.shared
             MXE_BUILD_TYPE=${{env.mxe_build_type}}
