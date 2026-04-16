@@ -52,7 +52,7 @@ jobs:
     needs: get_packages
     strategy:
       matrix:
-       target: [ i686-w64-mingw32.shared, x86_64-w64-mingw32.shared ]
+       target: [ x86_64-w64-mingw32.shared ]
        build_type: [ Release, Debug ]
     steps:
       - name: Show build packages
