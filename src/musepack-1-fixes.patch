@@ -1,15 +1,5 @@
-This file is part of MXE. See LICENSE.md for licensing information.
-
-Contains ad hoc patches for cross building.
-
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Jonas Kvinge <jonas@jkvinge.net>
-Date: Thu, 17 Mar 2022 23:58:18 +0100
-Subject: [PATCH 1/1] Build fixes
-
-
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 1111111..2222222 100755
+index b13f78c..7bf3c88 100755
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -15,19 +15,14 @@ endif(WIN32)
@@ -38,7 +28,7 @@ index 1111111..2222222 100755
 -add_subdirectory(wavcmp)
  add_subdirectory(include)
 diff --git a/mpcgain/CMakeLists.txt b/mpcgain/CMakeLists.txt
-index 1111111..2222222 100755
+index 5445faf..34223df 100755
 --- a/mpcgain/CMakeLists.txt
 +++ b/mpcgain/CMakeLists.txt
 @@ -1,12 +1,12 @@

@@ -1,10 +1,10 @@
 diff --git a/libavcodec/pngenc.c b/libavcodec/pngenc.c
-index 9bbb826..650c488 100644
+index 82a9d5b..bd98a70 100644
 --- a/libavcodec/pngenc.c
 +++ b/libavcodec/pngenc.c
-@@ -39,6 +39,7 @@
+@@ -41,6 +41,7 @@
+ #include "libavutil/rational.h"
  #include "libavutil/stereo3d.h"
- 
  #include <zlib.h>
 +#undef option
  
@@ -47,7 +47,7 @@ index 0d68221..fdb5891 100644
  #include <sys/stat.h>
  #include <stdlib.h>
 diff --git a/libavformat/file.c b/libavformat/file.c
-index a6eceff..f476815 100644
+index 3ceddc8..c155b49 100644
 --- a/libavformat/file.c
 +++ b/libavformat/file.c
 @@ -36,6 +36,7 @@
@@ -59,7 +59,7 @@ index a6eceff..f476815 100644
  #include <sys/stat.h>
  #include <stdlib.h>
 diff --git a/libavformat/hlsenc.c b/libavformat/hlsenc.c
-index d3db830..6b29f93 100644
+index 957b9a5..29649e1 100644
 --- a/libavformat/hlsenc.c
 +++ b/libavformat/hlsenc.c
 @@ -26,6 +26,7 @@
@@ -69,12 +69,12 @@ index d3db830..6b29f93 100644
 +#undef option
  #endif
  
- #include "libavutil/avassert.h"
+ #include "libavutil/attributes_internal.h"
 diff --git a/libavformat/http.c b/libavformat/http.c
-index 0d40775..766056f 100644
+index 52073ff..e2065ab 100644
 --- a/libavformat/http.c
 +++ b/libavformat/http.c
-@@ -27,6 +27,7 @@
+@@ -28,6 +28,7 @@
  #include <time.h>
  #if CONFIG_ZLIB
  #include <zlib.h>
@@ -83,7 +83,7 @@ index 0d40775..766056f 100644
  
  #include "libavutil/avassert.h"
 diff --git a/libavformat/id3v2.c b/libavformat/id3v2.c
-index 037d1a2..d52dca1 100644
+index 5fc82ad..85cd465 100644
 --- a/libavformat/id3v2.c
 +++ b/libavformat/id3v2.c
 @@ -30,6 +30,7 @@
@@ -93,9 +93,9 @@ index 037d1a2..d52dca1 100644
 +#undef option
  #endif
  
- #include "libavutil/avstring.h"
+ #include "libavutil/attributes_internal.h"
 diff --git a/libavformat/matroskadec.c b/libavformat/matroskadec.c
-index 1e0c75c..ea4a1ca 100644
+index aa7a2d1..9aa3a76 100644
 --- a/libavformat/matroskadec.c
 +++ b/libavformat/matroskadec.c
 @@ -76,6 +76,7 @@
@@ -107,10 +107,10 @@ index 1e0c75c..ea4a1ca 100644
  #include "qtpalette.h"
  
 diff --git a/libavformat/mov.c b/libavformat/mov.c
-index b29c41a..0155171 100644
+index f026c0f..42fcf04 100644
 --- a/libavformat/mov.c
 +++ b/libavformat/mov.c
-@@ -72,6 +72,7 @@
+@@ -73,6 +73,7 @@
  
  #if CONFIG_ZLIB
  #include <zlib.h>
@@ -131,7 +131,7 @@ index 7c72c90..7d9884b 100644
  
  #if HAVE_WINSOCK2_H
 diff --git a/libavutil/cpu.c b/libavutil/cpu.c
-index 8f9b785..3688760 100644
+index 07b90aa..89fe49f 100644
 --- a/libavutil/cpu.c
 +++ b/libavutil/cpu.c
 @@ -47,6 +47,7 @@
@@ -155,7 +155,7 @@ index 4ef940a..b509da5 100644
  #if HAVE_IO_H
  #include <io.h>
 diff --git a/libavutil/file_open.c b/libavutil/file_open.c
-index 4692035..010529b 100644
+index 121a562..35c1ce1 100644
 --- a/libavutil/file_open.c
 +++ b/libavutil/file_open.c
 @@ -25,6 +25,7 @@
