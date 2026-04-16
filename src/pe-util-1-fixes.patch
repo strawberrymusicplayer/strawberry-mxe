@@ -1,20 +1,10 @@
-This file is part of MXE. See LICENSE.md for licensing information.
-
-Contains ad hoc patches for cross building.
-
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Jonas Kvinge <jonas@jkvinge.net>
-Date: Fri, 30 Apr 2021 19:36:00 +0200
-Subject: [PATCH 1/1] Fix build
-
-
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 1111111..2222222 100644
+index 6914557..926a432 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -7,10 +7,14 @@ find_package(Boost 1.54
-     system # needed by filesystem, log
-     filesystem)
+@@ -4,10 +4,14 @@ project(mingw_util CXX)
+ set(CMAKE_CXX_STANDARD 17)
+ add_compile_options("-Wall")
  
 +include_directories(${Boost_INCLUDE_DIR})
 +link_directories(${Boost_LIBRARY_DIR})
@@ -28,7 +18,7 @@ index 1111111..2222222 100644
  set_property(TARGET peldd PROPERTY INCLUDE_DIRECTORIES
      ${CMAKE_CURRENT_SOURCE_DIR}/pe-parse/pe-parser-library/include)
 diff --git a/peldd.cc b/peldd.cc
-index 1111111..2222222 100644
+index 08ac8f2..93037f4 100644
 --- a/peldd.cc
 +++ b/peldd.cc
 @@ -1,8 +1,8 @@
@@ -42,15 +32,15 @@ index 1111111..2222222 100644
  
  #include <iostream>
  #include <array>
-@@ -17,6 +17,7 @@
+@@ -19,6 +19,7 @@
  #include <stdexcept>
  #include <stdlib.h>
  #include <string.h>
 +#include <vector>
  
- #include <boost/filesystem.hpp>
- #include <boost/algorithm/string/case_conv.hpp>
-@@ -40,11 +41,11 @@ struct section {
+ using namespace std;
+ using namespace peparse;
+@@ -48,11 +49,11 @@ struct section {
  };
  
  struct parsed_pe_internal {
@@ -64,7 +54,7 @@ index 1111111..2222222 100644
      PE_ERR(PEERR_READ);                                                    \
      return nullptr;                                                          \
    }
-@@ -52,11 +53,8 @@ struct parsed_pe_internal {
+@@ -60,11 +61,8 @@ struct parsed_pe_internal {
  
  // XXX library symbols are too generic
  extern bool getHeader(bounded_buffer *file, pe_header &p, bounded_buffer *&rem);
