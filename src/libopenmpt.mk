@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := caa2fa959e389f4374d9e2df3af5c633452c12dd80442cba2e89cb7ff2b93
 $(PKG)_SUBDIR   := libopenmpt-$($(PKG)_VERSION)+release.autotools
 $(PKG)_FILE     := libopenmpt-$($(PKG)_VERSION)+release.autotools.tar.gz
 $(PKG)_URL      := https://lib.openmpt.org/files/libopenmpt/src/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc zlib libflac libogg libvorbis portaudio
+$(PKG)_DEPS     := cc zlib flac libogg libvorbis portaudio
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://lib.openmpt.org/files/libopenmpt/src/' | \

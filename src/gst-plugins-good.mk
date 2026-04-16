@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := 1ace2d8ec74f632d82eab5006753a27fe0c2402db4ca94d63271e494b62f5
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc glib libflac speex wavpack mpg123 lame twolame libsoup taglib gstreamer gst-plugins-base
+$(PKG)_DEPS     := cc glib flac speex wavpack mpg123 lame twolame libsoup taglib gstreamer gst-plugins-base
 
 $(PKG)_UPDATE = $(gstreamer_UPDATE)
 

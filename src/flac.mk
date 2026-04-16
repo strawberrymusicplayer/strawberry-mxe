@@ -1,6 +1,6 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
-PKG             := libflac
+PKG             := flac
 $(PKG)_WEBSITE  := https://www.xiph.org/flac/
 $(PKG)_DESCR    := Free Lossless Audio Codec
 $(PKG)_IGNORE   :=
