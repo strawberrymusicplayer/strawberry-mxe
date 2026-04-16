@@ -10,7 +10,7 @@ $(PKG)_GH_CONF  := knik0/faac/releases/latest, faac-
 $(PKG)_DEPS     := cc meson-conf
 
 define $(PKG)_BUILD
-    cd '$(SOURCE_DIR)' && '$(TARGET)-meson' --buildtype='$(MESON_BUILD_TYPE)' '$(BUILD_DIR)'
+    cd '$(SOURCE_DIR)' && '$(TARGET)-meson' --buildtype='$(MESON_BUILD_TYPE)' -Db_lto=false '$(BUILD_DIR)'
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install
 endef
