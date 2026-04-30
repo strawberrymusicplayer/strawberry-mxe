@@ -9,7 +9,7 @@ $(PKG)_GH_CONF  := sparsehash/sparsehash/releases/latest, sparsehash-
 $(PKG)_DEPS     := cc
 
 define $(PKG)_BUILD
-    cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure $(MXE_CONFIGURE_OPTS)
+    cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure $(MXE_CONFIGURE_OPTS) CXXFLAGS='$(CXXFLAGS) -std=c++14'
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install $(MXE_DISABLE_DOCS)
     $(INSTALL) '$(BUILD_DIR)/hashtable_test.exe' '$(PREFIX)/$(TARGET)/bin/test-sparsehash.exe'
