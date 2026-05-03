@@ -1,9 +1,13 @@
-From 248663d69d96de85d3a4aaf3c447cc6617a0419d Mon Sep 17 00:00:00 2001
+From 4500347f861a2a606540ab7d01f074ef1e8bb57d Mon Sep 17 00:00:00 2001
 From: =?utf8?q?M=C3=A5rten=20Nordheim?= <marten.nordheim@qt.io>
 Date: Thu, 26 Mar 2026 15:45:13 +0100
-Subject: [PATCH] wip openssl 4
+Subject: [PATCH] wip Update sources to support OpenSSL 4
 
-Fixes: QTBUG-145221
+It's mostly compatible with the existing code, but a few source-breaks
+to enforce const-correctness was done. And that's the majority of the
+changes seen here.
+
+Pick-to: 6.11 6.8
 Change-Id: Ic3f7d3cf00dbcb5b4cd1a299d3608a7c694a3454
 ---
  src/plugins/tls/openssl/qopenssl_p.h          |  6 +++
@@ -36,7 +40,7 @@ index 1f946a421d6f..724103ae6665 100644
  
  struct QSslErrorEntry {
 diff --git a/src/plugins/tls/openssl/qsslsocket_openssl_symbols.cpp b/src/plugins/tls/openssl/qsslsocket_openssl_symbols.cpp
-index 54ef9a1eab44..422694627395 100644
+index 54ef9a1eab44..373f162ce7ae 100644
 --- a/src/plugins/tls/openssl/qsslsocket_openssl_symbols.cpp
 +++ b/src/plugins/tls/openssl/qsslsocket_openssl_symbols.cpp
 @@ -214,8 +214,8 @@ DEFINEFUNC2(void, BIO_set_shutdown, BIO *a, a, int shut, shut, return, DUMMYARG)
@@ -45,8 +49,8 @@ index 54ef9a1eab44..422694627395 100644
  DEFINEFUNC2(int, ASN1_INTEGER_cmp, const ASN1_INTEGER *a, a, const ASN1_INTEGER *b, b, return 1, return)
 -DEFINEFUNC(int, ASN1_STRING_length, ASN1_STRING *a, a, return 0, return)
 -DEFINEFUNC2(int, ASN1_STRING_to_UTF8, unsigned char **a, a, ASN1_STRING *b, b, return 0, return)
-+DEFINEFUNC(int, ASN1_STRING_length, QT_OPENSSL4_CONST ASN1_STRING *a, a, return 0, return)
-+DEFINEFUNC2(int, ASN1_STRING_to_UTF8, unsigned char **a, a, QT_OPENSSL4_CONST ASN1_STRING *b, b, return 0, return)
++DEFINEFUNC(int, ASN1_STRING_length, const ASN1_STRING *a, a, return 0, return)
++DEFINEFUNC2(int, ASN1_STRING_to_UTF8, unsigned char **a, a, const ASN1_STRING *b, b, return 0, return)
  DEFINEFUNC2(int, ASN1_TIME_to_tm, const ASN1_TIME *s, s, struct tm *tm, tm, return 0, return)
  DEFINEFUNC4(long, BIO_ctrl, BIO *a, a, int b, b, long c, c, void *d, d, return -1, return)
  DEFINEFUNC(int, BIO_free, BIO *a, a, return 0, return)
@@ -55,7 +59,7 @@ index 54ef9a1eab44..422694627395 100644
  DEFINEFUNC(int, OBJ_ln2nid, const char *s, s, return 0, return)
  DEFINEFUNC3(int, i2t_ASN1_OBJECT, char *a, a, int b, b, ASN1_OBJECT *c, c, return -1, return)
 -DEFINEFUNC4(int, OBJ_obj2txt, char *a, a, int b, b, ASN1_OBJECT *c, c, int d, d, return -1, return)
-+DEFINEFUNC4(int, OBJ_obj2txt, char *a, a, int b, b, QT_OPENSSL4_CONST ASN1_OBJECT *c, c, int d, d, return -1, return)
++DEFINEFUNC4(int, OBJ_obj2txt, char *a, a, int b, b, const ASN1_OBJECT *c, c, int d, d, return -1, return)
  DEFINEFUNC(int, OBJ_obj2nid, const ASN1_OBJECT *a, a, return NID_undef, return)
  DEFINEFUNC4(EVP_PKEY *, PEM_read_bio_PrivateKey, BIO *a, a, EVP_PKEY **b, b, pem_password_cb *c, c, void *d, d, return nullptr, return)
  
@@ -79,7 +83,7 @@ index 54ef9a1eab44..422694627395 100644
 -DEFINEFUNC(ASN1_OCTET_STRING *, X509_EXTENSION_get_data, X509_EXTENSION *a, a, return nullptr, return)
 +DEFINEFUNC(const X509V3_EXT_METHOD *, X509V3_EXT_get, QT_OPENSSL4_CONST X509_EXTENSION *a, a, return nullptr, return)
 +DEFINEFUNC(void *, X509V3_EXT_d2i, QT_OPENSSL4_CONST X509_EXTENSION *a, a, return nullptr, return)
-+DEFINEFUNC(int, X509_EXTENSION_get_critical, QT_OPENSSL4_CONST X509_EXTENSION *a, a, return 0, return)
++DEFINEFUNC(int, X509_EXTENSION_get_critical, const X509_EXTENSION *a, a, return 0, return)
 +DEFINEFUNC(QT_OPENSSL4_CONST ASN1_OCTET_STRING *, X509_EXTENSION_get_data, QT_OPENSSL4_CONST X509_EXTENSION *a, a, return nullptr, return)
  DEFINEFUNC(void, BASIC_CONSTRAINTS_free, BASIC_CONSTRAINTS *a, a, return, DUMMYARG)
  DEFINEFUNC(void, AUTHORITY_KEYID_free, AUTHORITY_KEYID *a, a, return, DUMMYARG)
@@ -96,10 +100,10 @@ index 54ef9a1eab44..422694627395 100644
 -DEFINEFUNC2(X509_NAME_ENTRY *, X509_NAME_get_entry, X509_NAME *a, a, int b, b, return nullptr, return)
 -DEFINEFUNC(ASN1_STRING *, X509_NAME_ENTRY_get_data, X509_NAME_ENTRY *a, a, return nullptr, return)
 -DEFINEFUNC(ASN1_OBJECT *, X509_NAME_ENTRY_get_object, X509_NAME_ENTRY *a, a, return nullptr, return)
-+DEFINEFUNC(int, X509_NAME_entry_count, QT_OPENSSL4_CONST X509_NAME *a, a, return 0, return)
-+DEFINEFUNC2(QT_OPENSSL4_CONST X509_NAME_ENTRY *, X509_NAME_get_entry, QT_OPENSSL4_CONST X509_NAME *a, a, int b, b, return nullptr, return)
-+DEFINEFUNC(QT_OPENSSL4_CONST ASN1_STRING *, X509_NAME_ENTRY_get_data, QT_OPENSSL4_CONST X509_NAME_ENTRY *a, a, return nullptr, return)
-+DEFINEFUNC(QT_OPENSSL4_CONST ASN1_OBJECT *, X509_NAME_ENTRY_get_object, QT_OPENSSL4_CONST X509_NAME_ENTRY *a, a, return nullptr, return)
++DEFINEFUNC(int, X509_NAME_entry_count, const X509_NAME *a, a, return 0, return)
++DEFINEFUNC2(QT_OPENSSL4_CONST X509_NAME_ENTRY *, X509_NAME_get_entry, const X509_NAME *a, a, int b, b, return nullptr, return)
++DEFINEFUNC(QT_OPENSSL4_CONST ASN1_STRING *, X509_NAME_ENTRY_get_data, const X509_NAME_ENTRY *a, a, return nullptr, return)
++DEFINEFUNC(QT_OPENSSL4_CONST ASN1_OBJECT *, X509_NAME_ENTRY_get_object, const X509_NAME_ENTRY *a, a, return nullptr, return)
  DEFINEFUNC(EVP_PKEY *, X509_PUBKEY_get, X509_PUBKEY *a, a, return nullptr, return)
  DEFINEFUNC(void, X509_STORE_free, X509_STORE *a, a, return, DUMMYARG)
  DEFINEFUNC(X509_STORE *, X509_STORE_new, DUMMYARG, DUMMYARG, return nullptr, return)
@@ -117,7 +121,7 @@ index 54ef9a1eab44..422694627395 100644
  #ifdef Q_OS_WIN
  
 diff --git a/src/plugins/tls/openssl/qsslsocket_openssl_symbols_p.h b/src/plugins/tls/openssl/qsslsocket_openssl_symbols_p.h
-index 4d9079b5a3e6..7eba513a7523 100644
+index 4d9079b5a3e6..bb575cd60ca9 100644
 --- a/src/plugins/tls/openssl/qsslsocket_openssl_symbols_p.h
 +++ b/src/plugins/tls/openssl/qsslsocket_openssl_symbols_p.h
 @@ -350,8 +350,8 @@ void q_SSL_set_psk_use_session_callback(SSL *s, q_SSL_psk_use_session_cb_func_t)
@@ -126,8 +130,8 @@ index 4d9079b5a3e6..7eba513a7523 100644
  int q_ASN1_INTEGER_cmp(const ASN1_INTEGER *x, const ASN1_INTEGER *y);
 -int q_ASN1_STRING_length(ASN1_STRING *a);
 -int q_ASN1_STRING_to_UTF8(unsigned char **a, ASN1_STRING *b);
-+int q_ASN1_STRING_length(QT_OPENSSL4_CONST ASN1_STRING *a);
-+int q_ASN1_STRING_to_UTF8(unsigned char **a, QT_OPENSSL4_CONST ASN1_STRING *b);
++int q_ASN1_STRING_length(const ASN1_STRING *a);
++int q_ASN1_STRING_to_UTF8(unsigned char **a, const ASN1_STRING *b);
  int q_ASN1_TIME_to_tm(const ASN1_TIME *s, struct tm *tm);
  long q_BIO_ctrl(BIO *a, int b, long c, void *d);
  int q_BIO_free(BIO *a);
@@ -136,7 +140,7 @@ index 4d9079b5a3e6..7eba513a7523 100644
  int q_OBJ_ln2nid(const char *s);
  int q_i2t_ASN1_OBJECT(char *buf, int buf_len, ASN1_OBJECT *obj);
 -int q_OBJ_obj2txt(char *buf, int buf_len, ASN1_OBJECT *obj, int no_name);
-+int q_OBJ_obj2txt(char *buf, int buf_len, QT_OPENSSL4_CONST ASN1_OBJECT *obj, int no_name);
++int q_OBJ_obj2txt(char *buf, int buf_len, const ASN1_OBJECT *obj, int no_name);
  int q_OBJ_obj2nid(const ASN1_OBJECT *a);
  #define q_EVP_get_digestbynid(a) q_EVP_get_digestbyname(q_OBJ_nid2sn(a))
  EVP_PKEY *q_PEM_read_bio_PrivateKey(BIO *a, EVP_PKEY **b, pem_password_cb *c, void *d);
@@ -159,7 +163,7 @@ index 4d9079b5a3e6..7eba513a7523 100644
 -ASN1_OCTET_STRING *q_X509_EXTENSION_get_data(X509_EXTENSION *a);
 +const X509V3_EXT_METHOD *q_X509V3_EXT_get(QT_OPENSSL4_CONST X509_EXTENSION *a);
 +void *q_X509V3_EXT_d2i(QT_OPENSSL4_CONST X509_EXTENSION *a);
-+int q_X509_EXTENSION_get_critical(QT_OPENSSL4_CONST X509_EXTENSION *a);
++int q_X509_EXTENSION_get_critical(const X509_EXTENSION *a);
 +QT_OPENSSL4_CONST ASN1_OCTET_STRING *q_X509_EXTENSION_get_data(QT_OPENSSL4_CONST X509_EXTENSION *a);
  void q_BASIC_CONSTRAINTS_free(BASIC_CONSTRAINTS *a);
  void q_AUTHORITY_KEYID_free(AUTHORITY_KEYID *a);
@@ -175,15 +179,15 @@ index 4d9079b5a3e6..7eba513a7523 100644
 -X509_NAME_ENTRY *q_X509_NAME_get_entry(X509_NAME *a,int b);
 -ASN1_STRING *q_X509_NAME_ENTRY_get_data(X509_NAME_ENTRY *a);
 -ASN1_OBJECT *q_X509_NAME_ENTRY_get_object(X509_NAME_ENTRY *a);
-+int q_X509_NAME_entry_count(QT_OPENSSL4_CONST X509_NAME *a);
-+QT_OPENSSL4_CONST X509_NAME_ENTRY *q_X509_NAME_get_entry(QT_OPENSSL4_CONST X509_NAME *a,int b);
-+QT_OPENSSL4_CONST ASN1_STRING *q_X509_NAME_ENTRY_get_data(QT_OPENSSL4_CONST X509_NAME_ENTRY *a);
-+QT_OPENSSL4_CONST ASN1_OBJECT *q_X509_NAME_ENTRY_get_object(QT_OPENSSL4_CONST X509_NAME_ENTRY *a);
++int q_X509_NAME_entry_count(const X509_NAME *a);
++QT_OPENSSL4_CONST X509_NAME_ENTRY *q_X509_NAME_get_entry(const X509_NAME *a, int b);
++QT_OPENSSL4_CONST ASN1_STRING *q_X509_NAME_ENTRY_get_data(const X509_NAME_ENTRY *a);
++QT_OPENSSL4_CONST ASN1_OBJECT *q_X509_NAME_ENTRY_get_object(const X509_NAME_ENTRY *a);
  EVP_PKEY *q_X509_PUBKEY_get(X509_PUBKEY *a);
  void q_X509_STORE_free(X509_STORE *store);
  X509_STORE *q_X509_STORE_new();
 diff --git a/src/plugins/tls/openssl/qx509_openssl.cpp b/src/plugins/tls/openssl/qx509_openssl.cpp
-index 558671741031..8260c1f1183e 100644
+index 558671741031..919fbfea5cb6 100644
 --- a/src/plugins/tls/openssl/qx509_openssl.cpp
 +++ b/src/plugins/tls/openssl/qx509_openssl.cpp
 @@ -29,7 +29,7 @@ namespace QTlsPrivate {
@@ -191,7 +195,7 @@ index 558671741031..8260c1f1183e 100644
  namespace {
  
 -QByteArray asn1ObjectId(ASN1_OBJECT *object)
-+QByteArray asn1ObjectId(QT_OPENSSL4_CONST ASN1_OBJECT *object)
++QByteArray asn1ObjectId(const ASN1_OBJECT *object)
  {
      if (!object)
          return {};
@@ -200,7 +204,7 @@ index 558671741031..8260c1f1183e 100644
  }
  
 -QByteArray asn1ObjectName(ASN1_OBJECT *object)
-+QByteArray asn1ObjectName(QT_OPENSSL4_CONST ASN1_OBJECT *object)
++QByteArray asn1ObjectName(const ASN1_OBJECT *object)
  {
      if (!object)
          return {};
@@ -209,7 +213,7 @@ index 558671741031..8260c1f1183e 100644
  }
  
 -QMultiMap<QByteArray, QString> mapFromX509Name(X509_NAME *name)
-+QMultiMap<QByteArray, QString> mapFromX509Name(QT_OPENSSL4_CONST X509_NAME *name)
++QMultiMap<QByteArray, QString> mapFromX509Name(const X509_NAME *name)
  {
      if (!name)
          return {};
@@ -217,7 +221,7 @@ index 558671741031..8260c1f1183e 100644
      QMultiMap<QByteArray, QString> info;
      for (int i = 0; i < q_X509_NAME_entry_count(name); ++i) {
 -        X509_NAME_ENTRY *e = q_X509_NAME_get_entry(name, i);
-+        QT_OPENSSL4_CONST X509_NAME_ENTRY *e = q_X509_NAME_get_entry(name, i);
++        const X509_NAME_ENTRY *e = q_X509_NAME_get_entry(name, i);
  
          QByteArray name = asn1ObjectName(q_X509_NAME_ENTRY_get_object(e));
          unsigned char *data = nullptr;
