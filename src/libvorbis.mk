@@ -6,8 +6,8 @@ $(PKG)_DESCR    := Vorbis audio compression library
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.3.7
 $(PKG)_CHECKSUM := 0e982409a9c3fc82ee06e08205b1355e5c6aa4c36bca58146ef399621b0ce5ab
-$(PKG)_SUBDIR   := libvorbis-$($(PKG)_VERSION)
-$(PKG)_FILE     := libvorbis-$($(PKG)_VERSION).tar.gz
+$(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
+$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://downloads.xiph.org/releases/vorbis/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc libogg
 
