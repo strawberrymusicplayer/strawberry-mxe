@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := b08594a47ca475ddda21c7990d8e9e3ceb5cd74f9709b4b5995b24d11cafa
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_URL      := https://ffmpeg.org/releases/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc $(BUILD)~nasm zlib bzip2 gnutls wavpack libvorbis libopus speex lame libcdio getopt-win
+$(PKG)_DEPS     := cc $(BUILD)~nasm zlib bzip2 gnutls wavpack libvorbis opus speex lame libcdio getopt-win
 
 # DO NOT ADD fdk-aac.
 # Although it is free software, the license is not compatible with the GPL, and we'd like to enable GPL in our default ffmpeg build.

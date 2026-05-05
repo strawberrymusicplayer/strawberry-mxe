@@ -1,13 +1,13 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
-PKG             := libopus
+PKG             := opus
 $(PKG)_WEBSITE  := https://opus-codec.org/
 $(PKG)_DESCR    := Opus Interactive Audio Codec
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.6.1
 $(PKG)_CHECKSUM := 6ffcb593207be92584df15b32466ed64bbec99109f007c82205f0194572411a1
-$(PKG)_SUBDIR   := opus-$($(PKG)_VERSION)
-$(PKG)_FILE     := opus-$($(PKG)_VERSION).tar.gz
+$(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
+$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://downloads.xiph.org/releases/opus/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc
 

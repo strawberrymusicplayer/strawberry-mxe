@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := 4db76b3619280037a4047de7d9dbb38613a4272dcc40efb333257124635a8
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc glib gstreamer libogg libopus libvorbis dlfcn-win32
+$(PKG)_DEPS     := cc glib gstreamer libogg libvorbis opus dlfcn-win32
 
 $(PKG)_UPDATE = $(gstreamer_UPDATE)
 

@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := 6467e3964828f4d7d08bfe1fbb4d76287a1c8fa76674e59e101a149c020fe
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://gstreamer.freedesktop.org/src/$(PKG)/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc gstreamer gst-plugins-base gst-plugins-good libgcrypt libxml2 libopus faad2 faac musepack chromaprint libopenmpt fdk-aac libgme libbs2b
+$(PKG)_DEPS     := cc gstreamer gst-plugins-base gst-plugins-good libgcrypt libxml2 opus faad2 faac musepack chromaprint libopenmpt fdk-aac libgme libbs2b
 
 $(PKG)_UPDATE = $(gstreamer_UPDATE)
 

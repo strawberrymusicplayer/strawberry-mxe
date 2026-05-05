@@ -11,7 +11,7 @@ $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://ftp.osuosl.org/pub/xiph/releases/opus/$($(PKG)_FILE)
 $(PKG)_URL2     := https://github.com/xiph/opusfile/releases/download/v$($(PKG)_VERSION)/$($(PKG)_FILE)
 $(PKG)_GH_CONF  := xiph/opusfile/releases/latest, v
-$(PKG)_DEPS     := cc libogg libopus
+$(PKG)_DEPS     := cc libogg opus
 
 define $(PKG)_BUILD
     cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --disable-doc --disable-examples --disable-http
