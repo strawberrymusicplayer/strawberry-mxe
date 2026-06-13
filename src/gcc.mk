@@ -49,6 +49,7 @@ define $(PKG)_CONFIGURE
         --with-ld='$(PREFIX)/bin/$(TARGET)-ld' \
         --with-nm='$(PREFIX)/bin/$(TARGET)-nm' \
         --disable-libquadmath \
+        --enable-tls \
         $(PKG_CONFIGURE_OPTS)
 endef
 
