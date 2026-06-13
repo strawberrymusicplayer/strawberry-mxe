@@ -91,9 +91,11 @@ define $(PKG)_BUILD_mingw-w64
     $(MAKE) -C '$(BUILD_DIR).pthreads' -j 1 $(INSTALL_STRIP_TOOLCHAIN)
 
     # build rest of gcc
+    # mman-win32 may have dropped <sys/mman.h> into the sysroot; GCC 16 libgcov would then compile in malloc_mmap() and reference mmap(), which isn't in the default link specs -> the --coverage test link fails.
+    # Force libgcc's (sub)configure to not detect the header so gcov falls back to malloc.
     # `all-target-libstdc++-v3` sometimes has parallel failure
-    $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' all-target-libstdc++-v3 || $(MAKE) -C '$(BUILD_DIR)' -j 1 all-target-libstdc++-v3
-    $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
+    ac_cv_header_sys_mman_h=no $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' all-target-libstdc++-v3 || ac_cv_header_sys_mman_h=no $(MAKE) -C '$(BUILD_DIR)' -j 1 all-target-libstdc++-v3
+    ac_cv_header_sys_mman_h=no $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 $(INSTALL_STRIP_TOOLCHAIN)
 
     $($(PKG)_POST_BUILD)
