@@ -1,0 +1,29 @@
+diff --git a/Utilities/cmlibarchive/CMakeLists.txt b/Utilities/cmlibarchive/CMakeLists.txt
+index d094dc37..8cbc8e8e 100644
+--- a/Utilities/cmlibarchive/CMakeLists.txt
++++ b/Utilities/cmlibarchive/CMakeLists.txt
+@@ -1210,7 +1210,14 @@ IF(ENABLE_ICONV)
+   #
+   # Find locale_charset() for libiconv.
+   #
+-  IF(LIBICONV_PATH)
++  # XXX(cmake): only probe for locale_charset() when GNU libiconv is
++  # actually being used (HAVE_LIBICONV). LIBICONV_PATH may be set even
++  # when iconv() was already found in libc (e.g. glibc), if an unrelated
++  # libiconv/libcharset happens to be on the library search path. In that
++  # case CHECK_FUNCTION_EXISTS_GLIBC below can succeed against that
++  # unrelated library while HAVE_LOCALCHARSET_H fails (its header isn't on
++  # the include path), causing an implicit-declaration build failure.
++  IF(HAVE_LIBICONV)
+     SET(CMAKE_REQUIRED_DEFINITIONS)
+     SET(CMAKE_REQUIRED_INCLUDES ${ICONV_INCLUDE_DIR})
+     SET(CMAKE_REQUIRED_LIBRARIES)
+@@ -1239,7 +1246,7 @@ IF(ENABLE_ICONV)
+         LIST(APPEND ADDITIONAL_LIBS ${LIBCHARSET_PATH})
+       ENDIF(HAVE_LOCALE_CHARSET)
+     ENDIF(LIBCHARSET_PATH)
+-  ENDIF(LIBICONV_PATH)
++  ENDIF(HAVE_LIBICONV)
+   CMAKE_POP_CHECK_STATE()	# Restore the state of the variables
+ ELSE(ENABLE_ICONV)
+   # Make sure ICONV variables are not in CACHE after ENABLE_ICONV disabled
