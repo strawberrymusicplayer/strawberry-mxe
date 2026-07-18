@@ -33,6 +33,7 @@ define $(PKG)_BUILD
         -Disomp4=enabled \
         -Dreplaygain=enabled \
         -Drtp=enabled \
+        -Drtpmanager=enabled \
         -Drtsp=enabled \
         -Dspectrum=enabled \
         -Dudp=enabled \
