@@ -1,4 +1,4 @@
-# :floppy_disk: MXE (M cross environment) [![License][license-badge]][license-page] ![Docker](https://github.com/strawberrymusicplayer/strawberry-mxe/workflows/Docker/badge.svg)
+# :floppy_disk: MXE (M cross environment) [![License][license-badge]][license-page] ![Docker](https://github.com/strawberrymusicplayer/strawberry-mxe/actions/workflows/docker.yaml/badge.svg?branch=master)
 
 [license-page]: LICENSE.md
 [license-badge]: https://img.shields.io/badge/License-MIT-brightgreen.svg
