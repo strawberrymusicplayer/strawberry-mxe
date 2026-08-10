@@ -1,0 +1,36 @@
+From be7b95a9e99ac0b8b704c1af60296135b5d01e77 Mon Sep 17 00:00:00 2001
+From: Adam Sampson <ats@offog.org>
+Date: Tue, 11 Aug 2026 13:34:50 +0100
+Subject: [PATCH] meson: make copyright_prog work for cross builds
+
+af962fd17821 ("meson: Use compatible C code instead of 'date'") broke
+cross-compilation.
+
+The copyright date helper needs to run on the build system, not the
+system libpsl is being compiled for. Compile it with the build compiler
+rather than the host compiler.
+---
+ meson.build | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index fc5d72b..0c6ecd2 100644
+--- a/meson.build
++++ b/meson.build
+@@ -3,6 +3,7 @@ project('libpsl', 'c',
+   meson_version : '>=0.60.0')
+ 
+ cc = meson.get_compiler('c')
++build_cc = meson.get_compiler('c', native : true)
+ 
+ enable_runtime = get_option('runtime')
+ enable_builtin = get_option('builtin')
+@@ -174,7 +175,7 @@ int main(void) {
+     return 0;
+ }
+ '''
+-copyright_cmd = cc.run(copyright_prog)
++copyright_cmd = build_cc.run(copyright_prog)
+ copyright_date = copyright_cmd.stdout().strip()
+ _cdata.set('COPYRIGHT_MONTH', copyright_date.split()[0])
+ _cdata.set('COPYRIGHT_YEAR', copyright_date.split()[1])
