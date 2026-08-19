@@ -4,8 +4,8 @@ PKG             := faad2
 $(PKG)_WEBSITE  := http://faac.sourceforge.net/
 $(PKG)_DESCR    := Freeware Advanced Audio Coder
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.11.2
-$(PKG)_CHECKSUM := 3fcbd305e4abd34768c62050e18ca0986f7d9c5eca343fb98275418013065c0e
+$(PKG)_VERSION  := 2.11.3
+$(PKG)_CHECKSUM := 860ab62087e336c1844a70e33196c1790b525fb9a9e7b6ac4fab1a1a4e4d5ce8
 $(PKG)_GH_CONF  := knik0/faad2/releases/latest
 $(PKG)_DEPS     := cc getopt-win
 
