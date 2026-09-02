@@ -5,11 +5,11 @@ $(PKG)_WEBSITE  := https://www.pcre.org/
 $(PKG)_DESCR    := Perl Compatible Regular Expressions Library
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 10.48
-$(PKG)_CHECKSUM := 38c2a44986d70050f5fc8219901de87fc32784ab271d3c7d4400683a0b76794b
-$(PKG)_GH_CONF  := PhilipHazel/pcre2/releases/latest, pcre2-
+$(PKG)_CHECKSUM := b6c68fdf6f3ac31388b50aa89ff0fc49c00c987c16e7b5146491d12003f2c8ed
+$(PKG)_GH_CONF  := PCRE2Project/pcre2/releases/latest, pcre2-
 $(PKG)_SUBDIR   := pcre2-$($(PKG)_VERSION)
 $(PKG)_FILE     := pcre2-$($(PKG)_VERSION).tar.bz2
-$(PKG)_URL      := https://github.com/PhilipHazel/pcre2/releases/download/$(PKG)-$($(PKG)_VERSION)/$(PKG)-$($(PKG)_VERSION).tar.bz2
+$(PKG)_URL      := https://github.com/PCRE2Project/pcre2/releases/download/$(PKG)-$($(PKG)_VERSION)/$(PKG)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_DEPS     := cc
 
 define $(PKG)_BUILD_SHARED
