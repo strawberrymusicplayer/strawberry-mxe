@@ -4,8 +4,8 @@ PKG             := qtsparkle-qt6
 $(PKG)_WEBSITE  := https://github.com/strawberrymusicplayer/qtsparkle
 $(PKG)_DESCR    := Qt 6 auto-update Library
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 133476c
-$(PKG)_CHECKSUM := cd23ca7347ab65f77ac96992cc5aadd6f59d34982c8511a38b98ad2394c5abd6
+$(PKG)_VERSION  := 7c0a4e4
+$(PKG)_CHECKSUM := f9371c0f8cb60f671b194a5c361f80c721392b2340c0bce1906c1311f28fe144
 $(PKG)_GH_CONF  := strawberrymusicplayer/qtsparkle/branches/master
 $(PKG)_DEPS     := cc qt6-qtbase qt6-qttools
 
