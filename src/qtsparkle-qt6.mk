@@ -1,12 +1,12 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := qtsparkle-qt6
-$(PKG)_WEBSITE  := https://github.com/strawberrymusicplayer/qtsparkle
+$(PKG)_WEBSITE  := https://github.com/jonaski/qtsparkle
 $(PKG)_DESCR    := Qt 6 auto-update Library
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 7c0a4e4
 $(PKG)_CHECKSUM := f9371c0f8cb60f671b194a5c361f80c721392b2340c0bce1906c1311f28fe144
-$(PKG)_GH_CONF  := strawberrymusicplayer/qtsparkle/branches/master
+$(PKG)_GH_CONF  := jonaski/qtsparkle/branches/master
 $(PKG)_DEPS     := cc qt6-qtbase qt6-qttools
 
 define $(PKG)_BUILD
