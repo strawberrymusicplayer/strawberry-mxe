@@ -4,8 +4,8 @@ PKG             := faac
 $(PKG)_WEBSITE  := http://sourceforge.net/projects/faac/
 $(PKG)_DESCR    := Freeware Advanced Audio Coder
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.1
-$(PKG)_CHECKSUM := 1d4b890c7d767361987d80afdacdd654d23a748b4a273d743c174c2d57e9bce5
+$(PKG)_VERSION  := 2.2
+$(PKG)_CHECKSUM := a93963573907c83e26e8cfabbf80d3a9c360f06ea4ecf1ea6cb74a202494d8d9
 $(PKG)_GH_CONF  := knik0/faac/releases/latest, faac-
 $(PKG)_DEPS     := cc meson-conf
 
