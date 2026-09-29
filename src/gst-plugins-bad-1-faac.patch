@@ -1,5 +1,5 @@
 diff --git a/ext/faac/gstfaac.c b/ext/faac/gstfaac.c
-index c24a514..95e85ce 100644
+index c24a514..38517ed 100644
 --- a/ext/faac/gstfaac.c
 +++ b/ext/faac/gstfaac.c
 @@ -43,6 +43,39 @@
@@ -73,7 +73,7 @@ index c24a514..95e85ce 100644
      "framed = (boolean) true; "
  static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
      GST_PAD_SRC,
-@@ -466,6 +507,78 @@ gst_faac_negotiate (GstFaac * faac)
+@@ -466,6 +507,82 @@ gst_faac_negotiate (GstFaac * faac)
  static gboolean
  gst_faac_open_encoder (GstFaac * faac, GstAudioInfo * info)
  {
@@ -88,7 +88,11 @@ index c24a514..95e85ce 100644
 +  /* clean up in case of re-configure */
 +  gst_faac_close_encoder (faac);
 +
++#if FAAC_VERSION_MAJOR >= 2
++  if (faac_params_init (&params, sizeof (params)) < 0)
++#else
 +  if (faac_params_init (&params) < 0)
++#endif
 +    goto setup_failed;
 +
 +  params.sample_rate = info->rate;
@@ -152,7 +156,7 @@ index c24a514..95e85ce 100644
    faacEncHandle *handle;
    faacEncConfiguration *conf;
    guint maxbitrate;
-@@ -534,6 +647,7 @@ gst_faac_open_encoder (GstFaac * faac, GstAudioInfo * info)
+@@ -534,6 +651,7 @@ gst_faac_open_encoder (GstFaac * faac, GstAudioInfo * info)
    GST_DEBUG_OBJECT (faac, "bandwidth: %d Hz", conf->bandWidth);
  
    return TRUE;
@@ -160,7 +164,7 @@ index c24a514..95e85ce 100644
  
    /* ERRORS */
  setup_failed:
-@@ -570,11 +684,28 @@ gst_faac_configure_source_pad (GstFaac * faac, GstAudioInfo * info)
+@@ -570,11 +688,28 @@ gst_faac_configure_source_pad (GstFaac * faac, GstAudioInfo * info)
  
      /* get the config string */
      GST_DEBUG_OBJECT (faac, "retrieving decoder info");
@@ -189,7 +193,7 @@ index c24a514..95e85ce 100644
        gst_caps_unref (srccaps);
        goto invalid_codec_data;
      }
-@@ -593,7 +724,9 @@ gst_faac_configure_source_pad (GstFaac * faac, GstAudioInfo * info)
+@@ -593,7 +728,9 @@ gst_faac_configure_source_pad (GstFaac * faac, GstAudioInfo * info)
        gst_buffer_unref (codec_data);
      }
  
