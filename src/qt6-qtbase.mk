@@ -105,7 +105,7 @@ define $(PKG)_BUILD_$(BUILD)
         -DBUILD_WITH_PCH=OFF \
         -DFEATURE_USE_GOLD_LINKER_ALIAS=OFF \
 	-DFEATURE_DEVELOPER_BUILD=ON \
-        -DFEATURE_{accessibility,androiddeployqt,brotli,dbus,egl,evdev,eventfd,fontconfig,freetype,gif,glib,harfbuzz,ico,icu,jpeg,opengl,opengl_desktop,openssl,pch,pcre2,png,sql,style_fusion,testlib,vulkan,xcb,xcb_xlib,xkbcommon,xml,zstd}=OFF
+        -DFEATURE_{accessibility,androiddeployqt,brotli,dbus,egl,evdev,eventfd,fontconfig,freetype,gif,glib,harfbuzz,ico,icu,jpeg,opengl,opengl_desktop,openssl,pch,pcre2,png,printsupport,sql,style_fusion,testlib,vulkan,xcb,xcb_xlib,xkbcommon,xml,zstd}=OFF
 
     '$(TARGET)-cmake' --build '$(BUILD_DIR)' -j '$(JOBS)'
     '$(TARGET)-cmake' --install '$(BUILD_DIR)'
