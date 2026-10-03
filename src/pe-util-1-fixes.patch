@@ -1,15 +1,8 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 6914557..926a432 100644
+index 6914557..9e85bb5 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -4,10 +4,14 @@ project(mingw_util CXX)
- set(CMAKE_CXX_STANDARD 17)
- add_compile_options("-Wall")
- 
-+include_directories(${Boost_INCLUDE_DIR})
-+link_directories(${Boost_LIBRARY_DIR})
-+
- add_executable(peldd
+@@ -8,6 +8,7 @@ add_executable(peldd
    peldd.cc
    pe-parse/pe-parser-library/src/parse.cpp
    pe-parse/pe-parser-library/src/buffer.cpp
