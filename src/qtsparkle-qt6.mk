@@ -4,8 +4,8 @@ PKG             := qtsparkle-qt6
 $(PKG)_WEBSITE  := https://github.com/jonaski/qtsparkle
 $(PKG)_DESCR    := Qt 6 auto-update Library
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 7c0a4e4
-$(PKG)_CHECKSUM := e42106b66592736f017f7822e0ff518a8bf942328f5fa660dd75a152f1d3c556
+$(PKG)_VERSION  := 1318e5b
+$(PKG)_CHECKSUM := ec902e9fcd0a5442992ab6f1a5b574c473153ef35e077ba7e856d448e249193d
 $(PKG)_GH_CONF  := jonaski/qtsparkle/branches/master
 $(PKG)_DEPS     := cc qt6-qtbase qt6-qttools
 
