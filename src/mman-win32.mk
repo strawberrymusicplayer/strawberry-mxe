@@ -4,8 +4,8 @@ PKG             := mman-win32
 $(PKG)_WEBSITE  := https://code.google.com/p/mman-win32/
 $(PKG)_DESCR    := A light implementation of the mmap functions for MinGW
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := a8f3c60
-$(PKG)_CHECKSUM := 429cfebad2c7da22b230faecd9556a33705fd4f42a74f11a9859467a77eee39f
+$(PKG)_VERSION  := 780b16c
+$(PKG)_CHECKSUM := ddb4d63cbbf9644b9b064d06b42ed9429970ba3485e7078b9145fccb6e2957d1
 $(PKG)_GH_CONF  := alitrack/mman-win32/branches/master
 $(PKG)_DEPS     := cc
 
