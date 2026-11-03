@@ -4,8 +4,8 @@ PKG             := rapidjson
 $(PKG)_WEBSITE  := https://rapidjson.org/
 $(PKG)_DESCR    := A fast JSON parser/generator for C++ with both SAX/DOM style API
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 24b5e7a
-$(PKG)_CHECKSUM := e21cddc53c3cfe4063d4d57c0588e969398af51c42ac9d52af3442795f07cc6f
+$(PKG)_VERSION  := 297637b
+$(PKG)_CHECKSUM := 31d3faf312f18926dc60c2b2e408c2e59a70848c01650bf92c534a8bb39b1c26
 $(PKG)_GH_CONF  := Tencent/rapidjson/branches/master
 $(PKG)_DEPS     := cc
 
