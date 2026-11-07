@@ -99,7 +99,7 @@ define MXE_SETUP_GITHUB
     $(PKG)_TAG_FILTER  := $(GH_TAG_FILTER)
     $(PKG)_VERSION_SEP := $(or $(GH_VERSION_SEP),.)
     $(PKG)_ARCHIVE_EXT := $(or $(GH_ARCHIVE_EXT),.tar.gz)
-    $(PKG)_FILE        := $(or $($(PKG)_FILE),$(PKG)-$$(filter-out $$(PKG)-,$$($$(PKG)_TAG_PREFIX))$($(PKG)_VERSION)$$($$(PKG)_TAG_SUFFIX)$$($$(PKG)_ARCHIVE_EXT))
+    $(PKG)_FILE        := $(or $($(PKG)_FILE),$(PKG)-$($(PKG)_VERSION)$$($$(PKG)_TAG_SUFFIX)$$($$(PKG)_ARCHIVE_EXT))
     $(if $(and $(GH_BRANCH),$(GH_TAG_VARS)),\
         $(error $(newline) $(PKG) specifies both branch and tag variables $(newline)))
     $(if $(filter-out $(GH_APIS),$(GH_API))$(filter x,x$(GH_API)),\
