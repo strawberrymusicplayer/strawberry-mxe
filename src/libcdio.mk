@@ -7,7 +7,7 @@ $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 2.4.0
 $(PKG)_CHECKSUM := bf7cde63762bb12db7755c395c441e49406fde7e1d9f9a9be7e3b940b1f405d7
 $(PKG)_GH_CONF  := libcdio/libcdio/releases/latest
-$(PKG)_DEPS     := cc getopt-win
+$(PKG)_DEPS     := cc
 
 define $(PKG)_BUILD
     cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) \
@@ -19,8 +19,7 @@ define $(PKG)_BUILD
         --without-cdda-player \
         --without-iso-info \
         --without-iso-read \
-        --enable-rock \
-        LDFLAGS='$(LDFLAGS) -lgetopt'
+        --enable-rock
     $(MAKE) -C '$(1)' -j '$(JOBS)'
     $(MAKE) -C '$(1)' -j 1 install
 endef
