@@ -1,0 +1,883 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 1267606..7dc73e0 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -15,13 +15,13 @@ option(BUILD_TESTING "Enable tests for both shared and static libraries" ON)
+ # Debug architecture
+ # message("getopt-win CMAKE_SIZEOF_VOID_P: ${CMAKE_SIZEOF_VOID_P}")
+ 
+-set(GETOPT_SRC src/getopt.c)
+-set(GETOPT_HDR src/getopt.h)
++set(GETOPT_SRC src/getopt_win.c)
++set(GETOPT_HDR src/getopt_win.h)
+ 
+ # Shared library (produces getopt.dll and getopt.lib on Windows)
+ if(BUILD_SHARED_LIBS)
+     add_library(getopt_shared SHARED ${GETOPT_SRC})
+-    target_compile_definitions(getopt_shared PRIVATE EXPORTS_GETOPT)
++    target_compile_definitions(getopt_shared PRIVATE EXPORTS_GETOPT_WIN)
+     target_include_directories(getopt_shared PUBLIC
+             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+             $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+@@ -45,7 +45,7 @@ endif()
+ # Static library (produces getopt_static.lib on Windows)
+ if(BUILD_STATIC_LIBS)
+     add_library(getopt_static STATIC ${GETOPT_SRC})
+-    target_compile_definitions(getopt_static PRIVATE STATIC_GETOPT)
++    target_compile_definitions(getopt_static PRIVATE STATIC_GETOPT_WIN)
+     target_include_directories(getopt_static PUBLIC
+             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+             $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+@@ -79,7 +79,7 @@ if(BUILD_TESTING AND (BUILD_SHARED_LIBS OR BUILD_STATIC_LIBS))
+         add_executable(getopt_test_static tests/main.c)
+         target_include_directories(getopt_test_static PRIVATE src)
+         target_link_libraries(getopt_test_static PRIVATE getopt_static)
+-        target_compile_definitions(getopt_test_static PRIVATE STATIC_GETOPT)
++        target_compile_definitions(getopt_test_static PRIVATE STATIC_GETOPT_WIN)
+         add_test(NAME test_static
+                 COMMAND getopt_test_static --add -b -c hello -d 42 --verbose nonopt1 nonopt2
+         )
+diff --git a/README.md b/README.md
+index cb51188..eead53f 100644
+--- a/README.md
++++ b/README.md
+@@ -1,6 +1,6 @@
+ # Introduction
+ This software was written after hours of searching for a robust Microsoft C and C++ implementation of getopt, which led to devoid results.
+-This software is a modification of the Free Software Foundation, Inc. getopt library for parsing command line arguments and its purpose is to provide a Microsoft Visual C friendly derivative. The source code provides functionality for both Unicode and Multibyte builds and supports getopt, getopt_long, and getopt_long_only. Additionally, the code supports the POSIXLY_CORRECT environment flag, reentrant variants (_getopt_long_r_a/w, _getopt_long_only_r_a/w), and POSIX-specific functions (__posix_getopt_a/w). The library uses the _UNICODE preprocessor directive when defining the getopt, getopt_long, and getopt_long_only functions. These functions are mapped back to getopt_a\getopt_w, getopt_long_a\getopt_long_w, and getopt_long_only_a\getopt_long_only_w respectively. This improvement was made to allow a single DLL to be used in both multibyte and Unicode projects.
++This software is a modification of the Free Software Foundation, Inc. getopt library for parsing command line arguments and its purpose is to provide a Microsoft Visual C friendly derivative. The source code provides functionality for both Unicode and Multibyte builds and supports getopt, getopt_long, and getopt_long_only. Additionally, the code supports the POSIXLY_CORRECT environment flag, reentrant variants (_getopt_win_long_r_a/w, _getopt_win_long_only_r_a/w), and POSIX-specific functions (__posix_getopt_win_a/w). The library uses the _UNICODE preprocessor directive when defining the getopt, getopt_long, and getopt_long_only functions. These functions are mapped back to getopt_win_a\getopt_win_w, getopt_win_long_a\getopt_win_long_w, and getopt_win_long_only_a\getopt_win_long_only_w respectively. This improvement was made to allow a single DLL to be used in both multibyte and Unicode projects.
+ The original GNU code used several header and implementation files containing numerous preprocessor directives specific to Linux environments which have been removed. After removing unneeded dependencies, it was condensed into a single header and implementation file which can be compiled into a DLL, LIB, or directly included into any Visual C, C++, or MFC project. The getopt library can be used by proprietary software, however; certain measures need to be taken to ensure proprietary code adheres to the Lesser GNU Public License for non-derivative works. Please refer to the licensing section of this article for more details on how this software is licensed.
+ For the sake of brevity, this article doesn't discuss how to use the getopt functions. Anyone new to using the getopt functions should refer to the GNU tutorial for using getopt.
+ The library has been updated to match glibc 2.42 getopt, with added support for reentrant functions, updated argv types (char** and wchar_t**), and cross-compilation.
+@@ -9,38 +9,38 @@ The library has been updated to match glibc 2.42 getopt, with added support for
+ Since getopt is licensed under LGPL, it is free to use in proprietary software under some restrictions. When using this library as part of a proprietary software solution, it is important that the library is used as a dynamically linked library (DLL) and is not statically linked or directly compiled into proprietary source code. Static linkage requires that your software be released GPL. Therefore, by keeping the library separately referenced via Dynamic Link Library (DLL), allows the DLL to be modified and updated without changing the proprietary software which utilizes the library; under this condition proprietary software is said to "use" the library. Thus, it is not considered to be a derivative work and can be distributed freely under any license.
+ 
+ # Preprocessor Definitions
+-Compiling getopt as a Dynamic Link Library (DLL) requires the preprocessor definition of EXPORTS_GETOPT. The definition of EXPORTS_GETOPT sets the internal preprocessor definition _GETOPT_API to the value __declspec(dllexport). Compiling getopt as a Static Library (LIB) or directly including the source and header file within a project requires the preprocessor definition of STATIC_GETOPT. The definition of STATIC_GETOPT clears the value of the internal preprocessor definition of _GETOPT_API. Compiling software to use getopt.dll requires that no library specific preprocessor definitions be used. When no library specific preprocessor definitions are used the value assigned to the internal preprocessor definition _GETOPT_API is __declspec(dllimport).
++Compiling getopt as a Dynamic Link Library (DLL) requires the preprocessor definition of EXPORTS_GETOPT_WIN. The definition of EXPORTS_GETOPT_WIN sets the internal preprocessor definition _GETOPT_WIN_API to the value __declspec(dllexport). Compiling getopt as a Static Library (LIB) or directly including the source and header file within a project requires the preprocessor definition of STATIC_GETOPT_WIN. The definition of STATIC_GETOPT_WIN clears the value of the internal preprocessor definition of _GETOPT_WIN_API. Compiling software to use getopt.dll requires that no library specific preprocessor definitions be used. When no library specific preprocessor definitions are used the value assigned to the internal preprocessor definition _GETOPT_WIN_API is __declspec(dllimport).
+ The code segment below demonstrates the logic outlined above:
+ ```c
+-#if defined(EXPORTS_GETOPT) && defined(STATIC_GETOPT)
+-    #error "The preprocessor definitions of EXPORTS_GETOPT and STATIC_GETOPT can only be used individually"
+-#elif defined(STATIC_GETOPT)
++#if defined(EXPORTS_GETOPT_WIN) && defined(STATIC_GETOPT_WIN)
++    #error "The preprocessor definitions of EXPORTS_GETOPT_WIN and STATIC_GETOPT_WIN can only be used individually"
++#elif defined(STATIC_GETOPT_WIN)
+ #pragma message("Warning static builds of getopt violate the Lesser GNU Public License")
+-    #define _GETOPT_API
+-#elif defined(EXPORTS_GETOPT)
++    #define _GETOPT_WIN_API
++#elif defined(EXPORTS_GETOPT_WIN)
+     #pragma message("Exporting getopt library")
+-    #define _GETOPT_API __declspec(dllexport)
++    #define _GETOPT_WIN_API __declspec(dllexport)
+ #else
+     #pragma message("Importing getopt library")
+-    #define _GETOPT_API __declspec(dllimport)
++    #define _GETOPT_WIN_API __declspec(dllimport)
+ #endif
+ ```
+-The following code segment located in getopt.h is responsible for mapping the correct version of the getopt, getopt_long, and getopt_long_only functions. The getopt functions appended with _a to denote ANSI characters using the char type and Unicode functions are appended with _w to denote wide characters using the wchar_t type.
++The following code segment located in getopt_win.h is responsible for mapping the correct version of the getopt, getopt_long, and getopt_long_only functions. The getopt functions appended with _a to denote ANSI characters using the char type and Unicode functions are appended with _w to denote wide characters using the wchar_t type.
+ ```c
+ #ifdef _UNICODE
+-    #define getopt getopt_w
+-    #define __posix_getopt __posix_getopt_w
+-    #define getopt_long getopt_long_w
+-    #define getopt_long_only getopt_long_only_w
+-    #define option option_w
+-    #define optarg optarg_w
++    #define getopt getopt_win_w
++    #define __posix_getopt __posix_getopt_win_w
++    #define getopt_long getopt_win_long_w
++    #define getopt_long_only getopt_win_long_only_w
++    #define option getopt_win_option_w
++    #define optarg getopt_win_optarg_w
+ #else
+-    #define getopt getopt_a
+-    #define __posix_getopt __posix_getopt_a
+-    #define getopt_long getopt_long_a
+-    #define getopt_long_only getopt_long_only_a
+-    #define option option_a
+-    #define optarg optarg_a
++    #define getopt getopt_win_a
++    #define __posix_getopt __posix_getopt_win_a
++    #define getopt_long getopt_win_long_a
++    #define getopt_long_only getopt_win_long_only_a
++    #define option getopt_win_option_a
++    #define optarg getopt_win_optarg_a
+ #endif
+ ```
+ 
+@@ -61,7 +61,7 @@ The code is used identical to GNU getopt.
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include "tchar.h"
+-#include "getopt.h"
++#include "getopt_win.h"
+ int _tmain(int argc, TCHAR** argv)
+ {
+     static int verbose_flag;
+@@ -143,7 +143,7 @@ Additionally precompiled header file must be added as the first include of the g
+ #define _CRT_SECURE_NO_WARNINGS
+ #include <stdlib.h>
+ #include <stdio.h>
+-#include "getopt.h"
++#include "getopt_win.h"
+ ```
+ 
+ # CMake Build on Windows
+@@ -168,7 +168,7 @@ target_link_libraries(myprogram PRIVATE getopt::getopt_shared)
+ find_package(getopt REQUIRED CONFIG COMPONENTS static)
+ add_executable(myprogram main.c)
+ target_link_libraries(myprogram PRIVATE getopt::getopt_static)
+-target_compile_definitions(myprogram PRIVATE STATIC_GETOPT)
++target_compile_definitions(myprogram PRIVATE STATIC_GETOPT_WIN)
+ ```
+ 
+ # History  
+@@ -180,7 +180,7 @@ target_compile_definitions(myprogram PRIVATE STATIC_GETOPT)
+ 02/15/2012 - Fixed _GETOPT_THROW definition missing in implementation file  
+ 08/03/2012 - Created separate functions for char and wchar_t characters so single DLL can do both Unicode and ANSI  
+ 10/15/2012 - Modified to match latest GNU features  
+-06/19/2015 - Fixed maximum option limitation caused by option_a (255) and option_w (65535) structure val variable  
++06/19/2015 - Fixed maximum option limitation caused by getopt_win_option_a (255) and getopt_win_option_w (65535) structure val variable  
+ 09/24/2022 - Updated to match most recent getopt release  
+ 09/25/2022 - Fixed memory allocation (malloc call) issue for wchar_t*  
+ 08/24/2025 - Added reentrant function declarations, updated argv types to char ** and wchar_t **, added cross-compilation support  
+diff --git a/src/getopt.h b/src/getopt.h
+deleted file mode 100644
+index e655b27..0000000
+--- a/src/getopt.h
++++ /dev/null
+@@ -1,166 +0,0 @@
+-/* Getopt for Microsoft C
+-   This code is a modification of the Free Software Foundation, Inc.
+-   Getopt library for parsing command line argument the purpose was
+-   to provide a Microsoft Visual C friendly derivative. This code
+-   provides functionality for both Unicode and Multibyte builds.
+-
+-   Date: 02/03/2011 - Ludvik Jerabek - Initial Release
+-   Version: 1.1
+-   Comment: Supports getopt, getopt_long, and getopt_long_only
+-   and POSIXLY_CORRECT environment flag
+-   License: LGPL
+-
+-   Revisions:
+-   02/03/2011 - Ludvik Jerabek - Initial Release
+-   02/20/2011 - Ludvik Jerabek - Fixed compiler warnings at Level 4
+-   07/05/2011 - Ludvik Jerabek - Added no_argument, required_argument, optional_argument defs
+-   08/03/2011 - Ludvik Jerabek - Fixed non-argument runtime bug which caused runtime exception
+-   08/09/2011 - Ludvik Jerabek - Added code to export functions for DLL and LIB
+-   02/15/2012 - Ludvik Jerabek - Fixed _GETOPT_THROW definition missing in implementation file
+-   08/01/2012 - Ludvik Jerabek - Created separate functions for char and wchar_t characters so single dll can do both unicode and ansi
+-   10/15/2012 - Ludvik Jerabek - Modified to match latest GNU features
+-   06/19/2015 - Ludvik Jerabek - Fixed maximum option limitation caused by option_a (255) and option_w (65535) structure val variable
+-   09/24/2022 - Ludvik Jerabek - Updated to match most recent getopt release
+-   09/25/2022 - Ludvik Jerabek - Fixed memory allocation (malloc call) issue for wchar_t*
+-   08/24/2025 - Ludvik Jerabek - Added reentrant function declarations, updated argv types to char ** and wchar_t **, added cross-compilation support
+-   08/24/2025 - Ludvik Jerabek - Updated to match glibc 2.42 getopt
+-
+-
+-   **DISCLAIMER**
+-   THIS MATERIAL IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND,
+-   EITHER EXPRESS OR IMPLIED, INCLUDING, BUT Not LIMITED TO, THE
+-   IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+-   PURPOSE, OR NON-INFRINGEMENT. SOME JURISDICTIONS DO NOT ALLOW THE
+-   EXCLUSION OF IMPLIED WARRANTIES, SO THE ABOVE EXCLUSION MAY NOT
+-   APPLY TO YOU. IN NO EVENT WILL I BE LIABLE TO ANY PARTY FOR ANY
+-   DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL DAMAGES FOR ANY
+-   USE OF THIS MATERIAL INCLUDING, WITHOUT LIMITATION, ANY LOST
+-   PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA ON
+-   YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE, EVEN If WE ARE
+-   EXPRESSLY ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+-*/
+-#ifndef __GETOPT_H_
+-#define __GETOPT_H_
+-
+-#ifdef _GETOPT_API
+-#undef _GETOPT_API
+-#endif
+-
+-#if defined(EXPORTS_GETOPT) && defined(STATIC_GETOPT)
+-#error "The preprocessor definitions of EXPORTS_GETOPT and STATIC_GETOPT can only be used individually"
+-#elif defined(STATIC_GETOPT)
+-#pragma message("Warning static builds of getopt violate the Lesser GNU Public License")
+-#define _GETOPT_API
+-#elif defined(EXPORTS_GETOPT)
+-#pragma message("Exporting getopt library")
+-#define _GETOPT_API __declspec(dllexport)
+-#else
+-#pragma message("Importing getopt library")
+-#define _GETOPT_API __declspec(dllimport)
+-#endif
+-
+-// Change behavior for C\C++
+-#ifdef __cplusplus
+-#define _BEGIN_EXTERN_C extern "C" {
+-#define _END_EXTERN_C }
+-#define _GETOPT_THROW throw()
+-#else
+-#define _BEGIN_EXTERN_C
+-#define _END_EXTERN_C
+-#define _GETOPT_THROW
+-#endif
+-
+-// Standard GNU options
+-#define null_argument 0
+-#define no_argument 0
+-#define required_argument 1
+-#define optional_argument 2
+-
+-// Shorter Options
+-#define ARG_NULL 0
+-#define ARG_NONE 0
+-#define ARG_REQ 1
+-#define ARG_OPT 2
+-
+-#include <string.h>
+-#include <wchar.h>
+-
+-_BEGIN_EXTERN_C
+-
+-// Forward declarations for reentrant structures
+-struct _getopt_data_a;
+-struct _getopt_data_w;
+-
+-extern _GETOPT_API int optind;
+-extern _GETOPT_API int opterr;
+-extern _GETOPT_API int optopt;
+-
+-// ANSI
+-struct option_a
+-{
+-    const char* name;
+-    int has_arg;
+-    int* flag;
+-    int val;
+-};
+-
+-extern _GETOPT_API char* optarg_a;
+-
+-extern _GETOPT_API int getopt_a(int argc, char* const * argv, const char* optstring) _GETOPT_THROW;
+-extern _GETOPT_API int __posix_getopt_a(int argc, char* const * argv, const char* optstring) _GETOPT_THROW;
+-extern _GETOPT_API int getopt_long_a(int argc, char* const * argv, const char* options,
+-                                     const struct option_a* long_options, int* opt_index) _GETOPT_THROW;
+-extern _GETOPT_API int getopt_long_only_a(int argc, char* const * argv, const char* options,
+-                                          const struct option_a* long_options, int* opt_index) _GETOPT_THROW;
+-extern _GETOPT_API int _getopt_long_r_a(int argc, char* const * argv, const char* options,
+-                                        const struct option_a* long_options, int* opt_index,
+-                                        struct _getopt_data_a* d) _GETOPT_THROW;
+-extern _GETOPT_API int _getopt_long_only_r_a(int argc, char* const * argv, const char* options,
+-                                             const struct option_a* long_options, int* opt_index,
+-                                             struct _getopt_data_a* d) _GETOPT_THROW;
+-
+-// Unicode
+-struct option_w
+-{
+-    const wchar_t* name;
+-    int has_arg;
+-    int* flag;
+-    int val;
+-};
+-
+-extern _GETOPT_API wchar_t* optarg_w;
+-extern _GETOPT_API int getopt_w(int argc, wchar_t* const * argv, const wchar_t* optstring) _GETOPT_THROW;
+-extern _GETOPT_API int __posix_getopt_w(int argc, wchar_t* const * argv, const wchar_t* optstring) _GETOPT_THROW;
+-extern _GETOPT_API int getopt_long_w(int argc, wchar_t* const * argv, const wchar_t* options,
+-                                     const struct option_w* long_options, int* opt_index) _GETOPT_THROW;
+-extern _GETOPT_API int getopt_long_only_w(int argc, wchar_t* const * argv, const wchar_t* options,
+-                                          const struct option_w* long_options, int* opt_index) _GETOPT_THROW;
+-extern _GETOPT_API int _getopt_long_r_w(int argc, wchar_t* const * argv, const wchar_t* options,
+-                                        const struct option_w* long_options, int* opt_index,
+-                                        struct _getopt_data_w* d) _GETOPT_THROW;
+-extern _GETOPT_API int _getopt_long_only_r_w(int argc, wchar_t* const * argv, const wchar_t* options,
+-                                             const struct option_w* long_options, int* opt_index,
+-                                             struct _getopt_data_w* d) _GETOPT_THROW;
+-_END_EXTERN_C
+-
+-#undef _BEGIN_EXTERN_C
+-#undef _END_EXTERN_C
+-#undef _GETOPT_THROW
+-#undef _GETOPT_API
+-
+-#ifdef _UNICODE
+-#define getopt getopt_w
+-#define __posix_getopt __posix_getopt_w
+-#define getopt_long getopt_long_w
+-#define getopt_long_only getopt_long_only_w
+-#define option option_w
+-#define optarg optarg_w
+-#else
+-#define getopt getopt_a
+-#define __posix_getopt __posix_getopt_a
+-#define getopt_long getopt_long_a
+-#define getopt_long_only getopt_long_only_a
+-#define option option_a
+-#define optarg optarg_a
+-#endif
+-#endif  // __GETOPT_H_
+diff --git a/src/getopt.c b/src/getopt_win.c
+similarity index 81%
+rename from src/getopt.c
+rename to src/getopt_win.c
+index 9fec155..e706bb8 100644
+--- a/src/getopt.c
++++ b/src/getopt_win.c
+@@ -17,10 +17,10 @@ Revisions:
+ 07/05/2011 - Ludvik Jerabek - Added no_argument, required_argument, optional_argument defs
+ 08/03/2011 - Ludvik Jerabek - Fixed non-argument runtime bug which caused runtime exception
+ 08/09/2011 - Ludvik Jerabek - Added code to export functions for DLL and LIB
+-02/15/2012 - Ludvik Jerabek - Fixed _GETOPT_THROW definition missing in implementation file
++02/15/2012 - Ludvik Jerabek - Fixed _GETOPT_WIN_THROW definition missing in implementation file
+ 08/01/2012 - Ludvik Jerabek - Created separate functions for char and wchar_t characters so single dll can do both unicode and ansi
+ 10/15/2012 - Ludvik Jerabek - Modified to match latest GNU features
+-06/19/2015 - Ludvik Jerabek - Fixed maximum option limitation caused by option_a (255) and option_w (65535) structure val variable
++06/19/2015 - Ludvik Jerabek - Fixed maximum option limitation caused by getopt_win_option_a (255) and getopt_win_option_w (65535) structure val variable
+ 09/24/2022 - Ludvik Jerabek - Updated to match most recent getopt release
+ 09/25/2022 - Ludvik Jerabek - Fixed memory allocation (malloc call) issue for wchar_t*
+ 08/24/2025 - Ludvik Jerabek - Added reentrant function declarations, updated argv types to char ** and wchar_t **, added cross-compilation support
+@@ -49,12 +49,13 @@ EXPRESSLY ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <malloc.h>
+-#include "getopt.h"
++#define GETOPT_WIN_NO_COMPAT_MACROS
++#include "getopt_win.h"
+ 
+ #ifdef __cplusplus
+-#define _GETOPT_THROW throw()
++#define _GETOPT_WIN_THROW throw()
+ #else
+-#define _GETOPT_THROW
++#define _GETOPT_WIN_THROW
+ #endif
+ 
+ #ifdef _LIBC
+@@ -107,9 +108,9 @@ EXPRESSLY ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+ 
+ #endif /* !_LIBC */
+ 
+-int optind = 1;
+-int opterr = 1;
+-int optopt = '?';
++int getopt_win_optind = 1;
++int getopt_win_opterr = 1;
++int getopt_win_optopt = '?';
+ 
+ enum ENUM_ORDERING { REQUIRE_ORDER, PERMUTE, RETURN_IN_ORDER };
+ 
+@@ -119,7 +120,7 @@ enum ENUM_ORDERING { REQUIRE_ORDER, PERMUTE, RETURN_IN_ORDER };
+ //
+ //
+ 
+-static struct _getopt_data_a
++static struct _getopt_win_data_a
+ {
+     int optind;
+     int opterr;
+@@ -130,12 +131,12 @@ static struct _getopt_data_a
+     enum ENUM_ORDERING __ordering;
+     int __first_nonopt;
+     int __last_nonopt;
+-} getopt_data_a;
++} getopt_win_data_a;
+ 
+-char* optarg_a;
++char* getopt_win_optarg_a;
+ 
+ static void
+-exchange_a(char** argv, struct _getopt_data_a* d)
++exchange_a(char** argv, struct _getopt_win_data_a* d)
+ {
+     int bottom = d->__first_nonopt;
+     int middle = d->__last_nonopt;
+@@ -185,14 +186,14 @@ exchange_a(char** argv, struct _getopt_data_a* d)
+ 
+ static int
+ process_long_option_a(int argc, char** argv, const char* optstring,
+-                      const struct option_a* longopts, int* longind,
+-                      int long_only, struct _getopt_data_a* d,
++                      const struct getopt_win_option_a* longopts, int* longind,
++                      int long_only, struct _getopt_win_data_a* d,
+                       int print_errors, const char* prefix)
+ {
+     char* nameend;
+     size_t namelen;
+-    const struct option_a* p;
+-    const struct option_a* pfound = NULL;
++    const struct getopt_win_option_a* p;
++    const struct getopt_win_option_a* pfound = NULL;
+     int n_options;
+     int option_index;
+ 
+@@ -354,9 +355,9 @@ process_long_option_a(int argc, char** argv, const char* optstring,
+ }
+ 
+ static const char*
+-_getopt_initialize_a(_GL_UNUSED int argc,
++_getopt_win_initialize_a(_GL_UNUSED int argc,
+                      _GL_UNUSED char** argv, const char* optstring,
+-                     struct _getopt_data_a* d, int posixly_correct)
++                     struct _getopt_win_data_a* d, int posixly_correct)
+ {
+     if (d->optind == 0)
+         d->optind = 1;
+@@ -384,9 +385,9 @@ _getopt_initialize_a(_GL_UNUSED int argc,
+ }
+ 
+ int
+-_getopt_internal_r_a(int argc, char** argv, const char* optstring,
+-                     const struct option_a* longopts, int* longind,
+-                     int long_only, struct _getopt_data_a* d, int posixly_correct)
++_getopt_win_internal_r_a(int argc, char** argv, const char* optstring,
++                     const struct getopt_win_option_a* longopts, int* longind,
++                     int long_only, struct _getopt_win_data_a* d, int posixly_correct)
+ {
+     int print_errors = d->opterr;
+ 
+@@ -396,7 +397,7 @@ _getopt_internal_r_a(int argc, char** argv, const char* optstring,
+     d->optarg = NULL;
+ 
+     if (d->optind == 0 || !d->__initialized)
+-        optstring = _getopt_initialize_a(argc, argv, optstring, d, posixly_correct);
++        optstring = _getopt_win_initialize_a(argc, argv, optstring, d, posixly_correct);
+     else if (optstring[0] == '-' || optstring[0] == '+')
+         optstring++;
+ 
+@@ -577,58 +578,58 @@ _getopt_internal_r_a(int argc, char** argv, const char* optstring,
+ }
+ 
+ int
+-_getopt_internal_a(int argc, char** argv, const char* optstring,
+-                   const struct option_a* longopts, int* longind, int long_only,
++_getopt_win_internal_a(int argc, char** argv, const char* optstring,
++                   const struct getopt_win_option_a* longopts, int* longind, int long_only,
+                    int posixly_correct)
+ {
+     int result;
+ 
+-    getopt_data_a.optind = optind;
+-    getopt_data_a.opterr = opterr;
++    getopt_win_data_a.optind = getopt_win_optind;
++    getopt_win_data_a.opterr = getopt_win_opterr;
+ 
+-    result = _getopt_internal_r_a(argc, argv, optstring, longopts,
+-                                  longind, long_only, &getopt_data_a,
++    result = _getopt_win_internal_r_a(argc, argv, optstring, longopts,
++                                  longind, long_only, &getopt_win_data_a,
+                                   posixly_correct);
+ 
+-    optind = getopt_data_a.optind;
+-    optarg_a = getopt_data_a.optarg;
+-    optopt = getopt_data_a.optopt;
++    getopt_win_optind = getopt_win_data_a.optind;
++    getopt_win_optarg_a = getopt_win_data_a.optarg;
++    getopt_win_optopt = getopt_win_data_a.optopt;
+ 
+     return result;
+ }
+ 
+-int getopt_a(int argc, char* const * argv, const char* optstring) _GETOPT_THROW
++int getopt_win_a(int argc, char* const * argv, const char* optstring) _GETOPT_WIN_THROW
+ {
+-    return _getopt_internal_a(argc, (char**)argv, optstring, NULL, NULL, 0, 0); // Non-POSIX
++    return _getopt_win_internal_a(argc, (char**)argv, optstring, NULL, NULL, 0, 0); // Non-POSIX
+ }
+ 
+-int __posix_getopt_a(int argc, char* const * argv, const char* optstring) _GETOPT_THROW
++int __posix_getopt_win_a(int argc, char* const * argv, const char* optstring) _GETOPT_WIN_THROW
+ {
+-    return _getopt_internal_a(argc, (char**)argv, optstring, NULL, NULL, 0, 1); // POSIX
++    return _getopt_win_internal_a(argc, (char**)argv, optstring, NULL, NULL, 0, 1); // POSIX
+ }
+ 
+-int getopt_long_a(int argc, char* const * argv, const char* options, const struct option_a* long_options,
+-                  int* opt_index) _GETOPT_THROW
++int getopt_win_long_a(int argc, char* const * argv, const char* options, const struct getopt_win_option_a* long_options,
++                  int* opt_index) _GETOPT_WIN_THROW
+ {
+-    return _getopt_internal_a(argc, (char**)argv, options, long_options, opt_index, 0, 0);
++    return _getopt_win_internal_a(argc, (char**)argv, options, long_options, opt_index, 0, 0);
+ }
+ 
+-int getopt_long_only_a(int argc, char* const * argv, const char* options, const struct option_a* long_options,
+-                       int* opt_index) _GETOPT_THROW
++int getopt_win_long_only_a(int argc, char* const * argv, const char* options, const struct getopt_win_option_a* long_options,
++                       int* opt_index) _GETOPT_WIN_THROW
+ {
+-    return _getopt_internal_a(argc, (char**)argv, options, long_options, opt_index, 1, 0);
++    return _getopt_win_internal_a(argc, (char**)argv, options, long_options, opt_index, 1, 0);
+ }
+ 
+-int _getopt_long_r_a(int argc, char* const * argv, const char* options, const struct option_a* long_options,
+-                     int* opt_index, struct _getopt_data_a* d) _GETOPT_THROW
++int _getopt_win_long_r_a(int argc, char* const * argv, const char* options, const struct getopt_win_option_a* long_options,
++                     int* opt_index, struct _getopt_win_data_a* d) _GETOPT_WIN_THROW
+ {
+-    return _getopt_internal_r_a(argc, (char**)argv, options, long_options, opt_index, 0, d, 0);
++    return _getopt_win_internal_r_a(argc, (char**)argv, options, long_options, opt_index, 0, d, 0);
+ }
+ 
+-int _getopt_long_only_r_a(int argc, char* const * argv, const char* options, const struct option_a* long_options,
+-                          int* opt_index, struct _getopt_data_a* d) _GETOPT_THROW
++int _getopt_win_long_only_r_a(int argc, char* const * argv, const char* options, const struct getopt_win_option_a* long_options,
++                          int* opt_index, struct _getopt_win_data_a* d) _GETOPT_WIN_THROW
+ {
+-    return _getopt_internal_r_a(argc, (char**)argv, options, long_options, opt_index, 1, d, 0);
++    return _getopt_win_internal_r_a(argc, (char**)argv, options, long_options, opt_index, 1, d, 0);
+ }
+ 
+ //
+@@ -637,7 +638,7 @@ int _getopt_long_only_r_a(int argc, char* const * argv, const char* options, con
+ //
+ //
+ 
+-static struct _getopt_data_w
++static struct _getopt_win_data_w
+ {
+     int optind;
+     int opterr;
+@@ -648,12 +649,12 @@ static struct _getopt_data_w
+     enum ENUM_ORDERING __ordering;
+     int __first_nonopt;
+     int __last_nonopt;
+-} getopt_data_w;
++} getopt_win_data_w;
+ 
+-wchar_t* optarg_w;
++wchar_t* getopt_win_optarg_w;
+ 
+ static void
+-exchange_w(wchar_t** argv, struct _getopt_data_w* d)
++exchange_w(wchar_t** argv, struct _getopt_win_data_w* d)
+ {
+     int bottom = d->__first_nonopt;
+     int middle = d->__last_nonopt;
+@@ -692,14 +693,14 @@ exchange_w(wchar_t** argv, struct _getopt_data_w* d)
+ 
+ static int
+ process_long_option_w(int argc, wchar_t** argv, const wchar_t* optstring,
+-                      const struct option_w* longopts, int* longind,
+-                      int long_only, struct _getopt_data_w* d,
++                      const struct getopt_win_option_w* longopts, int* longind,
++                      int long_only, struct _getopt_win_data_w* d,
+                       int print_errors, const wchar_t* prefix)
+ {
+     wchar_t* nameend;
+     size_t namelen;
+-    const struct option_w* p;
+-    const struct option_w* pfound = NULL;
++    const struct getopt_win_option_w* p;
++    const struct getopt_win_option_w* pfound = NULL;
+     int n_options;
+     int option_index;
+ 
+@@ -849,9 +850,9 @@ process_long_option_w(int argc, wchar_t** argv, const wchar_t* optstring,
+ }
+ 
+ static const wchar_t*
+-_getopt_initialize_w(_GL_UNUSED int argc,
++_getopt_win_initialize_w(_GL_UNUSED int argc,
+                      _GL_UNUSED wchar_t** argv, const wchar_t* optstring,
+-                     struct _getopt_data_w* d, int posixly_correct)
++                     struct _getopt_win_data_w* d, int posixly_correct)
+ {
+     if (d->optind == 0)
+         d->optind = 1;
+@@ -879,9 +880,9 @@ _getopt_initialize_w(_GL_UNUSED int argc,
+ }
+ 
+ int
+-_getopt_internal_r_w(int argc, wchar_t** argv, const wchar_t* optstring,
+-                     const struct option_w* longopts, int* longind,
+-                     int long_only, struct _getopt_data_w* d, int posixly_correct)
++_getopt_win_internal_r_w(int argc, wchar_t** argv, const wchar_t* optstring,
++                     const struct getopt_win_option_w* longopts, int* longind,
++                     int long_only, struct _getopt_win_data_w* d, int posixly_correct)
+ {
+     int print_errors = d->opterr;
+ 
+@@ -891,7 +892,7 @@ _getopt_internal_r_w(int argc, wchar_t** argv, const wchar_t* optstring,
+     d->optarg = NULL;
+ 
+     if (d->optind == 0 || !d->__initialized)
+-        optstring = _getopt_initialize_w(argc, argv, optstring, d, posixly_correct);
++        optstring = _getopt_win_initialize_w(argc, argv, optstring, d, posixly_correct);
+     else if (optstring[0] == L'-' || optstring[0] == L'+')
+         optstring++;
+ 
+@@ -1043,56 +1044,56 @@ _getopt_internal_r_w(int argc, wchar_t** argv, const wchar_t* optstring,
+ }
+ 
+ int
+-_getopt_internal_w(int argc, wchar_t** argv, const wchar_t* optstring,
+-                   const struct option_w* longopts, int* longind, int long_only,
++_getopt_win_internal_w(int argc, wchar_t** argv, const wchar_t* optstring,
++                   const struct getopt_win_option_w* longopts, int* longind, int long_only,
+                    int posixly_correct)
+ {
+     int result;
+ 
+-    getopt_data_w.optind = optind;
+-    getopt_data_w.opterr = opterr;
++    getopt_win_data_w.optind = getopt_win_optind;
++    getopt_win_data_w.opterr = getopt_win_opterr;
+ 
+-    result = _getopt_internal_r_w(argc, argv, optstring, longopts,
+-                                  longind, long_only, &getopt_data_w,
++    result = _getopt_win_internal_r_w(argc, argv, optstring, longopts,
++                                  longind, long_only, &getopt_win_data_w,
+                                   posixly_correct);
+ 
+-    optind = getopt_data_w.optind;
+-    optarg_w = getopt_data_w.optarg;
+-    optopt = getopt_data_w.optopt;
++    getopt_win_optind = getopt_win_data_w.optind;
++    getopt_win_optarg_w = getopt_win_data_w.optarg;
++    getopt_win_optopt = getopt_win_data_w.optopt;
+ 
+     return result;
+ }
+ 
+-int getopt_w(int argc, wchar_t* const * argv, const wchar_t* optstring) _GETOPT_THROW
++int getopt_win_w(int argc, wchar_t* const * argv, const wchar_t* optstring) _GETOPT_WIN_THROW
+ {
+-    return _getopt_internal_w(argc, (wchar_t**)argv, optstring, NULL, NULL, 0, 0); // Non-POSIX
++    return _getopt_win_internal_w(argc, (wchar_t**)argv, optstring, NULL, NULL, 0, 0); // Non-POSIX
+ }
+ 
+-int __posix_getopt_w(int argc, wchar_t* const * argv, const wchar_t* optstring) _GETOPT_THROW
++int __posix_getopt_win_w(int argc, wchar_t* const * argv, const wchar_t* optstring) _GETOPT_WIN_THROW
+ {
+-    return _getopt_internal_w(argc, (wchar_t**)argv, optstring, NULL, NULL, 0, 1); // POSIX
++    return _getopt_win_internal_w(argc, (wchar_t**)argv, optstring, NULL, NULL, 0, 1); // POSIX
+ }
+ 
+-int getopt_long_w(int argc, wchar_t* const * argv, const wchar_t* options, const struct option_w* long_options,
+-                  int* opt_index) _GETOPT_THROW
++int getopt_win_long_w(int argc, wchar_t* const * argv, const wchar_t* options, const struct getopt_win_option_w* long_options,
++                  int* opt_index) _GETOPT_WIN_THROW
+ {
+-    return _getopt_internal_w(argc, (wchar_t**)argv, options, long_options, opt_index, 0, 0);
++    return _getopt_win_internal_w(argc, (wchar_t**)argv, options, long_options, opt_index, 0, 0);
+ }
+ 
+-int getopt_long_only_w(int argc, wchar_t* const * argv, const wchar_t* options, const struct option_w* long_options,
+-                       int* opt_index) _GETOPT_THROW
++int getopt_win_long_only_w(int argc, wchar_t* const * argv, const wchar_t* options, const struct getopt_win_option_w* long_options,
++                       int* opt_index) _GETOPT_WIN_THROW
+ {
+-    return _getopt_internal_w(argc, (wchar_t**)argv, options, long_options, opt_index, 1, 0);
++    return _getopt_win_internal_w(argc, (wchar_t**)argv, options, long_options, opt_index, 1, 0);
+ }
+ 
+-int _getopt_long_r_w(int argc, wchar_t* const * argv, const wchar_t* options, const struct option_w* long_options,
+-                     int* opt_index, struct _getopt_data_w* d) _GETOPT_THROW
++int _getopt_win_long_r_w(int argc, wchar_t* const * argv, const wchar_t* options, const struct getopt_win_option_w* long_options,
++                     int* opt_index, struct _getopt_win_data_w* d) _GETOPT_WIN_THROW
+ {
+-    return _getopt_internal_r_w(argc, (wchar_t**)argv, options, long_options, opt_index, 0, d, 0);
++    return _getopt_win_internal_r_w(argc, (wchar_t**)argv, options, long_options, opt_index, 0, d, 0);
+ }
+ 
+-int _getopt_long_only_r_w(int argc, wchar_t* const * argv, const wchar_t* options, const struct option_w* long_options,
+-                          int* opt_index, struct _getopt_data_w* d) _GETOPT_THROW
++int _getopt_win_long_only_r_w(int argc, wchar_t* const * argv, const wchar_t* options, const struct getopt_win_option_w* long_options,
++                          int* opt_index, struct _getopt_win_data_w* d) _GETOPT_WIN_THROW
+ {
+-    return _getopt_internal_r_w(argc, (wchar_t**)argv, options, long_options, opt_index, 1, d, 0);
++    return _getopt_win_internal_r_w(argc, (wchar_t**)argv, options, long_options, opt_index, 1, d, 0);
+ }
+diff --git a/src/getopt_win.h b/src/getopt_win.h
+new file mode 100644
+index 0000000..83175a2
+--- /dev/null
++++ b/src/getopt_win.h
+@@ -0,0 +1,173 @@
++/* Getopt for Microsoft C
++   This code is a modification of the Free Software Foundation, Inc.
++   Getopt library for parsing command line argument the purpose was
++   to provide a Microsoft Visual C friendly derivative. This code
++   provides functionality for both Unicode and Multibyte builds.
++
++   Date: 02/03/2011 - Ludvik Jerabek - Initial Release
++   Version: 1.1
++   Comment: Supports getopt, getopt_long, and getopt_long_only
++   and POSIXLY_CORRECT environment flag
++   License: LGPL
++
++   Revisions:
++   02/03/2011 - Ludvik Jerabek - Initial Release
++   02/20/2011 - Ludvik Jerabek - Fixed compiler warnings at Level 4
++   07/05/2011 - Ludvik Jerabek - Added no_argument, required_argument, optional_argument defs
++   08/03/2011 - Ludvik Jerabek - Fixed non-argument runtime bug which caused runtime exception
++   08/09/2011 - Ludvik Jerabek - Added code to export functions for DLL and LIB
++   02/15/2012 - Ludvik Jerabek - Fixed _GETOPT_WIN_THROW definition missing in implementation file
++   08/01/2012 - Ludvik Jerabek - Created separate functions for char and wchar_t characters so single dll can do both unicode and ansi
++   10/15/2012 - Ludvik Jerabek - Modified to match latest GNU features
++   06/19/2015 - Ludvik Jerabek - Fixed maximum option limitation caused by getopt_win_option_a (255) and getopt_win_option_w (65535) structure val variable
++   09/24/2022 - Ludvik Jerabek - Updated to match most recent getopt release
++   09/25/2022 - Ludvik Jerabek - Fixed memory allocation (malloc call) issue for wchar_t*
++   08/24/2025 - Ludvik Jerabek - Added reentrant function declarations, updated argv types to char ** and wchar_t **, added cross-compilation support
++   08/24/2025 - Ludvik Jerabek - Updated to match glibc 2.42 getopt
++
++
++   **DISCLAIMER**
++   THIS MATERIAL IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND,
++   EITHER EXPRESS OR IMPLIED, INCLUDING, BUT Not LIMITED TO, THE
++   IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
++   PURPOSE, OR NON-INFRINGEMENT. SOME JURISDICTIONS DO NOT ALLOW THE
++   EXCLUSION OF IMPLIED WARRANTIES, SO THE ABOVE EXCLUSION MAY NOT
++   APPLY TO YOU. IN NO EVENT WILL I BE LIABLE TO ANY PARTY FOR ANY
++   DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL DAMAGES FOR ANY
++   USE OF THIS MATERIAL INCLUDING, WITHOUT LIMITATION, ANY LOST
++   PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA ON
++   YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE, EVEN If WE ARE
++   EXPRESSLY ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
++*/
++#ifndef __GETOPT_WIN_H_
++#define __GETOPT_WIN_H_
++
++#ifdef _GETOPT_WIN_API
++#undef _GETOPT_WIN_API
++#endif
++
++#if defined(EXPORTS_GETOPT_WIN) && defined(STATIC_GETOPT_WIN)
++#error "The preprocessor definitions of EXPORTS_GETOPT_WIN and STATIC_GETOPT_WIN can only be used individually"
++#elif defined(STATIC_GETOPT_WIN)
++#pragma message("Warning static builds of getopt violate the Lesser GNU Public License")
++#define _GETOPT_WIN_API
++#elif defined(EXPORTS_GETOPT_WIN)
++#pragma message("Exporting getopt library")
++#define _GETOPT_WIN_API __declspec(dllexport)
++#else
++#pragma message("Importing getopt library")
++#define _GETOPT_WIN_API __declspec(dllimport)
++#endif
++
++// Change behavior for C\C++
++#ifdef __cplusplus
++#define _BEGIN_EXTERN_C extern "C" {
++#define _END_EXTERN_C }
++#define _GETOPT_WIN_THROW throw()
++#else
++#define _BEGIN_EXTERN_C
++#define _END_EXTERN_C
++#define _GETOPT_WIN_THROW
++#endif
++
++// Standard GNU options
++#define null_argument 0
++#define no_argument 0
++#define required_argument 1
++#define optional_argument 2
++
++// Shorter Options
++#define ARG_NULL 0
++#define ARG_NONE 0
++#define ARG_REQ 1
++#define ARG_OPT 2
++
++#include <string.h>
++#include <wchar.h>
++
++_BEGIN_EXTERN_C
++
++// Forward declarations for reentrant structures
++struct _getopt_win_data_a;
++struct _getopt_win_data_w;
++
++extern _GETOPT_WIN_API int getopt_win_optind;
++extern _GETOPT_WIN_API int getopt_win_opterr;
++extern _GETOPT_WIN_API int getopt_win_optopt;
++
++// ANSI
++struct getopt_win_option_a
++{
++    const char* name;
++    int has_arg;
++    int* flag;
++    int val;
++};
++
++extern _GETOPT_WIN_API char* getopt_win_optarg_a;
++
++extern _GETOPT_WIN_API int getopt_win_a(int argc, char* const * argv, const char* optstring) _GETOPT_WIN_THROW;
++extern _GETOPT_WIN_API int __posix_getopt_win_a(int argc, char* const * argv, const char* optstring) _GETOPT_WIN_THROW;
++extern _GETOPT_WIN_API int getopt_win_long_a(int argc, char* const * argv, const char* options,
++                                     const struct getopt_win_option_a* long_options, int* opt_index) _GETOPT_WIN_THROW;
++extern _GETOPT_WIN_API int getopt_win_long_only_a(int argc, char* const * argv, const char* options,
++                                          const struct getopt_win_option_a* long_options, int* opt_index) _GETOPT_WIN_THROW;
++extern _GETOPT_WIN_API int _getopt_win_long_r_a(int argc, char* const * argv, const char* options,
++                                        const struct getopt_win_option_a* long_options, int* opt_index,
++                                        struct _getopt_win_data_a* d) _GETOPT_WIN_THROW;
++extern _GETOPT_WIN_API int _getopt_win_long_only_r_a(int argc, char* const * argv, const char* options,
++                                             const struct getopt_win_option_a* long_options, int* opt_index,
++                                             struct _getopt_win_data_a* d) _GETOPT_WIN_THROW;
++
++// Unicode
++struct getopt_win_option_w
++{
++    const wchar_t* name;
++    int has_arg;
++    int* flag;
++    int val;
++};
++
++extern _GETOPT_WIN_API wchar_t* getopt_win_optarg_w;
++extern _GETOPT_WIN_API int getopt_win_w(int argc, wchar_t* const * argv, const wchar_t* optstring) _GETOPT_WIN_THROW;
++extern _GETOPT_WIN_API int __posix_getopt_win_w(int argc, wchar_t* const * argv, const wchar_t* optstring) _GETOPT_WIN_THROW;
++extern _GETOPT_WIN_API int getopt_win_long_w(int argc, wchar_t* const * argv, const wchar_t* options,
++                                     const struct getopt_win_option_w* long_options, int* opt_index) _GETOPT_WIN_THROW;
++extern _GETOPT_WIN_API int getopt_win_long_only_w(int argc, wchar_t* const * argv, const wchar_t* options,
++                                          const struct getopt_win_option_w* long_options, int* opt_index) _GETOPT_WIN_THROW;
++extern _GETOPT_WIN_API int _getopt_win_long_r_w(int argc, wchar_t* const * argv, const wchar_t* options,
++                                        const struct getopt_win_option_w* long_options, int* opt_index,
++                                        struct _getopt_win_data_w* d) _GETOPT_WIN_THROW;
++extern _GETOPT_WIN_API int _getopt_win_long_only_r_w(int argc, wchar_t* const * argv, const wchar_t* options,
++                                             const struct getopt_win_option_w* long_options, int* opt_index,
++                                             struct _getopt_win_data_w* d) _GETOPT_WIN_THROW;
++_END_EXTERN_C
++
++#undef _BEGIN_EXTERN_C
++#undef _END_EXTERN_C
++#undef _GETOPT_WIN_THROW
++#undef _GETOPT_WIN_API
++
++// Map the standard getopt names to the getopt_win implementation.
++// Define GETOPT_WIN_NO_COMPAT_MACROS to only use the getopt_win_ prefixed names.
++#ifndef GETOPT_WIN_NO_COMPAT_MACROS
++#define optind getopt_win_optind
++#define opterr getopt_win_opterr
++#define optopt getopt_win_optopt
++#ifdef _UNICODE
++#define getopt getopt_win_w
++#define __posix_getopt __posix_getopt_win_w
++#define getopt_long getopt_win_long_w
++#define getopt_long_only getopt_win_long_only_w
++#define option getopt_win_option_w
++#define optarg getopt_win_optarg_w
++#else
++#define getopt getopt_win_a
++#define __posix_getopt __posix_getopt_win_a
++#define getopt_long getopt_win_long_a
++#define getopt_long_only getopt_win_long_only_a
++#define option getopt_win_option_a
++#define optarg getopt_win_optarg_a
++#endif
++#endif  // GETOPT_WIN_NO_COMPAT_MACROS
++#endif  // __GETOPT_WIN_H_
+diff --git a/tests/main.c b/tests/main.c
+index c205a8b..e2dd795 100644
+--- a/tests/main.c
++++ b/tests/main.c
+@@ -24,7 +24,7 @@ EXPRESSLY ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
+-#include "getopt.h"
++#include "getopt_win.h"
+ #include <tchar.h>
+ 
+ int _tmain(int argc, TCHAR** argv)
