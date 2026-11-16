@@ -23,6 +23,7 @@ define $(PKG)_BUILD
         -Ddoc=disabled \
         -Dgpl=enabled \
         -Dasfdemux=enabled \
+        -Dcdio=enabled \
         '$(BUILD_DIR)'
 
     cd '$(BUILD_DIR)' && ninja
