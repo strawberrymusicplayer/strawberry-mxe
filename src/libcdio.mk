@@ -6,7 +6,8 @@ $(PKG)_DESCR    := GNU Compact Disc Input and Control Library
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 2.4.0
 $(PKG)_CHECKSUM := bf7cde63762bb12db7755c395c441e49406fde7e1d9f9a9be7e3b940b1f405d7
-$(PKG)_GH_CONF  := libcdio/libcdio/releases/latest
+$(PKG)_GH_CONF  := libcdio/libcdio-C/releases/latest
+$(PKG)_SUBDIR   := libcdio-$($(PKG)_VERSION)
 $(PKG)_DEPS     := cc
 
 define $(PKG)_BUILD
